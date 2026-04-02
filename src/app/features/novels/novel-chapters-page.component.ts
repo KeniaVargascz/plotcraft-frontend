@@ -17,15 +17,23 @@ import { NovelsService } from '../../core/services/novels.service';
             <h1>{{ currentNovel.title }}</h1>
             <p>Gestiona borradores, publicaciones y el orden editorial de tus capitulos.</p>
           </div>
+
           <div class="header-actions">
             <a [routerLink]="['/mis-novelas', currentNovel.slug, 'editar']">Editar novela</a>
-            <a [routerLink]="['/mis-novelas', currentNovel.slug, 'capitulos', 'nuevo']"
-              >Nuevo capitulo</a
-            >
+            <a [routerLink]="['/mis-novelas', currentNovel.slug, 'capitulos', 'nuevo']">
+              Nuevo capitulo
+            </a>
           </div>
         </header>
 
         <div class="chapter-list">
+          @if (loading()) {
+            <p class="status">Cargando capitulos...</p>
+          }
+          @if (actionMessage()) {
+            <p class="status">{{ actionMessage() }}</p>
+          }
+
           @for (chapter of chapters(); track chapter.id) {
             <article class="chapter-row">
               <div>
@@ -45,12 +53,32 @@ import { NovelsService } from '../../core/services/novels.service';
                 >
                   Editar
                 </a>
+
                 @if (chapter.status !== 'PUBLISHED') {
-                  <button type="button" (click)="publish(chapter)">Publicar</button>
+                  <button
+                    type="button"
+                    (click)="publish(chapter)"
+                    [disabled]="actionLoadingId() === chapter.id"
+                  >
+                    {{ actionLoadingId() === chapter.id ? 'Procesando...' : 'Publicar' }}
+                  </button>
                 } @else {
-                  <button type="button" (click)="unpublish(chapter)">Despublicar</button>
+                  <button
+                    type="button"
+                    (click)="unpublish(chapter)"
+                    [disabled]="actionLoadingId() === chapter.id"
+                  >
+                    {{ actionLoadingId() === chapter.id ? 'Procesando...' : 'Despublicar' }}
+                  </button>
                 }
-                <button type="button" (click)="remove(chapter)">Eliminar</button>
+
+                <button
+                  type="button"
+                  (click)="remove(chapter)"
+                  [disabled]="actionLoadingId() === chapter.id"
+                >
+                  {{ actionLoadingId() === chapter.id ? 'Procesando...' : 'Eliminar' }}
+                </button>
               </div>
             </article>
           }
@@ -65,6 +93,7 @@ import { NovelsService } from '../../core/services/novels.service';
         display: grid;
         gap: 1rem;
       }
+
       .page-header,
       .chapter-row,
       .header-actions,
@@ -75,12 +104,14 @@ import { NovelsService } from '../../core/services/novels.service';
         align-items: center;
         flex-wrap: wrap;
       }
+
       .chapter-row {
         padding: 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
+
       a,
       button {
         padding: 0.65rem 0.9rem;
@@ -89,6 +120,14 @@ import { NovelsService } from '../../core/services/novels.service';
         background: var(--bg-surface);
         color: var(--text-1);
         text-decoration: none;
+      }
+
+      .status {
+        margin: 0;
+        padding: 0.85rem 1rem;
+        border-radius: 1rem;
+        background: var(--accent-glow);
+        color: var(--accent-text);
       }
     `,
   ],
@@ -100,6 +139,9 @@ export class NovelChaptersPageComponent implements OnInit {
 
   readonly novel = signal<NovelDetail | null>(null);
   readonly chapters = signal<ChapterSummary[]>([]);
+  readonly loading = signal(true);
+  readonly actionLoadingId = signal<string | null>(null);
+  readonly actionMessage = signal('');
 
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
@@ -115,34 +157,83 @@ export class NovelChaptersPageComponent implements OnInit {
 
   publish(chapter: ChapterSummary) {
     const slug = this.novel()?.slug;
-    if (!slug) {
+    if (!slug || this.actionLoadingId()) {
       return;
     }
 
-    this.chaptersService.publish(slug, chapter.slug).subscribe(() => this.loadChapters(slug));
+    this.actionLoadingId.set(chapter.id);
+    this.actionMessage.set(`Publicando "${chapter.title}"...`);
+
+    this.chaptersService.publish(slug, chapter.slug).subscribe({
+      next: () => {
+        this.actionLoadingId.set(null);
+        this.actionMessage.set(`"${chapter.title}" publicado.`);
+        this.loadChapters(slug);
+      },
+      error: () => {
+        this.actionLoadingId.set(null);
+        this.actionMessage.set(`No se pudo publicar "${chapter.title}".`);
+      },
+    });
   }
 
   unpublish(chapter: ChapterSummary) {
     const slug = this.novel()?.slug;
-    if (!slug) {
+    if (!slug || this.actionLoadingId()) {
       return;
     }
 
-    this.chaptersService.unpublish(slug, chapter.slug).subscribe(() => this.loadChapters(slug));
+    this.actionLoadingId.set(chapter.id);
+    this.actionMessage.set(`Despublicando "${chapter.title}"...`);
+
+    this.chaptersService.unpublish(slug, chapter.slug).subscribe({
+      next: () => {
+        this.actionLoadingId.set(null);
+        this.actionMessage.set(`"${chapter.title}" se movio a borrador.`);
+        this.loadChapters(slug);
+      },
+      error: () => {
+        this.actionLoadingId.set(null);
+        this.actionMessage.set(`No se pudo despublicar "${chapter.title}".`);
+      },
+    });
   }
 
   remove(chapter: ChapterSummary) {
     const slug = this.novel()?.slug;
-    if (!slug) {
+    if (!slug || this.actionLoadingId()) {
       return;
     }
 
-    this.chaptersService.delete(slug, chapter.slug).subscribe(() => this.loadChapters(slug));
+    this.actionLoadingId.set(chapter.id);
+    this.actionMessage.set(`Eliminando "${chapter.title}"...`);
+
+    this.chaptersService.delete(slug, chapter.slug).subscribe({
+      next: () => {
+        this.actionLoadingId.set(null);
+        this.actionMessage.set(`"${chapter.title}" eliminado.`);
+        this.loadChapters(slug);
+      },
+      error: () => {
+        this.actionLoadingId.set(null);
+        this.actionMessage.set(`No se pudo eliminar "${chapter.title}".`);
+      },
+    });
   }
 
   private loadChapters(slug: string) {
-    this.chaptersService.listDrafts(slug, { limit: 100 }).subscribe((response) => {
-      this.chapters.set(response.data);
+    this.loading.set(true);
+    this.actionMessage.set('');
+
+    this.chaptersService.listDrafts(slug, { limit: 50 }).subscribe({
+      next: (response) => {
+        this.chapters.set(response.data);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.actionMessage.set('No se pudieron cargar los capitulos.');
+      },
     });
   }
 }

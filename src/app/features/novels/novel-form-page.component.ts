@@ -17,12 +17,12 @@ import { NovelsService } from '../../core/services/novels.service';
       <div class="form-grid">
         <label>
           Titulo
-          <input [(ngModel)]="title" maxlength="200" />
+          <input [(ngModel)]="title" maxlength="200" [disabled]="saving()" />
         </label>
 
         <label>
           Estado
-          <select [(ngModel)]="status">
+          <select [(ngModel)]="status" [disabled]="saving()">
             @for (item of statusOptions; track item) {
               <option [value]="item">{{ item }}</option>
             }
@@ -31,7 +31,7 @@ import { NovelsService } from '../../core/services/novels.service';
 
         <label>
           Rating
-          <select [(ngModel)]="rating">
+          <select [(ngModel)]="rating" [disabled]="saving()">
             @for (item of ratingOptions; track item) {
               <option [value]="item">{{ item }}</option>
             }
@@ -40,17 +40,30 @@ import { NovelsService } from '../../core/services/novels.service';
 
         <label class="full">
           Sinopsis
-          <textarea [(ngModel)]="synopsis" rows="6" maxlength="3000"></textarea>
+          <textarea
+            [(ngModel)]="synopsis"
+            rows="6"
+            maxlength="3000"
+            [disabled]="saving()"
+          ></textarea>
         </label>
 
         <label class="full">
           Tags
-          <input [(ngModel)]="tags" placeholder="fantasia, aventura, serial" />
+          <input
+            [(ngModel)]="tags"
+            placeholder="fantasia, aventura, serial"
+            [disabled]="saving()"
+          />
         </label>
 
         <label class="full">
           Warnings
-          <input [(ngModel)]="warnings" placeholder="violencia, lenguaje adulto" />
+          <input
+            [(ngModel)]="warnings"
+            placeholder="violencia, lenguaje adulto"
+            [disabled]="saving()"
+          />
         </label>
 
         <fieldset class="full genres">
@@ -60,6 +73,7 @@ import { NovelsService } from '../../core/services/novels.service';
               <input
                 type="checkbox"
                 [checked]="selectedGenreIds().includes(genre.id)"
+                [disabled]="saving()"
                 (change)="toggleGenre(genre)"
               />
               {{ genre.label }}
@@ -68,9 +82,16 @@ import { NovelsService } from '../../core/services/novels.service';
         </fieldset>
 
         <label class="inline">
-          <input type="checkbox" [(ngModel)]="isPublic" />
+          <input type="checkbox" [(ngModel)]="isPublic" [disabled]="saving()" />
           Hacer publica la novela
         </label>
+
+        @if (saving()) {
+          <p class="status full">Procesando novela...</p>
+        }
+        @if (statusMessage()) {
+          <p class="status success full">{{ statusMessage() }}</p>
+        }
         @if (!isEdit()) {
           <p class="hint full">
             La novela se crea como privada. Podras hacerla publica despues de publicar al menos un
@@ -96,23 +117,28 @@ import { NovelsService } from '../../core/services/novels.service';
         display: grid;
         gap: 1rem;
       }
+
       .form-shell {
         padding: 1.25rem;
         border-radius: 1.25rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
       }
+
       .form-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+
       .full {
         grid-column: 1 / -1;
       }
+
       label,
       .genres {
         display: grid;
         gap: 0.5rem;
       }
+
       input,
       textarea,
       select,
@@ -123,23 +149,41 @@ import { NovelsService } from '../../core/services/novels.service';
         color: var(--text-1);
         padding: 0.75rem 0.9rem;
       }
+
       .genres {
         display: flex;
         flex-wrap: wrap;
         gap: 1rem;
       }
+
       .inline {
         display: flex;
         align-items: center;
       }
+
       .hint {
         margin: 0;
         color: var(--text-2);
       }
+
       .error {
         margin: 0;
         color: #ff8b8b;
       }
+
+      .status {
+        margin: 0;
+        color: var(--accent-text);
+        padding: 0.75rem 0.9rem;
+        border-radius: 0.9rem;
+        background: var(--accent-glow);
+      }
+
+      .status.success {
+        background: color-mix(in srgb, #2e8b57 22%, var(--bg-surface));
+        color: #b8ffd6;
+      }
+
       @media (max-width: 700px) {
         .form-grid {
           grid-template-columns: 1fr;
@@ -159,6 +203,7 @@ export class NovelFormPageComponent implements OnInit {
   readonly saving = signal(false);
   readonly isEdit = signal(false);
   readonly errorMessage = signal('');
+  readonly statusMessage = signal('');
 
   readonly statusOptions: NovelStatus[] = ['DRAFT', 'IN_PROGRESS', 'COMPLETED', 'ARCHIVED'];
   readonly ratingOptions: NovelRating[] = ['G', 'PG', 'PG13', 'R', 'EXPLICIT'];
@@ -207,8 +252,13 @@ export class NovelFormPageComponent implements OnInit {
   }
 
   save() {
+    if (this.saving() || !this.title.trim()) {
+      return;
+    }
+
     this.saving.set(true);
     this.errorMessage.set('');
+    this.statusMessage.set('');
 
     const payload = {
       title: this.title,
@@ -233,6 +283,7 @@ export class NovelFormPageComponent implements OnInit {
 
     request.subscribe({
       next: (novel) => {
+        this.statusMessage.set('Novela guardada. Redirigiendo a capitulos...');
         this.saving.set(false);
         this.router.navigate(['/mis-novelas', novel.slug, 'capitulos']);
       },

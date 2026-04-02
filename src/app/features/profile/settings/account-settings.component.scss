@@ -15,6 +15,23 @@ form {
   gap: 1rem;
 }
 
+.status,
+.error {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+}
+
+.status {
+  background: var(--accent-glow);
+  color: var(--accent-text);
+}
+
+.error {
+  background: color-mix(in srgb, var(--danger) 18%, var(--bg-surface));
+  color: #ffb3b3;
+}
+
 .danger-zone {
   border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
 }

@@ -4,7 +4,15 @@
     <form [formGroup]="emailForm" (ngSubmit)="submitEmail()">
       <mat-form-field appearance="outline"><mat-label>Email</mat-label><input matInput formControlName="email" /></mat-form-field>
       <mat-form-field appearance="outline"><mat-label>Contrasena actual</mat-label><input matInput type="password" formControlName="currentPassword" /></mat-form-field>
-      <button mat-flat-button type="submit">Guardar</button>
+      @if (emailStatus()) {
+        <p class="status">{{ emailStatus() }}</p>
+      }
+      @if (emailError()) {
+        <p class="error">{{ emailError() }}</p>
+      }
+      <button mat-flat-button type="submit" [disabled]="emailForm.invalid || emailSaving()">
+        {{ emailSaving() ? 'Guardando...' : 'Guardar' }}
+      </button>
     </form>
   </mat-card>
 
@@ -13,7 +21,15 @@
     <form [formGroup]="usernameForm" (ngSubmit)="submitUsername()">
       <mat-form-field appearance="outline"><mat-label>Username</mat-label><input matInput formControlName="username" /></mat-form-field>
       <mat-form-field appearance="outline"><mat-label>Contrasena actual</mat-label><input matInput type="password" formControlName="currentPassword" /></mat-form-field>
-      <button mat-flat-button type="submit">Guardar</button>
+      @if (usernameStatus()) {
+        <p class="status">{{ usernameStatus() }}</p>
+      }
+      @if (usernameError()) {
+        <p class="error">{{ usernameError() }}</p>
+      }
+      <button mat-flat-button type="submit" [disabled]="usernameForm.invalid || usernameSaving()">
+        {{ usernameSaving() ? 'Guardando...' : 'Guardar' }}
+      </button>
     </form>
   </mat-card>
 
@@ -23,7 +39,15 @@
       <mat-form-field appearance="outline"><mat-label>Contrasena actual</mat-label><input matInput type="password" formControlName="currentPassword" /></mat-form-field>
       <mat-form-field appearance="outline"><mat-label>Nueva contrasena</mat-label><input matInput type="password" formControlName="newPassword" /></mat-form-field>
       <mat-form-field appearance="outline"><mat-label>Confirmar nueva contrasena</mat-label><input matInput type="password" formControlName="confirmNewPassword" /></mat-form-field>
-      <button mat-flat-button type="submit">Guardar</button>
+      @if (passwordStatus()) {
+        <p class="status">{{ passwordStatus() }}</p>
+      }
+      @if (passwordError()) {
+        <p class="error">{{ passwordError() }}</p>
+      }
+      <button mat-flat-button type="submit" [disabled]="passwordForm.invalid || passwordSaving()">
+        {{ passwordSaving() ? 'Guardando...' : 'Guardar' }}
+      </button>
     </form>
   </mat-card>
 

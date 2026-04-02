@@ -68,6 +68,14 @@
   border-color: var(--border-s);
 }
 
+.notification-button {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-2);
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+}
+
 .content {
   padding: 2rem;
 }

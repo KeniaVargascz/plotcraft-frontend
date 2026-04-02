@@ -49,7 +49,7 @@ export class LoginComponent {
     this.authService.login(this.form.getRawValue()).subscribe({
       next: () => {
         this.loading.set(false);
-        void this.router.navigateByUrl('/mi-perfil');
+        void this.router.navigateByUrl('/feed');
       },
       error: (error: unknown) => {
         this.loading.set(false);

@@ -1,0 +1,72 @@
+.comment-item {
+  display: grid;
+  grid-template-columns: 2.4rem 1fr;
+  gap: 0.85rem;
+}
+
+.comment-avatar {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent-glow);
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.comment-body {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.comment-body header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.comment-body header span {
+  color: var(--text-2);
+  font-size: 0.9rem;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.comment-actions button,
+.edit-actions button {
+  border: 0;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+.edit-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+textarea {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-1);
+  padding: 0.8rem 1rem;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.comment-body p {
+  margin: 0;
+  color: var(--text-1);
+  line-height: 1.6;
+}

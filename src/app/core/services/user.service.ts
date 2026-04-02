@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
-import { Profile } from '../models/profile.model';
+import { Profile, PublicProfile } from '../models/profile.model';
 import { User } from '../models/user.model';
 import { AuthService } from './auth.service';
 
@@ -40,9 +40,9 @@ export class UserService {
       .pipe(map((response) => response.data));
   }
 
-  getPublicProfile(username: string): Observable<Record<string, unknown>> {
+  getPublicProfile(username: string): Observable<PublicProfile> {
     return this.http
-      .get<ApiResponse<Record<string, unknown>>>(`${environment.apiUrl}/profiles/${username}`)
+      .get<ApiResponse<PublicProfile>>(`${environment.apiUrl}/profiles/${username}`)
       .pipe(map((response) => response.data));
   }
 }

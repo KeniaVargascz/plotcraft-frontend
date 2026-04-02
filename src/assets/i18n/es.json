@@ -1,14 +1,17 @@
 {
   "app": {
     "name": "PlotCraft",
-    "tagline": "Tu plataforma para escribir y leer historias"
+    "tagline": "Tu plataforma para escribir, compartir y descubrir historias"
   },
   "nav": {
     "login": "Iniciar sesion",
     "register": "Registrarse",
     "logout": "Cerrar sesion",
     "myProfile": "Mi perfil",
-    "settings": "Configuracion"
+    "settings": "Configuracion",
+    "feed": "Feed",
+    "explore": "Explorar",
+    "notifications": "Campana"
   },
   "landing": {
     "eyebrow": "Estudio narrativo",
@@ -28,12 +31,12 @@
         "description": "Edita nombre, biografia, visibilidad y enlaces publicos."
       },
       "three": {
-        "title": "Base escalable",
-        "description": "Angular standalone y NestJS con Prisma sobre PostgreSQL."
+        "title": "Feed social",
+        "description": "Publicaciones, comentarios, reacciones y conexiones entre autores."
       },
       "four": {
-        "title": "Temas visuales",
-        "description": "Cuatro atmosferas inspiradas en el mockup de referencia."
+        "title": "Exploracion curada",
+        "description": "Descubre novedades editoriales y voces nuevas desde una interfaz tematica."
       }
     }
   },
@@ -60,7 +63,69 @@
       "duplicate": "El email o username ya existen"
     }
   },
+  "feed": {
+    "title": "Feed",
+    "explore": "Explorar",
+    "exploreEyebrow": "Descubrimiento editorial",
+    "exploreHint": "Publicaciones abiertas para inspirarte, reaccionar y descubrir autores.",
+    "empty": "Aun no hay publicaciones.",
+    "emptyHint": "Empieza siguiendo a alguien o publica algo.",
+    "loadMore": "Cargar mas",
+    "loading": "Cargando publicaciones...",
+    "new": "Nueva publicacion",
+    "all": "Todas",
+    "suggestions": "Sugerencias para seguir",
+    "noSuggestions": "Ya sigues a todos los perfiles sugeridos."
+  },
+  "post": {
+    "placeholder": "Que tienes en mente?",
+    "charCount": "{{current}}/{{max}} caracteres",
+    "publish": "Publicar",
+    "publishing": "Publicando...",
+    "edit": "Editar publicacion",
+    "delete": "Eliminar publicacion",
+    "deleteConfirm": "Eliminar esta publicacion? Esta accion no se puede deshacer.",
+    "deleted": "Publicacion eliminada.",
+    "edited": "editado",
+    "types": {
+      "TEXT": "Texto",
+      "UPDATE": "Actualizacion",
+      "WORLDBUILDING": "World-building",
+      "SHOWCASE": "Showcase",
+      "ANNOUNCEMENT": "Anuncio"
+    },
+    "reactions": {
+      "like": "Me gusta",
+      "love": "Me encanta",
+      "fire": "Fuego",
+      "clap": "Aplausos"
+    },
+    "save": "Guardar",
+    "saved": "Guardado",
+    "unsave": "Quitar de guardados",
+    "comments": "Comentarios",
+    "noComments": "Sin comentarios aun. Se el primero."
+  },
+  "comment": {
+    "placeholder": "Escribe un comentario...",
+    "submit": "Comentar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "deleteConfirm": "Eliminar este comentario?",
+    "deleted": "[Comentario eliminado]",
+    "edited": "editado"
+  },
   "profile": {
+    "posts": "publicaciones",
+    "followers": "seguidores",
+    "following": "siguiendo",
+    "follow": "Seguir",
+    "unfollow": "Dejar de seguir",
+    "following_you": "Te sigue",
+    "noPostsYet": "Aun no hay publicaciones en este perfil.",
+    "noSavedYet": "No tienes publicaciones guardadas aun.",
+    "noFollowersYet": "Todavia no hay seguidores en esta lista.",
+    "noFollowingYet": "Todavia no hay usuarios seguidos en esta lista.",
     "edit": {
       "title": "Editar perfil"
     },
@@ -69,6 +134,10 @@
       "bio": "Biografia",
       "website": "Sitio web",
       "isPublic": "Perfil publico"
+    },
+    "tabs": {
+      "posts": "Publicaciones",
+      "saved": "Guardados"
     }
   },
   "validation": {

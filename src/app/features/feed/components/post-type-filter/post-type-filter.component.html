@@ -1,0 +1,12 @@
+<div class="type-filter">
+  @for (option of options; track option) {
+    <button
+      type="button"
+      class="filter-chip"
+      [class.active]="selected === option"
+      (click)="choose(option)"
+    >
+      {{ option === 'ALL' ? ('feed.all' | translate) : ('post.types.' + option | translate) }}
+    </button>
+  }
+</div>

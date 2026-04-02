@@ -1,0 +1,37 @@
+<section class="comment-list">
+  @if (loading()) {
+    <p>{{ 'feed.loading' | translate }}</p>
+  } @else if (error()) {
+    <p>{{ 'common.error' | translate }}</p>
+  } @else {
+    <div class="items">
+      @if (comments().length === 0) {
+        <p>{{ 'post.noComments' | translate }}</p>
+      } @else {
+        @for (comment of comments(); track comment.id) {
+          <app-comment-item
+            [comment]="comment"
+            [postId]="post.id"
+            (commentChange)="updateComment($event)"
+          />
+        }
+      }
+    </div>
+  }
+
+  @if (authService.isAuthenticated()) {
+    <form class="comment-form" [formGroup]="form" (ngSubmit)="createComment()">
+      <textarea
+        formControlName="content"
+        rows="3"
+        [placeholder]="'comment.placeholder' | translate"
+      ></textarea>
+      <div class="comment-form-footer">
+        <span>{{ 'post.charCount' | translate: { current: contentLength, max: 2000 } }}</span>
+        <button type="submit" [disabled]="form.invalid || creating()">
+          {{ 'comment.submit' | translate }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

@@ -1,0 +1,30 @@
+<section class="follow-list">
+  <header>
+    <h1>{{ 'profile.followers' | translate }}</h1>
+    <a [routerLink]="['/perfil', username()]">@{{ username() }}</a>
+  </header>
+
+  @if (loading()) {
+    <div class="state-card">{{ 'common.loading' | translate }}</div>
+  } @else if (users().length === 0) {
+    <div class="state-card">{{ 'profile.noFollowersYet' | translate }}</div>
+  } @else {
+    @for (user of users(); track user.id) {
+      <article class="follow-card">
+        <a [routerLink]="['/perfil', user.username]">
+          <strong>{{ user.displayName || user.username }}</strong>
+          <span>@{{ user.username }}</span>
+        </a>
+        <button type="button" (click)="toggleFollow(user)">
+          {{ user.isFollowing ? ('profile.unfollow' | translate) : ('profile.follow' | translate) }}
+        </button>
+      </article>
+    }
+  }
+
+  @if (hasMore()) {
+    <button type="button" class="load-more" (click)="load(false)">
+      {{ 'feed.loadMore' | translate }}
+    </button>
+  }
+</section>

@@ -1,0 +1,20 @@
+.type-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.filter-chip {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-2);
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.filter-chip.active {
+  color: var(--accent-text);
+  border-color: var(--border-s);
+  background: var(--accent-glow);
+}

@@ -1,0 +1,46 @@
+.comment-list {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.items {
+  display: grid;
+  gap: 1rem;
+}
+
+.comment-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.comment-form textarea {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-1);
+  padding: 0.9rem 1rem;
+}
+
+.comment-form-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.comment-form-footer span {
+  color: var(--text-2);
+  font-size: 0.9rem;
+}
+
+.comment-form-footer button {
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #111;
+  padding: 0.7rem 1.1rem;
+  font-weight: 700;
+}

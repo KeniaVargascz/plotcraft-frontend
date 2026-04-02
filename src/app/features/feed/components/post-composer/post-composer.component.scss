@@ -1,0 +1,77 @@
+.composer-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 1.4rem;
+  background: color-mix(in srgb, var(--bg-card) 92%, transparent);
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 60px -36px var(--shadow);
+}
+
+.composer-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.composer-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.composer-card header span {
+  color: var(--text-2);
+  font-size: 0.9rem;
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+textarea,
+select {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-1);
+  padding: 1rem;
+  resize: vertical;
+}
+
+.composer-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 1rem;
+}
+
+.composer-actions label {
+  display: grid;
+  gap: 0.5rem;
+  color: var(--text-2);
+}
+
+.composer-actions button {
+  border: 0;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #111;
+  padding: 0.8rem 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.composer-actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .composer-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

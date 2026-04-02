@@ -1,0 +1,67 @@
+.feed-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 680px) minmax(260px, 320px);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.feed-column,
+.post-stack,
+.feed-sidebar {
+  display: grid;
+  gap: 1rem;
+}
+
+.sidebar-card,
+.state-card {
+  padding: 1.25rem;
+  border-radius: 1.4rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-card) 94%, transparent);
+}
+
+.state-card.empty a,
+.sidebar-card.highlight a {
+  color: var(--accent-text);
+}
+
+.suggestion-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.suggestion-item:last-child {
+  border-bottom: 0;
+}
+
+.suggestion-item p {
+  margin: 0.2rem 0 0;
+  color: var(--text-2);
+}
+
+.suggestion-item button {
+  border: 1px solid var(--border-s);
+  background: var(--accent-glow);
+  color: var(--accent-text);
+  border-radius: 999px;
+  padding: 0.6rem 1rem;
+}
+
+.sentinel {
+  height: 2rem;
+}
+
+.load-state {
+  color: var(--text-2);
+  text-align: center;
+}
+
+@media (max-width: 1080px) {
+  .feed-layout {
+    grid-template-columns: 1fr;
+  }
+}

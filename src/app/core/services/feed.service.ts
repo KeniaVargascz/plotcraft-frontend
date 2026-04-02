@@ -1,0 +1,52 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { map, Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { ApiResponse } from '../models/api-response.model';
+import { PaginatedResponse } from '../models/feed-pagination.model';
+import { PostModel, PostType } from '../models/post.model';
+
+type FeedQuery = {
+  cursor?: string | null;
+  limit?: number;
+  type?: PostType | 'ALL' | null;
+};
+
+@Injectable({ providedIn: 'root' })
+export class FeedService {
+  private readonly http = inject(HttpClient);
+
+  getFeed(query: FeedQuery = {}): Observable<PaginatedResponse<PostModel>> {
+    return this.http
+      .get<ApiResponse<PaginatedResponse<PostModel>>>(`${environment.apiUrl}/feed`, {
+        params: this.buildParams(query),
+      })
+      .pipe(map((response) => response.data));
+  }
+
+  getExploreFeed(query: FeedQuery = {}): Observable<PaginatedResponse<PostModel>> {
+    return this.http
+      .get<ApiResponse<PaginatedResponse<PostModel>>>(`${environment.apiUrl}/feed/explore`, {
+        params: this.buildParams(query),
+      })
+      .pipe(map((response) => response.data));
+  }
+
+  private buildParams(query: FeedQuery) {
+    let params = new HttpParams();
+
+    if (query.cursor) {
+      params = params.set('cursor', query.cursor);
+    }
+
+    if (query.limit) {
+      params = params.set('limit', query.limit);
+    }
+
+    if (query.type && query.type !== 'ALL') {
+      params = params.set('type', query.type);
+    }
+
+    return params;
+  }
+}

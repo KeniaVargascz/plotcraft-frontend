@@ -1,0 +1,65 @@
+<section class="feed-layout">
+  <div class="feed-column">
+    <app-post-composer (postCreated)="addPost($event)" />
+
+    <app-post-type-filter
+      [selected]="selectedType()"
+      (selectedChange)="onTypeChange($event)"
+    />
+
+    @if (loading()) {
+      <div class="state-card">{{ 'feed.loading' | translate }}</div>
+    } @else if (error()) {
+      <div class="state-card">{{ 'common.error' | translate }}</div>
+    } @else if (posts().length === 0) {
+      <div class="state-card empty">
+        <h2>{{ 'feed.empty' | translate }}</h2>
+        <p>{{ 'feed.emptyHint' | translate }}</p>
+        <a routerLink="/explorar">{{ 'feed.explore' | translate }}</a>
+      </div>
+    } @else {
+      <div class="post-stack">
+        @for (post of posts(); track post.id) {
+          <app-post-card
+            [post]="post"
+            (postChange)="updatePost($event)"
+            (postDeleted)="removePost($event)"
+          />
+        }
+      </div>
+    }
+
+    <div #sentinel class="sentinel"></div>
+
+    @if (loadingMore()) {
+      <p class="load-state">{{ 'feed.loading' | translate }}</p>
+    }
+  </div>
+
+  <aside class="feed-sidebar">
+    <section class="sidebar-card">
+      <h3>{{ 'feed.suggestions' | translate }}</h3>
+      @if (suggestions().length === 0) {
+        <p>{{ 'feed.noSuggestions' | translate }}</p>
+      } @else {
+        @for (suggestion of suggestions(); track suggestion.id) {
+          <article class="suggestion-item">
+            <div>
+              <strong>{{ suggestion.displayName || suggestion.username }}</strong>
+              <p>@{{ suggestion.username }}</p>
+            </div>
+            <button type="button" (click)="followSuggestion(suggestion.username)">
+              {{ 'profile.follow' | translate }}
+            </button>
+          </article>
+        }
+      }
+    </section>
+
+    <section class="sidebar-card highlight">
+      <h3>{{ 'feed.explore' | translate }}</h3>
+      <p>{{ 'feed.exploreHint' | translate }}</p>
+      <a routerLink="/explorar">{{ 'feed.explore' | translate }}</a>
+    </section>
+  </aside>
+</section>

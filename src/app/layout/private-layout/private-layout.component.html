@@ -1,7 +1,8 @@
 <div class="private-shell">
   <aside class="sidebar">
-    <a class="brand" routerLink="/dashboard">{{ 'app.name' | translate }}</a>
-    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a class="brand" routerLink="/feed">{{ 'app.name' | translate }}</a>
+    <a routerLink="/feed" routerLinkActive="active">{{ 'nav.feed' | translate }}</a>
+    <a routerLink="/explorar" routerLinkActive="active">{{ 'nav.explore' | translate }}</a>
     <a routerLink="/mi-perfil" routerLinkActive="active">{{ 'nav.myProfile' | translate }}</a>
     <a routerLink="/cuenta" routerLinkActive="active">{{ 'nav.settings' | translate }}</a>
   </aside>
@@ -17,6 +18,9 @@
       </div>
 
       <div class="user-actions">
+        <button class="notification-button" type="button">
+          {{ 'nav.notifications' | translate }}
+        </button>
         <span>{{ (authService.currentUser$ | async)?.username }}</span>
         <button mat-stroked-button type="button" (click)="logout()">
           {{ 'nav.logout' | translate }}

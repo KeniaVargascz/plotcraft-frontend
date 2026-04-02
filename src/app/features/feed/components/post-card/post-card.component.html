@@ -1,0 +1,53 @@
+<article class="post-card">
+  <header class="post-header">
+    <div class="author-block">
+      <div class="avatar">{{ post.author.username.slice(0, 1).toUpperCase() }}</div>
+      <div>
+        <a [routerLink]="['/perfil', post.author.username]">
+          {{ post.author.displayName || post.author.username }}
+        </a>
+        <p>@{{ post.author.username }} · {{ relativeDate(post.createdAt) }}</p>
+      </div>
+    </div>
+
+    <div class="post-header-actions">
+      <span class="type-badge">{{ ('post.types.' + post.type) | translate }}</span>
+      @if (isAuthor) {
+        <div class="owner-actions">
+          <button type="button" (click)="startEdit()">{{ 'post.edit' | translate }}</button>
+          <button type="button" (click)="deletePost()">{{ 'post.delete' | translate }}</button>
+        </div>
+      }
+    </div>
+  </header>
+
+  @if (editing()) {
+    <form [formGroup]="form" (ngSubmit)="saveEdit()" class="edit-form">
+      <textarea formControlName="content" rows="5"></textarea>
+      <div class="edit-actions">
+        <button type="submit" [disabled]="form.invalid || loading()">{{ 'common.save' | translate }}</button>
+        <button type="button" (click)="cancelEdit()">{{ 'common.cancel' | translate }}</button>
+      </div>
+    </form>
+  } @else {
+    <p class="post-content">{{ post.content }}</p>
+  }
+
+  <app-reaction-bar [post]="post" (postChange)="postChange.emit($event)" />
+
+  <footer class="post-footer">
+    <button type="button" (click)="toggleComments()">
+      {{ 'post.comments' | translate }} · {{ post.stats.commentsCount }}
+    </button>
+
+    @if (post.viewerContext) {
+      <button type="button" [class.active]="post.viewerContext.hasSaved" (click)="toggleSaved()">
+        {{ post.viewerContext.hasSaved ? ('post.saved' | translate) : ('post.save' | translate) }}
+      </button>
+    }
+  </footer>
+
+  @if (commentsOpen()) {
+    <app-comment-list [post]="post" />
+  }
+</article>

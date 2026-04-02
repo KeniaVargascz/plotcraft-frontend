@@ -1,0 +1,48 @@
+.follow-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.follow-list header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.follow-list h1 {
+  margin: 0;
+}
+
+.follow-list header a,
+.follow-card a span {
+  color: var(--text-2);
+}
+
+.follow-card,
+.state-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  border-radius: 1.2rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-card) 94%, transparent);
+}
+
+.follow-card a {
+  display: grid;
+  gap: 0.25rem;
+  color: var(--text-1);
+  text-decoration: none;
+}
+
+.follow-card button,
+.load-more {
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-1);
+  border-radius: 999px;
+  padding: 0.7rem 1rem;
+}

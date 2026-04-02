@@ -1,0 +1,123 @@
+.post-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.35rem;
+  border-radius: 1.5rem;
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-card) 94%, white 2%), var(--bg-surface)),
+    var(--bg-card);
+  box-shadow: 0 24px 60px -36px var(--shadow);
+}
+
+.post-header,
+.author-block,
+.post-header-actions,
+.post-footer,
+.edit-actions {
+  display: flex;
+  align-items: center;
+}
+
+.post-header,
+.post-footer {
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.author-block {
+  gap: 0.85rem;
+}
+
+.avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--accent-glow);
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.author-block a {
+  color: var(--text-1);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.author-block p,
+.post-content {
+  margin: 0;
+}
+
+.author-block p {
+  color: var(--text-2);
+}
+
+.post-header-actions {
+  gap: 0.75rem;
+}
+
+.type-badge {
+  border-radius: 999px;
+  padding: 0.45rem 0.75rem;
+  background: var(--accent-glow);
+  color: var(--accent-text);
+  font-size: 0.85rem;
+}
+
+.owner-actions,
+.edit-actions {
+  gap: 0.5rem;
+}
+
+.owner-actions button,
+.post-footer button,
+.edit-actions button {
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-2);
+  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+  cursor: pointer;
+}
+
+.post-footer button.active {
+  color: var(--accent-text);
+  border-color: var(--border-s);
+}
+
+.post-content {
+  color: var(--text-1);
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.edit-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.edit-form textarea {
+  width: 100%;
+  min-height: 8rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-1);
+  padding: 1rem;
+  resize: vertical;
+}
+
+@media (max-width: 640px) {
+  .post-header,
+  .post-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .post-header-actions {
+    justify-content: space-between;
+  }
+}

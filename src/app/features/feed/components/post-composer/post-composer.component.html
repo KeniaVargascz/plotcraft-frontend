@@ -1,0 +1,33 @@
+<section class="composer-card">
+  <header>
+    <h2>{{ 'feed.new' | translate }}</h2>
+    <span>{{ 'post.charCount' | translate: { current: contentLength, max: 5000 } }}</span>
+  </header>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <textarea
+      formControlName="content"
+      rows="5"
+      [placeholder]="'post.placeholder' | translate"
+    ></textarea>
+
+    <div class="composer-actions">
+      <label>
+        <span>{{ 'feed.title' | translate }}</span>
+        <select formControlName="type">
+          @for (type of postTypes; track type) {
+            <option [value]="type">{{ ('post.types.' + type) | translate }}</option>
+          }
+        </select>
+      </label>
+
+      <button type="submit" [disabled]="form.invalid || publishing()">
+        {{ publishing() ? ('post.publishing' | translate) : ('post.publish' | translate) }}
+      </button>
+    </div>
+  </form>
+
+  @if (error()) {
+    <app-error-message [message]="error()! | translate" />
+  }
+</section>

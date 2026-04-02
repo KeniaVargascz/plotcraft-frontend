@@ -9,3 +9,14 @@ export interface Profile {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface PublicProfile extends Profile {
+  username: string;
+  joinedAt: string;
+  followersCount: number;
+  followingCount: number;
+  postsCount: number;
+  viewerContext: {
+    isFollowing: boolean | null;
+  };
+}

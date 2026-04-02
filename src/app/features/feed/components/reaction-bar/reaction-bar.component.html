@@ -1,0 +1,28 @@
+<div class="reaction-bar">
+  <button
+    type="button"
+    class="reaction-toggle"
+    [class.active]="post.viewerContext?.hasReacted"
+    [disabled]="loading()"
+    (click)="toggle('LIKE')"
+  >
+    {{ 'post.reactions.like' | translate }} · {{ post.stats.reactionsCount }}
+  </button>
+
+  <div class="reaction-chips">
+    @for (option of reactionOptions; track option.type) {
+      @if (post.stats.reactionsSummary[option.type] > 0 || post.viewerContext?.reactionType === option.type) {
+        <button
+          type="button"
+          class="chip"
+          [class.active]="post.viewerContext?.reactionType === option.type"
+          [disabled]="loading()"
+          (click)="toggle(option.type)"
+        >
+          <span>{{ option.emoji }}</span>
+          {{ post.stats.reactionsSummary[option.type] }}
+        </button>
+      }
+    }
+  </div>
+</div>

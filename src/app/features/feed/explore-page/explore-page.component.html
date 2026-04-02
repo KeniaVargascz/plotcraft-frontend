@@ -1,0 +1,42 @@
+<section class="explore-page">
+  <header class="page-header">
+    <div>
+      <p>{{ 'feed.exploreEyebrow' | translate }}</p>
+      <h1>{{ 'feed.explore' | translate }}</h1>
+    </div>
+    <span>{{ 'feed.exploreHint' | translate }}</span>
+  </header>
+
+  @if (authService.isAuthenticated()) {
+    <app-post-composer (postCreated)="addPost($event)" />
+  }
+
+  <app-post-type-filter
+    [selected]="selectedType()"
+    (selectedChange)="onTypeChange($event)"
+  />
+
+  @if (loading()) {
+    <div class="state-card">{{ 'feed.loading' | translate }}</div>
+  } @else if (error()) {
+    <div class="state-card">{{ 'common.error' | translate }}</div>
+  } @else if (posts().length === 0) {
+    <div class="state-card">{{ 'feed.empty' | translate }}</div>
+  } @else {
+    <div class="post-stack">
+      @for (post of posts(); track post.id) {
+        <app-post-card
+          [post]="post"
+          (postChange)="updatePost($event)"
+          (postDeleted)="removePost($event)"
+        />
+      }
+    </div>
+  }
+
+  <div #sentinel class="sentinel"></div>
+
+  @if (loadingMore()) {
+    <p class="load-state">{{ 'feed.loading' | translate }}</p>
+  }
+</section>

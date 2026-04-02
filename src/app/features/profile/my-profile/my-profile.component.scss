@@ -1,0 +1,38 @@
+.profile-card {
+  display: grid;
+  gap: 1rem;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+.identity {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.avatar {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--accent-dim), var(--accent));
+  color: var(--bg-base);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.bio,
+.meta,
+.website,
+.identity p {
+  color: var(--text-2);
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+}

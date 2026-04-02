@@ -1,0 +1,17 @@
+.form-card {
+  padding: 2rem;
+  border-radius: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}

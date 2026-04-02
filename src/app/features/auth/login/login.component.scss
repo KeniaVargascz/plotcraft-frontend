@@ -1,0 +1,18 @@
+.auth-card {
+  width: min(100%, 32rem);
+  margin: 4rem auto;
+  padding: 2rem;
+  display: grid;
+  gap: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+.feedback.error {
+  color: var(--danger);
+}

@@ -1,0 +1,71 @@
+.hero {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 2rem;
+  padding: 6rem 5vw 3rem;
+  align-items: center;
+}
+
+.eyebrow,
+.chip {
+  display: inline-flex;
+  width: fit-content;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  background: var(--accent-glow);
+  color: var(--accent-text);
+  text-transform: uppercase;
+  letter-spacing: 0.12rem;
+  font-size: 0.75rem;
+}
+
+h1,
+h2 {
+  font-family: 'Playfair Display', serif;
+}
+
+h1 {
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  line-height: 1;
+  margin: 1rem 0;
+}
+
+.hero-copy p,
+.hero-card p {
+  color: var(--text-2);
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.hero-card,
+.feature-card {
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  background: linear-gradient(180deg, var(--bg-card), color-mix(in srgb, var(--bg-card) 76%, black));
+  padding: 1.5rem;
+  box-shadow: 0 24px 70px color-mix(in srgb, var(--shadow) 60%, transparent);
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  padding: 2rem 5vw 5rem;
+}
+
+.landing-footer {
+  padding: 2rem 5vw 3rem;
+  color: var(--text-3);
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .hero,
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}

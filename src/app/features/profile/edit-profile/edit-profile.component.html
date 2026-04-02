@@ -1,0 +1,27 @@
+<section class="form-card">
+  <h1>{{ 'profile.edit.title' | translate }}</h1>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'profile.fields.displayName' | translate }}</mat-label>
+      <input matInput formControlName="displayName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'profile.fields.bio' | translate }}</mat-label>
+      <textarea matInput rows="4" formControlName="bio"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'profile.fields.website' | translate }}</mat-label>
+      <input matInput formControlName="website" />
+    </mat-form-field>
+
+    <mat-checkbox formControlName="isPublic">{{ 'profile.fields.isPublic' | translate }}</mat-checkbox>
+
+    <div class="actions">
+      <button mat-stroked-button type="button" routerLink="/mi-perfil">{{ 'common.cancel' | translate }}</button>
+      <button mat-flat-button type="submit" [disabled]="loading()">{{ 'common.save' | translate }}</button>
+    </div>
+  </form>
+</section>

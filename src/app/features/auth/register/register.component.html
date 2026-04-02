@@ -1,0 +1,49 @@
+<mat-card class="auth-card">
+  <h1>{{ 'auth.register.title' | translate }}</h1>
+  <p>{{ 'auth.register.subtitle' | translate }}</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'auth.fields.email' | translate }}</mat-label>
+      <input matInput formControlName="email" />
+      @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+        <mat-error>{{ 'validation.required' | translate }}</mat-error>
+      }
+      @if (form.controls.email.touched && form.controls.email.hasError('email')) {
+        <mat-error>{{ 'validation.email' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'auth.fields.username' | translate }}</mat-label>
+      <input matInput formControlName="username" />
+      @if (form.controls.username.touched && form.controls.username.invalid) {
+        <mat-error>{{ 'validation.usernameFormat' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'auth.fields.password' | translate }}</mat-label>
+      <input matInput type="password" formControlName="password" />
+      @if (form.controls.password.touched && form.controls.password.invalid) {
+        <mat-error>{{ 'validation.passwordFormat' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'auth.fields.confirmPassword' | translate }}</mat-label>
+      <input matInput type="password" formControlName="confirmPassword" />
+      @if (form.touched && form.hasError('passwordMismatch')) {
+        <mat-error>{{ 'validation.passwordMismatch' | translate }}</mat-error>
+      }
+    </mat-form-field>
+
+    @if (errorMessage()) {
+      <p class="feedback error">{{ errorMessage() | translate }}</p>
+    }
+
+    <button mat-flat-button type="submit" [disabled]="form.invalid || loading()">
+      {{ loading() ? ('auth.register.loading' | translate) : ('nav.register' | translate) }}
+    </button>
+  </form>
+</mat-card>

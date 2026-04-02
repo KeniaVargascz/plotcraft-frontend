@@ -1,0 +1,31 @@
+<div class="private-shell">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/dashboard">{{ 'app.name' | translate }}</a>
+    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+    <a routerLink="/mi-perfil" routerLinkActive="active">{{ 'nav.myProfile' | translate }}</a>
+    <a routerLink="/cuenta" routerLinkActive="active">{{ 'nav.settings' | translate }}</a>
+  </aside>
+
+  <section class="content-shell">
+    <header class="topbar">
+      <div class="theme-switcher">
+        @for (theme of themeService.themes; track theme) {
+          <button type="button" [class.active]="themeService.theme() === theme" (click)="themeService.applyTheme(theme)">
+            {{ theme }}
+          </button>
+        }
+      </div>
+
+      <div class="user-actions">
+        <span>{{ (authService.currentUser$ | async)?.username }}</span>
+        <button mat-stroked-button type="button" (click)="logout()">
+          {{ 'nav.logout' | translate }}
+        </button>
+      </div>
+    </header>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+  </section>
+</div>

@@ -1,0 +1,112 @@
+/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@500;700&display=swap');
+
+:root[data-theme='ink'] {
+  --bg-base: #09070a;
+  --bg-surface: #111018;
+  --bg-elevated: #1a1825;
+  --bg-card: #161524;
+  --accent: #c9a84c;
+  --accent-dim: #8a6e28;
+  --accent-glow: rgba(201, 168, 76, 0.1);
+  --accent-text: #e8cc80;
+  --text-1: #f0e8d0;
+  --text-2: #9088a0;
+  --text-3: #4e4860;
+  --border: rgba(201, 168, 76, 0.12);
+  --border-s: rgba(201, 168, 76, 0.28);
+  --shadow: rgba(0, 0, 0, 0.7);
+  --danger: #e05555;
+}
+
+:root[data-theme='parchment'] {
+  --bg-base: #f6eedc;
+  --bg-surface: #ece0c2;
+  --bg-elevated: #e2d4a8;
+  --bg-card: #ece0c2;
+  --accent: #7a3410;
+  --accent-dim: #a05028;
+  --accent-glow: rgba(122, 52, 16, 0.08);
+  --accent-text: #7a3410;
+  --text-1: #1a1008;
+  --text-2: #584030;
+  --text-3: #907060;
+  --border: rgba(122, 52, 16, 0.12);
+  --border-s: rgba(122, 52, 16, 0.28);
+  --shadow: rgba(60, 30, 0, 0.2);
+  --danger: #b03020;
+}
+
+:root[data-theme='midnight'] {
+  --bg-base: #060410;
+  --bg-surface: #0c0a1e;
+  --bg-elevated: #14102c;
+  --bg-card: #100e24;
+  --accent: #8b5cf6;
+  --accent-dim: #6030c0;
+  --accent-glow: rgba(139, 92, 246, 0.1);
+  --accent-text: #c4a8ff;
+  --text-1: #eae4fc;
+  --text-2: #807098;
+  --text-3: #3e3460;
+  --border: rgba(139, 92, 246, 0.12);
+  --border-s: rgba(139, 92, 246, 0.28);
+  --shadow: rgba(0, 0, 0, 0.8);
+  --danger: #ff4488;
+}
+
+:root[data-theme='forest'] {
+  --bg-base: #040b06;
+  --bg-surface: #08150a;
+  --bg-elevated: #0e1e10;
+  --bg-card: #0b1a0d;
+  --accent: #3db05a;
+  --accent-dim: #206838;
+  --accent-glow: rgba(61, 176, 90, 0.1);
+  --accent-text: #70d888;
+  --text-1: #c8eccf;
+  --text-2: #608870;
+  --text-3: #2a5035;
+  --border: rgba(61, 176, 90, 0.12);
+  --border-s: rgba(61, 176, 90, 0.28);
+  --shadow: rgba(0, 0, 0, 0.75);
+  --danger: #e06050;
+}
+
+html {
+  color-scheme: dark;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-1);
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 18%, transparent), transparent 30%),
+    linear-gradient(180deg, var(--bg-surface), var(--bg-base) 24%);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a,
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+.mat-mdc-card,
+.mat-mdc-form-field {
+  --mdc-filled-text-field-container-color: var(--bg-elevated);
+}

@@ -1,0 +1,30 @@
+@if (loading()) {
+  <app-loading-spinner />
+} @else if (error()) {
+  <app-error-message />
+} @else if (user(); as profileUser) {
+  <section class="profile-card">
+    <div class="identity">
+      <div class="avatar">{{ (profileUser.profile?.displayName || profileUser.username).charAt(0).toUpperCase() }}</div>
+      <div>
+        <h1>{{ profileUser.profile?.displayName || profileUser.username }}</h1>
+        <p>@{{ profileUser.username }}</p>
+      </div>
+    </div>
+
+    <p class="bio">{{ profileUser.profile?.bio || 'Aun no hay biografia.' }}</p>
+
+    @if (profileUser.profile?.website) {
+      <a class="website" [href]="profileUser.profile?.website" target="_blank" rel="noreferrer">
+        {{ profileUser.profile?.website }}
+      </a>
+    }
+
+    <span class="meta">Miembro desde {{ profileUser.createdAt | date: 'longDate' }}</span>
+
+    <div class="actions">
+      <a mat-flat-button routerLink="/mi-perfil/editar">Editar perfil</a>
+      <a mat-stroked-button routerLink="/cuenta">Configuracion de cuenta</a>
+    </div>
+  </section>
+}

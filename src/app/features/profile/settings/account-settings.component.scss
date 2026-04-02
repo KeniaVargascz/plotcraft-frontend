@@ -1,0 +1,20 @@
+.settings-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+mat-card {
+  display: grid;
+  gap: 1rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+.danger-zone {
+  border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
+}

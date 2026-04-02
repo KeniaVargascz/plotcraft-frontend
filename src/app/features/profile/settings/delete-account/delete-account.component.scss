@@ -1,0 +1,12 @@
+.danger-card {
+  display: grid;
+  gap: 1rem;
+  padding: 2rem;
+  background: color-mix(in srgb, var(--danger) 8%, var(--bg-card));
+  border: 1px solid color-mix(in srgb, var(--danger) 40%, var(--border));
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}

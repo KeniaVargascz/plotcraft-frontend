@@ -1,0 +1,18 @@
+<section class="dashboard-card">
+  <h1>Dashboard</h1>
+  <p>Espacio inicial del usuario autenticado.</p>
+  <div class="stats">
+    <article>
+      <strong>{{ (authService.currentUser$ | async)?.username }}</strong>
+      <span>Usuario activo</span>
+    </article>
+    <article>
+      <strong>JWT + Refresh</strong>
+      <span>Sesion persistente</span>
+    </article>
+    <article>
+      <strong>Perfil</strong>
+      <span>Edicion disponible</span>
+    </article>
+  </div>
+</section>

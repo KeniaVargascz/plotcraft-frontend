@@ -1,0 +1,12 @@
+.error-card {
+  padding: 1rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--danger) 10%, var(--bg-card));
+  color: var(--text-1);
+}
+
+.error-card p {
+  margin: 0.35rem 0 0;
+  color: var(--text-2);
+}

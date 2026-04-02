@@ -1,0 +1,93 @@
+{
+  "app": {
+    "name": "PlotCraft",
+    "tagline": "Tu plataforma para escribir y leer historias"
+  },
+  "nav": {
+    "login": "Iniciar sesion",
+    "register": "Registrarse",
+    "logout": "Cerrar sesion",
+    "myProfile": "Mi perfil",
+    "settings": "Configuracion"
+  },
+  "landing": {
+    "eyebrow": "Estudio narrativo",
+    "title": "Escribe, publica y cuida tu mundo literario desde un mismo lugar.",
+    "ctaPrimary": "Crear cuenta",
+    "ctaSecondary": "Entrar a PlotCraft",
+    "previewLabel": "Tema ink",
+    "previewTitle": "Diseno editorial para escritores serios",
+    "previewBody": "Una experiencia visual sobria, dramatica y enfocada en lectura, escritura y gestion de perfil.",
+    "features": {
+      "one": {
+        "title": "Autenticacion robusta",
+        "description": "JWT con refresh rotado y flujo de sesion persistente."
+      },
+      "two": {
+        "title": "Perfil de autor",
+        "description": "Edita nombre, biografia, visibilidad y enlaces publicos."
+      },
+      "three": {
+        "title": "Base escalable",
+        "description": "Angular standalone y NestJS con Prisma sobre PostgreSQL."
+      },
+      "four": {
+        "title": "Temas visuales",
+        "description": "Cuatro atmosferas inspiradas en el mockup de referencia."
+      }
+    }
+  },
+  "auth": {
+    "fields": {
+      "email": "Correo electronico",
+      "username": "Nombre de usuario",
+      "password": "Contrasena",
+      "confirmPassword": "Confirmar contrasena"
+    },
+    "login": {
+      "title": "Iniciar sesion",
+      "subtitle": "Accede a tu espacio de escritura y gestion de perfil.",
+      "loading": "Ingresando...",
+      "registerPrompt": "Aun no tienes cuenta? Registrate"
+    },
+    "register": {
+      "title": "Crear cuenta",
+      "subtitle": "Empieza tu espacio de autor con validacion en tiempo real.",
+      "loading": "Registrando..."
+    },
+    "errors": {
+      "invalidCredentials": "Credenciales incorrectas",
+      "duplicate": "El email o username ya existen"
+    }
+  },
+  "profile": {
+    "edit": {
+      "title": "Editar perfil"
+    },
+    "fields": {
+      "displayName": "Nombre visible",
+      "bio": "Biografia",
+      "website": "Sitio web",
+      "isPublic": "Perfil publico"
+    }
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "email": "Ingresa un email valido",
+    "minLength": "Minimo {{min}} caracteres",
+    "maxLength": "Maximo {{max}} caracteres",
+    "usernameFormat": "Solo letras, numeros, puntos, guiones y guiones bajos (3-30 caracteres)",
+    "passwordFormat": "Debe tener al menos 8 caracteres, una mayuscula, una minuscula y un numero",
+    "passwordMismatch": "Las contrasenas no coinciden",
+    "currentPasswordRequired": "Debes ingresar tu contrasena actual para cambiarla"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "confirm": "Confirmar",
+    "loading": "Cargando...",
+    "error": "Ocurrio un error. Intenta de nuevo.",
+    "success": "Cambios guardados correctamente"
+  }
+}

@@ -1,0 +1,37 @@
+.public-shell {
+  min-height: 100vh;
+}
+
+.public-header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 5vw;
+  backdrop-filter: blur(16px);
+  background: color-mix(in srgb, var(--bg-surface) 82%, transparent);
+  border-bottom: 1px solid var(--border);
+  z-index: 10;
+}
+
+.brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.45rem;
+  color: var(--text-1);
+  text-decoration: none;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+nav a {
+  color: var(--text-2);
+  text-decoration: none;
+}
+
+nav a.active {
+  color: var(--accent-text);
+}

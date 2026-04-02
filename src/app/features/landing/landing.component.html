@@ -1,0 +1,27 @@
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">{{ 'landing.eyebrow' | translate }}</span>
+    <h1>{{ 'landing.title' | translate }}</h1>
+    <p>{{ 'app.tagline' | translate }}</p>
+    <div class="hero-actions">
+      <a mat-flat-button routerLink="/register">{{ 'landing.ctaPrimary' | translate }}</a>
+      <a mat-stroked-button routerLink="/login">{{ 'landing.ctaSecondary' | translate }}</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <span class="chip">{{ 'landing.previewLabel' | translate }}</span>
+    <h2>{{ 'landing.previewTitle' | translate }}</h2>
+    <p>{{ 'landing.previewBody' | translate }}</p>
+  </div>
+</section>
+
+<section class="feature-grid">
+  @for (feature of ['one', 'two', 'three', 'four']; track feature) {
+    <article class="feature-card">
+      <h3>{{ ('landing.features.' + feature + '.title') | translate }}</h3>
+      <p>{{ ('landing.features.' + feature + '.description') | translate }}</p>
+    </article>
+  }
+</section>
+
+<footer class="landing-footer">{{ 'app.name' | translate }}</footer>

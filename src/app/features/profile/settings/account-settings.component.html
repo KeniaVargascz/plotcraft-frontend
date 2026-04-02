@@ -1,0 +1,35 @@
+<section class="settings-grid">
+  <mat-card>
+    <h2>Cambiar email</h2>
+    <form [formGroup]="emailForm" (ngSubmit)="submitEmail()">
+      <mat-form-field appearance="outline"><mat-label>Email</mat-label><input matInput formControlName="email" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Contrasena actual</mat-label><input matInput type="password" formControlName="currentPassword" /></mat-form-field>
+      <button mat-flat-button type="submit">Guardar</button>
+    </form>
+  </mat-card>
+
+  <mat-card>
+    <h2>Cambiar username</h2>
+    <form [formGroup]="usernameForm" (ngSubmit)="submitUsername()">
+      <mat-form-field appearance="outline"><mat-label>Username</mat-label><input matInput formControlName="username" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Contrasena actual</mat-label><input matInput type="password" formControlName="currentPassword" /></mat-form-field>
+      <button mat-flat-button type="submit">Guardar</button>
+    </form>
+  </mat-card>
+
+  <mat-card>
+    <h2>Cambiar contrasena</h2>
+    <form [formGroup]="passwordForm" (ngSubmit)="submitPassword()">
+      <mat-form-field appearance="outline"><mat-label>Contrasena actual</mat-label><input matInput type="password" formControlName="currentPassword" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Nueva contrasena</mat-label><input matInput type="password" formControlName="newPassword" /></mat-form-field>
+      <mat-form-field appearance="outline"><mat-label>Confirmar nueva contrasena</mat-label><input matInput type="password" formControlName="confirmNewPassword" /></mat-form-field>
+      <button mat-flat-button type="submit">Guardar</button>
+    </form>
+  </mat-card>
+
+  <mat-card class="danger-zone">
+    <h2>Zona de peligro</h2>
+    <p>Eliminar la cuenta es irreversible.</p>
+    <a mat-stroked-button routerLink="/cuenta/eliminar">Eliminar cuenta</a>
+  </mat-card>
+</section>

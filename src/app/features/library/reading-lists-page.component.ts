@@ -102,34 +102,117 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
         <section class="lists-grid">
           @for (list of lists(); track list.id) {
             <article class="list-card card">
-              <div class="list-header">
-                <div>
-                  <a class="title-link" [routerLink]="['/biblioteca/listas', list.id]">
-                    {{ list.name }}
-                  </a>
-                  <p>{{ list.description || 'Sin descripcion todavia.' }}</p>
-                </div>
-                <span class="badge" [ngClass]="list.visibility.toLowerCase()">
-                  {{ list.visibility === 'PUBLIC' ? 'Publica' : 'Privada' }}
-                </span>
-              </div>
-
-              <div class="meta-row">
-                <span>{{ list.items_count }} novelas</span>
-                <span>Actualizada {{ list.updated_at | date: 'mediumDate' }}</span>
-              </div>
-
-              <div class="card-actions">
-                <a [routerLink]="['/biblioteca/listas', list.id]">Abrir lista</a>
-                <button
-                  type="button"
-                  class="danger"
-                  [disabled]="removingId() === list.id"
-                  (click)="remove(list.id)"
+              @if (editingId() === list.id) {
+                <form
+                  class="editor"
+                  [class.editor-processing]="saving()"
+                  (ngSubmit)="saveEdit(list.id)"
                 >
-                  {{ removingId() === list.id ? 'Eliminando...' : 'Eliminar' }}
-                </button>
-              </div>
+                  <div class="section-head">
+                    <div>
+                      <h2>Editar lista</h2>
+                      <p>Ajusta nombre, descripcion y visibilidad.</p>
+                    </div>
+                    <span class="badge" [ngClass]="editVisibility.toLowerCase()">
+                      {{ editVisibility === 'PUBLIC' ? 'Publica' : 'Privada' }}
+                    </span>
+                  </div>
+
+                  <div class="form-grid">
+                    <label>
+                      <span>Nombre</span>
+                      <input
+                        [(ngModel)]="editName"
+                        [ngModelOptions]="{ standalone: true }"
+                        placeholder="Nombre de la lista"
+                        required
+                        [disabled]="saving()"
+                      />
+                    </label>
+
+                    <label>
+                      <span>Visibilidad</span>
+                      <select
+                        [(ngModel)]="editVisibility"
+                        [ngModelOptions]="{ standalone: true }"
+                        [disabled]="saving()"
+                      >
+                        <option value="PRIVATE">Privada</option>
+                        <option value="PUBLIC">Publica</option>
+                      </select>
+                    </label>
+
+                    <label class="full-width">
+                      <span>Descripcion</span>
+                      <textarea
+                        [(ngModel)]="editDescription"
+                        [ngModelOptions]="{ standalone: true }"
+                        placeholder="Describe para que sirve esta lista."
+                        [disabled]="saving()"
+                      ></textarea>
+                    </label>
+                  </div>
+
+                  @if (saving()) {
+                    <div class="processing-banner" aria-live="polite">
+                      <span class="processing-dot"></span>
+                      <strong>Procesando cambios...</strong>
+                      <small>Estamos guardando la configuracion de la lista.</small>
+                    </div>
+                  }
+
+                  <div class="form-actions">
+                    <button
+                      type="button"
+                      class="secondary"
+                      [disabled]="saving()"
+                      (click)="cancelEditing()"
+                    >
+                      Cancelar
+                    </button>
+                    <button type="submit" [disabled]="saving() || !editName.trim()">
+                      {{ saving() ? 'Guardando...' : 'Guardar cambios' }}
+                    </button>
+                  </div>
+                </form>
+              } @else {
+                <div class="list-header">
+                  <div>
+                    <a class="title-link" [routerLink]="['/biblioteca/listas', list.id]">
+                      {{ list.name }}
+                    </a>
+                    <p>{{ list.description || 'Sin descripcion todavia.' }}</p>
+                  </div>
+                  <span class="badge" [ngClass]="list.visibility.toLowerCase()">
+                    {{ list.visibility === 'PUBLIC' ? 'Publica' : 'Privada' }}
+                  </span>
+                </div>
+
+                <div class="meta-row">
+                  <span>{{ list.items_count }} novelas</span>
+                  <span>Actualizada {{ list.updated_at | date: 'mediumDate' }}</span>
+                </div>
+
+                <div class="card-actions">
+                  <a [routerLink]="['/biblioteca/listas', list.id]">Abrir lista</a>
+                  <button
+                    type="button"
+                    class="secondary"
+                    [disabled]="saving() || removingId() === list.id"
+                    (click)="startEditing(list)"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    class="danger"
+                    [disabled]="removingId() === list.id || saving()"
+                    (click)="remove(list.id)"
+                  >
+                    {{ removingId() === list.id ? 'Eliminando...' : 'Eliminar' }}
+                  </button>
+                </div>
+              }
             </article>
           }
         </section>
@@ -142,7 +225,9 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
       .hero,
       .composer,
       .lists-grid,
-      .list-card {
+      .list-card,
+      .editor,
+      .processing-banner {
         display: grid;
         gap: 1rem;
       }
@@ -203,6 +288,9 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
       .form-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+      .editor-processing {
+        opacity: 0.82;
+      }
       label span {
         font-size: 0.95rem;
         color: var(--text-2);
@@ -240,6 +328,29 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
         background: transparent;
         color: var(--text-1);
       }
+      .processing-banner {
+        grid-template-columns: auto 1fr;
+        align-items: center;
+        padding: 0.95rem 1rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+      }
+      .processing-banner strong,
+      .processing-banner small {
+        grid-column: 2;
+      }
+      .processing-banner small {
+        color: var(--text-2);
+      }
+      .processing-dot {
+        width: 0.85rem;
+        height: 0.85rem;
+        border-radius: 999px;
+        background: var(--accent);
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 38%, transparent);
+        animation: pulse 1.2s ease-in-out infinite;
+      }
       .danger {
         background: color-mix(in srgb, #b42318 16%, var(--bg-card));
         color: #b42318;
@@ -273,6 +384,20 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
       .feedback.error {
         color: #b42318;
       }
+      @keyframes pulse {
+        0% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 36%, transparent);
+        }
+        70% {
+          transform: scale(1);
+          box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 0%, transparent);
+        }
+        100% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent);
+        }
+      }
       @media (max-width: 900px) {
         .hero,
         .form-grid,
@@ -291,6 +416,7 @@ export class ReadingListsPageComponent {
   readonly lists = signal<ReadingList[]>([]);
   readonly creating = signal(false);
   readonly saving = signal(false);
+  readonly editingId = signal<string | null>(null);
   readonly removingId = signal<string | null>(null);
   readonly message = signal<string | null>(null);
   readonly error = signal<string | null>(null);
@@ -298,6 +424,9 @@ export class ReadingListsPageComponent {
   name = '';
   description = '';
   visibility: 'PUBLIC' | 'PRIVATE' = 'PRIVATE';
+  editName = '';
+  editDescription = '';
+  editVisibility: 'PUBLIC' | 'PRIVATE' = 'PRIVATE';
 
   constructor() {
     this.load();
@@ -333,7 +462,7 @@ export class ReadingListsPageComponent {
   }
 
   remove(id: string) {
-    if (this.removingId()) {
+    if (this.removingId() || this.saving()) {
       return;
     }
 
@@ -363,6 +492,59 @@ export class ReadingListsPageComponent {
       this.error.set(null);
       this.message.set(null);
     }
+  }
+
+  startEditing(list: ReadingList) {
+    if (this.saving() || this.removingId()) {
+      return;
+    }
+
+    this.creating.set(false);
+    this.editingId.set(list.id);
+    this.editName = list.name;
+    this.editDescription = list.description ?? '';
+    this.editVisibility = list.visibility;
+    this.error.set(null);
+    this.message.set(null);
+  }
+
+  cancelEditing() {
+    if (this.saving()) {
+      return;
+    }
+
+    this.editingId.set(null);
+    this.editName = '';
+    this.editDescription = '';
+    this.editVisibility = 'PRIVATE';
+  }
+
+  saveEdit(id: string) {
+    if (!this.editName.trim() || this.saving()) {
+      return;
+    }
+
+    this.error.set(null);
+    this.message.set(null);
+    this.saving.set(true);
+
+    this.readingListsService
+      .update(id, {
+        name: this.editName.trim(),
+        description: this.editDescription.trim() || null,
+        visibility: this.editVisibility,
+      })
+      .pipe(finalize(() => this.saving.set(false)))
+      .subscribe({
+        next: () => {
+          this.message.set('Lista actualizada correctamente.');
+          this.cancelEditing();
+          this.load();
+        },
+        error: () => {
+          this.error.set('No se pudo actualizar la lista.');
+        },
+      });
   }
 
   private load() {

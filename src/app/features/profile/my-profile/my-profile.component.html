@@ -22,8 +22,15 @@
 
     <span class="meta">Miembro desde {{ profileUser.createdAt | date: 'longDate' }}</span>
 
+    <div class="stats-summary">
+      <span>{{ novelsCount() }} novelas publicadas</span>
+      <span>{{ publishedChapters() }} capitulos publicados</span>
+      <span>{{ publishedWords() }} palabras publicadas</span>
+    </div>
+
     <div class="actions">
       <a mat-flat-button routerLink="/mi-perfil/editar">Editar perfil</a>
+      <a mat-stroked-button routerLink="/mis-novelas">Ver mis novelas</a>
       <a mat-stroked-button routerLink="/cuenta">Configuracion de cuenta</a>
     </div>
   </section>

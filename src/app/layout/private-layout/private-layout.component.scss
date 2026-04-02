@@ -13,6 +13,19 @@
   border-right: 1px solid var(--border);
 }
 
+.nav-group {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.group-label {
+  color: var(--text-3);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0 1rem;
+}
+
 .sidebar a {
   color: var(--text-2);
   text-decoration: none;

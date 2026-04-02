@@ -89,10 +89,19 @@ export class AuthService {
 
   logout(): void {
     const refreshToken = this.tokenService.getRefreshToken();
+    const accessToken = this.tokenService.getAccessToken();
 
-    if (refreshToken) {
+    if (refreshToken && accessToken) {
       this.http
-        .post(`${environment.apiUrl}/auth/logout`, { refreshToken })
+        .post(
+          `${environment.apiUrl}/auth/logout`,
+          { refreshToken },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        )
         .pipe(catchError(() => of(null)))
         .subscribe();
     }

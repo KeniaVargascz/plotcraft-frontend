@@ -18,5 +18,6 @@ export interface PublicProfile extends Profile {
   postsCount: number;
   viewerContext: {
     isFollowing: boolean | null;
+    isSelf: boolean;
   };
 }

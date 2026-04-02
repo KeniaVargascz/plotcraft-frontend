@@ -1,10 +1,24 @@
 <div class="private-shell">
   <aside class="sidebar">
     <a class="brand" routerLink="/feed">{{ 'app.name' | translate }}</a>
-    <a routerLink="/feed" routerLinkActive="active">{{ 'nav.feed' | translate }}</a>
-    <a routerLink="/explorar" routerLinkActive="active">{{ 'nav.explore' | translate }}</a>
-    <a routerLink="/mi-perfil" routerLinkActive="active">{{ 'nav.myProfile' | translate }}</a>
-    <a routerLink="/cuenta" routerLinkActive="active">{{ 'nav.settings' | translate }}</a>
+
+    <div class="nav-group">
+      <span class="group-label">{{ 'nav.discovery' | translate }}</span>
+      <a routerLink="/feed" routerLinkActive="active">{{ 'nav.feed' | translate }}</a>
+      <a routerLink="/explorar" routerLinkActive="active">{{ 'nav.explore' | translate }}</a>
+      <a routerLink="/novelas" routerLinkActive="active">{{ 'nav.novels' | translate }}</a>
+    </div>
+
+    <div class="nav-group">
+      <span class="group-label">{{ 'nav.author' | translate }}</span>
+      <a routerLink="/mis-novelas" routerLinkActive="active">{{ 'nav.myNovels' | translate }}</a>
+    </div>
+
+    <div class="nav-group">
+      <span class="group-label">{{ 'nav.personal' | translate }}</span>
+      <a routerLink="/mi-perfil" routerLinkActive="active">{{ 'nav.myProfile' | translate }}</a>
+      <a routerLink="/cuenta" routerLinkActive="active">{{ 'nav.settings' | translate }}</a>
+    </div>
   </aside>
 
   <section class="content-shell">

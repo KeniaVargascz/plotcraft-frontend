@@ -21,8 +21,8 @@
         <div class="profile-actions">
           @if (isOwnProfile) {
             <a routerLink="/mi-perfil/editar">{{ 'profile.edit.title' | translate }}</a>
-          } @else if (authService.isAuthenticated()) {
-            <button type="button" (click)="toggleFollow()">
+          } @else if (authService.isAuthenticated() && !profile()!.viewerContext.isSelf) {
+            <button type="button" (click)="toggleFollow()" [disabled]="followPending()">
               {{
                 profile()!.viewerContext.isFollowing
                   ? ('profile.unfollow' | translate)
@@ -55,14 +55,29 @@
           {{ 'profile.tabs.saved' | translate }}
         </button>
       }
+      <button type="button" [class.active]="activeTab() === 'novels'" (click)="setTab('novels')">
+        {{ 'profile.tabs.novels' | translate }}
+      </button>
     </div>
 
-    <app-post-type-filter
-      [selected]="selectedType()"
-      (selectedChange)="onTypeChange($event)"
-    />
+    @if (activeTab() !== 'novels') {
+      <app-post-type-filter
+        [selected]="selectedType()"
+        (selectedChange)="onTypeChange($event)"
+      />
+    }
 
-    @if (postsLoading()) {
+    @if (activeTab() === 'novels') {
+      @if (novels().length === 0) {
+        <div class="state-card">{{ 'profile.noNovelsYet' | translate }}</div>
+      } @else {
+        <div class="post-stack">
+          @for (novel of novels(); track novel.id) {
+            <app-novel-card [novel]="novel" />
+          }
+        </div>
+      }
+    } @else if (postsLoading()) {
       <div class="state-card">{{ 'feed.loading' | translate }}</div>
     } @else if (posts().length === 0) {
       <div class="state-card">

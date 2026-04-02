@@ -8,9 +8,14 @@
     "register": "Registrarse",
     "logout": "Cerrar sesion",
     "myProfile": "Mi perfil",
+    "myNovels": "Mis novelas",
     "settings": "Configuracion",
     "feed": "Feed",
     "explore": "Explorar",
+    "novels": "Novelas",
+    "discovery": "Descubrir",
+    "author": "Autor",
+    "personal": "Personal",
     "notifications": "Campana"
   },
   "landing": {
@@ -137,8 +142,10 @@
     },
     "tabs": {
       "posts": "Publicaciones",
-      "saved": "Guardados"
-    }
+      "saved": "Guardados",
+      "novels": "Novelas"
+    },
+    "noNovelsYet": "Este autor aun no ha publicado novelas."
   },
   "validation": {
     "required": "Este campo es obligatorio",

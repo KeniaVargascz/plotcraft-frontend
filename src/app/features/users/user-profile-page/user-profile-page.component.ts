@@ -4,16 +4,25 @@ import { PostModel, PostType } from '../../../core/models/post.model';
 import { PublicProfile } from '../../../core/models/profile.model';
 import { AuthService } from '../../../core/services/auth.service';
 import { FollowsService } from '../../../core/services/follows.service';
+import { NovelSummary } from '../../../core/models/novel.model';
+import { NovelsService } from '../../../core/services/novels.service';
 import { PostsService } from '../../../core/services/posts.service';
 import { UserService } from '../../../core/services/user.service';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { NovelCardComponent } from '../../novels/components/novel-card.component';
 import { PostCardComponent } from '../../feed/components/post-card/post-card.component';
 import { PostTypeFilterComponent } from '../../feed/components/post-type-filter/post-type-filter.component';
 
 @Component({
   selector: 'app-user-profile-page',
   standalone: true,
-  imports: [RouterLink, TranslatePipe, PostCardComponent, PostTypeFilterComponent],
+  imports: [
+    RouterLink,
+    TranslatePipe,
+    PostCardComponent,
+    PostTypeFilterComponent,
+    NovelCardComponent,
+  ],
   templateUrl: './user-profile-page.component.html',
   styleUrl: './user-profile-page.component.scss',
 })
@@ -24,16 +33,19 @@ export class UserProfilePageComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly postsService = inject(PostsService);
   private readonly followsService = inject(FollowsService);
+  private readonly novelsService = inject(NovelsService);
 
   readonly loading = signal(true);
   readonly postsLoading = signal(true);
   readonly error = signal(false);
   readonly profile = signal<PublicProfile | null>(null);
   readonly posts = signal<PostModel[]>([]);
+  readonly novels = signal<NovelSummary[]>([]);
   readonly selectedType = signal<PostType | 'ALL'>('ALL');
   readonly nextCursor = signal<string | null>(null);
   readonly hasMore = signal(false);
-  readonly activeTab = signal<'posts' | 'saved'>('posts');
+  readonly activeTab = signal<'posts' | 'saved' | 'novels'>('posts');
+  readonly followPending = signal(false);
 
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
@@ -44,12 +56,15 @@ export class UserProfilePageComponent implements OnInit {
 
       this.activeTab.set('posts');
       this.loadProfile(username);
-      this.loadPosts(username, true);
+      this.loadActiveTab(username, true);
     });
   }
 
   get isOwnProfile() {
-    return this.authService.getCurrentUserSnapshot()?.username === this.profile()?.username;
+    return Boolean(
+      this.profile()?.viewerContext.isSelf ||
+      this.authService.getCurrentUserSnapshot()?.username === this.profile()?.username,
+    );
   }
 
   onTypeChange(type: PostType | 'ALL') {
@@ -60,17 +75,17 @@ export class UserProfilePageComponent implements OnInit {
     }
   }
 
-  setTab(tab: 'posts' | 'saved') {
+  setTab(tab: 'posts' | 'saved' | 'novels') {
     this.activeTab.set(tab);
     const username = this.profile()?.username;
     if (username) {
-      this.loadPosts(username, true);
+      this.loadActiveTab(username, true);
     }
   }
 
   toggleFollow() {
     const profile = this.profile();
-    if (!profile || this.isOwnProfile) {
+    if (!profile || this.isOwnProfile || this.followPending()) {
       return;
     }
 
@@ -84,12 +99,18 @@ export class UserProfilePageComponent implements OnInit {
       followersCount: profile.followersCount + (following ? -1 : 1),
       viewerContext: {
         isFollowing: !following,
+        isSelf: profile.viewerContext.isSelf,
       },
     });
+    this.followPending.set(true);
 
     request.subscribe({
+      next: () => {
+        this.followPending.set(false);
+      },
       error: () => {
         this.profile.set(profile);
+        this.followPending.set(false);
       },
     });
   }
@@ -106,7 +127,7 @@ export class UserProfilePageComponent implements OnInit {
 
   loadMore() {
     const username = this.profile()?.username;
-    if (username && this.hasMore()) {
+    if (username && this.hasMore() && this.activeTab() !== 'novels') {
       this.loadPosts(username, false);
     }
   }
@@ -152,5 +173,20 @@ export class UserProfilePageComponent implements OnInit {
         this.postsLoading.set(false);
       },
     });
+  }
+
+  private loadActiveTab(username: string, reset: boolean) {
+    if (this.activeTab() === 'novels') {
+      this.postsLoading.set(false);
+      this.hasMore.set(false);
+      this.novelsService.listByUser(username, { limit: 24 }).subscribe({
+        next: (response) => this.novels.set(response.data),
+        error: () => this.novels.set([]),
+      });
+      return;
+    }
+
+    this.novels.set([]);
+    this.loadPosts(username, reset);
   }
 }

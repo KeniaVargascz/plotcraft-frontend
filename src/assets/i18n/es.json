@@ -10,6 +10,7 @@
     "myProfile": "Mi perfil",
     "myNovels": "Mis novelas",
     "settings": "Configuracion",
+    "myLibrary": "Mi biblioteca",
     "feed": "Feed",
     "explore": "Explorar",
     "novels": "Novelas",
@@ -165,5 +166,104 @@
     "loading": "Cargando...",
     "error": "Ocurrio un error. Intenta de nuevo.",
     "success": "Cambios guardados correctamente"
+  },
+  "reader": {
+    "preferences": {
+      "title": "Preferencias de lectura",
+      "font": "Fuente",
+      "fontSize": "Tamano de letra",
+      "lineHeight": "Interlineado",
+      "maxWidth": "Ancho de columna",
+      "mode": "Modo de lectura",
+      "modeScroll": "Scroll",
+      "modePaginated": "Paginado",
+      "showProgress": "Mostrar progreso",
+      "fonts": {
+        "crimson": "Crimson Pro (serif)",
+        "outfit": "Outfit (sans-serif)",
+        "georgia": "Georgia (clasica)",
+        "mono": "Monoespaciada"
+      }
+    },
+    "progress": {
+      "bar": "Capitulo {{current}} de {{total}}",
+      "page": "Pagina {{current}} de {{total}}",
+      "saving": "Guardando progreso..."
+    },
+    "bookmarks": {
+      "add": "Marcar posicion",
+      "added": "Marcador anadido",
+      "remove": "Quitar marcador",
+      "label": "Etiqueta (opcional)",
+      "noBookmarks": "Sin marcadores en este capitulo",
+      "goTo": "Ir a esta posicion"
+    },
+    "highlights": {
+      "addNote": "Anadir nota",
+      "notePlaceholder": "Escribe una nota sobre este fragmento...",
+      "remove": "Eliminar subrayado",
+      "colors": {
+        "yellow": "Amarillo",
+        "green": "Verde",
+        "blue": "Azul",
+        "pink": "Rosa"
+      }
+    }
+  },
+  "library": {
+    "title": "Mi biblioteca",
+    "inProgress": "Leyendo ahora",
+    "history": "Historial",
+    "bookmarks": "Marcadores",
+    "highlights": "Subrayados",
+    "lists": "Listas de lectura",
+    "goals": "Metas",
+    "stats": "Estadisticas",
+    "continueReading": "Continuar leyendo",
+    "startReading": "Comenzar a leer",
+    "resumeFrom": "Continuar desde cap. {{n}} - {{title}}",
+    "lastRead": "Ultima vez {{time}}",
+    "empty": {
+      "inProgress": "Aun no estas leyendo ninguna novela.",
+      "history": "Tu historial de lectura esta vacio.",
+      "bookmarks": "Aun no tienes marcadores guardados.",
+      "highlights": "Aun no has subrayado ningun fragmento.",
+      "lists": "Aun no tienes listas de lectura.",
+      "goals": "Aun no tienes una meta de lectura."
+    },
+    "goals": {
+      "monthly": "Meta mensual",
+      "annual": "Meta anual",
+      "targetWords": "Palabras objetivo",
+      "wordsRead": "Palabras leidas",
+      "complete": "Completada",
+      "failed": "No alcanzada",
+      "inProgress": "En curso",
+      "projection": "A este ritmo lo lograras el {{date}}",
+      "streak": "{{days}} dias de racha"
+    },
+    "lists": {
+      "new": "Nueva lista",
+      "edit": "Editar lista",
+      "delete": "Eliminar lista",
+      "deleteConfirm": "Eliminar esta lista? Se perderan todos los items.",
+      "addToList": "Guardar en lista",
+      "removeFromList": "Quitar de la lista",
+      "visibility": {
+        "PUBLIC": "Publica",
+        "PRIVATE": "Privada"
+      },
+      "items": "{{n}} novelas"
+    },
+    "stats": {
+      "chaptersRead": "Capitulos leidos",
+      "novelsStarted": "Novelas iniciadas",
+      "novelsCompleted": "Novelas completadas",
+      "wordsRead": "Palabras leidas",
+      "currentStreak": "Racha actual",
+      "favoriteGenre": "Genero favorito",
+      "monthlyChart": "Actividad mensual",
+      "noData": "Aun no hay estadisticas suficientes."
+    }
   }
 }

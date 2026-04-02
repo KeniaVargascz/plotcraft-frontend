@@ -1,9 +1,12 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 import { NovelDetail } from '../../core/models/novel.model';
 import { AuthService } from '../../core/services/auth.service';
 import { NovelsService } from '../../core/services/novels.service';
+import { ReadingList } from '../../core/models/reading-list.model';
+import { ReadingListsService } from '../../core/services/reading-lists.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 
@@ -37,6 +40,27 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
             <p class="synopsis">{{ currentNovel.synopsis }}</p>
 
             <div class="actions">
+              @if (
+                currentNovel.viewerContext?.reading_progress &&
+                currentNovel.viewerContext?.reading_progress?.chapter_slug
+              ) {
+                <a
+                  [routerLink]="[
+                    '/novelas',
+                    currentNovel.slug,
+                    currentNovel.viewerContext?.reading_progress?.chapter_slug,
+                  ]"
+                >
+                  Continuar desde cap.
+                  {{ currentNovel.viewerContext?.reading_progress?.chapter_order }} -
+                  {{ currentNovel.viewerContext?.reading_progress?.chapter_title }}
+                </a>
+              } @else if (authService.isAuthenticated() && currentNovel.chapters.length) {
+                <a [routerLink]="['/novelas', currentNovel.slug, currentNovel.chapters[0].slug]">
+                  Comenzar a leer
+                </a>
+              }
+
               @if (currentNovel.viewerContext && !currentNovel.viewerContext.isAuthor) {
                 <button type="button" (click)="toggleLike()">
                   {{ currentNovel.viewerContext.hasLiked ? 'Quitar like' : 'Dar like' }}
@@ -44,6 +68,11 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
                 <button type="button" (click)="toggleBookmark()">
                   {{ currentNovel.viewerContext.hasBookmarked ? 'Quitar guardado' : 'Guardar' }}
                 </button>
+                @if (authService.isAuthenticated()) {
+                  <button type="button" [disabled]="listsLoading()" (click)="toggleListsMenu()">
+                    {{ listsLoading() ? 'Cargando listas...' : 'Guardar en lista' }}
+                  </button>
+                }
               }
 
               @if (currentNovel.viewerContext?.isAuthor) {
@@ -53,6 +82,50 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
                 >
               }
             </div>
+
+            @if (showListsMenu()) {
+              <div class="list-menu">
+                @if (listsLoading()) {
+                  <span class="list-feedback list-feedback-muted">Cargando tus listas...</span>
+                } @else if (listsError()) {
+                  <span class="list-feedback list-feedback-error">{{ listsError() }}</span>
+                } @else if (!readingLists().length) {
+                  <span class="list-feedback list-feedback-muted">
+                    Aun no tienes listas creadas para guardar esta novela.
+                  </span>
+                } @else {
+                  @for (list of readingLists(); track list.id) {
+                    <label
+                      class="list-option"
+                      [class.list-option-busy]="listActionId() === list.id"
+                    >
+                      <input
+                        type="checkbox"
+                        [checked]="listMembership().has(list.id)"
+                        [disabled]="listActionId() === list.id || listsLoading()"
+                        (change)="toggleListMembership(list)"
+                      />
+                      <span class="list-option-copy">
+                        <strong>{{ list.name }}</strong>
+                        <small>
+                          @if (listActionId() === list.id) {
+                            Procesando...
+                          } @else if (listMembership().has(list.id)) {
+                            Guardada en esta lista
+                          } @else {
+                            Disponible
+                          }
+                        </small>
+                      </span>
+                    </label>
+                  }
+
+                  @if (listsMessage()) {
+                    <span class="list-feedback list-feedback-success">{{ listsMessage() }}</span>
+                  }
+                }
+              </div>
+            }
           </div>
         </article>
 
@@ -128,6 +201,40 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
         color: var(--accent-text);
         border: 0;
       }
+      .list-menu {
+        display: grid;
+        gap: 0.5rem;
+        padding: 1rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+      }
+      .list-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border-radius: 0.85rem;
+        border: 1px solid var(--border);
+        cursor: pointer;
+      }
+      .list-option-busy {
+        opacity: 0.7;
+      }
+      .list-option-copy {
+        display: grid;
+        gap: 0.25rem;
+      }
+      .list-option-copy small,
+      .list-feedback {
+        color: var(--text-2);
+      }
+      .list-feedback-error {
+        color: #b42318;
+      }
+      .list-feedback-success {
+        color: #027a48;
+      }
       .content-grid {
         grid-template-columns: 1fr 280px;
         margin-top: 1.5rem;
@@ -153,11 +260,19 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
 export class NovelDetailPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly novelsService = inject(NovelsService);
+  private readonly readingListsService = inject(ReadingListsService);
   readonly authService = inject(AuthService);
 
   readonly loading = signal(true);
   readonly error = signal(false);
   readonly novel = signal<NovelDetail | null>(null);
+  readonly readingLists = signal<ReadingList[]>([]);
+  readonly showListsMenu = signal(false);
+  readonly listMembership = signal(new Set<string>());
+  readonly listsLoading = signal(false);
+  readonly listsError = signal<string | null>(null);
+  readonly listsMessage = signal<string | null>(null);
+  readonly listActionId = signal<string | null>(null);
 
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
@@ -166,10 +281,20 @@ export class NovelDetailPageComponent implements OnInit {
         return;
       }
 
+      this.error.set(false);
+      this.showListsMenu.set(false);
+      this.listsError.set(null);
+      this.listsMessage.set(null);
+      this.listActionId.set(null);
+      this.readingLists.set([]);
+      this.listMembership.set(new Set<string>());
       this.loading.set(true);
       this.novelsService.getBySlug(slug).subscribe({
         next: (novel) => {
           this.novel.set(novel);
+          if (this.authService.isAuthenticated()) {
+            this.loadReadingLists(novel.id);
+          }
           this.loading.set(false);
         },
         error: () => {
@@ -218,5 +343,78 @@ export class NovelDetailPageComponent implements OnInit {
           : null,
       });
     });
+  }
+
+  toggleListsMenu() {
+    if (this.listsLoading()) {
+      return;
+    }
+
+    this.showListsMenu.update((value) => !value);
+  }
+
+  toggleListMembership(list: ReadingList) {
+    const novel = this.novel();
+    if (!novel || this.listActionId()) {
+      return;
+    }
+
+    const alreadyIncluded = this.listMembership().has(list.id);
+    this.listActionId.set(list.id);
+    this.listsError.set(null);
+    this.listsMessage.set(null);
+
+    if (alreadyIncluded) {
+      this.readingListsService
+        .removeItem(list.id, novel.id)
+        .pipe(finalize(() => this.listActionId.set(null)))
+        .subscribe({
+          next: () => {
+            this.listsMessage.set(`"${list.name}" actualizada.`);
+            this.loadReadingLists(novel.id, false);
+          },
+          error: () => {
+            this.listsError.set('No se pudo quitar la novela de la lista.');
+          },
+        });
+      return;
+    }
+
+    this.readingListsService
+      .addItem(list.id, { novel_id: novel.id })
+      .pipe(finalize(() => this.listActionId.set(null)))
+      .subscribe({
+        next: () => {
+          this.listsMessage.set(`"${list.name}" actualizada.`);
+          this.loadReadingLists(novel.id, false);
+        },
+        error: () => {
+          this.listsError.set('No se pudo guardar la novela en la lista.');
+        },
+      });
+  }
+
+  private loadReadingLists(novelId: string, showLoader = true) {
+    if (showLoader) {
+      this.listsLoading.set(true);
+    }
+
+    this.listsError.set(null);
+    this.readingListsService
+      .listMine(novelId)
+      .pipe(finalize(() => this.listsLoading.set(false)))
+      .subscribe({
+        next: (lists) => {
+          this.readingLists.set(lists);
+          this.listMembership.set(
+            new Set(lists.filter((list) => list.contains_novel).map((list) => list.id)),
+          );
+        },
+        error: () => {
+          this.readingLists.set([]);
+          this.listMembership.set(new Set<string>());
+          this.listsError.set('No se pudieron cargar tus listas.');
+        },
+      });
   }
 }

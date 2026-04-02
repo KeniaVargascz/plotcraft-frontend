@@ -156,6 +156,69 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'biblioteca',
+        loadComponent: () =>
+          import('./features/library/library-page.component').then(
+            (module) => module.LibraryPageComponent,
+          ),
+      },
+      {
+        path: 'biblioteca/en-progreso',
+        loadComponent: () =>
+          import('./features/library/in-progress-page.component').then(
+            (module) => module.InProgressPageComponent,
+          ),
+      },
+      {
+        path: 'biblioteca/historial',
+        loadComponent: () =>
+          import('./features/library/history-page.component').then(
+            (module) => module.HistoryPageComponent,
+          ),
+      },
+      {
+        path: 'biblioteca/marcadores',
+        loadComponent: () =>
+          import('./features/library/bookmarks-page.component').then(
+            (module) => module.BookmarksPageComponent,
+          ),
+      },
+      {
+        path: 'biblioteca/subrayados',
+        loadComponent: () =>
+          import('./features/library/highlights-page.component').then(
+            (module) => module.HighlightsPageComponent,
+          ),
+      },
+      {
+        path: 'biblioteca/listas',
+        loadComponent: () =>
+          import('./features/library/reading-lists-page.component').then(
+            (module) => module.ReadingListsPageComponent,
+          ),
+      },
+      {
+        path: 'biblioteca/listas/:id',
+        loadComponent: () =>
+          import('./features/library/reading-list-detail-page.component').then(
+            (module) => module.ReadingListDetailPageComponent,
+          ),
+      },
+      {
+        path: 'biblioteca/metas',
+        loadComponent: () =>
+          import('./features/library/goals-page.component').then(
+            (module) => module.GoalsPageComponent,
+          ),
+      },
+      {
+        path: 'biblioteca/estadisticas',
+        loadComponent: () =>
+          import('./features/library/stats-page.component').then(
+            (module) => module.StatsPageComponent,
+          ),
+      },
+      {
         path: '',
         loadChildren: () =>
           import('./features/profile/profile.routes').then((module) => module.PROFILE_ROUTES),

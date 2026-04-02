@@ -15,6 +15,11 @@
     </div>
 
     <div class="nav-group">
+      <span class="group-label">{{ 'library.title' | translate }}</span>
+      <a routerLink="/biblioteca" routerLinkActive="active">{{ 'nav.myLibrary' | translate }}</a>
+    </div>
+
+    <div class="nav-group">
       <span class="group-label">{{ 'nav.personal' | translate }}</span>
       <a routerLink="/mi-perfil" routerLinkActive="active">{{ 'nav.myProfile' | translate }}</a>
       <a routerLink="/cuenta" routerLinkActive="active">{{ 'nav.settings' | translate }}</a>

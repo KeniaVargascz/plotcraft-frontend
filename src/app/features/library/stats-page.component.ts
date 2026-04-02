@@ -1,0 +1,62 @@
+import { Component, inject, signal } from '@angular/core';
+import { ReadingStats } from '../../core/models/library.model';
+import { LibraryService } from '../../core/services/library.service';
+
+@Component({
+  selector: 'app-stats-page',
+  standalone: true,
+  template: `
+    @if (stats(); as current) {
+      <section class="page-shell">
+        <h1>Estadisticas</h1>
+        <div class="grid">
+          <article class="card">
+            <strong>{{ current.total_chapters_read }}</strong
+            ><span>Capitulos</span>
+          </article>
+          <article class="card">
+            <strong>{{ current.total_novels_completed }}</strong
+            ><span>Completadas</span>
+          </article>
+          <article class="card">
+            <strong>{{ current.total_words_read }}</strong
+            ><span>Palabras</span>
+          </article>
+          <article class="card">
+            <strong>{{ current.reading_streak_days }}</strong
+            ><span>Racha</span>
+          </article>
+        </div>
+        <article class="card">
+          <h2>Actividad mensual</h2>
+          @for (item of current.monthly_breakdown; track item.year + '-' + item.month) {
+            <div class="bar-row">
+              <span>{{ item.month }}/{{ item.year }}</span>
+              <div class="bar">
+                <span
+                  [style.width.%]="maxWords() ? (item.words_read / maxWords()) * 100 : 0"
+                ></span>
+              </div>
+              <small>{{ item.words_read }}</small>
+            </div>
+          }
+        </article>
+      </section>
+    }
+  `,
+  styles: [
+    '.page-shell,.grid,.card{display:grid;gap:1rem}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.card{padding:1rem;border:1px solid var(--border);border-radius:1rem;background:var(--bg-card)}.bar-row{display:grid;grid-template-columns:90px 1fr 70px;gap:1rem;align-items:center}.bar{height:10px;border-radius:999px;background:var(--bg-surface);overflow:hidden}.bar span{display:block;height:100%;background:var(--accent)}@media(max-width:900px){.grid{grid-template-columns:1fr 1fr}}',
+  ],
+})
+export class StatsPageComponent {
+  private readonly libraryService = inject(LibraryService);
+  readonly stats = signal<ReadingStats | null>(null);
+  readonly maxWords = signal(0);
+
+  constructor() {
+    this.libraryService.getStats().subscribe((stats) => {
+      this.stats.set(stats);
+      this.maxWords.set(Math.max(...stats.monthly_breakdown.map((item) => item.words_read), 0));
+    });
+  }
+}

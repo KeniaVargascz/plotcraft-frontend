@@ -35,6 +35,13 @@ export interface NovelSummary {
     hasLiked: boolean;
     hasBookmarked: boolean;
     isAuthor: boolean;
+    reading_progress: {
+      chapter_id: string;
+      chapter_slug: string;
+      chapter_title: string;
+      chapter_order: number;
+      scroll_pct: number;
+    } | null;
   } | null;
 }
 

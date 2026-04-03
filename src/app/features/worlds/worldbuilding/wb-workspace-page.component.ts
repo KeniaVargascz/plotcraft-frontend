@@ -1,11 +1,14 @@
 import { Component, inject, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { filter, switchMap } from 'rxjs';
 import { finalize } from 'rxjs';
 import { WbCategorySummary, WbCategory } from '../../../core/models/wb-category.model';
 import { WbEntrySummary, WbEntryDetail } from '../../../core/models/wb-entry.model';
 import { WorldsService } from '../../../core/services/worlds.service';
 import { WorldbuildingService } from '../../../core/services/worldbuilding.service';
 import { MarkdownService } from '../../../core/services/markdown.service';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { WbSidebarComponent } from './components/wb-sidebar.component';
 import { WbEntryGridComponent } from './components/wb-entry-grid.component';
 import { WbEntryLinksComponent } from './components/wb-entry-links.component';
@@ -288,6 +291,7 @@ export class WbWorkspacePageComponent {
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
   private readonly worldsService = inject(WorldsService);
   private readonly wbService = inject(WorldbuildingService);
   readonly markdownService = inject(MarkdownService);
@@ -384,8 +388,17 @@ export class WbWorkspacePageComponent {
   }
 
   deleteEntry(entry: WbEntrySummary) {
-    if (!confirm(`Eliminar "${entry.name}"? Esta accion no se puede deshacer.`)) return;
-    this.wbService.deleteEntry(this.worldSlug(), entry.slug).subscribe({
+    this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Eliminar entrada',
+        description: `Eliminar "${entry.name}"? Esta accion no se puede deshacer.`,
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar',
+      },
+    }).afterClosed().pipe(
+      filter((result) => result === 'true'),
+      switchMap(() => this.wbService.deleteEntry(this.worldSlug(), entry.slug)),
+    ).subscribe({
       next: () => {
         this.entries.update((list) => list.filter((e) => e.id !== entry.id));
         if (this.selectedEntry()?.id === entry.id) {
@@ -421,8 +434,17 @@ export class WbWorkspacePageComponent {
     const catSlug = this.activeCategorySlug();
     if (!catSlug) return;
     const cat = this.categories().find((c) => c.slug === catSlug);
-    if (!confirm(`Eliminar la categoria "${cat?.name}"? Se eliminaran todas sus entradas.`)) return;
-    this.wbService.deleteCategory(this.worldSlug(), catSlug).subscribe({
+    this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Eliminar categoria',
+        description: `Eliminar la categoria "${cat?.name}"? Se eliminaran todas sus entradas.`,
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar',
+      },
+    }).afterClosed().pipe(
+      filter((result) => result === 'true'),
+      switchMap(() => this.wbService.deleteCategory(this.worldSlug(), catSlug)),
+    ).subscribe({
       next: () => {
         this.activeCategorySlug.set(null);
         this.loadCategories();

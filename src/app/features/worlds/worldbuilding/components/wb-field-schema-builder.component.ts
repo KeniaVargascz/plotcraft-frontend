@@ -35,16 +35,17 @@ import { FieldDefinition, FieldType } from '../../../../core/models/field-defini
                 <input
                   type="text"
                   [ngModel]="field.key"
-                  (ngModelChange)="updateFieldProp($index, 'key', $event)"
+                  (ngModelChange)="updateFieldKey($index, $event)"
                   placeholder="ej: population"
                 />
+                <span class="hint">Solo letras minusculas y guion bajo. Se convierte automaticamente.</span>
               </label>
               <label>
                 <span>Etiqueta</span>
                 <input
                   type="text"
                   [ngModel]="field.label"
-                  (ngModelChange)="updateFieldProp($index, 'label', $event)"
+                  (ngModelChange)="updateFieldLabel($index, $event)"
                   placeholder="ej: Poblacion"
                 />
               </label>
@@ -199,6 +200,7 @@ import { FieldDefinition, FieldType } from '../../../../core/models/field-defini
     .move-btn:hover { background: var(--bg-surface); }
     .remove-btn { color: #b42318; border-color: #b4231844; margin-left: auto; }
     .remove-btn:hover { background: #b4231811; }
+    .hint { font-size: 0.7rem; color: var(--text-3); font-style: italic; }
     .empty-msg { color: var(--text-3); font-size: 0.82rem; text-align: center; margin: 0; padding: 1rem; }
   `],
 })
@@ -248,6 +250,42 @@ export class WbFieldSchemaBuilderComponent {
     this.fields.update((f) => f.filter((_, i) => i !== index));
     this.expandedIndex.set(null);
     this.error.set(null);
+    this.emitChange();
+  }
+
+  private toSnakeCase(value: string): string {
+    return value
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_|_$/g, '')
+      .substring(0, 50);
+  }
+
+  updateFieldKey(index: number, value: string) {
+    const snakeKey = this.toSnakeCase(value);
+    this.fields.update((f) => {
+      const updated = [...f];
+      updated[index] = { ...updated[index], key: snakeKey };
+      return updated;
+    });
+    this.validateKeys();
+    this.emitChange();
+  }
+
+  updateFieldLabel(index: number, value: string) {
+    this.fields.update((f) => {
+      const updated = [...f];
+      const field = updated[index];
+      const keyWasAuto = !field.key || field.key === this.toSnakeCase(field.label);
+      updated[index] = {
+        ...field,
+        label: value,
+        ...(keyWasAuto ? { key: this.toSnakeCase(value) } : {}),
+      };
+      return updated;
+    });
+    this.validateKeys();
     this.emitChange();
   }
 

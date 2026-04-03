@@ -45,7 +45,7 @@ import { NovelSummary } from '../../../core/models/novel.model';
             Todos los tags
             <span class="tags-count">{{ expandableTagCount() }}</span>
           </span>
-          <span class="tags-chevron" [class.open]="tagsOpen()">⌄</span>
+          <span class="tags-chevron" [class.open]="tagsOpen()">v</span>
         </button>
 
         @if (tagsOpen()) {
@@ -104,7 +104,7 @@ import { NovelSummary } from '../../../core/models/novel.model';
 
       .novel-card {
         display: grid;
-        grid-template-rows: auto auto auto;
+        grid-template-rows: minmax(0, 1fr) auto auto;
         height: 100%;
         border-radius: 1.35rem;
         background: color-mix(in srgb, var(--bg-card) 92%, #0b0f14 8%);
@@ -119,13 +119,16 @@ import { NovelSummary } from '../../../core/models/novel.model';
         gap: 0.95rem;
         padding: 0.95rem;
         min-height: 0;
+        height: 100%;
+        align-items: start;
       }
 
       .cover {
         position: relative;
         display: grid;
         place-items: center;
-        min-height: 126px;
+        height: 132px;
+        align-self: start;
         border-radius: 1rem;
         text-decoration: none;
         overflow: hidden;
@@ -169,23 +172,24 @@ import { NovelSummary } from '../../../core/models/novel.model';
         position: relative;
         z-index: 1;
         font:
-          italic 400 2.35rem/1 'Playfair Display',
+          italic 400 2.3rem/1 'Playfair Display',
           serif;
       }
 
       .body {
         display: grid;
-        grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+        grid-template-rows: minmax(3.45rem, auto) auto auto minmax(0, 1fr) auto;
         gap: 0.38rem;
         min-width: 0;
+        height: 100%;
       }
 
       .badges-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-        align-items: center;
-        min-height: 1.55rem;
+        display: grid;
+        grid-template-rows: repeat(2, 1.52rem);
+        gap: 0.28rem;
+        align-content: start;
+        min-height: 3.45rem;
       }
 
       .badge {
@@ -200,6 +204,7 @@ import { NovelSummary } from '../../../core/models/novel.model';
         letter-spacing: 0.08em;
         text-transform: uppercase;
         white-space: nowrap;
+        width: fit-content;
       }
 
       .badge-status {
@@ -284,8 +289,8 @@ import { NovelSummary } from '../../../core/models/novel.model';
         flex-wrap: wrap;
         gap: 0.35rem;
         align-content: start;
-        min-height: 1.7rem;
-        max-height: 3.75rem;
+        min-height: 3.55rem;
+        max-height: 3.55rem;
         overflow: hidden;
       }
 
@@ -310,6 +315,7 @@ import { NovelSummary } from '../../../core/models/novel.model';
         justify-content: space-between;
         gap: 0.75rem;
         width: 100%;
+        min-height: 3rem;
         padding: 0.75rem 0.95rem;
         background: transparent;
         border: 0;
@@ -410,6 +416,7 @@ import { NovelSummary } from '../../../core/models/novel.model';
         align-items: center;
         justify-content: space-between;
         gap: 0.65rem;
+        min-height: 3.1rem;
         padding: 0.8rem 0.95rem 0.9rem;
         border-top: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
       }
@@ -459,7 +466,7 @@ import { NovelSummary } from '../../../core/models/novel.model';
         }
 
         .cover {
-          min-height: 106px;
+          height: 112px;
         }
 
         .card-footer {

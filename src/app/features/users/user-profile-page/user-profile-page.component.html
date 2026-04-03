@@ -50,17 +50,27 @@
       <button type="button" [class.active]="activeTab() === 'posts'" (click)="setTab('posts')">
         {{ 'profile.tabs.posts' | translate }}
       </button>
+      <button type="button" [class.active]="activeTab() === 'novels'" (click)="setTab('novels')">
+        {{ 'profile.tabs.novels' | translate }}
+      </button>
+      <button type="button" [class.active]="activeTab() === 'worlds'" (click)="setTab('worlds')">
+        {{ 'profile.tabs.worlds' | translate }}
+      </button>
+      <button
+        type="button"
+        [class.active]="activeTab() === 'characters'"
+        (click)="setTab('characters')"
+      >
+        {{ 'profile.tabs.characters' | translate }}
+      </button>
       @if (isOwnProfile) {
         <button type="button" [class.active]="activeTab() === 'saved'" (click)="setTab('saved')">
           {{ 'profile.tabs.saved' | translate }}
         </button>
       }
-      <button type="button" [class.active]="activeTab() === 'novels'" (click)="setTab('novels')">
-        {{ 'profile.tabs.novels' | translate }}
-      </button>
     </div>
 
-    @if (activeTab() !== 'novels') {
+    @if (activeTab() === 'posts' || activeTab() === 'saved') {
       <app-post-type-filter
         [selected]="selectedType()"
         (selectedChange)="onTypeChange($event)"
@@ -74,6 +84,26 @@
         <div class="post-stack">
           @for (novel of novels(); track novel.id) {
             <app-novel-card [novel]="novel" />
+          }
+        </div>
+      }
+    } @else if (activeTab() === 'worlds') {
+      @if (worlds().length === 0) {
+        <div class="state-card">{{ 'profile.noWorldsYet' | translate }}</div>
+      } @else {
+        <div class="post-stack">
+          @for (world of worlds(); track world.id) {
+            <app-world-card [world]="world" />
+          }
+        </div>
+      }
+    } @else if (activeTab() === 'characters') {
+      @if (characters().length === 0) {
+        <div class="state-card">{{ 'profile.noCharactersYet' | translate }}</div>
+      } @else {
+        <div class="post-stack">
+          @for (character of characters(); track character.id) {
+            <app-character-card [character]="character" />
           }
         </div>
       }

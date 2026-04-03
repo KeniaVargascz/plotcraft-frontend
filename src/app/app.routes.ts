@@ -59,6 +59,34 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'mundos',
+        loadComponent: () =>
+          import('./features/worlds/worlds-catalog-page.component').then(
+            (module) => module.WorldsCatalogPageComponent,
+          ),
+      },
+      {
+        path: 'mundos/:slug',
+        loadComponent: () =>
+          import('./features/worlds/world-detail-page.component').then(
+            (module) => module.WorldDetailPageComponent,
+          ),
+      },
+      {
+        path: 'personajes',
+        loadComponent: () =>
+          import('./features/characters/characters-catalog-page.component').then(
+            (module) => module.CharactersCatalogPageComponent,
+          ),
+      },
+      {
+        path: 'personajes/:username/:slug',
+        loadComponent: () =>
+          import('./features/characters/character-detail-page.component').then(
+            (module) => module.CharacterDetailPageComponent,
+          ),
+      },
+      {
         path: 'novelas/:slug',
         loadComponent: () =>
           import('./features/novels/novel-detail-page.component').then(
@@ -121,6 +149,34 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'mundos',
+        loadComponent: () =>
+          import('./features/worlds/worlds-catalog-page.component').then(
+            (module) => module.WorldsCatalogPageComponent,
+          ),
+      },
+      {
+        path: 'mundos/:slug',
+        loadComponent: () =>
+          import('./features/worlds/world-detail-page.component').then(
+            (module) => module.WorldDetailPageComponent,
+          ),
+      },
+      {
+        path: 'personajes',
+        loadComponent: () =>
+          import('./features/characters/characters-catalog-page.component').then(
+            (module) => module.CharactersCatalogPageComponent,
+          ),
+      },
+      {
+        path: 'personajes/:username/:slug',
+        loadComponent: () =>
+          import('./features/characters/character-detail-page.component').then(
+            (module) => module.CharacterDetailPageComponent,
+          ),
+      },
+      {
         path: 'novelas/:slug',
         loadComponent: () =>
           import('./features/novels/novel-detail-page.component').then(
@@ -132,6 +188,48 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/novels/my-novels-page.component').then(
             (module) => module.MyNovelsPageComponent,
+          ),
+      },
+      {
+        path: 'mis-mundos',
+        loadComponent: () =>
+          import('./features/worlds/my-worlds-page.component').then(
+            (module) => module.MyWorldsPageComponent,
+          ),
+      },
+      {
+        path: 'mis-mundos/nuevo',
+        loadComponent: () =>
+          import('./features/worlds/world-form-page.component').then(
+            (module) => module.WorldFormPageComponent,
+          ),
+      },
+      {
+        path: 'mis-mundos/:slug/editar',
+        loadComponent: () =>
+          import('./features/worlds/world-form-page.component').then(
+            (module) => module.WorldFormPageComponent,
+          ),
+      },
+      {
+        path: 'mis-personajes',
+        loadComponent: () =>
+          import('./features/characters/my-characters-page.component').then(
+            (module) => module.MyCharactersPageComponent,
+          ),
+      },
+      {
+        path: 'mis-personajes/nuevo',
+        loadComponent: () =>
+          import('./features/characters/character-form-page.component').then(
+            (module) => module.CharacterFormPageComponent,
+          ),
+      },
+      {
+        path: 'mis-personajes/:slug/editar',
+        loadComponent: () =>
+          import('./features/characters/character-form-page.component').then(
+            (module) => module.CharacterFormPageComponent,
           ),
       },
       {

@@ -1,18 +1,147 @@
-.settings-grid {
+.account-shell,
+.settings-stack,
+.settings-card,
+.tips {
   display: grid;
   gap: 1rem;
 }
 
-mat-card {
-  display: grid;
-  gap: 1rem;
-  background: var(--bg-card);
+.hero-card,
+.sidebar-card,
+.settings-card {
+  border-radius: 1.5rem;
   border: 1px solid var(--border);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--bg-card) 92%, white 8%),
+    var(--bg-card)
+  );
+  box-shadow: 0 12px 30px color-mix(in srgb, var(--bg) 82%, transparent);
+}
+
+.hero-card {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  gap: 1.5rem;
+  align-items: end;
+  padding: 1.5rem;
+}
+
+.content-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.sidebar-card,
+.settings-card {
+  padding: 1.25rem;
+}
+
+.hero-actions,
+.actions,
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.hero-actions {
+  justify-content: flex-end;
+}
+
+.eyebrow,
+.lede,
+.sidebar-card p,
+.tip-pill span,
+.card-kicker,
+.danger-copy {
+  color: var(--text-2);
+}
+
+.tips {
+  margin-top: 0.5rem;
+}
+
+.tip-pill {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+
+.card-kicker {
+  margin: 0 0 0.25rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.card-badge {
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--accent-glow);
+  color: var(--accent-text);
+  font-size: 0.85rem;
+}
+
+.danger-badge {
+  background: color-mix(in srgb, var(--danger) 14%, var(--bg-card));
+  color: #b42318;
 }
 
 form {
   display: grid;
   gap: 1rem;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.password-grid .full-span {
+  grid-column: 1 / -1;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.processing-banner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 0.85rem;
+  align-items: center;
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+
+.processing-banner strong,
+.processing-banner small {
+  grid-column: 2;
+}
+
+.processing-banner small {
+  color: var(--text-2);
+}
+
+.processing-dot {
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 38%, transparent);
+  animation: pulse 1.2s ease-in-out infinite;
 }
 
 .status,
@@ -34,4 +163,31 @@ form {
 
 .danger-zone {
   border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 36%, transparent);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--accent) 0%, transparent);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 0%, transparent);
+  }
+}
+
+@media (max-width: 960px) {
+  .hero-card,
+  .content-grid,
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-actions {
+    justify-content: stretch;
+  }
 }

@@ -18,7 +18,11 @@ import { NovelCardComponent } from './components/novel-card.component';
           <p>Gestiona borradores, obras publicadas y seriales en progreso.</p>
         </div>
 
-        <a class="primary" routerLink="/mis-novelas/nueva">Nueva novela</a>
+        <div class="header-actions">
+          <a class="secondary" routerLink="/mis-mundos">Mis mundos</a>
+          <a class="secondary" routerLink="/mis-personajes">Mis personajes</a>
+          <a class="primary" routerLink="/mis-novelas/nueva">Nueva novela</a>
+        </div>
       </header>
 
       @if (loading()) {
@@ -45,17 +49,26 @@ import { NovelCardComponent } from './components/novel-card.component';
         display: grid;
         gap: 1rem;
       }
-      .page-header {
+      .page-header,
+      .header-actions {
         display: flex;
         justify-content: space-between;
         gap: 1rem;
         align-items: center;
+        flex-wrap: wrap;
       }
       .primary {
         padding: 0.85rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
+        text-decoration: none;
+      }
+      .secondary {
+        padding: 0.85rem 1rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        color: var(--text-1);
         text-decoration: none;
       }
     `,

@@ -14,6 +14,10 @@
     "feed": "Feed",
     "explore": "Explorar",
     "novels": "Novelas",
+    "worlds": "Mundos",
+    "characters": "Personajes",
+    "myWorlds": "Mis mundos",
+    "myCharacters": "Mis personajes",
     "discovery": "Descubrir",
     "author": "Autor",
     "personal": "Personal",
@@ -144,9 +148,13 @@
     "tabs": {
       "posts": "Publicaciones",
       "saved": "Guardados",
-      "novels": "Novelas"
+      "novels": "Novelas",
+      "worlds": "Mundos",
+      "characters": "Personajes"
     },
-    "noNovelsYet": "Este autor aun no ha publicado novelas."
+    "noNovelsYet": "Este autor aun no ha publicado novelas.",
+    "noWorldsYet": "Este autor aun no tiene mundos publicos.",
+    "noCharactersYet": "Este autor aun no tiene personajes publicos."
   },
   "validation": {
     "required": "Este campo es obligatorio",
@@ -216,9 +224,9 @@
     "history": "Historial",
     "bookmarks": "Marcadores",
     "highlights": "Subrayados",
-    "lists": "Listas de lectura",
-    "goals": "Metas",
-    "stats": "Estadisticas",
+    "listsTitle": "Listas de lectura",
+    "goalsTitle": "Metas",
+    "statsTitle": "Estadisticas",
     "continueReading": "Continuar leyendo",
     "startReading": "Comenzar a leer",
     "resumeFrom": "Continuar desde cap. {{n}} - {{title}}",

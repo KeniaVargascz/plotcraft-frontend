@@ -1,8 +1,12 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, of, switchMap } from 'rxjs';
+import { CharacterSummary } from '../../core/models/character.model';
 import { Genre } from '../../core/models/genre.model';
 import { NovelRating, NovelStatus } from '../../core/models/novel.model';
+import { AuthService } from '../../core/services/auth.service';
+import { CharactersService } from '../../core/services/characters.service';
 import { GenresService } from '../../core/services/genres.service';
 import { NovelsService } from '../../core/services/novels.service';
 
@@ -78,6 +82,27 @@ import { NovelsService } from '../../core/services/novels.service';
               />
               {{ genre.label }}
             </label>
+          }
+        </fieldset>
+
+        <fieldset class="full genres">
+          <legend>Personajes vinculados</legend>
+          @if (!characters().length) {
+            <p class="hint">
+              Aun no tienes personajes creados. Puedes gestionarlos en Mis personajes.
+            </p>
+          } @else {
+            @for (character of characters(); track character.id) {
+              <label>
+                <input
+                  type="checkbox"
+                  [checked]="selectedCharacterIds().includes(character.id)"
+                  [disabled]="saving()"
+                  (change)="toggleCharacter(character)"
+                />
+                {{ character.name }} · {{ character.role }}
+              </label>
+            }
           }
         </fieldset>
 
@@ -197,9 +222,14 @@ export class NovelFormPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly novelsService = inject(NovelsService);
   private readonly genresService = inject(GenresService);
+  private readonly charactersService = inject(CharactersService);
+  private readonly authService = inject(AuthService);
 
   readonly genres = signal<Genre[]>([]);
+  readonly characters = signal<CharacterSummary[]>([]);
   readonly selectedGenreIds = signal<string[]>([]);
+  readonly selectedCharacterIds = signal<string[]>([]);
+  readonly initialCharacterIds = signal<string[]>([]);
   readonly saving = signal(false);
   readonly isEdit = signal(false);
   readonly errorMessage = signal('');
@@ -219,6 +249,10 @@ export class NovelFormPageComponent implements OnInit {
 
   ngOnInit() {
     this.genresService.list().subscribe((genres) => this.genres.set(genres));
+    this.charactersService.listMine({ limit: 50, sort: 'updated' }).subscribe({
+      next: (response) => this.characters.set(response.data),
+      error: () => this.characters.set([]),
+    });
 
     this.route.paramMap.subscribe((params) => {
       this.slug = params.get('slug');
@@ -237,6 +271,8 @@ export class NovelFormPageComponent implements OnInit {
         this.warnings = novel.warnings.join(', ');
         this.isPublic = novel.isPublic;
         this.selectedGenreIds.set(novel.genres.map((genre) => genre.id));
+        this.selectedCharacterIds.set(novel.characters.map((character) => character.id));
+        this.initialCharacterIds.set(novel.characters.map((character) => character.id));
       });
     });
   }
@@ -248,6 +284,14 @@ export class NovelFormPageComponent implements OnInit {
         : current.length < 5
           ? [...current, genre.id]
           : current,
+    );
+  }
+
+  toggleCharacter(character: CharacterSummary) {
+    this.selectedCharacterIds.update((current) =>
+      current.includes(character.id)
+        ? current.filter((id) => id !== character.id)
+        : [...current, character.id],
     );
   }
 
@@ -281,9 +325,10 @@ export class NovelFormPageComponent implements OnInit {
       ? this.novelsService.update(this.slug, payload)
       : this.novelsService.create(payload);
 
-    request.subscribe({
+    request.pipe(switchMap((novel) => this.syncCharacterLinks(novel.slug, novel))).subscribe({
       next: (novel) => {
         this.statusMessage.set('Novela guardada. Redirigiendo a capitulos...');
+        this.initialCharacterIds.set(this.selectedCharacterIds());
         this.saving.set(false);
         this.router.navigate(['/mis-novelas', novel.slug, 'capitulos']);
       },
@@ -292,5 +337,37 @@ export class NovelFormPageComponent implements OnInit {
         this.errorMessage.set('No se pudo guardar la novela. Revisa los datos e intenta de nuevo.');
       },
     });
+  }
+
+  private syncCharacterLinks(novelSlug: string, novel: { slug: string }) {
+    const username = this.authService.getCurrentUserSnapshot()?.username;
+    if (!username) {
+      return of(novel);
+    }
+
+    const selectedIds = new Set(this.selectedCharacterIds());
+    const currentIds = new Set(this.initialCharacterIds());
+    const byId = new Map(this.characters().map((character) => [character.id, character]));
+
+    const toLink = [...selectedIds]
+      .filter((id) => !currentIds.has(id))
+      .map((id) => byId.get(id))
+      .filter((character): character is CharacterSummary => Boolean(character));
+
+    const toUnlink = [...currentIds]
+      .filter((id) => !selectedIds.has(id))
+      .map((id) => byId.get(id))
+      .filter((character): character is CharacterSummary => Boolean(character));
+
+    const operations = [
+      ...toLink.map((character) =>
+        this.charactersService.linkNovel(username, character.slug, novelSlug),
+      ),
+      ...toUnlink.map((character) =>
+        this.charactersService.unlinkNovel(username, character.slug, novelSlug),
+      ),
+    ];
+
+    return operations.length ? forkJoin(operations).pipe(switchMap(() => of(novel))) : of(novel);
   }
 }

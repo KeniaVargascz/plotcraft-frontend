@@ -6,12 +6,18 @@ import { AuthService } from '../../../core/services/auth.service';
 import { FollowsService } from '../../../core/services/follows.service';
 import { NovelSummary } from '../../../core/models/novel.model';
 import { NovelsService } from '../../../core/services/novels.service';
+import { CharacterSummary } from '../../../core/models/character.model';
 import { PostsService } from '../../../core/services/posts.service';
+import { CharactersService } from '../../../core/services/characters.service';
 import { UserService } from '../../../core/services/user.service';
+import { WorldSummary } from '../../../core/models/world.model';
+import { WorldsService } from '../../../core/services/worlds.service';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { CharacterCardComponent } from '../../characters/components/character-card.component';
 import { NovelCardComponent } from '../../novels/components/novel-card.component';
 import { PostCardComponent } from '../../feed/components/post-card/post-card.component';
 import { PostTypeFilterComponent } from '../../feed/components/post-type-filter/post-type-filter.component';
+import { WorldCardComponent } from '../../worlds/components/world-card.component';
 
 @Component({
   selector: 'app-user-profile-page',
@@ -22,6 +28,8 @@ import { PostTypeFilterComponent } from '../../feed/components/post-type-filter/
     PostCardComponent,
     PostTypeFilterComponent,
     NovelCardComponent,
+    WorldCardComponent,
+    CharacterCardComponent,
   ],
   templateUrl: './user-profile-page.component.html',
   styleUrl: './user-profile-page.component.scss',
@@ -34,6 +42,8 @@ export class UserProfilePageComponent implements OnInit {
   private readonly postsService = inject(PostsService);
   private readonly followsService = inject(FollowsService);
   private readonly novelsService = inject(NovelsService);
+  private readonly worldsService = inject(WorldsService);
+  private readonly charactersService = inject(CharactersService);
 
   readonly loading = signal(true);
   readonly postsLoading = signal(true);
@@ -41,10 +51,12 @@ export class UserProfilePageComponent implements OnInit {
   readonly profile = signal<PublicProfile | null>(null);
   readonly posts = signal<PostModel[]>([]);
   readonly novels = signal<NovelSummary[]>([]);
+  readonly worlds = signal<WorldSummary[]>([]);
+  readonly characters = signal<CharacterSummary[]>([]);
   readonly selectedType = signal<PostType | 'ALL'>('ALL');
   readonly nextCursor = signal<string | null>(null);
   readonly hasMore = signal(false);
-  readonly activeTab = signal<'posts' | 'saved' | 'novels'>('posts');
+  readonly activeTab = signal<'posts' | 'novels' | 'worlds' | 'characters' | 'saved'>('posts');
   readonly followPending = signal(false);
 
   ngOnInit() {
@@ -75,7 +87,7 @@ export class UserProfilePageComponent implements OnInit {
     }
   }
 
-  setTab(tab: 'posts' | 'saved' | 'novels') {
+  setTab(tab: 'posts' | 'novels' | 'worlds' | 'characters' | 'saved') {
     this.activeTab.set(tab);
     const username = this.profile()?.username;
     if (username) {
@@ -179,6 +191,8 @@ export class UserProfilePageComponent implements OnInit {
     if (this.activeTab() === 'novels') {
       this.postsLoading.set(false);
       this.hasMore.set(false);
+      this.worlds.set([]);
+      this.characters.set([]);
       this.novelsService.listByUser(username, { limit: 24 }).subscribe({
         next: (response) => this.novels.set(response.data),
         error: () => this.novels.set([]),
@@ -186,7 +200,33 @@ export class UserProfilePageComponent implements OnInit {
       return;
     }
 
+    if (this.activeTab() === 'worlds') {
+      this.postsLoading.set(false);
+      this.hasMore.set(false);
+      this.novels.set([]);
+      this.characters.set([]);
+      this.worldsService.listByUser(username, { limit: 24 }).subscribe({
+        next: (response) => this.worlds.set(response.data),
+        error: () => this.worlds.set([]),
+      });
+      return;
+    }
+
+    if (this.activeTab() === 'characters') {
+      this.postsLoading.set(false);
+      this.hasMore.set(false);
+      this.novels.set([]);
+      this.worlds.set([]);
+      this.charactersService.listByUser(username, { limit: 24 }).subscribe({
+        next: (response) => this.characters.set(response.data),
+        error: () => this.characters.set([]),
+      });
+      return;
+    }
+
     this.novels.set([]);
+    this.worlds.set([]);
+    this.characters.set([]);
     this.loadPosts(username, reset);
   }
 }

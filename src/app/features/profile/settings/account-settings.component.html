@@ -1,59 +1,209 @@
-<section class="settings-grid">
-  <mat-card>
-    <h2>Cambiar email</h2>
-    <form [formGroup]="emailForm" (ngSubmit)="submitEmail()">
-      <mat-form-field appearance="outline"><mat-label>Email</mat-label><input matInput formControlName="email" /></mat-form-field>
-      <mat-form-field appearance="outline"><mat-label>Contrasena actual</mat-label><input matInput type="password" formControlName="currentPassword" /></mat-form-field>
-      @if (emailStatus()) {
-        <p class="status">{{ emailStatus() }}</p>
-      }
-      @if (emailError()) {
-        <p class="error">{{ emailError() }}</p>
-      }
-      <button mat-flat-button type="submit" [disabled]="emailForm.invalid || emailSaving()">
-        {{ emailSaving() ? 'Guardando...' : 'Guardar' }}
-      </button>
-    </form>
-  </mat-card>
+<section class="account-shell">
+  <header class="hero-card">
+    <div class="hero-copy">
+      <p class="eyebrow">Cuenta</p>
+      <h1>Configuracion de acceso</h1>
+      <p class="lede">
+        Actualiza tus credenciales, protege tu identidad de autor y controla el acceso a tu perfil.
+      </p>
+    </div>
 
-  <mat-card>
-    <h2>Cambiar username</h2>
-    <form [formGroup]="usernameForm" (ngSubmit)="submitUsername()">
-      <mat-form-field appearance="outline"><mat-label>Username</mat-label><input matInput formControlName="username" /></mat-form-field>
-      <mat-form-field appearance="outline"><mat-label>Contrasena actual</mat-label><input matInput type="password" formControlName="currentPassword" /></mat-form-field>
-      @if (usernameStatus()) {
-        <p class="status">{{ usernameStatus() }}</p>
-      }
-      @if (usernameError()) {
-        <p class="error">{{ usernameError() }}</p>
-      }
-      <button mat-flat-button type="submit" [disabled]="usernameForm.invalid || usernameSaving()">
-        {{ usernameSaving() ? 'Guardando...' : 'Guardar' }}
-      </button>
-    </form>
-  </mat-card>
+    <div class="hero-actions">
+      <a mat-stroked-button routerLink="/mi-perfil">Volver a mi perfil</a>
+      <a mat-flat-button routerLink="/mi-perfil/editar">Editar perfil publico</a>
+    </div>
+  </header>
 
-  <mat-card>
-    <h2>Cambiar contrasena</h2>
-    <form [formGroup]="passwordForm" (ngSubmit)="submitPassword()">
-      <mat-form-field appearance="outline"><mat-label>Contrasena actual</mat-label><input matInput type="password" formControlName="currentPassword" /></mat-form-field>
-      <mat-form-field appearance="outline"><mat-label>Nueva contrasena</mat-label><input matInput type="password" formControlName="newPassword" /></mat-form-field>
-      <mat-form-field appearance="outline"><mat-label>Confirmar nueva contrasena</mat-label><input matInput type="password" formControlName="confirmNewPassword" /></mat-form-field>
-      @if (passwordStatus()) {
-        <p class="status">{{ passwordStatus() }}</p>
-      }
-      @if (passwordError()) {
-        <p class="error">{{ passwordError() }}</p>
-      }
-      <button mat-flat-button type="submit" [disabled]="passwordForm.invalid || passwordSaving()">
-        {{ passwordSaving() ? 'Guardando...' : 'Guardar' }}
-      </button>
-    </form>
-  </mat-card>
+  <section class="content-grid">
+    <aside class="sidebar-card">
+      <h2>Centro de seguridad</h2>
+      <p>
+        Usa un email vigente, un username estable y una contrasena robusta para mantener tu cuenta
+        segura.
+      </p>
 
-  <mat-card class="danger-zone">
-    <h2>Zona de peligro</h2>
-    <p>Eliminar la cuenta es irreversible.</p>
-    <a mat-stroked-button routerLink="/cuenta/eliminar">Eliminar cuenta</a>
-  </mat-card>
+      <div class="tips">
+        <article class="tip-pill">
+          <strong>Email</strong>
+          <span>Se usa para acceso, recuperacion y notificaciones clave.</span>
+        </article>
+        <article class="tip-pill">
+          <strong>Username</strong>
+          <span>Impacta tu URL publica y como te encuentra la comunidad.</span>
+        </article>
+        <article class="tip-pill">
+          <strong>Contrasena</strong>
+          <span>Debe combinar mayusculas, minusculas y numeros.</span>
+        </article>
+      </div>
+    </aside>
+
+    <div class="settings-stack">
+      <mat-card class="settings-card">
+        <div class="card-head">
+          <div>
+            <p class="card-kicker">Acceso</p>
+            <h2>Cambiar email</h2>
+          </div>
+          <span class="card-badge">Identidad</span>
+        </div>
+
+        <form [formGroup]="emailForm" (ngSubmit)="submitEmail()">
+          <div class="field-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Contrasena actual</mat-label>
+              <input matInput type="password" formControlName="currentPassword" />
+            </mat-form-field>
+          </div>
+
+          @if (emailSaving()) {
+            <div class="processing-banner" aria-live="polite">
+              <span class="processing-dot"></span>
+              <strong>Procesando cambio de email...</strong>
+              <small>Estamos validando tus credenciales y guardando la actualizacion.</small>
+            </div>
+          }
+
+          @if (emailStatus()) {
+            <p class="status">{{ emailStatus() }}</p>
+          }
+          @if (emailError()) {
+            <p class="error">{{ emailError() }}</p>
+          }
+
+          <div class="actions">
+            <button mat-flat-button type="submit" [disabled]="emailForm.invalid || emailSaving()">
+              {{ emailSaving() ? 'Guardando...' : 'Guardar email' }}
+            </button>
+          </div>
+        </form>
+      </mat-card>
+
+      <mat-card class="settings-card">
+        <div class="card-head">
+          <div>
+            <p class="card-kicker">Perfil publico</p>
+            <h2>Cambiar username</h2>
+          </div>
+          <span class="card-badge">URL publica</span>
+        </div>
+
+        <form [formGroup]="usernameForm" (ngSubmit)="submitUsername()">
+          <div class="field-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Username</mat-label>
+              <input matInput formControlName="username" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Contrasena actual</mat-label>
+              <input matInput type="password" formControlName="currentPassword" />
+            </mat-form-field>
+          </div>
+
+          @if (usernameSaving()) {
+            <div class="processing-banner" aria-live="polite">
+              <span class="processing-dot"></span>
+              <strong>Procesando cambio de username...</strong>
+              <small>Estamos actualizando tu identidad publica y verificando disponibilidad.</small>
+            </div>
+          }
+
+          @if (usernameStatus()) {
+            <p class="status">{{ usernameStatus() }}</p>
+          }
+          @if (usernameError()) {
+            <p class="error">{{ usernameError() }}</p>
+          }
+
+          <div class="actions">
+            <button
+              mat-flat-button
+              type="submit"
+              [disabled]="usernameForm.invalid || usernameSaving()"
+            >
+              {{ usernameSaving() ? 'Guardando...' : 'Guardar username' }}
+            </button>
+          </div>
+        </form>
+      </mat-card>
+
+      <mat-card class="settings-card">
+        <div class="card-head">
+          <div>
+            <p class="card-kicker">Seguridad</p>
+            <h2>Cambiar contrasena</h2>
+          </div>
+          <span class="card-badge">Proteccion</span>
+        </div>
+
+        <form [formGroup]="passwordForm" (ngSubmit)="submitPassword()">
+          <div class="field-grid password-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Contrasena actual</mat-label>
+              <input matInput type="password" formControlName="currentPassword" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Nueva contrasena</mat-label>
+              <input matInput type="password" formControlName="newPassword" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-span">
+              <mat-label>Confirmar nueva contrasena</mat-label>
+              <input matInput type="password" formControlName="confirmNewPassword" />
+            </mat-form-field>
+          </div>
+
+          @if (passwordSaving()) {
+            <div class="processing-banner" aria-live="polite">
+              <span class="processing-dot"></span>
+              <strong>Procesando cambio de contrasena...</strong>
+              <small>Estamos asegurando la nueva credencial antes de aplicarla.</small>
+            </div>
+          }
+
+          @if (passwordStatus()) {
+            <p class="status">{{ passwordStatus() }}</p>
+          }
+          @if (passwordError()) {
+            <p class="error">{{ passwordError() }}</p>
+          }
+
+          <div class="actions">
+            <button
+              mat-flat-button
+              type="submit"
+              [disabled]="passwordForm.invalid || passwordSaving()"
+            >
+              {{ passwordSaving() ? 'Guardando...' : 'Guardar contrasena' }}
+            </button>
+          </div>
+        </form>
+      </mat-card>
+
+      <mat-card class="settings-card danger-zone">
+        <div class="card-head">
+          <div>
+            <p class="card-kicker">Riesgo alto</p>
+            <h2>Zona de peligro</h2>
+          </div>
+          <span class="card-badge danger-badge">Irreversible</span>
+        </div>
+
+        <p class="danger-copy">
+          Eliminar la cuenta borra tu acceso y no se puede deshacer. Revisa esta accion con cuidado.
+        </p>
+
+        <div class="actions">
+          <a mat-stroked-button routerLink="/cuenta/eliminar">Eliminar cuenta</a>
+        </div>
+      </mat-card>
+    </div>
+  </section>
 </section>

@@ -35,7 +35,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
             <span>{{ current.bookmarked.length }} novelas</span>
           </a>
           <a class="card nav-card" routerLink="/biblioteca/listas">
-            <strong>{{ 'library.lists' | translate }}</strong>
+            <strong>{{ 'library.listsTitle' | translate }}</strong>
             <span>{{ current.reading_lists.length }} listas</span>
           </a>
         </section>
@@ -73,7 +73,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
           <article class="card">
             <div class="section-head">
-              <h2>{{ 'library.goals' | translate }}</h2>
+              <h2>{{ 'library.goalsTitle' | translate }}</h2>
               <a routerLink="/biblioteca/metas">{{ 'common.save' | translate }}</a>
             </div>
 

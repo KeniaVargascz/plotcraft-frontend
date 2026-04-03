@@ -9,11 +9,20 @@ import { ReadingList } from '../../core/models/reading-list.model';
 import { ReadingListsService } from '../../core/services/reading-lists.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { CharacterCardComponent } from '../characters/components/character-card.component';
+import { WorldCardComponent } from '../worlds/components/world-card.component';
 
 @Component({
   selector: 'app-novel-detail-page',
   standalone: true,
-  imports: [RouterLink, DatePipe, ErrorMessageComponent, LoadingSpinnerComponent],
+  imports: [
+    RouterLink,
+    DatePipe,
+    ErrorMessageComponent,
+    LoadingSpinnerComponent,
+    WorldCardComponent,
+    CharacterCardComponent,
+  ],
   template: `
     @if (loading()) {
       <app-loading-spinner />
@@ -80,6 +89,8 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
                 <a [routerLink]="['/mis-novelas', currentNovel.slug, 'capitulos']"
                   >Gestionar capitulos</a
                 >
+                <a routerLink="/mis-mundos">Gestionar mundos</a>
+                <a routerLink="/mis-personajes">Gestionar personajes</a>
               }
             </div>
 
@@ -145,10 +156,40 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
             <span>{{ currentNovel.stats.chaptersCount }} capitulos</span>
             <span>{{ currentNovel.stats.likesCount }} likes</span>
             <span>{{ currentNovel.stats.bookmarksCount }} guardados</span>
+            <span>{{ currentNovel.stats.worldsCount }} mundos</span>
+            <span>{{ currentNovel.stats.charactersCount }} personajes</span>
             <span>{{ currentNovel.viewsCount }} vistas</span>
             <span>Actualizada {{ currentNovel.updatedAt | date: 'longDate' }}</span>
           </aside>
         </section>
+
+        @if (currentNovel.worlds.length) {
+          <section class="related-block">
+            <div class="section-head">
+              <h2>Mundos vinculados</h2>
+              <a routerLink="/mundos">Explorar atlas</a>
+            </div>
+            <div class="world-grid">
+              @for (world of currentNovel.worlds; track world.id) {
+                <app-world-card [world]="world" />
+              }
+            </div>
+          </section>
+        }
+
+        @if (currentNovel.characters.length) {
+          <section class="related-block">
+            <div class="section-head">
+              <h2>Personajes</h2>
+              <a routerLink="/personajes">Explorar personajes</a>
+            </div>
+            <div class="character-grid">
+              @for (character of currentNovel.characters; track character.id) {
+                <app-character-card [character]="character" />
+              }
+            </div>
+          </section>
+        }
       </section>
     }
   `,
@@ -157,14 +198,20 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
       .detail-shell,
       .meta,
       .card,
-      .chapter-list {
+      .chapter-list,
+      .related-block {
         display: grid;
         gap: 1rem;
       }
       .hero,
-      .content-grid {
+      .content-grid,
+      .section-head {
         display: grid;
         gap: 1.25rem;
+      }
+      .section-head {
+        grid-template-columns: 1fr auto;
+        align-items: center;
       }
       .hero {
         grid-template-columns: 220px 1fr;
@@ -239,6 +286,12 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
         grid-template-columns: 1fr 280px;
         margin-top: 1.5rem;
       }
+      .world-grid,
+      .character-grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
       .chapter-item {
         display: flex;
         justify-content: space-between;
@@ -250,7 +303,9 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
       }
       @media (max-width: 900px) {
         .hero,
-        .content-grid {
+        .content-grid,
+        .world-grid,
+        .character-grid {
           grid-template-columns: 1fr;
         }
       }

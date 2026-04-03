@@ -1,4 +1,6 @@
 import { Genre } from './genre.model';
+import { CharacterSummary } from './character.model';
+import { WorldSummary } from './world.model';
 
 export type NovelStatus = 'DRAFT' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
 export type NovelRating = 'G' | 'PG' | 'PG13' | 'R' | 'EXPLICIT';
@@ -30,6 +32,8 @@ export interface NovelSummary {
     publishedChaptersCount: number;
     likesCount: number;
     bookmarksCount: number;
+    worldsCount: number;
+    charactersCount: number;
   };
   viewerContext: {
     hasLiked: boolean;
@@ -58,4 +62,6 @@ export interface NovelChapterSummary {
 
 export interface NovelDetail extends NovelSummary {
   chapters: NovelChapterSummary[];
+  worlds: WorldSummary[];
+  characters: CharacterSummary[];
 }

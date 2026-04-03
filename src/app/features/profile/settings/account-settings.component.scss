@@ -161,6 +161,124 @@ mat-form-field {
   color: #ffb3b3;
 }
 
+.toggle-list {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.toggle-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+}
+
+.toggle-row:hover {
+  background: var(--bg-surface);
+}
+
+.toggle-info {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.toggle-info strong {
+  font-size: 0.9rem;
+  color: var(--text-1);
+}
+
+.toggle-info span {
+  font-size: 0.82rem;
+  color: var(--text-2);
+}
+
+.toggle-row input[type='checkbox'] {
+  width: 40px;
+  height: 22px;
+  appearance: none;
+  background: var(--border);
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.toggle-row input[type='checkbox']::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s;
+}
+
+.toggle-row input[type='checkbox']:checked {
+  background: var(--accent);
+}
+
+.toggle-row input[type='checkbox']:checked::after {
+  transform: translateX(18px);
+}
+
+.channel-selector {
+  padding: 1rem;
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 0.75rem;
+}
+
+.channel-options {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.channel-option {
+  padding: 0.55rem 1rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-2);
+  font-size: 0.85rem;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.channel-option.active {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+  color: var(--accent-text);
+}
+
+.channel-option.disabled {
+  opacity: 0.5;
+}
+
+.channel-option input[type='radio'] {
+  display: none;
+}
+
+.coming-soon {
+  font-size: 0.72rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: var(--bg-surface);
+  color: var(--text-3);
+}
+
+.export-copy {
+  color: var(--text-2);
+  line-height: 1.55;
+}
+
 .danger-zone {
   border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
 }

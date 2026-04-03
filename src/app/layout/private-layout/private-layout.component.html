@@ -9,6 +9,7 @@
       <a routerLink="/novelas" routerLinkActive="active">{{ 'nav.novels' | translate }}</a>
       <a routerLink="/mundos" routerLinkActive="active">{{ 'nav.worlds' | translate }}</a>
       <a routerLink="/personajes" routerLinkActive="active">{{ 'nav.characters' | translate }}</a>
+      <a routerLink="/foro" routerLinkActive="active">{{ 'nav.forum' | translate }}</a>
     </div>
 
     <div class="nav-group">
@@ -50,6 +51,22 @@
 
       <div class="search-slot">
         <app-search-bar [compact]="false" />
+      </div>
+
+      <div class="notification-slot">
+        <button class="notification-button" (click)="toggleNotifications()">
+          🔔
+          @if (unreadCount() > 0) {
+            <span class="notif-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
+          }
+        </button>
+        @if (showNotifications()) {
+          <app-notifications-panel
+            [visible]="showNotifications()"
+            (close)="showNotifications.set(false)"
+            (badgeReset)="unreadCount.set(0)"
+          />
+        }
       </div>
 
       <div class="user-actions">

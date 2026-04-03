@@ -187,6 +187,222 @@
         </form>
       </mat-card>
 
+      <!-- Privacy Settings -->
+      <mat-card class="settings-card">
+        <div class="card-head">
+          <div>
+            <p class="card-kicker">Visibilidad</p>
+            <h2>Privacidad</h2>
+          </div>
+          <span class="card-badge">Perfil</span>
+        </div>
+
+        @if (privacyLoading()) {
+          <div class="processing-banner" aria-live="polite">
+            <span class="processing-dot"></span>
+            <strong>Cargando preferencias de privacidad...</strong>
+          </div>
+        } @else {
+          <div class="toggle-list">
+            <label class="toggle-row">
+              <div class="toggle-info">
+                <strong>Actividad de lectura</strong>
+                <span>Otros usuarios pueden ver lo que estas leyendo.</span>
+              </div>
+              <input
+                type="checkbox"
+                [checked]="privacy().showReadingActivity"
+                (change)="updatePrivacyField('showReadingActivity', $any($event.target).checked)"
+              />
+            </label>
+
+            <label class="toggle-row">
+              <div class="toggle-info">
+                <strong>Listas de lectura</strong>
+                <span>Tus listas de lectura son visibles en tu perfil.</span>
+              </div>
+              <input
+                type="checkbox"
+                [checked]="privacy().showReadingLists"
+                (change)="updatePrivacyField('showReadingLists', $any($event.target).checked)"
+              />
+            </label>
+
+            <label class="toggle-row">
+              <div class="toggle-info">
+                <strong>Seguidores y seguidos</strong>
+                <span>Mostrar tus seguidores y a quienes sigues.</span>
+              </div>
+              <input
+                type="checkbox"
+                [checked]="privacy().showFollows"
+                (change)="updatePrivacyField('showFollows', $any($event.target).checked)"
+              />
+            </label>
+
+            <label class="toggle-row">
+              <div class="toggle-info">
+                <strong>Estadisticas</strong>
+                <span>Tus estadisticas de lectura y escritura son publicas.</span>
+              </div>
+              <input
+                type="checkbox"
+                [checked]="privacy().showStats"
+                (change)="updatePrivacyField('showStats', $any($event.target).checked)"
+              />
+            </label>
+
+            <label class="toggle-row">
+              <div class="toggle-info">
+                <strong>Aparecer en busquedas</strong>
+                <span>Tu perfil puede ser encontrado por otros usuarios.</span>
+              </div>
+              <input
+                type="checkbox"
+                [checked]="privacy().searchable"
+                (change)="updatePrivacyField('searchable', $any($event.target).checked)"
+              />
+            </label>
+          </div>
+        }
+      </mat-card>
+
+      <!-- Notification Preferences -->
+      <mat-card class="settings-card">
+        <div class="card-head">
+          <div>
+            <p class="card-kicker">Alertas</p>
+            <h2>Notificaciones</h2>
+          </div>
+          <span class="card-badge">Preferencias</span>
+        </div>
+
+        @if (notifLoading()) {
+          <div class="processing-banner" aria-live="polite">
+            <span class="processing-dot"></span>
+            <strong>Cargando preferencias de notificaciones...</strong>
+          </div>
+        } @else {
+          <div class="toggle-list">
+            <label class="toggle-row">
+              <div class="toggle-info">
+                <strong>Nuevo seguidor</strong>
+                <span>Cuando alguien comienza a seguirte.</span>
+              </div>
+              <input
+                type="checkbox"
+                [checked]="notifPrefs().newFollower"
+                (change)="updateNotifField('newFollower', $any($event.target).checked)"
+              />
+            </label>
+
+            <label class="toggle-row">
+              <div class="toggle-info">
+                <strong>Nuevo comentario</strong>
+                <span>Cuando comentan en tu publicacion.</span>
+              </div>
+              <input
+                type="checkbox"
+                [checked]="notifPrefs().newCommentOnPost"
+                (change)="updateNotifField('newCommentOnPost', $any($event.target).checked)"
+              />
+            </label>
+
+            <label class="toggle-row">
+              <div class="toggle-info">
+                <strong>Nueva reaccion</strong>
+                <span>Cuando reaccionan a tu publicacion.</span>
+              </div>
+              <input
+                type="checkbox"
+                [checked]="notifPrefs().newReactionOnPost"
+                (change)="updateNotifField('newReactionOnPost', $any($event.target).checked)"
+              />
+            </label>
+
+            <label class="toggle-row">
+              <div class="toggle-info">
+                <strong>Nueva respuesta</strong>
+                <span>Cuando responden en un hilo donde participas.</span>
+              </div>
+              <input
+                type="checkbox"
+                [checked]="notifPrefs().newReplyInThread"
+                (change)="updateNotifField('newReplyInThread', $any($event.target).checked)"
+              />
+            </label>
+
+            <label class="toggle-row">
+              <div class="toggle-info">
+                <strong>Nuevo capitulo</strong>
+                <span>Cuando una novela que sigues publica un nuevo capitulo.</span>
+              </div>
+              <input
+                type="checkbox"
+                [checked]="notifPrefs().newChapterFromFollowed"
+                (change)="updateNotifField('newChapterFromFollowed', $any($event.target).checked)"
+              />
+            </label>
+
+            <label class="toggle-row">
+              <div class="toggle-info">
+                <strong>Hito de novela</strong>
+                <span>Cuando tu novela alcanza un hito importante.</span>
+              </div>
+              <input
+                type="checkbox"
+                [checked]="notifPrefs().novelMilestone"
+                (change)="updateNotifField('novelMilestone', $any($event.target).checked)"
+              />
+            </label>
+          </div>
+
+          <div class="channel-selector">
+            <label class="toggle-info">
+              <strong>Canal de entrega</strong>
+              <span>Como prefieres recibir las notificaciones.</span>
+            </label>
+            <div class="channel-options">
+              <label class="channel-option" [class.active]="notifPrefs().channel === 'IN_APP'">
+                <input type="radio" name="channel" value="IN_APP" [checked]="notifPrefs().channel === 'IN_APP'" disabled />
+                En la app
+              </label>
+              <label class="channel-option disabled">
+                <input type="radio" name="channel" value="EMAIL" disabled />
+                Email <span class="coming-soon">proximamente</span>
+              </label>
+            </div>
+          </div>
+        }
+      </mat-card>
+
+      <!-- Export Data -->
+      <mat-card class="settings-card">
+        <div class="card-head">
+          <div>
+            <p class="card-kicker">Datos</p>
+            <h2>Exportar informacion</h2>
+          </div>
+          <span class="card-badge">Portabilidad</span>
+        </div>
+
+        <p class="export-copy">
+          Descarga una copia de todos tus datos en formato JSON. Incluye tu perfil, novelas, mundos,
+          personajes, actividad de lectura y configuracion.
+        </p>
+
+        <div class="actions">
+          <button
+            mat-flat-button
+            type="button"
+            [disabled]="exportLoading()"
+            (click)="exportData()"
+          >
+            {{ exportLoading() ? 'Preparando...' : 'Descargar mis datos' }}
+          </button>
+        </div>
+      </mat-card>
+
       <mat-card class="settings-card danger-zone">
         <div class="card-head">
           <div>

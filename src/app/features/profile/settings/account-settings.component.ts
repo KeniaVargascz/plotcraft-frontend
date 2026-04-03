@@ -1,16 +1,22 @@
-import { Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, signal, OnInit } from '@angular/core';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { PrivacySettings } from '../../../core/models/privacy-settings.model';
+import { NotificationPreferences } from '../../../core/models/notification-preferences.model';
+import { SettingsService } from '../../../core/services/settings.service';
 import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-account-settings',
   standalone: true,
   imports: [
+    FormsModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
@@ -21,9 +27,12 @@ import { UserService } from '../../../core/services/user.service';
   templateUrl: './account-settings.component.html',
   styleUrl: './account-settings.component.scss',
 })
-export class AccountSettingsComponent {
+export class AccountSettingsComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly userService = inject(UserService);
+  private readonly settingsService = inject(SettingsService);
+
+  private readonly privacyDebounce$ = new Subject<Partial<PrivacySettings>>();
 
   readonly emailSaving = signal(false);
   readonly usernameSaving = signal(false);
@@ -34,6 +43,27 @@ export class AccountSettingsComponent {
   readonly emailError = signal('');
   readonly usernameError = signal('');
   readonly passwordError = signal('');
+
+  readonly privacy = signal<PrivacySettings>({
+    showReadingActivity: true,
+    showReadingLists: true,
+    showFollows: true,
+    showStats: true,
+    allowMessages: true,
+    searchable: true,
+  });
+  readonly notifPrefs = signal<NotificationPreferences>({
+    newFollower: true,
+    newCommentOnPost: true,
+    newReactionOnPost: true,
+    newReplyInThread: true,
+    newChapterFromFollowed: true,
+    novelMilestone: true,
+    channel: 'IN_APP',
+  });
+  readonly exportLoading = signal(false);
+  readonly privacyLoading = signal(false);
+  readonly notifLoading = signal(false);
 
   readonly emailForm = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
@@ -53,6 +83,67 @@ export class AccountSettingsComponent {
     ],
     confirmNewPassword: ['', [Validators.required]],
   });
+
+  ngOnInit(): void {
+    this.loadPrivacy();
+    this.loadNotificationPrefs();
+    this.privacyDebounce$.pipe(debounceTime(500)).subscribe((patch) => {
+      this.settingsService.updatePrivacy(patch).subscribe({
+        next: (res) => this.privacy.set(res),
+      });
+    });
+  }
+
+  loadPrivacy(): void {
+    this.privacyLoading.set(true);
+    this.settingsService.getPrivacy().subscribe({
+      next: (res) => {
+        this.privacy.set(res);
+        this.privacyLoading.set(false);
+      },
+      error: () => this.privacyLoading.set(false),
+    });
+  }
+
+  loadNotificationPrefs(): void {
+    this.notifLoading.set(true);
+    this.settingsService.getNotificationPrefs().subscribe({
+      next: (res) => {
+        this.notifPrefs.set(res);
+        this.notifLoading.set(false);
+      },
+      error: () => this.notifLoading.set(false),
+    });
+  }
+
+  updatePrivacyField(field: keyof PrivacySettings, value: boolean): void {
+    this.privacy.update((p) => ({ ...p, [field]: value }));
+    this.privacyDebounce$.next({ [field]: value });
+  }
+
+  updateNotifField(field: keyof NotificationPreferences, value: boolean): void {
+    this.notifPrefs.update((p) => ({ ...p, [field]: value }));
+    this.settingsService.updateNotificationPrefs({ [field]: value }).subscribe({
+      next: (res) => this.notifPrefs.set(res),
+    });
+  }
+
+  exportData(): void {
+    if (this.exportLoading()) return;
+    this.exportLoading.set(true);
+    this.settingsService.exportData().subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `plotcraft-data-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        this.exportLoading.set(false);
+      },
+      error: () => this.exportLoading.set(false),
+    });
+  }
 
   submitEmail(): void {
     if (this.emailForm.invalid || this.emailSaving()) {

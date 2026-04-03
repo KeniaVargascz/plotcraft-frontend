@@ -346,6 +346,34 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'notificaciones',
+        loadComponent: () =>
+          import('./features/notifications/notifications-page.component').then(
+            (module) => module.NotificationsPageComponent,
+          ),
+      },
+      {
+        path: 'foro/nuevo',
+        loadComponent: () =>
+          import('./features/forum/new-thread-page.component').then(
+            (module) => module.NewThreadPageComponent,
+          ),
+      },
+      {
+        path: 'foro',
+        loadComponent: () =>
+          import('./features/forum/forum-home-page.component').then(
+            (module) => module.ForumHomePageComponent,
+          ),
+      },
+      {
+        path: 'foro/:slug',
+        loadComponent: () =>
+          import('./features/forum/thread-detail-page.component').then(
+            (module) => module.ThreadDetailPageComponent,
+          ),
+      },
+      {
         path: '',
         loadChildren: () =>
           import('./features/profile/profile.routes').then((module) => module.PROFILE_ROUTES),
@@ -467,6 +495,20 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/novels/novel-detail-page.component').then(
             (module) => module.NovelDetailPageComponent,
+          ),
+      },
+      {
+        path: 'foro',
+        loadComponent: () =>
+          import('./features/forum/forum-home-page.component').then(
+            (module) => module.ForumHomePageComponent,
+          ),
+      },
+      {
+        path: 'foro/:slug',
+        loadComponent: () =>
+          import('./features/forum/thread-detail-page.component').then(
+            (module) => module.ThreadDetailPageComponent,
           ),
       },
     ],

@@ -23,7 +23,8 @@
     "personal": "Personal",
     "notifications": "Campana",
     "timeline": "Timeline",
-    "planner": "Planner"
+    "planner": "Planner",
+    "forum": "Foro"
   },
   "landing": {
     "eyebrow": "Estudio narrativo",
@@ -617,6 +618,117 @@
     "wordProgress": {
       "goal": "Meta alcanzada",
       "of": "{{actual}} / {{target}} palabras"
+    }
+  },
+  "forum": {
+    "title": "Foro",
+    "subtitle": "Debates y recursos de la comunidad PlotCraft",
+    "newThread": "Nuevo hilo",
+    "noThreads": "No hay hilos que coincidan con los filtros.",
+    "communityStats": "{{threads}} hilos · {{replies}} respuestas",
+    "categories": {
+      "ALL": "Todas las categorias",
+      "GENERAL": "General",
+      "FEEDBACK": "Feedback",
+      "WRITING_TIPS": "Consejos de escritura",
+      "WORLD_BUILDING": "World-building",
+      "CHARACTERS": "Personajes",
+      "SHOWCASE": "Showcase",
+      "ANNOUNCEMENTS": "Anuncios",
+      "HELP": "Ayuda",
+      "OFF_TOPIC": "Off-topic"
+    },
+    "sort": {
+      "recent": "Mas recientes",
+      "popular": "Mas populares",
+      "replies": "Mas respondidos",
+      "unanswered": "Sin respuesta"
+    },
+    "thread": {
+      "fields": { "title": "Titulo", "category": "Categoria", "tags": "Etiquetas", "content": "Contenido" },
+      "stats": { "replies": "{{n}} respuestas", "reactions": "{{n}} reacciones", "views": "{{n}} vistas" },
+      "hasSolution": "Solucion",
+      "hasPoll": "Encuesta",
+      "close": "Cerrar hilo",
+      "open": "Reabrir hilo",
+      "closed": "Este hilo esta cerrado. No se aceptan nuevas respuestas.",
+      "delete": "Eliminar hilo",
+      "edit": "Editar hilo"
+    },
+    "reply": {
+      "placeholder": "Escribe tu respuesta en Markdown...",
+      "submit": "Responder",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "deleted": "[Respuesta eliminada]",
+      "markSolution": "Marcar como solucion",
+      "unmarkSolution": "Desmarcar solucion",
+      "isSolution": "Solucion",
+      "noReplies": "Se el primero en responder."
+    },
+    "reactions": {
+      "LIKE": "Me gusta",
+      "HELPFUL": "Util",
+      "INSIGHTFUL": "Perspicaz",
+      "FUNNY": "Gracioso"
+    },
+    "poll": {
+      "vote": "Votar",
+      "changeVote": "Cambiar voto",
+      "totalVotes": "{{n}} votos",
+      "closed": "Encuesta cerrada",
+      "loginToVote": "Inicia sesion para votar",
+      "addPoll": "Anadir encuesta",
+      "question": "Pregunta de la encuesta",
+      "options": "Opciones",
+      "addOption": "Anadir opcion"
+    }
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "markAllRead": "Marcar todas como leidas",
+    "deleteAll": "Eliminar todas",
+    "empty": "No tienes notificaciones aun.",
+    "viewAll": "Ver todas",
+    "filters": { "all": "Todas", "unread": "No leidas", "read": "Leidas" }
+  },
+  "settings": {
+    "privacy": {
+      "title": "Privacidad",
+      "subtitle": "Controla que informacion es visible para otros usuarios",
+      "showReadingActivity": "Mostrar actividad de lectura",
+      "showReadingActivityHint": "Tu historial de lectura sera visible en tu perfil",
+      "showReadingLists": "Mostrar listas de lectura",
+      "showReadingListsHint": "Tus listas publicas apareceran en tu perfil",
+      "showFollows": "Mostrar seguidores y seguidos",
+      "showFollowsHint": "Los contadores y listas de follows seran publicos",
+      "showStats": "Mostrar estadisticas de escritura",
+      "showStatsHint": "Tus estadisticas de novelas y palabras seran visibles",
+      "searchable": "Aparecer en busquedas",
+      "searchableHint": "Tu perfil aparecera en resultados de busqueda de usuarios",
+      "saved": "Privacidad actualizada"
+    },
+    "notifications": {
+      "title": "Notificaciones",
+      "subtitle": "Elige que notificaciones quieres recibir",
+      "newFollower": "Nuevos seguidores",
+      "newComment": "Comentarios en tus publicaciones",
+      "newReaction": "Reacciones en tus publicaciones",
+      "newReply": "Respuestas en hilos del foro",
+      "newChapter": "Nuevos capitulos de autores que sigues",
+      "novelMilestone": "Hitos de tus novelas",
+      "channel": "Como recibir notificaciones",
+      "channelInApp": "En la plataforma",
+      "channelEmail": "Por email (proximamente)",
+      "saved": "Preferencias actualizadas"
+    },
+    "export": {
+      "title": "Mis datos",
+      "subtitle": "Descarga una copia de todos tus datos personales",
+      "description": "El archivo incluye tu perfil, novelas, mundos, personajes, publicaciones y configuraciones.",
+      "button": "Descargar mis datos",
+      "generating": "Generando archivo...",
+      "success": "Descarga iniciada"
     }
   }
 }

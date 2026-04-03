@@ -11,6 +11,7 @@ type PostQuery = {
   limit?: number;
   type?: PostType | 'ALL' | null;
   author?: string | null;
+  search?: string | null;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -51,6 +52,14 @@ export class PostsService {
       .pipe(map((response) => response.data));
   }
 
+  list(query: PostQuery = {}): Observable<PaginatedResponse<PostModel>> {
+    return this.http
+      .get<ApiResponse<PaginatedResponse<PostModel>>>(`${environment.apiUrl}/posts`, {
+        params: this.buildParams(query),
+      })
+      .pipe(map((response) => response.data));
+  }
+
   save(postId: string): Observable<{ saved: boolean }> {
     return this.http
       .post<ApiResponse<{ saved: boolean }>>(`${environment.apiUrl}/posts/${postId}/save`, {})
@@ -80,6 +89,10 @@ export class PostsService {
 
     if (query.author) {
       params = params.set('author', query.author);
+    }
+
+    if (query.search) {
+      params = params.set('search', query.search);
     }
 
     return params;

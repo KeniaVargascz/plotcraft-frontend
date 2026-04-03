@@ -2,19 +2,25 @@
   <header class="page-header">
     <div>
       <p>{{ 'feed.exploreEyebrow' | translate }}</p>
-      <h1>{{ 'feed.explore' | translate }}</h1>
+      <h1>Comunidad</h1>
     </div>
-    <span>{{ 'feed.exploreHint' | translate }}</span>
+    <span>Actividad reciente, conversaciones y avances abiertos de la comunidad.</span>
   </header>
+
+  <label class="search-row">
+    <span>Buscar posts</span>
+    <input
+      [(ngModel)]="search"
+      (keydown.enter)="applySearch()"
+      placeholder="escritura, personajes, mundo..."
+    />
+  </label>
 
   @if (authService.isAuthenticated()) {
     <app-post-composer (postCreated)="addPost($event)" />
   }
 
-  <app-post-type-filter
-    [selected]="selectedType()"
-    (selectedChange)="onTypeChange($event)"
-  />
+  <app-post-type-filter [selected]="selectedType()" (selectedChange)="onTypeChange($event)" />
 
   @if (loading()) {
     <div class="state-card">{{ 'feed.loading' | translate }}</div>

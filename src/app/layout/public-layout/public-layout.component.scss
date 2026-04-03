@@ -5,9 +5,10 @@
 .public-header {
   position: sticky;
   top: 0;
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr minmax(220px, 420px) auto;
   align-items: center;
+  gap: 1rem;
   padding: 1.2rem 5vw;
   backdrop-filter: blur(16px);
   background: color-mix(in srgb, var(--bg-surface) 82%, transparent);
@@ -27,6 +28,10 @@ nav {
   gap: 1rem;
 }
 
+.search-slot {
+  width: 100%;
+}
+
 nav a {
   color: var(--text-2);
   text-decoration: none;
@@ -34,4 +39,15 @@ nav a {
 
 nav a.active {
   color: var(--accent-text);
+}
+
+@media (max-width: 960px) {
+  .public-header {
+    grid-template-columns: 1fr;
+  }
+
+  nav,
+  .auth-links {
+    flex-wrap: wrap;
+  }
 }

@@ -7,9 +7,10 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { PostModel, PostType } from '../../../core/models/post.model';
-import { FeedService } from '../../../core/services/feed.service';
+import { PostsService } from '../../../core/services/posts.service';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { PostCardComponent } from '../components/post-card/post-card.component';
 import { PostComposerComponent } from '../components/post-composer/post-composer.component';
@@ -18,14 +19,20 @@ import { PostTypeFilterComponent } from '../components/post-type-filter/post-typ
 @Component({
   selector: 'app-explore-page',
   standalone: true,
-  imports: [TranslatePipe, PostComposerComponent, PostTypeFilterComponent, PostCardComponent],
+  imports: [
+    FormsModule,
+    TranslatePipe,
+    PostComposerComponent,
+    PostTypeFilterComponent,
+    PostCardComponent,
+  ],
   templateUrl: './explore-page.component.html',
   styleUrl: './explore-page.component.scss',
 })
 export class ExplorePageComponent implements AfterViewInit, OnDestroy {
   readonly authService = inject(AuthService);
 
-  private readonly feedService = inject(FeedService);
+  private readonly postsService = inject(PostsService);
   private observer?: IntersectionObserver;
 
   @ViewChild('sentinel') sentinel?: ElementRef<HTMLDivElement>;
@@ -37,6 +44,8 @@ export class ExplorePageComponent implements AfterViewInit, OnDestroy {
   readonly selectedType = signal<PostType | 'ALL'>('ALL');
   readonly nextCursor = signal<string | null>(null);
   readonly hasMore = signal(false);
+
+  search = '';
 
   constructor() {
     this.loadPosts(true);
@@ -52,6 +61,10 @@ export class ExplorePageComponent implements AfterViewInit, OnDestroy {
 
   onTypeChange(type: PostType | 'ALL') {
     this.selectedType.set(type);
+    this.loadPosts(true);
+  }
+
+  applySearch() {
     this.loadPosts(true);
   }
 
@@ -77,10 +90,11 @@ export class ExplorePageComponent implements AfterViewInit, OnDestroy {
       this.loadingMore.set(true);
     }
 
-    this.feedService
-      .getExploreFeed({
+    this.postsService
+      .list({
         cursor: reset ? null : this.nextCursor(),
         type: this.selectedType(),
+        search: this.search || null,
       })
       .subscribe({
         next: (response) => {

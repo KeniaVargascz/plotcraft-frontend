@@ -13,85 +13,9 @@ export const routes: Routes = [
     children: [
       {
         path: '',
+        pathMatch: 'full',
         loadComponent: () =>
           import('./features/landing/landing.component').then((module) => module.LandingComponent),
-      },
-    ],
-  },
-  {
-    path: '',
-    component: PublicLayoutComponent,
-    canMatch: [anonymousMatchGuard],
-    children: [
-      {
-        path: 'explorar',
-        loadComponent: () =>
-          import('./features/feed/explore-page/explore-page.component').then(
-            (module) => module.ExplorePageComponent,
-          ),
-      },
-      {
-        path: 'perfil/:username',
-        loadComponent: () =>
-          import('./features/users/user-profile-page/user-profile-page.component').then(
-            (module) => module.UserProfilePageComponent,
-          ),
-      },
-      {
-        path: 'perfil/:username/seguidores',
-        loadComponent: () =>
-          import('./features/users/followers-list/followers-list.component').then(
-            (module) => module.FollowersListComponent,
-          ),
-      },
-      {
-        path: 'perfil/:username/siguiendo',
-        loadComponent: () =>
-          import('./features/users/following-list/following-list.component').then(
-            (module) => module.FollowingListComponent,
-          ),
-      },
-      {
-        path: 'novelas',
-        loadComponent: () =>
-          import('./features/novels/catalog-page.component').then(
-            (module) => module.CatalogPageComponent,
-          ),
-      },
-      {
-        path: 'mundos',
-        loadComponent: () =>
-          import('./features/worlds/worlds-catalog-page.component').then(
-            (module) => module.WorldsCatalogPageComponent,
-          ),
-      },
-      {
-        path: 'mundos/:slug',
-        loadComponent: () =>
-          import('./features/worlds/world-detail-page.component').then(
-            (module) => module.WorldDetailPageComponent,
-          ),
-      },
-      {
-        path: 'personajes',
-        loadComponent: () =>
-          import('./features/characters/characters-catalog-page.component').then(
-            (module) => module.CharactersCatalogPageComponent,
-          ),
-      },
-      {
-        path: 'personajes/:username/:slug',
-        loadComponent: () =>
-          import('./features/characters/character-detail-page.component').then(
-            (module) => module.CharacterDetailPageComponent,
-          ),
-      },
-      {
-        path: 'novelas/:slug',
-        loadComponent: () =>
-          import('./features/novels/novel-detail-page.component').then(
-            (module) => module.NovelDetailPageComponent,
-          ),
       },
     ],
   },
@@ -118,6 +42,20 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/feed/explore-page/explore-page.component').then(
             (module) => module.ExplorePageComponent,
+          ),
+      },
+      {
+        path: 'descubrir',
+        loadComponent: () =>
+          import('./features/discovery/discovery-page.component').then(
+            (module) => module.DiscoveryPageComponent,
+          ),
+      },
+      {
+        path: 'buscar',
+        loadComponent: () =>
+          import('./features/search/search-page.component').then(
+            (module) => module.SearchPageComponent,
           ),
       },
       {
@@ -320,6 +258,97 @@ export const routes: Routes = [
         path: '',
         loadChildren: () =>
           import('./features/profile/profile.routes').then((module) => module.PROFILE_ROUTES),
+      },
+    ],
+  },
+  {
+    path: '',
+    component: PublicLayoutComponent,
+    canMatch: [anonymousMatchGuard],
+    children: [
+      {
+        path: 'explorar',
+        loadComponent: () =>
+          import('./features/feed/explore-page/explore-page.component').then(
+            (module) => module.ExplorePageComponent,
+          ),
+      },
+      {
+        path: 'descubrir',
+        loadComponent: () =>
+          import('./features/discovery/discovery-page.component').then(
+            (module) => module.DiscoveryPageComponent,
+          ),
+      },
+      {
+        path: 'buscar',
+        loadComponent: () =>
+          import('./features/search/search-page.component').then(
+            (module) => module.SearchPageComponent,
+          ),
+      },
+      {
+        path: 'perfil/:username',
+        loadComponent: () =>
+          import('./features/users/user-profile-page/user-profile-page.component').then(
+            (module) => module.UserProfilePageComponent,
+          ),
+      },
+      {
+        path: 'perfil/:username/seguidores',
+        loadComponent: () =>
+          import('./features/users/followers-list/followers-list.component').then(
+            (module) => module.FollowersListComponent,
+          ),
+      },
+      {
+        path: 'perfil/:username/siguiendo',
+        loadComponent: () =>
+          import('./features/users/following-list/following-list.component').then(
+            (module) => module.FollowingListComponent,
+          ),
+      },
+      {
+        path: 'novelas',
+        loadComponent: () =>
+          import('./features/novels/catalog-page.component').then(
+            (module) => module.CatalogPageComponent,
+          ),
+      },
+      {
+        path: 'mundos',
+        loadComponent: () =>
+          import('./features/worlds/worlds-catalog-page.component').then(
+            (module) => module.WorldsCatalogPageComponent,
+          ),
+      },
+      {
+        path: 'mundos/:slug',
+        loadComponent: () =>
+          import('./features/worlds/world-detail-page.component').then(
+            (module) => module.WorldDetailPageComponent,
+          ),
+      },
+      {
+        path: 'personajes',
+        loadComponent: () =>
+          import('./features/characters/characters-catalog-page.component').then(
+            (module) => module.CharactersCatalogPageComponent,
+          ),
+      },
+      {
+        path: 'personajes/:username/:slug',
+        loadComponent: () =>
+          import('./features/characters/character-detail-page.component').then(
+            (module) => module.CharacterDetailPageComponent,
+          ),
+      },
+      {
+        path: 'novelas/:slug',
+        loadComponent: () =>
+          import('./features/novels/novel-detail-page.component').then(
+            (module) => module.NovelDetailPageComponent,
+          ),
       },
     ],
   },

@@ -273,5 +273,76 @@
       "monthlyChart": "Actividad mensual",
       "noData": "Aun no hay estadisticas suficientes."
     }
+  },
+  "search": {
+    "placeholder": "Buscar novelas, autores, mundos...",
+    "placeholderShort": "Buscar...",
+    "shortcut": "Ctrl+K",
+    "results": "{{count}} resultados para \"{{query}}\"",
+    "noResults": "Sin resultados para \"{{query}}\"",
+    "noResultsHint": "Prueba con otros terminos o explora el descubrimiento.",
+    "loading": "Buscando...",
+    "history": "Busquedas recientes",
+    "clearHistory": "Limpiar historial",
+    "suggestions": "Sugerencias",
+    "trySearching": "Prueba buscar:",
+    "viewAll": "Ver todos en {{type}}",
+    "types": {
+      "all": "Todos",
+      "novels": "Novelas",
+      "worlds": "Mundos",
+      "characters": "Personajes",
+      "users": "Usuarios",
+      "posts": "Posts"
+    },
+    "sort": {
+      "relevance": "Mas relevantes",
+      "recent": "Mas recientes",
+      "popular": "Mas populares",
+      "followers": "Mas seguidores",
+      "reactions": "Mas reacciones",
+      "views": "Mas vistas"
+    },
+    "filters": {
+      "type": "Tipo",
+      "sort": "Ordenar por",
+      "genre": "Genero",
+      "rating": "Clasificacion",
+      "status": "Estado",
+      "role": "Rol",
+      "clear": "Limpiar filtros"
+    }
+  },
+  "discovery": {
+    "title": "Descubrir",
+    "subtitle": "Explora lo mejor de la comunidad PlotCraft",
+    "trending": {
+      "novels": "📈 Novelas en tendencia",
+      "worlds": "🌍 Mundos en tendencia",
+      "characters": "🎭 Personajes destacados",
+      "authors": "⭐ Autores destacados",
+      "badge": "↑ Tendencia",
+      "period": "Ultimas 72 horas"
+    },
+    "newReleases": {
+      "title": "🆕 Lanzamientos recientes",
+      "newChapters": "{{n}} cap. nuevos",
+      "latestChapter": "Ultimo: {{title}}"
+    },
+    "genres": {
+      "title": "🎭 Explora por genero",
+      "viewAll": "Ver todas en {{genre}}"
+    },
+    "community": {
+      "title": "💬 Actividad reciente",
+      "viewFeed": "Ver mas en el feed"
+    },
+    "stats": {
+      "novels": "novelas",
+      "authors": "autores",
+      "worlds": "mundos",
+      "characters": "personajes"
+    },
+    "empty": "Aun no hay contenido para mostrar."
   }
 }

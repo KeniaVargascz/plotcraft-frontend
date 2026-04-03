@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
@@ -17,6 +18,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
     RouterLink,
     RouterLinkActive,
     RouterOutlet,
+    SearchBarComponent,
     TranslatePipe,
   ],
   templateUrl: './private-layout.component.html',

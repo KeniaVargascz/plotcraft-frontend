@@ -1,5 +1,6 @@
 .explore-page,
-.post-stack {
+.post-stack,
+.search-row {
   display: grid;
   gap: 1rem;
 }
@@ -26,6 +27,22 @@
   border-radius: 1.4rem;
   border: 1px solid var(--border);
   background: color-mix(in srgb, var(--bg-card) 94%, transparent);
+}
+
+.search-row {
+  padding: 1rem 1.25rem;
+  border-radius: 1.25rem;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-2);
+}
+
+.search-row input {
+  border-radius: 0.95rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-1);
+  padding: 0.8rem 0.9rem;
 }
 
 .sentinel {

@@ -59,6 +59,32 @@ import { WorldSummary } from '../../core/models/world.model';
               }
             </select>
           </label>
+          <div class="split">
+            <label
+              ><span>Visibilidad</span>
+              <select
+                [(ngModel)]="isPublic"
+                name="isPublic"
+                [disabled]="saving()"
+                (ngModelChange)="refreshPreview()"
+              >
+                <option [ngValue]="false">Privado</option>
+                <option [ngValue]="true">Publico</option>
+              </select>
+            </label>
+            <label
+              ><span>Edad</span
+              ><input
+                [(ngModel)]="age"
+                name="age"
+                [disabled]="saving()"
+                (ngModelChange)="refreshPreview()"
+            /></label>
+          </div>
+          <label
+            ><span>Avatar URL</span
+            ><input [(ngModel)]="avatarUrl" name="avatarUrl" [disabled]="saving()"
+          /></label>
           <label
             ><span>Alias</span
             ><input [(ngModel)]="aliasesRaw" name="aliasesRaw" [disabled]="saving()"
@@ -66,6 +92,16 @@ import { WorldSummary } from '../../core/models/world.model';
           <label
             ><span>Tags</span><input [(ngModel)]="tagsRaw" name="tagsRaw" [disabled]="saving()"
           /></label>
+          <label
+            ><span>Apariencia</span
+            ><textarea
+              [(ngModel)]="appearance"
+              name="appearance"
+              rows="4"
+              [disabled]="saving()"
+              (ngModelChange)="refreshPreview()"
+            ></textarea>
+          </label>
           <fieldset class="novel-links">
             <legend>Novelas vinculadas</legend>
             @if (!novels().length) {
@@ -135,6 +171,26 @@ import { WorldSummary } from '../../core/models/world.model';
             ></textarea>
           </label>
           <label
+            ><span>Fortalezas</span
+            ><textarea
+              [(ngModel)]="strengths"
+              name="strengths"
+              rows="5"
+              [disabled]="saving()"
+              (ngModelChange)="refreshPreview()"
+            ></textarea>
+          </label>
+          <label
+            ><span>Debilidades</span
+            ><textarea
+              [(ngModel)]="weaknesses"
+              name="weaknesses"
+              rows="5"
+              [disabled]="saving()"
+              (ngModelChange)="refreshPreview()"
+            ></textarea>
+          </label>
+          <label
             ><span>Backstory</span
             ><textarea
               [(ngModel)]="backstory"
@@ -168,6 +224,9 @@ import { WorldSummary } from '../../core/models/world.model';
               {{ saving() ? 'Guardando...' : isEdit() ? 'Guardar cambios' : 'Crear personaje' }}
             </button>
           </div>
+          @if (saveError()) {
+            <p class="error">{{ saveError() }}</p>
+          }
         </section>
 
         <aside class="card preview-pane">
@@ -272,6 +331,10 @@ import { WorldSummary } from '../../core/models/world.model';
         background: transparent !important;
         color: var(--text-1) !important;
       }
+      .error {
+        margin: 0;
+        color: #e58f8f;
+      }
       @media (max-width: 960px) {
         .editor-grid,
         .split {
@@ -292,6 +355,7 @@ export class CharacterFormPageComponent {
 
   readonly isEdit = signal(false);
   readonly saving = signal(false);
+  readonly saveError = signal('');
   readonly previewHtml = signal('');
   readonly worlds = signal<WorldSummary[]>([]);
   readonly novels = signal<NovelSummary[]>([]);
@@ -322,12 +386,18 @@ export class CharacterFormPageComponent {
   role: CharacterRole = 'SECONDARY';
   status: CharacterStatus = 'ALIVE';
   worldId: string | null = null;
+  isPublic = false;
+  age = '';
+  avatarUrl = '';
   aliasesRaw = '';
   tagsRaw = '';
   pendingNovelSlug = '';
+  appearance = '';
   personality = '';
   motivations = '';
   fears = '';
+  strengths = '';
+  weaknesses = '';
   backstory = '';
   arc = '';
 
@@ -357,11 +427,17 @@ export class CharacterFormPageComponent {
         this.role = character.role;
         this.status = character.status;
         this.worldId = character.world?.id ?? null;
+        this.isPublic = character.isPublic;
+        this.age = character.age ?? '';
+        this.avatarUrl = character.avatarUrl ?? '';
         this.aliasesRaw = character.alias.join(', ');
         this.tagsRaw = character.tags.join(', ');
+        this.appearance = character.appearance ?? '';
         this.personality = character.personality ?? '';
         this.motivations = character.motivations ?? '';
         this.fears = character.fears ?? '';
+        this.strengths = character.strengths ?? '';
+        this.weaknesses = character.weaknesses ?? '';
         this.backstory = character.backstory ?? '';
         this.arc = character.arc ?? '';
         this.selectedNovelSlugs.set(character.linkedNovels.map((novel) => novel.slug));
@@ -389,12 +465,16 @@ export class CharacterFormPageComponent {
     const username = this.authService.getCurrentUserSnapshot()?.username;
     if (!username || !this.name.trim() || this.saving()) return;
 
+    this.saveError.set('');
     this.saving.set(true);
     const payload = {
       name: this.name.trim(),
       role: this.role,
       status: this.status,
       worldId: this.worldId,
+      isPublic: this.isPublic,
+      age: this.age.trim() || null,
+      avatarUrl: this.avatarUrl.trim() || null,
       alias: this.aliasesRaw
         .split(',')
         .map((item) => item.trim())
@@ -403,9 +483,12 @@ export class CharacterFormPageComponent {
         .split(',')
         .map((item) => item.trim())
         .filter(Boolean),
+      appearance: this.appearance.trim() || null,
       personality: this.personality.trim() || null,
       motivations: this.motivations.trim() || null,
       fears: this.fears.trim() || null,
+      strengths: this.strengths.trim() || null,
+      weaknesses: this.weaknesses.trim() || null,
       backstory: this.backstory.trim() || null,
       arc: this.arc.trim() || null,
     };
@@ -427,6 +510,9 @@ export class CharacterFormPageComponent {
           this.initialNovelSlugs.set(this.selectedNovelSlugs());
           void this.router.navigate(['/mis-personajes', character.slug, 'editar']);
         },
+        error: () => {
+          this.saveError.set('No se pudo guardar el personaje. Intenta de nuevo.');
+        },
       });
   }
 
@@ -434,9 +520,14 @@ export class CharacterFormPageComponent {
     this.previewHtml.set(
       this.markdownService.render(
         [
+          `## Ficha\n- Visibilidad: ${this.isPublic ? 'Publico' : 'Privado'}`,
+          this.age && `- Edad: ${this.age}`,
+          this.appearance && `## Apariencia\n${this.appearance}`,
           this.personality && `## Personalidad\n${this.personality}`,
           this.motivations && `## Motivaciones\n${this.motivations}`,
           this.fears && `## Miedos\n${this.fears}`,
+          this.strengths && `## Fortalezas\n${this.strengths}`,
+          this.weaknesses && `## Debilidades\n${this.weaknesses}`,
           this.backstory && `## Backstory\n${this.backstory}`,
           this.arc && `## Arco\n${this.arc}`,
         ]

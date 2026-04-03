@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DiscoverySnapshot } from '../../core/models/discovery.model';
@@ -14,6 +15,7 @@ import { AuthorCardComponent } from './components/author-card.component';
   standalone: true,
   imports: [
     RouterLink,
+    DatePipe,
     HighlightPipe,
     TranslatePipe,
     NovelCardComponent,
@@ -73,41 +75,46 @@ import { AuthorCardComponent } from './components/author-card.component';
             <h2>{{ 'discovery.newReleases.title' | translate }}</h2>
           </div>
           <div class="release-grid">
-            @for (release of snapshot()!.new_releases; track release.novel.id) {
+            @for (release of snapshot()!.new_releases; track release.novel.id; let index = $index) {
               <article class="release-card">
+                <div class="release-strip" [class]="releaseToneClass(index)"></div>
+
                 <div class="release-head">
                   <div class="release-copy">
-                    <a class="release-title" [routerLink]="['/novelas', release.novel.slug]">
-                      {{ release.novel.title }}
-                    </a>
-                    <p class="release-author">{{ release.novel.author.displayName }}</p>
+                    <div class="release-title-row">
+                      <a class="release-title" [routerLink]="['/novelas', release.novel.slug]">
+                        {{ release.novel.title }}
+                      </a>
+                      <span class="release-badge"> +{{ release.new_chapters_count }} </span>
+                    </div>
+                    <p class="release-author">@{{ release.novel.author.username }}</p>
                   </div>
-                  <span class="badge release-badge">
-                    {{
-                      'discovery.newReleases.newChapters'
-                        | translate: { n: release.new_chapters_count }
-                    }}
-                  </span>
                 </div>
 
                 @if (release.latest_chapter) {
                   <div class="release-body">
                     <span class="release-label">Capitulo mas reciente</span>
                     <p class="release-chapter">
-                      {{
-                        'discovery.newReleases.latestChapter'
-                          | translate: { title: release.latest_chapter.title }
-                      }}
+                      {{ release.latest_chapter.title }}
                     </p>
+                    <span class="release-published-at">
+                      {{ release.latest_chapter.publishedAt | date: 'shortDate' }}
+                    </span>
                   </div>
                 }
 
                 <div class="release-footer">
                   <span class="release-meta">
-                    {{ release.novel.stats.publishedChaptersCount }} capitulos
+                    <span class="release-meta-value">
+                      {{ release.novel.stats.publishedChaptersCount }}
+                    </span>
+                    {{
+                      release.novel.stats.publishedChaptersCount === 1 ? 'capitulo' : 'capitulos'
+                    }}
                   </span>
                   <a class="release-link" [routerLink]="['/novelas', release.novel.slug]">
                     Ver novela
+                    <span aria-hidden="true">↗</span>
                   </a>
                 </div>
               </article>
@@ -233,7 +240,6 @@ import { AuthorCardComponent } from './components/author-card.component';
 
       .hero,
       .stats-banner,
-      .release-card,
       .genre-card,
       .community-card,
       .loading-shell {
@@ -366,74 +372,172 @@ import { AuthorCardComponent } from './components/author-card.component';
 
       .release-card {
         display: grid;
-        gap: 1rem;
-        align-content: start;
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
+        gap: 0;
+        padding: 0;
+        overflow: hidden;
+        border-radius: 1.25rem;
+        border: 1px solid color-mix(in srgb, var(--border) 86%, rgba(255, 255, 255, 0.06));
+        background: color-mix(in srgb, var(--bg-card) 94%, #0c1218 6%);
+        box-shadow: 0 18px 36px rgba(7, 10, 16, 0.14);
+      }
+
+      .release-strip {
+        height: 0.35rem;
+      }
+
+      .release-tone-0 {
+        background: linear-gradient(90deg, #6b7cff, #8ea6ff);
+      }
+
+      .release-tone-1 {
+        background: linear-gradient(90deg, #bc7f5a, #dfaf7f);
+      }
+
+      .release-tone-2 {
+        background: linear-gradient(90deg, #4f9d76, #79c89e);
+      }
+
+      .release-tone-3 {
+        background: linear-gradient(90deg, #8e5bbd, #b98cdf);
       }
 
       .release-head,
       .release-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 0.9rem;
+        padding-inline: 1rem;
       }
 
       .release-copy {
         display: grid;
-        gap: 0.3rem;
+        gap: 0.4rem;
         min-width: 0;
       }
 
-      .release-title {
-        font-size: 1.05rem;
-        font-weight: 600;
-        line-height: 1.3;
-        overflow-wrap: anywhere;
+      .release-head {
+        padding-top: 1rem;
+        padding-bottom: 0.85rem;
       }
 
-      .release-author,
-      .release-label,
-      .release-meta,
-      .community-card span {
-        color: var(--text-2);
+      .release-title-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.8rem;
+      }
+
+      .release-title {
+        font:
+          400 1.03rem/1.3 'Playfair Display',
+          serif;
+        color: var(--text-1);
+        text-decoration: none;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        min-height: calc(1.3em * 2);
+        flex: 1;
+        min-width: 0;
+      }
+
+      .release-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        min-height: 1.65rem;
+        padding: 0.18rem 0.6rem;
+        border-radius: 999px;
+        border: 1px solid rgba(93, 184, 122, 0.3);
+        background: rgba(39, 74, 51, 0.24);
+        color: #7ed39b;
+        font-size: 0.72rem;
+        font-weight: 700;
+        line-height: 1.3;
+        white-space: nowrap;
       }
 
       .release-author {
         margin: 0;
-        font-size: 0.94rem;
-      }
-
-      .release-badge {
-        flex: 0 0 auto;
-        max-width: 100%;
-        text-align: center;
-        white-space: normal;
+        color: var(--text-3);
+        font-size: 0.8rem;
       }
 
       .release-body {
         display: grid;
-        gap: 0.4rem;
-        padding: 0.9rem 1rem;
+        gap: 0.32rem;
+        margin: 0 1rem 1rem;
+        padding: 0.9rem 0.95rem;
         border-radius: 1rem;
-        background: color-mix(in srgb, var(--bg-surface) 76%, transparent);
-        border: 1px solid var(--border);
+        background: color-mix(in srgb, var(--bg-surface) 82%, #0c1218 18%);
+        border: 1px solid color-mix(in srgb, var(--border) 82%, rgba(255, 255, 255, 0.04));
       }
 
       .release-label {
+        color: var(--text-3);
         text-transform: uppercase;
         letter-spacing: 0.08em;
-        font-size: 0.72rem;
+        font-size: 0.64rem;
+        font-weight: 700;
       }
 
       .release-chapter {
         margin: 0;
         color: var(--text-1);
-        line-height: 1.5;
+        line-height: 1.45;
+        font-size: 0.92rem;
+      }
+
+      .release-published-at {
+        color: var(--text-3);
+        font-size: 0.76rem;
+      }
+
+      .release-meta,
+      .community-card span {
+        color: var(--text-2);
+      }
+
+      .release-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.9rem;
+        padding-top: 0.78rem;
+        padding-bottom: 0.9rem;
+        border-top: 1px solid color-mix(in srgb, var(--border) 82%, rgba(255, 255, 255, 0.04));
+      }
+
+      .release-meta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.38rem;
+        font-size: 0.82rem;
+      }
+
+      .release-meta::before {
+        content: '';
+        width: 0.9rem;
+        height: 0.9rem;
+        border-radius: 0.28rem;
+        background:
+          linear-gradient(var(--text-3), var(--text-3)) center 25% / 70% 2px no-repeat,
+          linear-gradient(var(--text-3), var(--text-3)) center 50% / 70% 2px no-repeat,
+          linear-gradient(var(--text-3), var(--text-3)) center 75% / 55% 2px no-repeat;
+        opacity: 0.55;
+      }
+
+      .release-meta-value {
+        color: var(--text-1);
+        font-weight: 700;
       }
 
       .release-link {
-        text-decoration: none;
         color: var(--accent-text);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.28rem;
         font-weight: 600;
         white-space: nowrap;
       }
@@ -510,13 +614,17 @@ import { AuthorCardComponent } from './components/author-card.component';
       }
 
       @media (max-width: 720px) {
-        .release-head,
         .release-footer {
           flex-direction: column;
+          align-items: flex-start;
         }
 
         .release-link {
           white-space: normal;
+        }
+
+        .release-title-row {
+          flex-direction: column;
         }
 
         .rail {
@@ -554,5 +662,9 @@ export class DiscoveryPageComponent {
         this.loading.set(false);
       },
     });
+  }
+
+  releaseToneClass(index: number) {
+    return `release-tone-${index % 4}`;
   }
 }

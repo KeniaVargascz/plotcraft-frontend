@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NovelSummary } from '../../../core/models/novel.model';
 
@@ -9,40 +9,90 @@ import { NovelSummary } from '../../../core/models/novel.model';
   imports: [RouterLink, DatePipe],
   template: `
     <article class="novel-card">
-      <a class="cover" [routerLink]="['/novelas', novel().slug]">
-        <span>{{ novel().title.charAt(0) }}</span>
-      </a>
+      <div class="card-top">
+        <a class="cover" [class]="coverClass()" [routerLink]="['/novelas', novel().slug]">
+          <span class="cover-texture"></span>
+          <span class="cover-letter">{{ novel().title.charAt(0) }}</span>
+        </a>
 
-      <div class="body">
-        <div class="meta-stack">
-          <div class="chips chips-status">
-            <span class="chip">{{ novel().status }}</span>
+        <div class="body">
+          <div class="badges-row">
+            <span class="badge badge-status" [class]="statusClass()">
+              {{ statusLabel() }}
+            </span>
+            <span class="badge badge-rating">{{ ratingLabel() }}</span>
           </div>
-          <div class="chips chips-rating">
-            <span class="chip">{{ novel().rating }}</span>
+
+          <a class="title" [routerLink]="['/novelas', novel().slug]">{{ novel().title }}</a>
+          <p class="author">
+            <a [routerLink]="['/perfil', novel().author.username]">
+              @{{ novel().author.username }}
+            </a>
+          </p>
+          <p class="synopsis">{{ novel().synopsis || 'Sin sinopsis.' }}</p>
+
+          <div class="tags-row">
+            @for (label of visibleGenreLabels(); track label) {
+              <span class="tag-chip">{{ label }}</span>
+            }
           </div>
         </div>
-
-        <a class="title" [routerLink]="['/novelas', novel().slug]">{{ novel().title }}</a>
-        <p class="author">
-          por
-          <a [routerLink]="['/perfil', novel().author.username]">@{{ novel().author.username }}</a>
-        </p>
-        <p class="synopsis">{{ novel().synopsis || 'Sin sinopsis.' }}</p>
-
-        <div class="genres">
-          @for (genre of novel().genres; track genre.id) {
-            <span>{{ genre.label }}</span>
-          }
-        </div>
-
-        <footer>
-          <span>{{ novel().stats.publishedChaptersCount }} caps</span>
-          <span>{{ novel().stats.likesCount }} likes</span>
-          <span>{{ novel().viewsCount }} vistas</span>
-          <span>{{ novel().updatedAt | date: 'shortDate' }}</span>
-        </footer>
       </div>
+
+      @if (hasExpandableTags()) {
+        <button class="tags-toggle" type="button" (click)="toggleTags()">
+          <span class="tags-toggle-label">
+            Todos los tags
+            <span class="tags-count">{{ expandableTagCount() }}</span>
+          </span>
+          <span class="tags-chevron" [class.open]="tagsOpen()">⌄</span>
+        </button>
+
+        @if (tagsOpen()) {
+          <div class="tags-panel">
+            @if (genres().length) {
+              <span class="tag-type-label">Genero</span>
+              @for (genre of genres(); track genre.id) {
+                <span class="tag-pill tag-pill-genre">{{ genre.label }}</span>
+              }
+            }
+
+            @if (tags().length) {
+              <span class="tag-type-label">Tags</span>
+              @for (tag of tags(); track tag) {
+                <span class="tag-pill tag-pill-tag">{{ tag }}</span>
+              }
+            }
+
+            @if (warnings().length) {
+              <span class="tag-type-label">Warnings</span>
+              @for (warning of warnings(); track warning) {
+                <span class="tag-pill tag-pill-warning">{{ warning }}</span>
+              }
+            }
+          </div>
+        }
+      }
+
+      <footer class="card-footer">
+        <div class="stats-group">
+          <span class="stat-item">
+            <span class="stat-value">{{ publishedChaptersCount() }}</span>
+            <span class="stat-label">caps</span>
+          </span>
+          <span class="divider"></span>
+          <span class="stat-item">
+            <span class="stat-value">{{ novel().stats.likesCount }}</span>
+            <span class="stat-label">likes</span>
+          </span>
+          <span class="divider"></span>
+          <span class="stat-item">
+            <span class="stat-value">{{ novel().viewsCount }}</span>
+            <span class="stat-label">vistas</span>
+          </span>
+        </div>
+        <span class="card-date">{{ novel().updatedAt | date: 'shortDate' }}</span>
+      </footer>
     </article>
   `,
   styles: [
@@ -54,138 +104,371 @@ import { NovelSummary } from '../../../core/models/novel.model';
 
       .novel-card {
         display: grid;
-        grid-template-columns: 92px 1fr;
-        gap: 1rem;
-        padding: 1rem;
-        border-radius: 1.25rem;
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        align-items: start;
+        grid-template-rows: auto auto auto;
         height: 100%;
+        border-radius: 1.35rem;
+        background: color-mix(in srgb, var(--bg-card) 92%, #0b0f14 8%);
+        border: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        overflow: hidden;
+        box-shadow: 0 24px 44px rgba(7, 10, 16, 0.18);
+      }
+
+      .card-top {
+        display: grid;
+        grid-template-columns: 88px 1fr;
+        gap: 0.95rem;
+        padding: 0.95rem;
+        min-height: 0;
       }
 
       .cover {
-        min-height: 0;
-        aspect-ratio: 3 / 4;
-        align-self: start;
-        border-radius: 1rem;
-        background:
-          linear-gradient(160deg, rgba(205, 153, 73, 0.35), transparent 60%),
-          linear-gradient(220deg, rgba(37, 58, 82, 0.8), rgba(12, 16, 22, 0.95));
+        position: relative;
         display: grid;
         place-items: center;
-        color: var(--accent-text);
-        font-size: 2rem;
+        min-height: 126px;
+        border-radius: 1rem;
         text-decoration: none;
+        overflow: hidden;
+        isolation: isolate;
+      }
+
+      .cover-tone-0 {
+        background: linear-gradient(180deg, #1e2535, #121927);
+        color: #89a0db;
+      }
+
+      .cover-tone-1 {
+        background: linear-gradient(180deg, #1d2f2a, #101c18);
+        color: #67ba98;
+      }
+
+      .cover-tone-2 {
+        background: linear-gradient(180deg, #2d2033, #1a111f);
+        color: #b589d7;
+      }
+
+      .cover-tone-3 {
+        background: linear-gradient(180deg, #30261d, #1d1510);
+        color: #d2a56a;
+      }
+
+      .cover-texture {
+        position: absolute;
+        inset: 0;
+        opacity: 0.08;
+        background-image: repeating-linear-gradient(
+          45deg,
+          currentColor 0,
+          currentColor 1px,
+          transparent 1px,
+          transparent 7px
+        );
+      }
+
+      .cover-letter {
+        position: relative;
+        z-index: 1;
+        font:
+          italic 400 2.35rem/1 'Playfair Display',
+          serif;
       }
 
       .body {
         display: grid;
-        grid-template-rows: auto auto auto minmax(0, 1fr) auto auto;
-        gap: 0.6rem;
+        grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+        gap: 0.38rem;
         min-width: 0;
-        height: 100%;
       }
 
-      .meta-stack {
-        display: grid;
-        grid-template-rows: repeat(2, minmax(1.72rem, auto));
-        gap: 0.35rem;
-        min-height: calc(1.72rem * 2 + 0.35rem);
-      }
-
-      .chips,
-      .genres,
-      footer {
+      .badges-row {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 0.4rem;
+        align-items: center;
+        min-height: 1.55rem;
       }
 
-      .chips {
-        align-content: start;
-        min-height: 1.72rem;
-      }
-
-      .chips-status,
-      .chips-rating {
-        min-height: 1.72rem;
-      }
-
-      .genres {
-        align-content: start;
-        min-height: calc(1.72rem * 2 + 0.5rem);
-        max-height: calc(1.72rem * 2 + 0.5rem);
-        overflow: hidden;
-      }
-
-      .chip,
-      .genres span,
-      footer span {
-        padding: 0.2rem 0.6rem;
-        border-radius: 999px;
-        background: var(--accent-glow);
-        color: var(--accent-text);
-        font-size: 0.82rem;
-      }
-
-      .chip {
+      .badge {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-width: 4.75rem;
-        min-height: 1.72rem;
-        text-align: center;
+        min-height: 1.55rem;
+        padding: 0.15rem 0.55rem;
+        border-radius: 999px;
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
         white-space: nowrap;
       }
 
+      .badge-status {
+        border: 1px solid transparent;
+      }
+
+      .badge-status-draft {
+        background: rgba(176, 138, 82, 0.12);
+        border-color: rgba(176, 138, 82, 0.28);
+        color: #d4ac6b;
+      }
+
+      .badge-status-in-progress {
+        background: rgba(91, 175, 214, 0.12);
+        border-color: rgba(91, 175, 214, 0.28);
+        color: #77c4ea;
+      }
+
+      .badge-status-completed {
+        background: rgba(77, 184, 138, 0.12);
+        border-color: rgba(77, 184, 138, 0.28);
+        color: #63d4a2;
+      }
+
+      .badge-status-archived {
+        background: rgba(148, 161, 189, 0.12);
+        border-color: rgba(148, 161, 189, 0.28);
+        color: #bac6dc;
+      }
+
+      .badge-rating {
+        background: color-mix(in srgb, var(--bg) 86%, rgba(255, 255, 255, 0.03));
+        border: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        color: var(--text-2);
+      }
+
       .title {
-        font:
-          700 1.12rem/1.22 'Playfair Display',
-          serif;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        min-height: calc(1.22em * 2);
-        max-height: calc(1.22em * 2);
         color: var(--text-1);
         text-decoration: none;
-        overflow-wrap: anywhere;
+        font:
+          700 1.08rem/1.25 'Playfair Display',
+          serif;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        min-height: calc(1.25em * 2);
       }
 
       .author,
       .synopsis {
         margin: 0;
-        color: var(--text-2);
       }
 
       .author {
-        font-size: 0.94rem;
-        min-height: 1.2rem;
+        min-height: 1.1rem;
+        color: var(--accent-text);
+        font-size: 0.82rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .author a {
+        color: inherit;
+        text-decoration: none;
       }
 
       .synopsis {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        color: var(--text-2);
+        font-size: 0.84rem;
         line-height: 1.45;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
         min-height: calc(1.45em * 2);
       }
 
-      footer {
-        padding-top: 0.15rem;
-        border-top: 1px solid var(--border);
+      .tags-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        align-content: start;
+        min-height: 1.7rem;
+        max-height: 3.75rem;
+        overflow: hidden;
       }
 
-      a {
-        color: inherit;
+      .tag-chip {
+        display: inline-flex;
+        align-items: center;
+        max-width: 100%;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        border: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        background: color-mix(in srgb, var(--bg) 76%, transparent);
+        color: var(--text-2);
+        font-size: 0.72rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .tags-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        width: 100%;
+        padding: 0.75rem 0.95rem;
+        background: transparent;
+        border: 0;
+        border-top: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        color: var(--text-2);
+        cursor: pointer;
+      }
+
+      .tags-toggle:hover {
+        background: color-mix(in srgb, var(--bg) 70%, transparent);
+      }
+
+      .tags-toggle-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        font-size: 0.74rem;
+        font-weight: 700;
+      }
+
+      .tags-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 1.3rem;
+        min-height: 1.3rem;
+        padding: 0 0.35rem;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--bg) 82%, transparent);
+        border: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        font-size: 0.68rem;
+      }
+
+      .tags-chevron {
+        color: var(--text-3);
+        font-size: 1rem;
+        line-height: 1;
+        transition: transform 0.2s ease;
+      }
+
+      .tags-chevron.open {
+        transform: rotate(180deg);
+      }
+
+      .tags-panel {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        padding: 0.85rem 0.95rem 1rem;
+        border-top: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        background: color-mix(in srgb, var(--bg) 78%, transparent);
+      }
+
+      .tag-type-label {
+        width: 100%;
+        margin-top: 0.15rem;
+        color: var(--text-3);
+        font-size: 0.63rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .tag-type-label:first-child {
+        margin-top: 0;
+      }
+
+      .tag-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.22rem 0.62rem;
+        border-radius: 999px;
+        border: 1px solid transparent;
+        font-size: 0.72rem;
+        white-space: nowrap;
+      }
+
+      .tag-pill-genre {
+        background: rgba(91, 175, 214, 0.12);
+        border-color: rgba(91, 175, 214, 0.24);
+        color: #77c4ea;
+      }
+
+      .tag-pill-tag {
+        background: rgba(181, 137, 215, 0.12);
+        border-color: rgba(181, 137, 215, 0.24);
+        color: #c29be0;
+      }
+
+      .tag-pill-warning {
+        background: rgba(214, 120, 120, 0.12);
+        border-color: rgba(214, 120, 120, 0.24);
+        color: #e49d9d;
+      }
+
+      .card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.65rem;
+        padding: 0.8rem 0.95rem 0.9rem;
+        border-top: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+      }
+
+      .stats-group {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        min-width: 0;
+      }
+
+      .stat-item {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.28rem;
+        min-width: 0;
+      }
+
+      .stat-value {
+        color: var(--text-1);
+        font-size: 0.83rem;
+        font-weight: 700;
+      }
+
+      .stat-label,
+      .card-date {
+        color: var(--text-3);
+        font-size: 0.72rem;
+      }
+
+      .divider {
+        width: 1px;
+        height: 0.9rem;
+        background: color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        flex-shrink: 0;
+      }
+
+      .card-date {
+        white-space: nowrap;
       }
 
       @media (max-width: 700px) {
-        .novel-card {
-          grid-template-columns: 1fr;
+        .card-top {
+          grid-template-columns: 72px 1fr;
+          gap: 0.8rem;
+          padding: 0.8rem;
+        }
+
+        .cover {
+          min-height: 106px;
+        }
+
+        .card-footer {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .stats-group {
+          flex-wrap: wrap;
         }
       }
     `,
@@ -193,4 +476,63 @@ import { NovelSummary } from '../../../core/models/novel.model';
 })
 export class NovelCardComponent {
   readonly novel = input.required<NovelSummary>();
+  readonly tagsOpen = signal(false);
+
+  readonly genres = computed(() => this.novel().genres ?? []);
+  readonly tags = computed(() => this.novel().tags ?? []);
+  readonly warnings = computed(() => this.novel().warnings ?? []);
+  readonly visibleGenreLabels = computed(() =>
+    this.genres()
+      .slice(0, 3)
+      .map((genre) => genre.label),
+  );
+  readonly expandableTagCount = computed(
+    () => this.genres().length + this.tags().length + this.warnings().length,
+  );
+  readonly hasExpandableTags = computed(() => this.expandableTagCount() > 0);
+  readonly publishedChaptersCount = computed(() => {
+    const stats = this.novel().stats as NovelSummary['stats'] & { publishedChaptersCount?: number };
+    return stats.publishedChaptersCount ?? stats.chaptersCount ?? 0;
+  });
+  readonly statusLabel = computed(() => this.formatStatusLabel(this.novel().status));
+  readonly ratingLabel = computed(() => this.formatRatingLabel(this.novel().rating));
+  readonly statusClass = computed(
+    () => `badge-status-${this.novel().status.toLowerCase().replace(/_/g, '-')}`,
+  );
+  readonly coverClass = computed(
+    () => `cover cover-tone-${this.coverToneIndex(this.novel().slug)}`,
+  );
+
+  toggleTags(): void {
+    this.tagsOpen.update((value) => !value);
+  }
+
+  private formatStatusLabel(status: NovelSummary['status']): string {
+    switch (status) {
+      case 'IN_PROGRESS':
+        return 'En progreso';
+      case 'COMPLETED':
+        return 'Completada';
+      case 'ARCHIVED':
+        return 'Archivada';
+      case 'DRAFT':
+      default:
+        return 'Borrador';
+    }
+  }
+
+  private formatRatingLabel(rating: NovelSummary['rating']): string {
+    switch (rating) {
+      case 'PG13':
+        return 'PG-13';
+      case 'EXPLICIT':
+        return '18+';
+      default:
+        return rating;
+    }
+  }
+
+  private coverToneIndex(seed: string): number {
+    return Array.from(seed).reduce((total, char) => total + char.charCodeAt(0), 0) % 4;
+  }
 }

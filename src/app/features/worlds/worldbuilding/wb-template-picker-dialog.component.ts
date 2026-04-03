@@ -27,7 +27,7 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
                       <span class="tpl-icon">{{ tpl.icon }}</span>
                       <span class="tpl-name">{{ tpl.name }}</span>
                       <span class="tpl-desc">{{ tpl.description }}</span>
-                      <span class="tpl-fields">{{ tpl.fieldSchema.length }} campos</span>
+                      <span class="tpl-fields">{{ tpl.fieldsCount }} campos</span>
                     </button>
                   }
                 </div>
@@ -46,12 +46,7 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
                 </div>
 
                 <div class="fields-preview">
-                  <h4>Campos incluidos:</h4>
-                  <div class="field-pills">
-                    @for (field of selectedTemplate()!.fieldSchema; track field.key) {
-                      <span class="field-pill">{{ field.label }} ({{ field.type }})</span>
-                    }
-                  </div>
+                  <h4>Campos incluidos: {{ selectedTemplate()!.fieldsCount }}</h4>
                 </div>
 
                 <label>

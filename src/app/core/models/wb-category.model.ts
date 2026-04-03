@@ -24,5 +24,5 @@ export interface CategoryTemplate {
   icon: string;
   color: string;
   description: string;
-  fieldSchema: FieldDefinition[];
+  fieldsCount: number;
 }

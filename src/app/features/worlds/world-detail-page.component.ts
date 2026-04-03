@@ -279,8 +279,9 @@ export class WorldDetailPageComponent {
           this.wbService.listCategories(slug).subscribe({
             next: (cats) => {
               this.loreCategories.set(cats);
+              const isOwner = world.viewerContext?.isOwner;
               for (const cat of cats) {
-                this.wbService.listCategoryEntries(slug, cat.slug, { limit: 4, isPublic: true }).subscribe({
+                this.wbService.listCategoryEntries(slug, cat.slug, { limit: 4, ...(!isOwner ? { isPublic: true } : {}) }).subscribe({
                   next: (res) => {
                     this.loreEntries.update((current) => ({ ...current, [cat.slug]: res.data }));
                   },

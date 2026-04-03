@@ -62,7 +62,6 @@ import { AuthorCardComponent } from './components/author-card.component';
           <div class="rail">
             @for (novel of snapshot()!.trending.novels; track novel.id) {
               <div class="rail-item">
-                <span class="trend-badge">{{ 'discovery.trending.badge' | translate }}</span>
                 <app-novel-card [novel]="novel" />
               </div>
             }
@@ -240,7 +239,6 @@ import { AuthorCardComponent } from './components/author-card.component';
       }
 
       .refresh-button,
-      .trend-badge,
       .badge {
         border-radius: 999px;
         border: 1px solid var(--border);
@@ -273,17 +271,21 @@ import { AuthorCardComponent } from './components/author-card.component';
         display: grid;
         grid-auto-flow: column;
         grid-auto-columns: minmax(280px, 360px);
+        grid-auto-rows: 1fr;
         gap: 1rem;
         overflow-x: auto;
         padding-bottom: 0.3rem;
         scroll-snap-type: x proximity;
+        align-items: stretch;
       }
 
       .rail-item {
         display: grid;
+        grid-template-rows: auto 1fr;
         gap: 0.75rem;
-        align-content: start;
+        align-content: stretch;
         scroll-snap-align: start;
+        height: 100%;
       }
 
       .release-grid,

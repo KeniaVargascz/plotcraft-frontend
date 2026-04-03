@@ -1,14 +1,16 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of, switchMap } from 'rxjs';
 import { CharacterSummary } from '../../core/models/character.model';
 import { Genre } from '../../core/models/genre.model';
 import { NovelRating, NovelStatus } from '../../core/models/novel.model';
+import { WorldSummary } from '../../core/models/world.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CharactersService } from '../../core/services/characters.service';
 import { GenresService } from '../../core/services/genres.service';
 import { NovelsService } from '../../core/services/novels.service';
+import { WorldsService } from '../../core/services/worlds.service';
 
 @Component({
   selector: 'app-novel-form-page',
@@ -106,6 +108,45 @@ import { NovelsService } from '../../core/services/novels.service';
           }
         </fieldset>
 
+        <fieldset class="full linked-block">
+          <legend>Mundos vinculados</legend>
+          @if (!worlds().length) {
+            <p class="hint">Aun no tienes mundos creados. Puedes gestionarlos en Mis mundos.</p>
+          } @else {
+            <div class="linked-selector">
+              <select
+                [(ngModel)]="pendingWorldId"
+                name="pendingWorldId"
+                [disabled]="saving()"
+                (ngModelChange)="selectWorld($event)"
+              >
+                <option value="">Selecciona un mundo</option>
+                @for (world of availableWorlds(); track world.id) {
+                  <option [value]="world.id">{{ world.name }}</option>
+                }
+              </select>
+            </div>
+
+            @if (selectedWorlds().length) {
+              <div class="selected-items">
+                @for (world of selectedWorlds(); track world.id) {
+                  <button
+                    type="button"
+                    class="linked-pill"
+                    [disabled]="saving()"
+                    (click)="removeWorld(world.id)"
+                  >
+                    <span>{{ world.name }}</span>
+                    <strong>×</strong>
+                  </button>
+                }
+              </div>
+            } @else {
+              <p class="hint">Todavia no has vinculado mundos a esta novela.</p>
+            }
+          }
+        </fieldset>
+
         <label class="inline">
           <input type="checkbox" [(ngModel)]="isPublic" [disabled]="saving()" />
           Hacer publica la novela
@@ -159,7 +200,9 @@ import { NovelsService } from '../../core/services/novels.service';
       }
 
       label,
-      .genres {
+      .genres,
+      .linked-block,
+      .linked-selector {
         display: grid;
         gap: 0.5rem;
       }
@@ -179,6 +222,31 @@ import { NovelsService } from '../../core/services/novels.service';
         display: flex;
         flex-wrap: wrap;
         gap: 1rem;
+      }
+      .selected-items {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+      .linked-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        min-height: 3rem;
+        padding: 0.65rem 1rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
+      .linked-pill strong {
+        width: 1.5rem;
+        height: 1.5rem;
+        display: inline-grid;
+        place-items: center;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--bg-card) 24%, transparent);
+        font-size: 1rem;
+        line-height: 1;
       }
 
       .inline {
@@ -224,16 +292,27 @@ export class NovelFormPageComponent implements OnInit {
   private readonly genresService = inject(GenresService);
   private readonly charactersService = inject(CharactersService);
   private readonly authService = inject(AuthService);
+  private readonly worldsService = inject(WorldsService);
 
   readonly genres = signal<Genre[]>([]);
   readonly characters = signal<CharacterSummary[]>([]);
+  readonly worlds = signal<WorldSummary[]>([]);
   readonly selectedGenreIds = signal<string[]>([]);
   readonly selectedCharacterIds = signal<string[]>([]);
   readonly initialCharacterIds = signal<string[]>([]);
+  readonly selectedWorldIds = signal<string[]>([]);
+  readonly initialWorldIds = signal<string[]>([]);
   readonly saving = signal(false);
   readonly isEdit = signal(false);
   readonly errorMessage = signal('');
   readonly statusMessage = signal('');
+  readonly availableWorlds = computed(() =>
+    this.worlds().filter((world) => !this.selectedWorldIds().includes(world.id)),
+  );
+  readonly selectedWorlds = computed(() => {
+    const selected = new Set(this.selectedWorldIds());
+    return this.worlds().filter((world) => selected.has(world.id));
+  });
 
   readonly statusOptions: NovelStatus[] = ['DRAFT', 'IN_PROGRESS', 'COMPLETED', 'ARCHIVED'];
   readonly ratingOptions: NovelRating[] = ['G', 'PG', 'PG13', 'R', 'EXPLICIT'];
@@ -246,12 +325,17 @@ export class NovelFormPageComponent implements OnInit {
   tags = '';
   warnings = '';
   isPublic = false;
+  pendingWorldId = '';
 
   ngOnInit() {
     this.genresService.list().subscribe((genres) => this.genres.set(genres));
     this.charactersService.listMine({ limit: 50, sort: 'updated' }).subscribe({
       next: (response) => this.characters.set(response.data),
       error: () => this.characters.set([]),
+    });
+    this.worldsService.listMine({ limit: 50, sort: 'updated' }).subscribe({
+      next: (response) => this.worlds.set(response.data),
+      error: () => this.worlds.set([]),
     });
 
     this.route.paramMap.subscribe((params) => {
@@ -273,6 +357,8 @@ export class NovelFormPageComponent implements OnInit {
         this.selectedGenreIds.set(novel.genres.map((genre) => genre.id));
         this.selectedCharacterIds.set(novel.characters.map((character) => character.id));
         this.initialCharacterIds.set(novel.characters.map((character) => character.id));
+        this.selectedWorldIds.set(novel.worlds.map((world) => world.id));
+        this.initialWorldIds.set(novel.worlds.map((world) => world.id));
       });
     });
   }
@@ -293,6 +379,20 @@ export class NovelFormPageComponent implements OnInit {
         ? current.filter((id) => id !== character.id)
         : [...current, character.id],
     );
+  }
+
+  selectWorld(worldId: string) {
+    if (!worldId || this.selectedWorldIds().includes(worldId)) {
+      this.pendingWorldId = '';
+      return;
+    }
+
+    this.selectedWorldIds.update((current) => [...current, worldId]);
+    this.pendingWorldId = '';
+  }
+
+  removeWorld(worldId: string) {
+    this.selectedWorldIds.update((current) => current.filter((id) => id !== worldId));
   }
 
   save() {
@@ -325,18 +425,26 @@ export class NovelFormPageComponent implements OnInit {
       ? this.novelsService.update(this.slug, payload)
       : this.novelsService.create(payload);
 
-    request.pipe(switchMap((novel) => this.syncCharacterLinks(novel.slug, novel))).subscribe({
-      next: (novel) => {
-        this.statusMessage.set('Novela guardada. Redirigiendo a capitulos...');
-        this.initialCharacterIds.set(this.selectedCharacterIds());
-        this.saving.set(false);
-        this.router.navigate(['/mis-novelas', novel.slug, 'capitulos']);
-      },
-      error: () => {
-        this.saving.set(false);
-        this.errorMessage.set('No se pudo guardar la novela. Revisa los datos e intenta de nuevo.');
-      },
-    });
+    request
+      .pipe(
+        switchMap((novel) => this.syncCharacterLinks(novel.slug, novel)),
+        switchMap((novel) => this.syncWorldLinks(novel.slug, novel)),
+      )
+      .subscribe({
+        next: (novel) => {
+          this.statusMessage.set('Novela guardada. Redirigiendo a capitulos...');
+          this.initialCharacterIds.set(this.selectedCharacterIds());
+          this.initialWorldIds.set(this.selectedWorldIds());
+          this.saving.set(false);
+          this.router.navigate(['/mis-novelas', novel.slug, 'capitulos']);
+        },
+        error: () => {
+          this.saving.set(false);
+          this.errorMessage.set(
+            'No se pudo guardar la novela. Revisa los datos e intenta de nuevo.',
+          );
+        },
+      });
   }
 
   private syncCharacterLinks(novelSlug: string, novel: { slug: string }) {
@@ -366,6 +474,29 @@ export class NovelFormPageComponent implements OnInit {
       ...toUnlink.map((character) =>
         this.charactersService.unlinkNovel(username, character.slug, novelSlug),
       ),
+    ];
+
+    return operations.length ? forkJoin(operations).pipe(switchMap(() => of(novel))) : of(novel);
+  }
+
+  private syncWorldLinks(novelSlug: string, novel: { slug: string }) {
+    const selectedIds = new Set(this.selectedWorldIds());
+    const currentIds = new Set(this.initialWorldIds());
+    const byId = new Map(this.worlds().map((world) => [world.id, world]));
+
+    const toLink = [...selectedIds]
+      .filter((id) => !currentIds.has(id))
+      .map((id) => byId.get(id))
+      .filter((world): world is WorldSummary => Boolean(world));
+
+    const toUnlink = [...currentIds]
+      .filter((id) => !selectedIds.has(id))
+      .map((id) => byId.get(id))
+      .filter((world): world is WorldSummary => Boolean(world));
+
+    const operations = [
+      ...toLink.map((world) => this.worldsService.linkNovel(world.slug, novelSlug)),
+      ...toUnlink.map((world) => this.worldsService.unlinkNovel(world.slug, novelSlug)),
     ];
 
     return operations.length ? forkJoin(operations).pipe(switchMap(() => of(novel))) : of(novel);

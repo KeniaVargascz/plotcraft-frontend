@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PostModel, PostType } from '../../../core/models/post.model';
 import { PublicProfile } from '../../../core/models/profile.model';
@@ -36,6 +37,7 @@ import { WorldCardComponent } from '../../worlds/components/world-card.component
 })
 export class UserProfilePageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   readonly authService = inject(AuthService);
 
   private readonly userService = inject(UserService);
@@ -60,7 +62,7 @@ export class UserProfilePageComponent implements OnInit {
   readonly followPending = signal(false);
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const username = params.get('username');
       if (!username) {
         return;

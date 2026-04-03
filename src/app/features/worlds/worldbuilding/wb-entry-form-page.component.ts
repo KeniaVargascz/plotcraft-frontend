@@ -1,12 +1,15 @@
-import { Component, HostListener, inject, signal, OnDestroy } from '@angular/core';
+import { Component, HostListener, inject, signal, computed, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs';
 import { WbEntryDetail } from '../../../core/models/wb-entry.model';
 import { WbCategory } from '../../../core/models/wb-category.model';
 import { FieldDefinition } from '../../../core/models/field-definition.model';
 import { WorldbuildingService } from '../../../core/services/worldbuilding.service';
 import { MarkdownService } from '../../../core/services/markdown.service';
+import { PromptDialogComponent, PromptDialogData } from '../../../shared/components/prompt-dialog/prompt-dialog.component';
+import { AlertDialogComponent, AlertDialogData } from '../../../shared/components/alert-dialog/alert-dialog.component';
 import { WbDynamicFieldComponent } from './components/wb-dynamic-field.component';
 import { WbEntryLinksComponent } from './components/wb-entry-links.component';
 
@@ -25,7 +28,7 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
               class="name-input"
               [(ngModel)]="name"
               name="name"
-              placeholder="Nombre de la entrada"
+              [placeholder]="namePlaceholder()"
               (ngModelChange)="markDirty()"
             />
             @if (category()) {
@@ -265,6 +268,7 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
 export class WbEntryFormPageComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
   private readonly wbService = inject(WorldbuildingService);
   readonly markdownService = inject(MarkdownService);
 
@@ -280,6 +284,10 @@ export class WbEntryFormPageComponent implements OnDestroy {
   readonly fieldSchema = signal<FieldDefinition[]>([]);
   readonly fields = signal<Record<string, any>>({});
   readonly links = signal<any[]>([]);
+  readonly namePlaceholder = computed(() => {
+    const cat = this.category();
+    return cat ? `Nombre de la nueva ${cat.name.toLowerCase()}` : 'Nombre de la entrada';
+  });
 
   private entrySlug: string | null = null;
   private catSlug: string | null = null;
@@ -323,9 +331,12 @@ export class WbEntryFormPageComponent implements OnDestroy {
             this.loading.set(false);
           }
         },
-        error: () => {
+        error: (err) => {
           this.loading.set(false);
-          this.errorMsg.set('No se pudo cargar la categoria.');
+          const msg = err?.status === 404
+            ? 'Categoria no encontrada. Verifica que la URL sea correcta.'
+            : 'No se pudo cargar la categoria.';
+          this.errorMsg.set(msg);
         },
       });
     });
@@ -381,7 +392,12 @@ export class WbEntryFormPageComponent implements OnDestroy {
           );
         }
       },
-      error: () => this.errorMsg.set('No se pudo guardar la entrada.'),
+      error: (err) => {
+        const msg = err?.error?.error?.errors?.join(', ')
+          || err?.error?.error?.message
+          || 'No se pudo guardar la entrada.';
+        this.errorMsg.set(msg);
+      },
     });
   }
 
@@ -394,26 +410,44 @@ export class WbEntryFormPageComponent implements OnDestroy {
 
   onAddLink() {
     if (!this.entrySlug) return;
-    const targetName = prompt('Nombre o slug de la entrada a vincular:');
-    if (!targetName) return;
-    const relation = prompt('Relacion (ej: "es aliado de"):') || 'relacionado con';
 
-    this.wbService.searchEntries(this.worldSlug(), targetName).subscribe({
-      next: (res) => {
-        if (!res.data.length) {
-          alert('No se encontro ninguna entrada con ese nombre.');
-          return;
-        }
-        const target = res.data[0];
-        this.wbService.createLink(this.worldSlug(), this.entrySlug!, {
-          targetEntryId: target.id,
-          relation,
-          isMutual: true,
-        }).subscribe({
-          next: (link) => this.links.update((l) => [...l, link]),
-          error: () => alert('No se pudo crear el vinculo.'),
+    this.dialog.open(PromptDialogComponent, {
+      width: '400px',
+      data: { title: 'Vincular entrada', label: 'Nombre o slug de la entrada a vincular', placeholder: 'Ej: elfos-del-velo' } as PromptDialogData,
+    }).afterClosed().subscribe((targetName: string | null) => {
+      if (!targetName) return;
+
+      this.dialog.open(PromptDialogComponent, {
+        width: '400px',
+        data: { title: 'Tipo de relacion', label: 'Relacion', placeholder: 'Ej: es aliado de', value: 'relacionado con' } as PromptDialogData,
+      }).afterClosed().subscribe((relation: string | null) => {
+        const rel = relation || 'relacionado con';
+
+        this.wbService.searchEntries(this.worldSlug(), targetName).subscribe({
+          next: (res) => {
+            if (!res.data.length) {
+              this.showAlert('Sin resultados', 'No se encontro ninguna entrada con ese nombre.');
+              return;
+            }
+            const target = res.data[0];
+            this.wbService.createLink(this.worldSlug(), this.entrySlug!, {
+              targetEntryId: target.id,
+              relation: rel,
+              isMutual: true,
+            }).subscribe({
+              next: (link) => this.links.update((l) => [...l, link]),
+              error: () => this.showAlert('Error', 'No se pudo crear el vinculo.'),
+            });
+          },
         });
-      },
+      });
+    });
+  }
+
+  private showAlert(title: string, message: string) {
+    this.dialog.open(AlertDialogComponent, {
+      width: '360px',
+      data: { title, message } as AlertDialogData,
     });
   }
 

@@ -23,6 +23,8 @@ import { ChaptersService } from '../../core/services/chapters.service';
 import { HighlightsService } from '../../core/services/highlights.service';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { ReaderService } from '../../core/services/reader.service';
+import { MatDialog } from '@angular/material/dialog';
+import { PromptDialogComponent, PromptDialogData } from '../../shared/components/prompt-dialog/prompt-dialog.component';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 
@@ -350,6 +352,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   private readonly bookmarksService = inject(BookmarksService);
   private readonly highlightsService = inject(HighlightsService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly dialog = inject(MatDialog);
 
   @ViewChild('readerContainer') readerContainer?: ElementRef<HTMLElement>;
 
@@ -494,20 +497,25 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     }
 
     event.preventDefault();
-    const label = window.prompt('Etiqueta del marcador', '');
     const chapter = this.chapter();
     if (!chapter) {
       return;
     }
 
-    this.bookmarksService
-      .create({
-        novel_id: chapter.novel.id,
-        chapter_id: chapter.id,
-        anchor_id: paragraph.getAttribute('data-anchor-id'),
-        label,
-      })
-      .subscribe(() => this.loadChapterBookmarks(chapter.id));
+    this.dialog.open(PromptDialogComponent, {
+      width: '360px',
+      data: { title: 'Nuevo marcador', label: 'Etiqueta del marcador', placeholder: 'Ej: escena importante' } as PromptDialogData,
+    }).afterClosed().subscribe((label: string | null) => {
+      if (label === null) return;
+      this.bookmarksService
+        .create({
+          novel_id: chapter.novel.id,
+          chapter_id: chapter.id,
+          anchor_id: paragraph.getAttribute('data-anchor-id'),
+          label,
+        })
+        .subscribe(() => this.loadChapterBookmarks(chapter.id));
+    });
   }
 
   handleSelection() {

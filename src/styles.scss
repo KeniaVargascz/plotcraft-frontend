@@ -110,3 +110,39 @@ textarea {
 .mat-mdc-form-field {
   --mdc-filled-text-field-container-color: var(--bg-elevated);
 }
+
+/* ── Material Dialog theming ── */
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  background: var(--bg-card) !important;
+  color: var(--text-1) !important;
+  border: 1px solid var(--border-s);
+  border-radius: 1.25rem !important;
+}
+
+.mat-mdc-dialog-title {
+  color: var(--text-1) !important;
+  font-family: 'Outfit', sans-serif !important;
+}
+
+.mat-mdc-dialog-content {
+  color: var(--text-2) !important;
+  font-family: 'Outfit', sans-serif !important;
+}
+
+.mat-mdc-dialog-actions .mat-mdc-button {
+  color: var(--text-2) !important;
+}
+
+.mat-mdc-dialog-actions .mat-mdc-unelevated-button {
+  --mdc-filled-button-container-color: var(--accent);
+  --mdc-filled-button-label-text-color: var(--bg-base);
+}
+
+.mat-mdc-dialog-actions .mat-mdc-unelevated-button.mat-warn {
+  --mdc-filled-button-container-color: var(--danger);
+  --mdc-filled-button-label-text-color: #fff;
+}
+
+.cdk-overlay-dark-backdrop {
+  background: var(--shadow) !important;
+}

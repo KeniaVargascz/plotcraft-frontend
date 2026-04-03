@@ -1,12 +1,14 @@
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   ElementRef,
   OnDestroy,
   ViewChild,
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
@@ -414,6 +416,7 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly searchService = inject(SearchService);
   private readonly genresService = inject(GenresService);
+  private readonly destroyRef = inject(DestroyRef);
   private observer?: IntersectionObserver;
 
   @ViewChild('sentinel') sentinel?: ElementRef<HTMLDivElement>;
@@ -448,7 +451,7 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
 
   constructor() {
     this.genresService.list().subscribe((genres) => this.genres.set(genres));
-    this.route.queryParamMap.subscribe((params) => {
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.query.set(params.get('q') ?? '');
       this.activeTab.set((params.get('type') as SearchTab | null) ?? 'all');
       this.genre = params.get('genre') ?? '';

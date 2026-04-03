@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
@@ -122,6 +123,7 @@ import { NovelCardComponent } from './components/novel-card.component';
 export class CatalogPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly genresService = inject(GenresService);
   private readonly novelsService = inject(NovelsService);
 
@@ -139,12 +141,12 @@ export class CatalogPageComponent implements OnInit {
   sort: 'recent' | 'popular' | 'views' = 'recent';
 
   ngOnInit() {
-    this.genresService.list().subscribe((genres) => {
+    this.genresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((genres) => {
       this.genres.set(genres);
       this.syncGenreCopy();
     });
 
-    combineLatest([this.route.paramMap, this.route.queryParamMap]).subscribe(
+    combineLatest([this.route.paramMap, this.route.queryParamMap]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
       ([params, queryParams]) => {
         this.genre = params.get('genreSlug') ?? queryParams.get('genre') ?? '';
         this.search = queryParams.get('search') ?? '';

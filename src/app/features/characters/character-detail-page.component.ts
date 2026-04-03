@@ -1,4 +1,5 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CharactersService } from '../../core/services/characters.service';
 import { MarkdownService } from '../../core/services/markdown.service';
@@ -149,6 +150,7 @@ import { CharacterDetail, CharacterRelationship } from '../../core/models/charac
 })
 export class CharacterDetailPageComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly charactersService = inject(CharactersService);
   readonly markdownService = inject(MarkdownService);
 
@@ -169,7 +171,7 @@ export class CharacterDetailPageComponent {
   });
 
   constructor() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const username = params.get('username');
       const slug = params.get('slug');
       if (!username || !slug) return;

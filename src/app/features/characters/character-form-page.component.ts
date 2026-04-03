@@ -1,4 +1,5 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize, forkJoin, map, of, switchMap } from 'rxjs';
@@ -347,6 +348,7 @@ import { WorldSummary } from '../../core/models/world.model';
 export class CharacterFormPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly authService = inject(AuthService);
   private readonly charactersService = inject(CharactersService);
   private readonly novelsService = inject(NovelsService);
@@ -410,7 +412,7 @@ export class CharacterFormPageComponent {
       error: () => this.novels.set([]),
     });
 
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const slug = params.get('slug');
       this.isEdit.set(Boolean(slug));
       this.currentSlug = slug;

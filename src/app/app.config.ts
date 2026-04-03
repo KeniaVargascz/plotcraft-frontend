@@ -20,8 +20,12 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
     provideRouter(routes),
-    provideAppInitializer(() => inject(TranslationService).loadTranslations()),
-    provideAppInitializer(() => inject(ThemeService).initializeTheme()),
-    provideAppInitializer(() => inject(AuthService).initializeSession()),
+    provideAppInitializer(() => {
+      inject(ThemeService).initializeTheme();
+      return Promise.all([
+        inject(TranslationService).loadTranslations(),
+        inject(AuthService).initializeSession(),
+      ]);
+    }),
   ],
 };

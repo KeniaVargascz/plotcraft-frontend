@@ -1,4 +1,5 @@
-import { Component, inject, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, inject, signal, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { filter, switchMap } from 'rxjs';
@@ -9,6 +10,8 @@ import { WorldsService } from '../../../core/services/worlds.service';
 import { WorldbuildingService } from '../../../core/services/worldbuilding.service';
 import { MarkdownService } from '../../../core/services/markdown.service';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { PromptDialogComponent, PromptDialogData } from '../../../shared/components/prompt-dialog/prompt-dialog.component';
+import { AlertDialogComponent, AlertDialogData } from '../../../shared/components/alert-dialog/alert-dialog.component';
 import { WbSidebarComponent } from './components/wb-sidebar.component';
 import { WbEntryGridComponent } from './components/wb-entry-grid.component';
 import { WbEntryLinksComponent } from './components/wb-entry-links.component';
@@ -291,6 +294,7 @@ export class WbWorkspacePageComponent {
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly dialog = inject(MatDialog);
   private readonly worldsService = inject(WorldsService);
   private readonly wbService = inject(WorldbuildingService);
@@ -320,7 +324,7 @@ export class WbWorkspacePageComponent {
   }
 
   constructor() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const slug = params.get('slug');
       if (!slug) return;
       this.worldSlug.set(slug);
@@ -475,30 +479,48 @@ export class WbWorkspacePageComponent {
   onAddLink() {
     const detail = this.entryDetail();
     if (!detail) return;
-    const targetName = prompt('Nombre o slug de la entrada a vincular:');
-    if (!targetName) return;
-    const relation = prompt('Relacion (ej: "es aliado de"):') || 'relacionado con';
 
-    this.wbService.searchEntries(this.worldSlug(), targetName).subscribe({
-      next: (res) => {
-        if (!res.data.length) {
-          alert('No se encontro ninguna entrada con ese nombre.');
-          return;
-        }
-        const target = res.data[0];
-        this.wbService.createLink(this.worldSlug(), detail.slug, {
-          targetEntryId: target.id,
-          relation,
-          isMutual: true,
-        }).subscribe({
-          next: (link) => {
-            this.entryDetail.update((d) =>
-              d ? { ...d, links: [...d.links, link] } : d,
-            );
+    this.dialog.open(PromptDialogComponent, {
+      width: '400px',
+      data: { title: 'Vincular entrada', label: 'Nombre o slug de la entrada a vincular', placeholder: 'Ej: elfos-del-velo' } as PromptDialogData,
+    }).afterClosed().subscribe((targetName: string | null) => {
+      if (!targetName) return;
+
+      this.dialog.open(PromptDialogComponent, {
+        width: '400px',
+        data: { title: 'Tipo de relacion', label: 'Relacion', placeholder: 'Ej: es aliado de', value: 'relacionado con' } as PromptDialogData,
+      }).afterClosed().subscribe((relation: string | null) => {
+        const rel = relation || 'relacionado con';
+
+        this.wbService.searchEntries(this.worldSlug(), targetName).subscribe({
+          next: (res) => {
+            if (!res.data.length) {
+              this.showAlert('Sin resultados', 'No se encontro ninguna entrada con ese nombre.');
+              return;
+            }
+            const target = res.data[0];
+            this.wbService.createLink(this.worldSlug(), detail.slug, {
+              targetEntryId: target.id,
+              relation: rel,
+              isMutual: true,
+            }).subscribe({
+              next: (link) => {
+                this.entryDetail.update((d) =>
+                  d ? { ...d, links: [...d.links, link] } : d,
+                );
+              },
+              error: () => this.showAlert('Error', 'No se pudo crear el vinculo.'),
+            });
           },
-          error: () => alert('No se pudo crear el vinculo.'),
         });
-      },
+      });
+    });
+  }
+
+  private showAlert(title: string, message: string) {
+    this.dialog.open(AlertDialogComponent, {
+      width: '360px',
+      data: { title, message } as AlertDialogData,
     });
   }
 

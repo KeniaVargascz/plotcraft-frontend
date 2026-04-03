@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { NovelDetail } from '../../core/models/novel.model';
@@ -314,6 +315,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
 })
 export class NovelDetailPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly novelsService = inject(NovelsService);
   private readonly readingListsService = inject(ReadingListsService);
   readonly authService = inject(AuthService);
@@ -330,7 +332,7 @@ export class NovelDetailPageComponent implements OnInit {
   readonly listActionId = signal<string | null>(null);
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const slug = params.get('slug');
       if (!slug) {
         return;

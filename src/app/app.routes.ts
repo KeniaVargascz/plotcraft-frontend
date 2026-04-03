@@ -319,8 +319,24 @@ export const routes: Routes = [
       },
       {
         path: 'planner',
-        loadChildren: () =>
-          import('./features/planner/planner.routes').then((module) => module.PLANNER_ROUTES),
+        loadComponent: () =>
+          import('./features/planner/planner-dashboard-page.component').then(
+            (module) => module.PlannerDashboardPageComponent,
+          ),
+      },
+      {
+        path: 'planner/calendario',
+        loadComponent: () =>
+          import('./features/planner/planner-calendar-page.component').then(
+            (module) => module.PlannerCalendarPageComponent,
+          ),
+      },
+      {
+        path: 'planner/estadisticas',
+        loadComponent: () =>
+          import('./features/planner/planner-stats-page.component').then(
+            (module) => module.PlannerStatsPageComponent,
+          ),
       },
       {
         path: 'planner/:projectId',

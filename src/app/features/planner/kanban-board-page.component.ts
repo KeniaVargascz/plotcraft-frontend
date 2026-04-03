@@ -178,7 +178,10 @@ const ALL_TYPES: TaskType[] = ['CHAPTER', 'CHARACTER', 'WORLDBUILDING', 'PLANNIN
       color: var(--text-1);
       font-family: inherit;
       min-width: 120px;
-      max-width: 300px;
+      max-width: 400px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
     }
     .project-name-input:hover {
       border-color: var(--border);
@@ -215,11 +218,13 @@ const ALL_TYPES: TaskType[] = ['CHAPTER', 'CHARACTER', 'WORLDBUILDING', 'PLANNIN
       border-radius: 8px;
       padding: 0.5rem 1rem;
       font-size: 0.8rem;
-      color: var(--accent-text);
+      color: #fff;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
+      transition: filter 0.15s;
     }
+    .btn-new-task:hover { filter: brightness(1.15); }
     .btn-new-task:hover {
       box-shadow: var(--accent-glow);
     }
@@ -275,7 +280,7 @@ const ALL_TYPES: TaskType[] = ['CHAPTER', 'CHARACTER', 'WORLDBUILDING', 'PLANNIN
     }
     .chip.active {
       background: var(--accent);
-      color: var(--accent-text);
+      color: #fff;
       border-color: var(--accent);
     }
     .search-input {
@@ -382,12 +387,13 @@ export class KanbanBoardPageComponent implements OnInit {
     });
 
     this.plannerService.getBoard(this.projectId).subscribe({
-      next: (data) => {
+      next: (data: any) => {
+        const cols = data.columns ?? data;
         this.board.set({
-          BACKLOG: data['BACKLOG'] ?? [],
-          IN_PROGRESS: data['IN_PROGRESS'] ?? [],
-          REVIEW: data['REVIEW'] ?? [],
-          DONE: data['DONE'] ?? [],
+          BACKLOG: cols['BACKLOG']?.tasks ?? cols['BACKLOG'] ?? [],
+          IN_PROGRESS: cols['IN_PROGRESS']?.tasks ?? cols['IN_PROGRESS'] ?? [],
+          REVIEW: cols['REVIEW']?.tasks ?? cols['REVIEW'] ?? [],
+          DONE: cols['DONE']?.tasks ?? cols['DONE'] ?? [],
         });
         this.loading.set(false);
       },
@@ -492,6 +498,7 @@ export class KanbanBoardPageComponent implements OnInit {
       projectId: this.projectId,
       task,
       defaultStatus: defaultStatus ?? 'BACKLOG',
+      novelSlug: this.project()?.novel?.slug,
     };
 
     const ref = this.dialog.open(TaskFormDialogComponent, {

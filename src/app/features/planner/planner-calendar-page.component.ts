@@ -169,10 +169,12 @@ const PRIORITY_COLORS: Record<string, string> = {
       border-radius: 6px;
       padding: 0.375rem 1rem;
       font-size: 0.8rem;
-      color: var(--accent-text);
+      color: #fff;
       font-weight: 600;
       cursor: pointer;
+      transition: filter 0.15s;
     }
+    .today-btn:hover { filter: brightness(1.15); }
     .calendar-grid-wrapper {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -215,7 +217,7 @@ const PRIORITY_COLORS: Record<string, string> = {
     }
     .day-cell.today .day-num {
       background: var(--accent);
-      color: var(--accent-text);
+      color: #fff;
       border-radius: 50%;
       width: 24px;
       height: 24px;
@@ -413,10 +415,10 @@ export class PlannerCalendarPageComponent implements OnInit {
 
   private makeDay(date: Date, isCurrentMonth: boolean, todayStr: string): CalendarDay {
     const dayStr = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-    const dateKey = date.toISOString().substring(0, 10);
+    const dateKey = this.toLocalDateStr(date);
     const dayTasks = this.tasks().filter((t) => {
       if (!t.dueDate) return false;
-      return t.dueDate.substring(0, 10) === dateKey;
+      return this.toLocalDateStr(new Date(t.dueDate)) === dateKey;
     });
 
     return {
@@ -428,6 +430,13 @@ export class PlannerCalendarPageComponent implements OnInit {
     };
   }
 
+  private toLocalDateStr(d: Date): string {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
   private loadTasks(): void {
     this.loading.set(true);
     const year = this.currentYear();
@@ -436,11 +445,14 @@ export class PlannerCalendarPageComponent implements OnInit {
     const to = new Date(year, month + 1, 0).toISOString().substring(0, 10);
 
     this.plannerService.getCalendar(from, to).subscribe({
-      next: (tasks) => {
-        this.tasks.set(tasks);
+      next: (response: any) => {
+        this.tasks.set(Array.isArray(response) ? response : response.tasks ?? []);
         this.loading.set(false);
       },
-      error: () => this.loading.set(false),
+      error: () => {
+        this.tasks.set([]);
+        this.loading.set(false);
+      },
     });
   }
 

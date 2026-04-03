@@ -153,16 +153,17 @@ const COLOR_SWATCHES = [
       border-radius: 6px;
       padding: 0.5rem 1.25rem;
       font-size: 0.85rem;
-      color: var(--accent-text);
+      color: #fff;
       font-weight: 600;
       cursor: pointer;
+      transition: filter 0.15s;
     }
     .btn-save:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
     .btn-save:hover:not(:disabled) {
-      box-shadow: var(--accent-glow);
+      filter: brightness(1.15);
     }
   `],
 })
@@ -179,7 +180,7 @@ export class CreateProjectDialogComponent implements OnInit {
   novelId = '';
 
   ngOnInit(): void {
-    this.novelsService.listMine({ limit: 100 }).subscribe({
+    this.novelsService.listMine({ limit: 50 }).subscribe({
       next: (res) => this.novels.set(res.data),
     });
   }

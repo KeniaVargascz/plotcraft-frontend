@@ -3,12 +3,15 @@ import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { WritingTask } from '../../../core/models/writing-task.model';
 import { TaskPriority, TaskStatus, TaskType } from '../../../core/models/writing-project.model';
+import { ChaptersService } from '../../../core/services/chapters.service';
+import { CharactersService } from '../../../core/services/characters.service';
 import { WordProgressBarComponent } from './word-progress-bar.component';
 
 export interface TaskFormDialogData {
   task?: WritingTask;
   projectId: string;
   defaultStatus?: TaskStatus;
+  novelSlug?: string;
 }
 
 const TASK_TYPES: { value: TaskType; label: string }[] = [
@@ -128,14 +131,26 @@ const STATUSES: { value: TaskStatus; label: string }[] = [
         <section class="form-section">
           <h3 class="section-title">Referencias</h3>
 
-          <label class="field">
-            <span class="field-label">ID del capitulo (opcional)</span>
-            <input type="text" [(ngModel)]="chapterId" placeholder="UUID del capitulo" />
-          </label>
+          @if (data.novelSlug) {
+            <label class="field">
+              <span class="field-label">Capitulo (opcional)</span>
+              <select [(ngModel)]="chapterId" (focus)="loadChapters()">
+                <option value="">Sin capitulo</option>
+                @for (ch of chapters(); track ch.id) {
+                  <option [value]="ch.id">{{ ch.order }}. {{ ch.title }}</option>
+                }
+              </select>
+            </label>
+          }
 
           <label class="field">
-            <span class="field-label">ID del personaje (opcional)</span>
-            <input type="text" [(ngModel)]="characterId" placeholder="UUID del personaje" />
+            <span class="field-label">Personaje (opcional)</span>
+            <select [(ngModel)]="characterId" (focus)="loadCharacters()">
+              <option value="">Sin personaje</option>
+              @for (c of charactersList(); track c.id) {
+                <option [value]="c.id">{{ c.name }}</option>
+              }
+            </select>
           </label>
         </section>
       </div>
@@ -243,9 +258,10 @@ const STATUSES: { value: TaskStatus; label: string }[] = [
       border-radius: 6px;
       padding: 0.5rem 1.25rem;
       font-size: 0.85rem;
-      color: var(--accent-text);
+      color: #fff;
       font-weight: 600;
       cursor: pointer;
+      transition: filter 0.15s;
     }
     .btn-save:disabled {
       opacity: 0.5;
@@ -259,6 +275,13 @@ const STATUSES: { value: TaskStatus; label: string }[] = [
 export class TaskFormDialogComponent implements OnInit {
   readonly data = inject<TaskFormDialogData>(MAT_DIALOG_DATA);
   private readonly dialogRef = inject(MatDialogRef<TaskFormDialogComponent>);
+  private readonly chaptersService = inject(ChaptersService);
+  private readonly charactersService = inject(CharactersService);
+
+  readonly chapters = signal<{ id: string; title: string; order: number }[]>([]);
+  readonly charactersList = signal<{ id: string; name: string }[]>([]);
+  private chaptersLoaded = false;
+  private charactersLoaded = false;
 
   taskTypes = TASK_TYPES;
   priorities = PRIORITIES;
@@ -300,6 +323,24 @@ export class TaskFormDialogComponent implements OnInit {
         this.status = this.data.defaultStatus;
       }
     }
+  }
+
+  loadChapters(): void {
+    if (this.chaptersLoaded || !this.data.novelSlug) return;
+    this.chaptersLoaded = true;
+    this.chaptersService.listDrafts(this.data.novelSlug, { limit: 50 }).subscribe({
+      next: (res) => this.chapters.set(res.data.map((c: any) => ({ id: c.id, title: c.title, order: c.order }))),
+      error: () => this.chapters.set([]),
+    });
+  }
+
+  loadCharacters(): void {
+    if (this.charactersLoaded) return;
+    this.charactersLoaded = true;
+    this.charactersService.listMine({ limit: 50 }).subscribe({
+      next: (res) => this.charactersList.set(res.data.map((c: any) => ({ id: c.id, name: c.name }))),
+      error: () => this.charactersList.set([]),
+    });
   }
 
   onCancel(): void {

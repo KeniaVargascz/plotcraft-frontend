@@ -162,12 +162,13 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
       border-radius: 8px;
       padding: 0.5rem 1.25rem;
       font-size: 0.85rem;
-      color: var(--accent-text);
+      color: #fff;
       font-weight: 600;
       cursor: pointer;
+      transition: filter 0.15s;
     }
     .primary:hover {
-      box-shadow: var(--accent-glow);
+      filter: brightness(1.15);
     }
     .section-title {
       font-size: 1rem;

@@ -178,6 +178,27 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'mis-mundos/:slug/world-building',
+        loadComponent: () =>
+          import('./features/worlds/worldbuilding/wb-workspace-page.component').then(
+            (module) => module.WbWorkspacePageComponent,
+          ),
+      },
+      {
+        path: 'mis-mundos/:slug/world-building/:catSlug/nueva',
+        loadComponent: () =>
+          import('./features/worlds/worldbuilding/wb-entry-form-page.component').then(
+            (module) => module.WbEntryFormPageComponent,
+          ),
+      },
+      {
+        path: 'mis-mundos/:slug/world-building/:catSlug/:entrySlug/editar',
+        loadComponent: () =>
+          import('./features/worlds/worldbuilding/wb-entry-form-page.component').then(
+            (module) => module.WbEntryFormPageComponent,
+          ),
+      },
+      {
         path: 'mis-personajes',
         loadComponent: () =>
           import('./features/characters/my-characters-page.component').then(
@@ -426,27 +447,6 @@ export const routes: Routes = [
     component: MinimalLayoutComponent,
     canActivate: [authGuard],
     children: [
-      {
-        path: 'mis-mundos/:slug/world-building',
-        loadComponent: () =>
-          import('./features/worlds/worldbuilding/wb-workspace-page.component').then(
-            (module) => module.WbWorkspacePageComponent,
-          ),
-      },
-      {
-        path: 'mis-mundos/:slug/world-building/:catSlug/nueva',
-        loadComponent: () =>
-          import('./features/worlds/worldbuilding/wb-entry-form-page.component').then(
-            (module) => module.WbEntryFormPageComponent,
-          ),
-      },
-      {
-        path: 'mis-mundos/:slug/world-building/:catSlug/:entrySlug/editar',
-        loadComponent: () =>
-          import('./features/worlds/worldbuilding/wb-entry-form-page.component').then(
-            (module) => module.WbEntryFormPageComponent,
-          ),
-      },
       {
         path: 'mis-novelas/:slug/capitulos/nuevo',
         loadComponent: () =>

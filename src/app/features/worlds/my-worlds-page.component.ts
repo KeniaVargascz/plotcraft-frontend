@@ -32,6 +32,11 @@ import { WorldCardComponent } from './components/world-card.component';
           @for (world of worlds(); track world.id) {
             <article class="stack">
               <app-world-card [world]="world" [showVisibility]="true" />
+              @if (world.wbSummary && world.wbSummary.entriesCount) {
+                <div class="wb-badge-row">
+                  <span class="wb-badge">&#128218; {{ world.wbSummary!.entriesCount }} entradas</span>
+                </div>
+              }
               <div class="actions">
                 <a [routerLink]="['/mis-mundos', world.slug, 'editar']">Editar</a>
                 <button
@@ -89,6 +94,18 @@ import { WorldCardComponent } from './components/world-card.component';
       .state,
       .empty p {
         color: var(--text-2);
+      }
+      .wb-badge-row { display: flex; justify-content: center; }
+      .wb-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.72rem;
+        font-weight: 600;
       }
       @media (max-width: 960px) {
         .grid {

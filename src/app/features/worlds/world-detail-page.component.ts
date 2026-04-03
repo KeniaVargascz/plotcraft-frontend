@@ -2,15 +2,19 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { WorldsService } from '../../core/services/worlds.service';
+import { WorldbuildingService } from '../../core/services/worldbuilding.service';
 import { WorldDetail, WORLD_GENRE_LABELS } from '../../core/models/world.model';
+import { WbCategorySummary } from '../../core/models/wb-category.model';
+import { WbEntrySummary } from '../../core/models/wb-entry.model';
 import { CharacterCardComponent } from '../characters/components/character-card.component';
 import { CharactersService } from '../../core/services/characters.service';
 import { CharacterSummary } from '../../core/models/character.model';
+import { WbEntryCardComponent } from './worldbuilding/components/wb-entry-card.component';
 
 @Component({
   selector: 'app-world-detail-page',
   standalone: true,
-  imports: [RouterLink, CharacterCardComponent],
+  imports: [RouterLink, CharacterCardComponent, WbEntryCardComponent],
   template: `
     @if (loading()) {
       <p class="state">Cargando mundo...</p>
@@ -91,6 +95,29 @@ import { CharacterSummary } from '../../core/models/character.model';
               }
             </aside>
           </section>
+
+          @if (loreCategories().length) {
+            <section class="related lore-section">
+              <div class="section-head">
+                <h2>Lore</h2>
+                <a [routerLink]="['/mundos', currentWorld.slug, 'lore']">Ver todo el lore</a>
+              </div>
+              @for (loreCat of loreCategories(); track loreCat.slug) {
+                @if (loreEntries()[loreCat.slug]?.length) {
+                  <div class="lore-cat-group">
+                    <h3 class="lore-cat-title">{{ loreCat.icon || '' }} {{ loreCat.name }}</h3>
+                    <div class="lore-scroll">
+                      @for (entry of loreEntries()[loreCat.slug]; track entry.id) {
+                        <a [routerLink]="['/mundos', currentWorld.slug, 'lore', entry.slug]" class="lore-entry-link">
+                          <app-wb-entry-card [entry]="entry" />
+                        </a>
+                      }
+                    </div>
+                  </div>
+                }
+              }
+            </section>
+          }
 
           @if (characters().length) {
             <section class="related">
@@ -194,6 +221,22 @@ import { CharacterSummary } from '../../core/models/character.model';
         gap: 1rem;
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+      .lore-section { gap: 0.75rem; }
+      .lore-cat-group { display: grid; gap: 0.5rem; }
+      .lore-cat-title { margin: 0; font-size: 0.95rem; color: var(--text-2); }
+      .lore-scroll {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+        scroll-snap-type: x mandatory;
+      }
+      .lore-entry-link {
+        flex: 0 0 15rem;
+        scroll-snap-align: start;
+        text-decoration: none;
+        display: block;
+      }
       @media (max-width: 960px) {
         .content-grid,
         .character-grid {
@@ -207,10 +250,13 @@ export class WorldDetailPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly worldsService = inject(WorldsService);
   private readonly charactersService = inject(CharactersService);
+  private readonly wbService = inject(WorldbuildingService);
   readonly markdownService = inject(MarkdownService);
 
   readonly world = signal<WorldDetail | null>(null);
   readonly characters = signal<CharacterSummary[]>([]);
+  readonly loreCategories = signal<WbCategorySummary[]>([]);
+  readonly loreEntries = signal<Record<string, WbEntrySummary[]>>({});
   readonly loading = signal(true);
   readonly genreLabels = WORLD_GENRE_LABELS;
 
@@ -229,6 +275,22 @@ export class WorldDetailPageComponent {
           this.charactersService.listByWorld(slug, { limit: 8 }).subscribe({
             next: (response) => this.characters.set(response.data),
             error: () => this.characters.set([]),
+          });
+          this.wbService.listCategories(slug).subscribe({
+            next: (cats) => {
+              this.loreCategories.set(cats);
+              for (const cat of cats) {
+                this.wbService.listCategoryEntries(slug, cat.slug, { limit: 4, isPublic: true }).subscribe({
+                  next: (res) => {
+                    this.loreEntries.update((current) => ({ ...current, [cat.slug]: res.data }));
+                  },
+                  error: () => {
+                    this.loreEntries.update((current) => ({ ...current, [cat.slug]: [] }));
+                  },
+                });
+              }
+            },
+            error: () => this.loreCategories.set([]),
           });
           this.loading.set(false);
         },

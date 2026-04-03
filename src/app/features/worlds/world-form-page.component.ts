@@ -20,7 +20,12 @@ import { WorldGenre, WorldVisibility, WORLD_GENRE_LABELS } from '../../core/mode
           <h1>{{ isEdit() ? 'Editar mundo' : 'Nuevo mundo' }}</h1>
           <p class="lede">Documenta ambientacion, reglas y tono general con Markdown.</p>
         </div>
-        <a class="back-link" routerLink="/mis-mundos">Volver</a>
+        <div class="header-actions">
+          @if (isEdit()) {
+            <a class="back-link" [routerLink]="['/mis-mundos', currentSlug, 'world-building']">Gestionar world-building</a>
+          }
+          <a class="back-link" routerLink="/mis-mundos">Volver</a>
+        </div>
       </header>
 
       <form class="editor-grid" (ngSubmit)="submit()">
@@ -183,6 +188,11 @@ import { WorldGenre, WorldVisibility, WORLD_GENRE_LABELS } from '../../core/mode
         align-items: center;
         flex-wrap: wrap;
       }
+      .header-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
       .editor-grid {
         grid-template-columns: 1.1fr 0.9fr;
       }
@@ -288,7 +298,7 @@ export class WorldFormPageComponent {
     return this.novels().filter((novel) => selected.has(novel.slug));
   });
 
-  private currentSlug: string | null = null;
+  currentSlug: string | null = null;
 
   readonly genreOptions = Object.entries(WORLD_GENRE_LABELS).map(([value, label]) => ({
     value,

@@ -62,6 +62,20 @@ export interface WorldSummary {
   viewerContext: {
     isOwner: boolean;
   } | null;
+  wbSummary?: {
+    categoriesCount: number;
+    entriesCount: number;
+    publicEntriesCount: number;
+    categories: Array<{
+      id: string;
+      name: string;
+      slug: string;
+      icon: string | null;
+      color: string | null;
+      sortOrder: number;
+      entriesCount: number;
+    }>;
+  };
 }
 
 export interface WorldLocation {

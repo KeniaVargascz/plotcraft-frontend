@@ -108,6 +108,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'mundos/:slug/lore',
+        loadComponent: () =>
+          import('./features/worlds/world-lore-page.component').then(
+            (module) => module.WorldLorePageComponent,
+          ),
+      },
+      {
+        path: 'mundos/:slug/lore/:entrySlug',
+        loadComponent: () =>
+          import('./features/worlds/worldbuilding/wb-entry-detail-page.component').then(
+            (module) => module.WbEntryDetailPageComponent,
+          ),
+      },
+      {
         path: 'mundos/:slug',
         loadComponent: () =>
           import('./features/worlds/world-detail-page.component').then(
@@ -351,6 +365,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'mundos/:slug/lore',
+        loadComponent: () =>
+          import('./features/worlds/world-lore-page.component').then(
+            (module) => module.WorldLorePageComponent,
+          ),
+      },
+      {
+        path: 'mundos/:slug/lore/:entrySlug',
+        loadComponent: () =>
+          import('./features/worlds/worldbuilding/wb-entry-detail-page.component').then(
+            (module) => module.WbEntryDetailPageComponent,
+          ),
+      },
+      {
         path: 'mundos/:slug',
         loadComponent: () =>
           import('./features/worlds/world-detail-page.component').then(
@@ -398,6 +426,27 @@ export const routes: Routes = [
     component: MinimalLayoutComponent,
     canActivate: [authGuard],
     children: [
+      {
+        path: 'mis-mundos/:slug/world-building',
+        loadComponent: () =>
+          import('./features/worlds/worldbuilding/wb-workspace-page.component').then(
+            (module) => module.WbWorkspacePageComponent,
+          ),
+      },
+      {
+        path: 'mis-mundos/:slug/world-building/:catSlug/nueva',
+        loadComponent: () =>
+          import('./features/worlds/worldbuilding/wb-entry-form-page.component').then(
+            (module) => module.WbEntryFormPageComponent,
+          ),
+      },
+      {
+        path: 'mis-mundos/:slug/world-building/:catSlug/:entrySlug/editar',
+        loadComponent: () =>
+          import('./features/worlds/worldbuilding/wb-entry-form-page.component').then(
+            (module) => module.WbEntryFormPageComponent,
+          ),
+      },
       {
         path: 'mis-novelas/:slug/capitulos/nuevo',
         loadComponent: () =>

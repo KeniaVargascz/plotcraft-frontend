@@ -344,5 +344,123 @@
       "characters": "personajes"
     },
     "empty": "Aun no hay contenido para mostrar."
+  },
+  "worldbuilding": {
+    "title": "World-building",
+    "subtitle": "Organiza el lore de tu mundo con categorias y entradas detalladas.",
+    "workspace": {
+      "title": "Espacio de trabajo",
+      "allEntries": "Todas las entradas",
+      "searchResults": "Resultados de busqueda",
+      "noResults": "No se encontraron entradas.",
+      "loadMore": "Cargar mas"
+    },
+    "sidebar": {
+      "allCategories": "Todas",
+      "search": "Buscar entradas...",
+      "addCategory": "Nueva categoria"
+    },
+    "category": {
+      "create": "Nueva categoria",
+      "edit": "Editar categoria",
+      "delete": "Eliminar categoria",
+      "deleteConfirm": "Eliminar esta categoria? Se eliminaran todas sus entradas.",
+      "name": "Nombre",
+      "icon": "Icono (emoji)",
+      "color": "Color",
+      "description": "Descripcion",
+      "fieldSchema": "Campos personalizados",
+      "systemNote": "Esta es una categoria del sistema. Los campos base son de solo lectura.",
+      "saved": "Categoria guardada correctamente.",
+      "error": "No se pudo guardar la categoria."
+    },
+    "template": {
+      "title": "Elegir plantilla",
+      "configure": "Configurar plantilla",
+      "fields": "campos",
+      "nameOverride": "Nombre (opcional, override)",
+      "iconOverride": "Icono (opcional)",
+      "colorOverride": "Color (opcional)",
+      "create": "Crear desde plantilla",
+      "creating": "Creando...",
+      "back": "Volver",
+      "noTemplates": "No hay plantillas disponibles.",
+      "error": "No se pudo crear la categoria desde la plantilla."
+    },
+    "entry": {
+      "create": "Nueva entrada",
+      "edit": "Editar entrada",
+      "delete": "Eliminar entrada",
+      "deleteConfirm": "Eliminar esta entrada? Esta accion no se puede deshacer.",
+      "name": "Nombre de la entrada",
+      "summary": "Resumen",
+      "content": "Contenido",
+      "coverUrl": "URL de portada",
+      "tags": "Tags",
+      "fields": "Campos",
+      "details": "Detalles",
+      "isPublic": "Publico",
+      "isPrivate": "Privado",
+      "visibility": "Visibilidad",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "saved": "Entrada guardada correctamente.",
+      "error": "No se pudo guardar la entrada.",
+      "autoSaving": "Guardando automaticamente...",
+      "autoSaved": "Guardado automaticamente",
+      "autoSaveError": "Error al guardar"
+    },
+    "links": {
+      "title": "Referencias cruzadas",
+      "add": "Vincular",
+      "delete": "Eliminar vinculo",
+      "relation": "Relacion",
+      "mutual": "Mutuo",
+      "noLinks": "No hay referencias cruzadas.",
+      "targetPrompt": "Nombre o slug de la entrada a vincular:",
+      "relationPrompt": "Relacion (ej: es aliado de):",
+      "notFound": "No se encontro ninguna entrada con ese nombre.",
+      "error": "No se pudo crear el vinculo."
+    },
+    "graph": {
+      "title": "Grafo de relaciones"
+    },
+    "fieldBuilder": {
+      "title": "Campos personalizados",
+      "addField": "Agregar campo",
+      "key": "Clave (key)",
+      "label": "Etiqueta",
+      "type": "Tipo",
+      "required": "Requerido",
+      "placeholder": "Placeholder",
+      "options": "Opciones (separadas por coma)",
+      "moveUp": "Subir",
+      "moveDown": "Bajar",
+      "remove": "Eliminar campo",
+      "duplicateKeys": "Las claves de los campos deben ser unicas.",
+      "empty": "No hay campos definidos. Agrega uno para empezar."
+    },
+    "lore": {
+      "title": "Lore del mundo",
+      "subtitle": "Explora las entradas de world-building de este universo.",
+      "search": "Buscar en el lore...",
+      "all": "Todas",
+      "noEntries": "No hay entradas de lore publicas en este mundo.",
+      "viewAll": "Ver todo el lore",
+      "loadMore": "Cargar mas"
+    },
+    "emptyState": {
+      "title": "Comienza tu world-building",
+      "description": "Crea categorias para organizar el lore de tu mundo: personajes, lugares, organizaciones, magia y mas.",
+      "useTemplate": "Usar plantilla",
+      "createCustom": "Crear categoria personalizada"
+    },
+    "manageWb": "Gestionar world-building",
+    "entriesBadge": "entradas",
+    "preview": "Vista previa",
+    "editor": "Editar",
+    "back": "Volver",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar"
   }
 }

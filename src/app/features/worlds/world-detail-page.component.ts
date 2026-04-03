@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { WorldsService } from '../../core/services/worlds.service';
-import { WorldDetail } from '../../core/models/world.model';
+import { WorldDetail, WORLD_GENRE_LABELS } from '../../core/models/world.model';
 import { CharacterCardComponent } from '../characters/components/character-card.component';
 import { CharactersService } from '../../core/services/characters.service';
 import { CharacterSummary } from '../../core/models/character.model';
@@ -21,6 +21,9 @@ import { CharacterSummary } from '../../core/models/character.model';
             <div>
               <p class="eyebrow">Mundo</p>
               <h1>{{ currentWorld.name }}</h1>
+              @if (currentWorld.genre) {
+                <span class="genre-pill">{{ genreLabel(currentWorld.genre) }}</span>
+              }
               <p class="tagline">{{ currentWorld.tagline }}</p>
               <p class="author">
                 por
@@ -142,6 +145,17 @@ import { CharacterSummary } from '../../core/models/character.model';
       .state {
         color: var(--text-2);
       }
+      .genre-pill {
+        display: inline-block;
+        padding: 0.35rem 0.85rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-top: 0.25rem;
+        width: fit-content;
+      }
       .content-grid {
         grid-template-columns: 1.15fr 0.85fr;
       }
@@ -198,6 +212,11 @@ export class WorldDetailPageComponent {
   readonly world = signal<WorldDetail | null>(null);
   readonly characters = signal<CharacterSummary[]>([]);
   readonly loading = signal(true);
+  readonly genreLabels = WORLD_GENRE_LABELS;
+
+  genreLabel(genre: string): string {
+    return this.genreLabels[genre as keyof typeof WORLD_GENRE_LABELS] ?? genre;
+  }
 
   constructor() {
     this.route.paramMap.subscribe((params) => {

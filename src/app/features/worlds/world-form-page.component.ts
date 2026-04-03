@@ -6,7 +6,7 @@ import { NovelSummary } from '../../core/models/novel.model';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { NovelsService } from '../../core/services/novels.service';
 import { WorldsService } from '../../core/services/worlds.service';
-import { WorldVisibility } from '../../core/models/world.model';
+import { WorldGenre, WorldVisibility, WORLD_GENRE_LABELS } from '../../core/models/world.model';
 
 @Component({
   selector: 'app-world-form-page',
@@ -37,6 +37,15 @@ import { WorldVisibility } from '../../core/models/world.model';
             <select [(ngModel)]="visibility" name="visibility" [disabled]="saving()">
               <option value="PRIVATE">Privado</option>
               <option value="PUBLIC">Publico</option>
+            </select>
+          </label>
+          <label
+            ><span>Genero</span>
+            <select [(ngModel)]="genre" name="genre" [disabled]="saving()">
+              <option [ngValue]="null">Sin genero</option>
+              @for (option of genreOptions; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+              }
             </select>
           </label>
           <label
@@ -281,6 +290,11 @@ export class WorldFormPageComponent {
 
   private currentSlug: string | null = null;
 
+  readonly genreOptions = Object.entries(WORLD_GENRE_LABELS).map(([value, label]) => ({
+    value,
+    label,
+  }));
+
   name = '';
   tagline = '';
   description = '';
@@ -288,6 +302,7 @@ export class WorldFormPageComponent {
   magicSystem = '';
   rules = '';
   tagsRaw = '';
+  genre: WorldGenre | null = null;
   visibility: WorldVisibility = 'PRIVATE';
   pendingNovelSlug = '';
 
@@ -314,6 +329,7 @@ export class WorldFormPageComponent {
         this.magicSystem = world.magicSystem ?? '';
         this.rules = world.rules ?? '';
         this.tagsRaw = world.tags.join(', ');
+        this.genre = world.genre;
         this.visibility = world.visibility;
         this.selectedNovelSlugs.set(world.linkedNovels.map((novel) => novel.slug));
         this.initialNovelSlugs.set(world.linkedNovels.map((novel) => novel.slug));
@@ -349,6 +365,7 @@ export class WorldFormPageComponent {
       setting: this.setting.trim() || null,
       magicSystem: this.magicSystem.trim() || null,
       rules: this.rules.trim() || null,
+      genre: this.genre,
       visibility: this.visibility,
       tags: this.tagsRaw
         .split(',')

@@ -4,7 +4,7 @@ import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 import { PaginatedResponse } from '../models/feed-pagination.model';
-import { WorldDetail, WorldSummary, WorldVisibility } from '../models/world.model';
+import { WorldDetail, WorldGenre, WorldSummary, WorldVisibility } from '../models/world.model';
 
 export type WorldQuery = {
   cursor?: string | null;
@@ -23,6 +23,7 @@ export type WorldPayload = {
   rules?: string | null;
   coverUrl?: string | null;
   mapUrl?: string | null;
+  genre?: WorldGenre | null;
   visibility?: WorldVisibility | null;
   tags?: string[];
 };

@@ -1,5 +1,36 @@
 export type WorldVisibility = 'PUBLIC' | 'PRIVATE';
 
+export type WorldGenre =
+  | 'FANTASIA'
+  | 'REALISTA'
+  | 'POSAPOCALIPTICO'
+  | 'CIENCIA_FICCION'
+  | 'DISTOPIA'
+  | 'STEAMPUNK'
+  | 'CYBERPUNK'
+  | 'MEDIEVAL'
+  | 'MITOLOGICO'
+  | 'HORROR'
+  | 'URBANO'
+  | 'HISTORICO'
+  | 'SURREAL';
+
+export const WORLD_GENRE_LABELS: Record<WorldGenre, string> = {
+  FANTASIA: 'Fantasia',
+  REALISTA: 'Realista',
+  POSAPOCALIPTICO: 'Posapocaliptico',
+  CIENCIA_FICCION: 'Ciencia ficcion',
+  DISTOPIA: 'Distopia',
+  STEAMPUNK: 'Steampunk',
+  CYBERPUNK: 'Cyberpunk',
+  MEDIEVAL: 'Medieval',
+  MITOLOGICO: 'Mitologico',
+  HORROR: 'Horror',
+  URBANO: 'Urbano',
+  HISTORICO: 'Historico',
+  SURREAL: 'Surreal',
+};
+
 export interface WorldSummary {
   id: string;
   name: string;
@@ -11,6 +42,7 @@ export interface WorldSummary {
   rules: string | null;
   coverUrl: string | null;
   mapUrl: string | null;
+  genre: WorldGenre | null;
   visibility: WorldVisibility;
   tags: string[];
   metadata: Record<string, unknown> | null;

@@ -1,6 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { WorldSummary } from '../../../core/models/world.model';
+import { WorldSummary, WORLD_GENRE_LABELS } from '../../../core/models/world.model';
 
 @Component({
   selector: 'app-world-card',
@@ -27,6 +27,9 @@ import { WorldSummary } from '../../../core/models/world.model';
           }
         </div>
 
+        @if (genreLabel()) {
+          <span class="genre-badge">{{ genreLabel() }}</span>
+        }
         <a class="title" [routerLink]="['/mundos', world().slug]">{{ world().name }}</a>
         <p class="description">
           {{ world().tagline || world().description || 'Sin descripcion todavia.' }}
@@ -217,6 +220,18 @@ import { WorldSummary } from '../../../core/models/world.model';
         font-weight: 600;
       }
 
+      .genre-badge {
+        display: inline-block;
+        padding: 0.18rem 0.55rem;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--accent-glow) 48%, transparent);
+        color: var(--accent-text);
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        width: fit-content;
+      }
+
       .title {
         color: var(--text-1);
         font:
@@ -321,6 +336,10 @@ export class WorldCardComponent {
   readonly world = input.required<WorldSummary>();
   readonly showVisibility = input(false);
 
+  readonly genreLabel = computed(() => {
+    const genre = this.world().genre;
+    return genre ? WORLD_GENRE_LABELS[genre] : null;
+  });
   readonly visibleTags = computed(() => this.world().tags.slice(0, 3));
   readonly toneIndex = computed(() => {
     const slug = this.world().slug;

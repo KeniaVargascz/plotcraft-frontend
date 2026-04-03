@@ -21,7 +21,9 @@
     "discovery": "Descubrir",
     "author": "Autor",
     "personal": "Personal",
-    "notifications": "Campana"
+    "notifications": "Campana",
+    "timeline": "Timeline",
+    "planner": "Planner"
   },
   "landing": {
     "eyebrow": "Estudio narrativo",
@@ -462,5 +464,159 @@
     "back": "Volver",
     "cancel": "Cancelar",
     "confirm": "Confirmar"
+  },
+  "timeline": {
+    "title": "Mis timelines",
+    "new": "Nuevo timeline",
+    "openCanvas": "Abrir en canvas",
+    "export": "Exportar JSON",
+    "noTimelines": "Aun no tienes ningun timeline.",
+    "noTimelinesHint": "Organiza la cronologia de tus historias.",
+    "viewModes": {
+      "canvas": "Vista de linea",
+      "list": "Vista de lista"
+    },
+    "event": {
+      "new": "Nuevo evento",
+      "edit": "Editar evento",
+      "delete": "Eliminar evento",
+      "deleteConfirm": "Eliminar este evento? Esta accion no se puede deshacer.",
+      "fields": {
+        "title": "Titulo del evento",
+        "dateLabel": "Fecha en el mundo",
+        "dateLabelHint": "Ej: Ano 302, Dia 1, Invierno del tercer ciclo",
+        "description": "Descripcion",
+        "type": "Tipo de evento",
+        "relevance": "Relevancia",
+        "color": "Color",
+        "chapter": "Capitulo referenciado",
+        "character": "Personaje",
+        "world": "Mundo",
+        "wbEntry": "Entrada de lore",
+        "tags": "Etiquetas"
+      },
+      "types": {
+        "WORLD_EVENT": "Evento del mundo",
+        "STORY_EVENT": "Evento de trama",
+        "CHARACTER_ARC": "Arco de personaje",
+        "CHAPTER_EVENT": "Evento de capitulo",
+        "LORE_EVENT": "Evento de lore",
+        "NOTE": "Nota"
+      },
+      "relevances": {
+        "CRITICAL": "Critico",
+        "MAJOR": "Mayor",
+        "MINOR": "Menor",
+        "BACKGROUND": "Fondo"
+      }
+    },
+    "filters": {
+      "allTypes": "Todos los tipos",
+      "allRelevances": "Todas las relevancias",
+      "byCharacter": "Por personaje"
+    },
+    "deleteTimeline": "Eliminar timeline",
+    "deleteTimelineWarning": "Se eliminaran todos los eventos. Esta accion no se puede deshacer.",
+    "exportSuccess": "Timeline exportado correctamente."
+  },
+  "planner": {
+    "title": "Planner",
+    "subtitle": "Organiza tus tareas de escritura",
+    "newProject": "Nuevo proyecto",
+    "openBoard": "Abrir tablero",
+    "noProjects": "Aun no tienes proyectos.",
+    "noProjectsHint": "Crea un proyecto para organizar tus tareas de escritura.",
+    "project": {
+      "name": "Nombre del proyecto",
+      "description": "Descripcion",
+      "color": "Color",
+      "linkedNovel": "Novela vinculada",
+      "noNovel": "Sin novela vinculada",
+      "archive": "Archivar proyecto",
+      "restore": "Restaurar proyecto",
+      "delete": "Eliminar proyecto",
+      "deleteWarning": "Se eliminaran todas las tareas. Esta accion no se puede deshacer.",
+      "completion": "{{pct}}% completado",
+      "overdueWarning": "{{n}} tareas vencidas"
+    },
+    "board": {
+      "columns": {
+        "BACKLOG": "Backlog",
+        "IN_PROGRESS": "En progreso",
+        "REVIEW": "Revision",
+        "DONE": "Listo"
+      },
+      "addTask": "Anadir tarea",
+      "emptyColumn": "Sin tareas aqui",
+      "dragHint": "Arrastra las tarjetas para cambiar su estado"
+    },
+    "task": {
+      "new": "Nueva tarea",
+      "edit": "Editar tarea",
+      "delete": "Eliminar tarea",
+      "deleteConfirm": "Eliminar esta tarea?",
+      "fields": {
+        "title": "Titulo de la tarea",
+        "description": "Descripcion",
+        "type": "Tipo",
+        "priority": "Prioridad",
+        "status": "Estado",
+        "dueDate": "Fecha limite",
+        "dueDatePast": "Esta fecha ya ha pasado",
+        "targetWords": "Meta de palabras",
+        "actualWords": "Palabras escritas",
+        "chapter": "Capitulo vinculado",
+        "character": "Personaje vinculado",
+        "tags": "Etiquetas"
+      },
+      "types": {
+        "CHAPTER": "Capitulo",
+        "CHARACTER": "Personaje",
+        "WORLDBUILDING": "World-building",
+        "PLANNING": "Planificacion",
+        "REVISION": "Revision",
+        "RESEARCH": "Investigacion",
+        "PUBLICATION": "Publicacion",
+        "OTHER": "Otro"
+      },
+      "priorities": {
+        "LOW": "Baja",
+        "MEDIUM": "Media",
+        "HIGH": "Alta",
+        "CRITICAL": "Critica"
+      },
+      "statuses": {
+        "BACKLOG": "Backlog",
+        "IN_PROGRESS": "En progreso",
+        "REVIEW": "Revision",
+        "DONE": "Listo"
+      },
+      "overdue": "Vencida",
+      "completed": "Completada {{date}}"
+    },
+    "calendar": {
+      "title": "Calendario",
+      "noTasks": "Sin tareas este mes.",
+      "noTasksHint": "Anade fechas limite a tus tareas para verlas aqui.",
+      "moreTasks": "+{{n}} mas"
+    },
+    "stats": {
+      "title": "Estadisticas del planner",
+      "totalTasks": "Tareas totales",
+      "completedTasks": "Completadas",
+      "inProgress": "En progreso",
+      "overdue": "Vencidas",
+      "completionRate": "Tasa de completado",
+      "wordsTargeted": "Palabras objetivo",
+      "wordsWritten": "Palabras escritas",
+      "byType": "Por tipo de tarea",
+      "byPriority": "Por prioridad",
+      "recentCompletions": "Completadas recientemente",
+      "noData": "Aun no hay tareas suficientes para mostrar estadisticas."
+    },
+    "wordProgress": {
+      "goal": "Meta alcanzada",
+      "of": "{{actual}} / {{target}} palabras"
+    }
   }
 }

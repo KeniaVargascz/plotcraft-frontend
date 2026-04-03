@@ -1,9 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ChapterSummary } from '../../core/models/chapter.model';
 import { NovelDetail } from '../../core/models/novel.model';
 import { ChaptersService } from '../../core/services/chapters.service';
 import { NovelsService } from '../../core/services/novels.service';
+import { TimelineService } from '../../core/services/timeline.service';
+import { PlannerService } from '../../core/services/planner.service';
 
 @Component({
   selector: 'app-novel-chapters-page',
@@ -19,6 +21,8 @@ import { NovelsService } from '../../core/services/novels.service';
           </div>
 
           <div class="header-actions">
+            <button type="button" class="quick-btn" (click)="goToTimeline(currentNovel.slug)">Timeline</button>
+            <button type="button" class="quick-btn" (click)="goToPlanner(currentNovel.slug)">Planner</button>
             <a [routerLink]="['/mis-novelas', currentNovel.slug, 'editar']">Editar novela</a>
             <a [routerLink]="['/mis-novelas', currentNovel.slug, 'capitulos', 'nuevo']">
               Nuevo capitulo
@@ -134,8 +138,11 @@ import { NovelsService } from '../../core/services/novels.service';
 })
 export class NovelChaptersPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly novelsService = inject(NovelsService);
   private readonly chaptersService = inject(ChaptersService);
+  private readonly timelineService = inject(TimelineService);
+  private readonly plannerService = inject(PlannerService);
 
   readonly novel = signal<NovelDetail | null>(null);
   readonly chapters = signal<ChapterSummary[]>([]);
@@ -218,6 +225,18 @@ export class NovelChaptersPageComponent implements OnInit {
         this.actionLoadingId.set(null);
         this.actionMessage.set(`No se pudo eliminar "${chapter.title}".`);
       },
+    });
+  }
+
+  goToTimeline(slug: string) {
+    this.timelineService.getByNovelSlug(slug).subscribe({
+      next: (timeline) => void this.router.navigate(['/mis-timelines', timeline.id]),
+    });
+  }
+
+  goToPlanner(slug: string) {
+    this.plannerService.getByNovelSlug(slug).subscribe({
+      next: (project) => void this.router.navigate(['/planner', project.id]),
     });
   }
 

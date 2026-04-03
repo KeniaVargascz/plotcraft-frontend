@@ -304,6 +304,32 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'mis-timelines',
+        loadComponent: () =>
+          import('./features/timeline/timelines-list-page.component').then(
+            (module) => module.TimelinesListPageComponent,
+          ),
+      },
+      {
+        path: 'mis-timelines/:id',
+        loadComponent: () =>
+          import('./features/timeline/timeline-canvas-page.component').then(
+            (module) => module.TimelineCanvasPageComponent,
+          ),
+      },
+      {
+        path: 'planner',
+        loadChildren: () =>
+          import('./features/planner/planner.routes').then((module) => module.PLANNER_ROUTES),
+      },
+      {
+        path: 'planner/:projectId',
+        loadComponent: () =>
+          import('./features/planner/kanban-board-page.component').then(
+            (module) => module.KanbanBoardPageComponent,
+          ),
+      },
+      {
         path: '',
         loadChildren: () =>
           import('./features/profile/profile.routes').then((module) => module.PROFILE_ROUTES),

@@ -198,6 +198,39 @@ import { AuthorCardComponent } from './components/author-card.component';
         gap: 1.25rem;
       }
 
+      .discovery-page {
+        scrollbar-width: thin;
+        scrollbar-color: color-mix(in srgb, var(--accent) 38%, var(--border))
+          color-mix(in srgb, var(--bg-surface) 82%, transparent);
+      }
+
+      .discovery-page::-webkit-scrollbar {
+        width: 0.75rem;
+      }
+
+      .discovery-page::-webkit-scrollbar-track {
+        background: color-mix(in srgb, var(--bg-surface) 84%, transparent);
+        border-radius: 999px;
+      }
+
+      .discovery-page::-webkit-scrollbar-thumb {
+        background: linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--accent) 52%, #f4d29b),
+          color-mix(in srgb, var(--accent) 34%, var(--border))
+        );
+        border: 2px solid color-mix(in srgb, var(--bg-surface) 84%, transparent);
+        border-radius: 999px;
+      }
+
+      .discovery-page::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--accent) 68%, #f6ddb3),
+          color-mix(in srgb, var(--accent) 46%, var(--border-s))
+        );
+      }
+
       .hero,
       .stats-banner,
       .release-card,
@@ -277,6 +310,37 @@ import { AuthorCardComponent } from './components/author-card.component';
         padding-bottom: 0.3rem;
         scroll-snap-type: x proximity;
         align-items: stretch;
+        scrollbar-width: thin;
+        scrollbar-color: color-mix(in srgb, var(--accent) 34%, var(--border))
+          color-mix(in srgb, var(--bg-surface) 86%, transparent);
+      }
+
+      .rail::-webkit-scrollbar {
+        height: 0.72rem;
+      }
+
+      .rail::-webkit-scrollbar-track {
+        background: color-mix(in srgb, var(--bg-surface) 86%, transparent);
+        border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+        border-radius: 999px;
+      }
+
+      .rail::-webkit-scrollbar-thumb {
+        background: linear-gradient(
+          90deg,
+          color-mix(in srgb, var(--accent) 50%, #f3c98e),
+          color-mix(in srgb, var(--accent) 30%, var(--border))
+        );
+        border: 2px solid color-mix(in srgb, var(--bg-surface) 86%, transparent);
+        border-radius: 999px;
+      }
+
+      .rail::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(
+          90deg,
+          color-mix(in srgb, var(--accent) 66%, #f5ddb7),
+          color-mix(in srgb, var(--accent) 42%, var(--border-s))
+        );
       }
 
       .rail-item {

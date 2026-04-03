@@ -1,5 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { combineLatest } from 'rxjs';
 import { Genre } from '../../core/models/genre.model';
 import { NovelSummary } from '../../core/models/novel.model';
 import { GenresService } from '../../core/services/genres.service';
@@ -15,8 +17,8 @@ import { NovelCardComponent } from './components/novel-card.component';
   template: `
     <section class="catalog-shell">
       <aside class="filters">
-        <h1>Novelas</h1>
-        <p>Explora historias publicadas por la comunidad.</p>
+        <h1>{{ title() }}</h1>
+        <p>{{ subtitle() }}</p>
 
         <label>
           Buscar
@@ -118,6 +120,8 @@ import { NovelCardComponent } from './components/novel-card.component';
   ],
 })
 export class CatalogPageComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly genresService = inject(GenresService);
   private readonly novelsService = inject(NovelsService);
 
@@ -127,18 +131,47 @@ export class CatalogPageComponent implements OnInit {
   readonly novels = signal<NovelSummary[]>([]);
   readonly nextCursor = signal<string | null>(null);
   readonly hasMore = signal(false);
+  readonly title = signal('Novelas');
+  readonly subtitle = signal('Explora historias publicadas por la comunidad.');
 
   search = '';
   genre = '';
   sort: 'recent' | 'popular' | 'views' = 'recent';
 
   ngOnInit() {
-    this.genresService.list().subscribe((genres) => this.genres.set(genres));
-    this.load(true);
+    this.genresService.list().subscribe((genres) => {
+      this.genres.set(genres);
+      this.syncGenreCopy();
+    });
+
+    combineLatest([this.route.paramMap, this.route.queryParamMap]).subscribe(
+      ([params, queryParams]) => {
+        this.genre = params.get('genreSlug') ?? queryParams.get('genre') ?? '';
+        this.search = queryParams.get('search') ?? '';
+        const sort = queryParams.get('sort');
+        this.sort = sort === 'popular' || sort === 'views' ? sort : 'recent';
+        this.syncGenreCopy();
+        this.load(true);
+      },
+    );
   }
 
   applyFilters() {
-    this.load(true);
+    const queryParams = {
+      search: this.search || null,
+      sort: this.sort !== 'recent' ? this.sort : null,
+    };
+
+    if (this.genre) {
+      void this.router.navigate(['/novelas/genero', this.genre], {
+        queryParams,
+      });
+      return;
+    }
+
+    void this.router.navigate(['/novelas'], {
+      queryParams,
+    });
   }
 
   loadMore() {
@@ -168,5 +201,18 @@ export class CatalogPageComponent implements OnInit {
           this.loading.set(false);
         },
       });
+  }
+
+  private syncGenreCopy() {
+    if (!this.genre) {
+      this.title.set('Novelas');
+      this.subtitle.set('Explora historias publicadas por la comunidad.');
+      return;
+    }
+
+    const selectedGenre = this.genres().find((item) => item.slug === this.genre);
+    const genreLabel = selectedGenre?.label ?? this.genre;
+    this.title.set(`Genero: ${genreLabel}`);
+    this.subtitle.set(`Todas las novelas publicas disponibles en ${genreLabel}.`);
   }
 }

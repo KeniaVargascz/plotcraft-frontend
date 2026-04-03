@@ -87,6 +87,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'novelas/generos',
+        loadComponent: () =>
+          import('./features/novels/genres-page.component').then(
+            (module) => module.GenresPageComponent,
+          ),
+      },
+      {
+        path: 'novelas/genero/:genreSlug',
+        loadComponent: () =>
+          import('./features/novels/catalog-page.component').then(
+            (module) => module.CatalogPageComponent,
+          ),
+      },
+      {
         path: 'mundos',
         loadComponent: () =>
           import('./features/worlds/worlds-catalog-page.component').then(
@@ -310,6 +324,20 @@ export const routes: Routes = [
       },
       {
         path: 'novelas',
+        loadComponent: () =>
+          import('./features/novels/catalog-page.component').then(
+            (module) => module.CatalogPageComponent,
+          ),
+      },
+      {
+        path: 'novelas/generos',
+        loadComponent: () =>
+          import('./features/novels/genres-page.component').then(
+            (module) => module.GenresPageComponent,
+          ),
+      },
+      {
+        path: 'novelas/genero/:genreSlug',
         loadComponent: () =>
           import('./features/novels/catalog-page.component').then(
             (module) => module.CatalogPageComponent,

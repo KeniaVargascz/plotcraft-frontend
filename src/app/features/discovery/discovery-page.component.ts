@@ -1,8 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DiscoverySnapshot } from '../../core/models/discovery.model';
+import { Genre } from '../../core/models/genre.model';
 import { DiscoveryService } from '../../core/services/discovery.service';
+import { GenresService } from '../../core/services/genres.service';
 import { HighlightPipe } from '../../shared/pipes/highlight.pipe';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { CharacterCardComponent } from '../characters/components/character-card.component';
@@ -136,21 +138,31 @@ import { AuthorCardComponent } from './components/author-card.component';
         <section class="section">
           <div class="section-head">
             <h2>{{ 'discovery.genres.title' | translate }}</h2>
+            <a [routerLink]="['/novelas/generos']">Explorar todos los generos</a>
           </div>
           <div class="genre-grid">
-            @for (genre of snapshot()!.genres_spotlight; track genre.genre.slug) {
+            @for (genre of visibleGenres(); track genre.id; let index = $index) {
+              <a
+                class="genre-card genre-link"
+                [class]="genreToneClass(index)"
+                [routerLink]="['/novelas/genero', genre.slug]"
+              >
+                <span class="genre-accent"></span>
+                <div class="genre-copy">
+                  <strong>{{ genre.label }}</strong>
+                  <span class="genre-hint">Ver todas las novelas de este genero</span>
+                </div>
+                <span class="genre-action">
+                  Explorar
+                  <span aria-hidden="true">↗</span>
+                </span>
+              </a>
+            }
+
+            @if (!genres().length) {
               <article class="genre-card">
-                <div class="section-head compact">
-                  <strong>{{ genre.genre.label }}</strong>
-                  <a [routerLink]="['/novelas']" [queryParams]="{ genre: genre.genre.slug }">
-                    {{ 'discovery.genres.viewAll' | translate: { genre: genre.genre.label } }}
-                  </a>
-                </div>
-                <div class="mini-grid">
-                  @for (novel of genre.top_novels; track novel.id) {
-                    <a [routerLink]="['/novelas', novel.slug]">{{ novel.title }}</a>
-                  }
-                </div>
+                <strong>No hay generos disponibles</strong>
+                <p>Aun no hay generos cargados para explorar.</p>
               </article>
             }
           </div>
@@ -547,24 +559,72 @@ import { AuthorCardComponent } from './components/author-card.component';
         gap: 1rem;
       }
 
-      .genre-card .compact {
-        align-items: start;
+      .genre-link {
+        position: relative;
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+        min-height: 9.5rem;
+        align-content: space-between;
+        transition:
+          transform 160ms ease,
+          border-color 160ms ease,
+          background 160ms ease;
+      }
+
+      .genre-link:hover {
+        transform: translateY(-2px);
+        border-color: var(--border-s);
+        background: color-mix(in srgb, var(--bg-card) 82%, var(--accent-glow));
+      }
+
+      .genre-tone-0 .genre-accent {
+        background: linear-gradient(180deg, #6b7cff, #8ea6ff);
+      }
+
+      .genre-tone-1 .genre-accent {
+        background: linear-gradient(180deg, #4f9d76, #79c89e);
+      }
+
+      .genre-tone-2 .genre-accent {
+        background: linear-gradient(180deg, #8e5bbd, #b98cdf);
+      }
+
+      .genre-tone-3 .genre-accent {
+        background: linear-gradient(180deg, #bc7f5a, #dfaf7f);
+      }
+
+      .genre-accent {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 0.35rem;
+        border-radius: 1.25rem 0 0 1.25rem;
+      }
+
+      .genre-copy {
+        display: grid;
+        gap: 0.45rem;
+        padding-left: 0.2rem;
       }
 
       .genre-card strong {
         font-size: 1.05rem;
+        color: var(--text-1);
       }
 
-      .genre-card .mini-grid {
-        display: grid;
-        gap: 0.55rem;
+      .genre-hint,
+      .genre-card p {
+        margin: 0;
+        color: var(--text-2);
+        line-height: 1.5;
       }
 
-      .genre-card .mini-grid a {
-        padding: 0.75rem 0.85rem;
-        border-radius: 0.9rem;
-        background: color-mix(in srgb, var(--bg-surface) 78%, transparent);
-        border: 1px solid var(--border);
+      .genre-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        color: var(--accent-text);
+        font-weight: 600;
       }
 
       .genre-card a,
@@ -642,11 +702,18 @@ import { AuthorCardComponent } from './components/author-card.component';
 })
 export class DiscoveryPageComponent {
   private readonly discoveryService = inject(DiscoveryService);
+  private readonly genresService = inject(GenresService);
 
   readonly snapshot = signal<DiscoverySnapshot | null>(null);
   readonly loading = signal(true);
+  readonly genres = signal<Genre[]>([]);
+  readonly visibleGenres = computed(() => this.genres().slice(0, 4));
 
   constructor() {
+    this.genresService.list().subscribe({
+      next: (genres) => this.genres.set(genres),
+      error: () => this.genres.set([]),
+    });
     this.load();
   }
 
@@ -666,5 +733,9 @@ export class DiscoveryPageComponent {
 
   releaseToneClass(index: number) {
     return `release-tone-${index % 4}`;
+  }
+
+  genreToneClass(index: number) {
+    return `genre-tone-${index % 4}`;
   }
 }

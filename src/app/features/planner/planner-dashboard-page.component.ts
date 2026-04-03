@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { WritingProjectSummary } from '../../core/models/writing-project.model';
@@ -54,6 +54,30 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
             }
           </div>
         </section>
+
+        <!-- Archived projects -->
+        @if (archivedProjects().length) {
+          <section class="archived-section">
+            <button class="archived-toggle" (click)="showArchived.set(!showArchived())">
+              <span>Archivados ({{ archivedProjects().length }})</span>
+              <span class="toggle-icon">{{ showArchived() ? '▲' : '▼' }}</span>
+            </button>
+            @if (showArchived()) {
+              <div class="archived-list">
+                @for (project of archivedProjects(); track project.id) {
+                  <div class="archived-item">
+                    @if (project.color) {
+                      <span class="archived-color" [style.background]="project.color"></span>
+                    }
+                    <span class="archived-name">{{ project.name }}</span>
+                    <button class="restore-btn" (click)="onRestoreProject(project)">Restaurar</button>
+                    <button class="delete-archived-btn" (click)="onDeleteProject(project)">Eliminar</button>
+                  </div>
+                }
+              </div>
+            }
+          </section>
+        }
 
         <!-- Dashboard columns -->
         <div class="dashboard-grid">
@@ -214,6 +238,75 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
       font-size: 2rem;
       font-weight: 300;
     }
+    .archived-section { margin-top: 0.5rem; }
+    .archived-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-size: 0.82rem;
+      color: var(--text-3);
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .archived-toggle:hover { color: var(--text-1); border-color: var(--border-s); }
+    .toggle-icon { font-size: 0.65rem; }
+    .archived-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .archived-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+    }
+    .archived-color {
+      width: 4px;
+      height: 24px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .archived-name {
+      flex: 1;
+      font-size: 0.85rem;
+      color: var(--text-2);
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .restore-btn {
+      background: none;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+      color: var(--accent-text);
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .restore-btn:hover { background: var(--accent-glow); }
+    .delete-archived-btn {
+      background: none;
+      border: 1px solid var(--danger);
+      border-radius: 6px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+      color: var(--danger);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .delete-archived-btn:hover { background: color-mix(in srgb, var(--danger) 10%, transparent); }
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -304,7 +397,10 @@ export class PlannerDashboardPageComponent implements OnInit {
   loading = signal(true);
   error = signal(false);
 
-  projects = signal<WritingProjectSummary[]>([]);
+  allProjects = signal<WritingProjectSummary[]>([]);
+  projects = computed(() => this.allProjects().filter((p) => p.isActive));
+  archivedProjects = computed(() => this.allProjects().filter((p) => !p.isActive));
+  showArchived = signal(false);
   urgentTasks = signal<WritingTask[]>([]);
   inProgressTasks = signal<WritingTask[]>([]);
   recentCompletions = signal<WritingTask[]>([]);
@@ -319,7 +415,7 @@ export class PlannerDashboardPageComponent implements OnInit {
 
     // Load projects
     this.plannerService.listProjects().subscribe({
-      next: (projects) => this.projects.set(projects),
+      next: (projects) => this.allProjects.set(projects),
       error: () => this.error.set(true),
     });
 
@@ -355,7 +451,7 @@ export class PlannerDashboardPageComponent implements OnInit {
     ref.afterClosed().subscribe((result) => {
       if (result) {
         this.plannerService.createProject(result).subscribe({
-          next: (project) => this.projects.update((p) => [...p, project]),
+          next: (project) => this.allProjects.update((p) => [...p, project]),
         });
       }
     });
@@ -372,7 +468,7 @@ export class PlannerDashboardPageComponent implements OnInit {
       if (result) {
         this.plannerService.updateProject(project.id, result).subscribe({
           next: (updated) =>
-            this.projects.update((list) =>
+            this.allProjects.update((list) =>
               list.map((p) => (p.id === updated.id ? updated : p)),
             ),
         });
@@ -382,14 +478,24 @@ export class PlannerDashboardPageComponent implements OnInit {
 
   onArchiveProject(project: WritingProjectSummary): void {
     this.plannerService.archiveProject(project.id).subscribe({
-      next: () => this.projects.update((list) => list.filter((p) => p.id !== project.id)),
+      next: () => this.allProjects.update((list) =>
+        list.map((p) => (p.id === project.id ? { ...p, isActive: false } : p)),
+      ),
+    });
+  }
+
+  onRestoreProject(project: WritingProjectSummary): void {
+    this.plannerService.restoreProject(project.id).subscribe({
+      next: () => this.allProjects.update((list) =>
+        list.map((p) => (p.id === project.id ? { ...p, isActive: true } : p)),
+      ),
     });
   }
 
   onDeleteProject(project: WritingProjectSummary): void {
     if (!confirm(`Eliminar proyecto "${project.name}"?`)) return;
     this.plannerService.deleteProject(project.id).subscribe({
-      next: () => this.projects.update((list) => list.filter((p) => p.id !== project.id)),
+      next: () => this.allProjects.update((list) => list.filter((p) => p.id !== project.id)),
     });
   }
 

@@ -88,6 +88,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
               }
 
               @if (currentNovel.viewerContext?.isAuthor) {
+                <a [routerLink]="['/analytics/novelas', currentNovel.slug]">Analytics</a>
                 <a [routerLink]="['/mis-novelas', currentNovel.slug, 'editar']">Editar novela</a>
                 <a [routerLink]="['/mis-novelas', currentNovel.slug, 'capitulos']"
                   >Gestionar capitulos</a

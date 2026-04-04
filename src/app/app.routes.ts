@@ -178,6 +178,27 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'analytics',
+        loadComponent: () =>
+          import('./features/analytics/author-analytics-page.component').then(
+            (module) => module.AuthorAnalyticsPageComponent,
+          ),
+      },
+      {
+        path: 'analytics/novelas/:slug',
+        loadComponent: () =>
+          import('./features/analytics/novel-analytics-page.component').then(
+            (module) => module.NovelAnalyticsPageComponent,
+          ),
+      },
+      {
+        path: 'mis-mundos/:slug/mapa',
+        loadComponent: () =>
+          import('./features/maps/map-editor-page.component').then(
+            (module) => module.MapEditorPageComponent,
+          ),
+      },
+      {
         path: 'mis-mundos/:slug/world-building',
         loadComponent: () =>
           import('./features/worlds/worldbuilding/wb-workspace-page.component').then(
@@ -357,6 +378,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/forum/new-thread-page.component').then(
             (module) => module.NewThreadPageComponent,
+          ),
+      },
+      {
+        path: 'foro/archivados',
+        loadComponent: () =>
+          import('./features/forum/archived-threads-page.component').then(
+            (module) => module.ArchivedThreadsPageComponent,
           ),
       },
       {

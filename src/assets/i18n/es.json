@@ -24,7 +24,9 @@
     "notifications": "Campana",
     "timeline": "Timeline",
     "planner": "Planner",
-    "forum": "Foro"
+    "forum": "Foro",
+    "tools": "Herramientas",
+    "analytics": "Analytics"
   },
   "landing": {
     "eyebrow": "Estudio narrativo",
@@ -730,5 +732,113 @@
       "generating": "Generando archivo...",
       "success": "Descarga iniciada"
     }
+  },
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": "Metricas de rendimiento de tu contenido",
+    "metrics": {
+      "totalViews": "Vistas totales",
+      "totalReaders": "Lectores totales",
+      "totalFollowers": "Seguidores totales",
+      "totalNovels": "Novelas publicadas",
+      "totalChapters": "Capitulos publicados",
+      "totalWords": "Palabras totales",
+      "avgReadTime": "Tiempo promedio de lectura",
+      "completionRate": "Tasa de finalizacion"
+    },
+    "delta": {
+      "up": "+{{value}} vs periodo anterior",
+      "down": "{{value}} vs periodo anterior",
+      "neutral": "Sin cambios"
+    },
+    "charts": {
+      "viewsOverTime": "Vistas en el tiempo",
+      "readersOverTime": "Lectores en el tiempo",
+      "followersOverTime": "Seguidores en el tiempo",
+      "wordsOverTime": "Palabras en el tiempo"
+    },
+    "audience": {
+      "title": "Audiencia",
+      "topCountries": "Paises principales",
+      "topReferrers": "Fuentes de trafico",
+      "returningReaders": "Lectores recurrentes"
+    },
+    "period": {
+      "7d": "7 dias",
+      "30d": "30 dias",
+      "90d": "90 dias",
+      "all": "Todo"
+    },
+    "novel": {
+      "title": "Analytics de novela",
+      "chapterFunnel": "Embudo de capitulos",
+      "topChapters": "Capitulos mas leidos",
+      "exportCsv": "Exportar CSV"
+    }
+  },
+  "maps": {
+    "title": "Mapa del mundo",
+    "editor": "Editor de mapa",
+    "viewer": "Vista del mapa",
+    "tools": {
+      "pan": "Mover",
+      "marker": "Marcador",
+      "region": "Region",
+      "select": "Seleccionar",
+      "zoomIn": "Acercar",
+      "zoomOut": "Alejar",
+      "reset": "Restablecer vista"
+    },
+    "markerTypes": {
+      "CITY": "Ciudad",
+      "TOWN": "Pueblo",
+      "VILLAGE": "Aldea",
+      "DUNGEON": "Mazmorra",
+      "LANDMARK": "Punto de interes",
+      "RUINS": "Ruinas",
+      "TEMPLE": "Templo",
+      "FORTRESS": "Fortaleza",
+      "PORT": "Puerto",
+      "MOUNTAIN": "Montana",
+      "FOREST": "Bosque",
+      "CUSTOM": "Personalizado"
+    },
+    "marker": {
+      "create": "Nuevo marcador",
+      "edit": "Editar marcador",
+      "delete": "Eliminar marcador",
+      "label": "Nombre",
+      "type": "Tipo",
+      "icon": "Icono",
+      "color": "Color",
+      "description": "Descripcion",
+      "location": "Ubicacion",
+      "wbEntry": "Entrada de lore"
+    },
+    "region": {
+      "create": "Nueva region",
+      "edit": "Editar region",
+      "delete": "Eliminar region",
+      "label": "Nombre",
+      "fillColor": "Color de relleno",
+      "opacity": "Opacidad",
+      "borderColor": "Color de borde",
+      "description": "Descripcion"
+    },
+    "legend": {
+      "title": "Leyenda",
+      "markers": "Marcadores",
+      "regions": "Regiones",
+      "empty": "Sin elementos en el mapa"
+    },
+    "export": {
+      "png": "Exportar como PNG",
+      "json": "Exportar como JSON",
+      "svg": "Exportar como SVG"
+    },
+    "backgroundImage": "Imagen de fondo",
+    "saving": "Guardando...",
+    "loadError": "No se pudo cargar el mapa",
+    "emptyHint": "Usa las herramientas para colocar marcadores y regiones en el mapa."
   }
 }

@@ -22,6 +22,7 @@ import { WorldGenre, WorldVisibility, WORLD_GENRE_LABELS } from '../../core/mode
         </div>
         <div class="header-actions">
           @if (isEdit()) {
+            <a class="back-link" [routerLink]="['/mis-mundos', currentSlug, 'mapa']">Edicion de mapas</a>
             <a class="back-link" [routerLink]="['/mis-mundos', currentSlug, 'world-building']">Gestionar world-building</a>
           }
           <a class="back-link" routerLink="/mis-mundos">Volver</a>

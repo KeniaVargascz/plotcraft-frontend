@@ -154,6 +154,18 @@ export class ForumService {
       .pipe(map((response) => response.data));
   }
 
+  archiveThread(slug: string) {
+    return this.http
+      .post<ApiResponse<any>>(`${this.baseUrl}/${slug}/archive`, {})
+      .pipe(map((response) => response.data));
+  }
+
+  listMyThreads() {
+    return this.http
+      .get<ApiResponse<ThreadSummary[]>>(`${this.baseUrl}/mine`)
+      .pipe(map((response) => response.data));
+  }
+
   private buildParams(query: ThreadQuery): HttpParams {
     let params = new HttpParams();
 

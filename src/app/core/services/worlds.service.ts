@@ -26,6 +26,7 @@ export type WorldPayload = {
   genre?: WorldGenre | null;
   visibility?: WorldVisibility | null;
   tags?: string[];
+  metadata?: Record<string, unknown> | null;
 };
 
 @Injectable({ providedIn: 'root' })

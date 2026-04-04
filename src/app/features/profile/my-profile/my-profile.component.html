@@ -22,6 +22,15 @@
 
     <span class="meta">Miembro desde {{ profileUser.createdAt | date: 'longDate' }}</span>
 
+    <div class="follow-stats">
+      <a routerLink="/perfil/{{ profileUser.username }}/seguidores" class="follow-link">
+        <strong>{{ followersCount() }}</strong> seguidores
+      </a>
+      <a routerLink="/perfil/{{ profileUser.username }}/siguiendo" class="follow-link">
+        <strong>{{ followingCount() }}</strong> siguiendo
+      </a>
+    </div>
+
     <div class="stats-summary">
       <span>{{ novelsCount() }} novelas publicadas</span>
       <span>{{ publishedChapters() }} capitulos publicados</span>

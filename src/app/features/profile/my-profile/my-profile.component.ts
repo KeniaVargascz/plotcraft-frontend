@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
 import { User } from '../../../core/models/user.model';
 import { AuthService } from '../../../core/services/auth.service';
+import { FollowsService } from '../../../core/services/follows.service';
 import { NovelsService } from '../../../core/services/novels.service';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
@@ -18,6 +19,7 @@ import { LoadingSpinnerComponent } from '../../../shared/components/loading-spin
 })
 export class MyProfileComponent {
   private readonly authService = inject(AuthService);
+  private readonly followsService = inject(FollowsService);
   private readonly novelsService = inject(NovelsService);
 
   readonly loading = signal(true);
@@ -26,6 +28,8 @@ export class MyProfileComponent {
   readonly novelsCount = signal(0);
   readonly publishedWords = signal(0);
   readonly publishedChapters = signal(0);
+  readonly followersCount = signal(0);
+  readonly followingCount = signal(0);
 
   constructor() {
     this.authService
@@ -34,6 +38,12 @@ export class MyProfileComponent {
         tap((user) => {
           this.user.set(user);
           this.loading.set(false);
+          this.followsService.getFollowers(user.username).subscribe({
+            next: (res) => this.followersCount.set(res.data.length),
+          });
+          this.followsService.getFollowing(user.username).subscribe({
+            next: (res) => this.followingCount.set(res.data.length),
+          });
         }),
         catchError(() => {
           this.error.set(true);

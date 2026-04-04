@@ -42,17 +42,7 @@
 
   <section class="content-shell">
     <header class="topbar">
-      <div class="theme-switcher">
-        @for (theme of themeService.themes; track theme) {
-          <button
-            type="button"
-            [class.active]="themeService.theme() === theme"
-            (click)="themeService.applyTheme(theme)"
-          >
-            {{ theme }}
-          </button>
-        }
-      </div>
+      <div class="topbar-spacer"></div>
 
       <div class="search-slot">
         <app-search-bar [compact]="false" />

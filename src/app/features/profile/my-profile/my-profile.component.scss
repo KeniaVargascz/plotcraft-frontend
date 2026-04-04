@@ -38,6 +38,31 @@
   flex-wrap: wrap;
 }
 
+.follow-stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.follow-link {
+  color: var(--text-2);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.15s;
+
+  strong {
+    color: var(--text-1);
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    color: var(--accent-text);
+
+    strong {
+      color: var(--accent-text);
+    }
+  }
+}
+
 .stats-summary {
   display: flex;
   flex-wrap: wrap;

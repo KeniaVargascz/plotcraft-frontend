@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ThreadSummary } from '../../../core/models/forum-thread.model';
@@ -13,10 +13,13 @@ import { CategoryBadgeComponent } from './category-badge.component';
       <div class="card-header">
         <app-category-badge [category]="thread().category" />
         @if (thread().isPinned) {
-          <span class="badge pin-badge">Fijado</span>
+          <span class="badge pin-badge">\u{1F4CC} Fijado</span>
         }
         @if (thread().status === 'CLOSED') {
-          <span class="badge closed-badge">Cerrado</span>
+          <span class="badge closed-badge">\u{1F512} No acepta respuestas</span>
+        }
+        @if (thread().status === 'ARCHIVED') {
+          <span class="badge archived-badge">\u{1F4E6} Archivado</span>
         }
       </div>
 
@@ -51,13 +54,29 @@ import { CategoryBadgeComponent } from './category-badge.component';
           <span title="Reacciones">&#9829; {{ thread().stats.reactionsCount }}</span>
           <span title="Vistas">&#128065; {{ thread().viewsCount }}</span>
           @if (thread().stats.hasSolution) {
-            <span class="solution-badge" title="Tiene solucion">&#10003;</span>
+            <span class="solution-badge">\u{2705} Solucionado</span>
+          } @else if (thread().stats.repliesCount > 0) {
+            <span class="unsolved-badge">\u{1F50D} Sin solucion</span>
           }
           @if (thread().stats.hasPoll) {
-            <span class="poll-badge" title="Tiene encuesta">&#9744;</span>
+            @if (thread().status === 'CLOSED') {
+              <span class="poll-closed-badge">\u{1F4CA} Encuesta cerrada</span>
+            } @else {
+              <span class="poll-badge">\u{1F4CA} Encuesta abierta</span>
+            }
           }
         </div>
       </footer>
+
+      @if (showArchiveBtn()) {
+        <div class="card-actions">
+          @if (thread().status === 'ARCHIVED') {
+            <button type="button" class="action-btn restore-action" (click)="restore.emit(thread())">Restaurar hilo</button>
+          } @else {
+            <button type="button" class="action-btn archive-action" (click)="archive.emit(thread())">Archivar hilo</button>
+          }
+        </div>
+      }
     </article>
   `,
   styles: [`
@@ -85,6 +104,7 @@ import { CategoryBadgeComponent } from './category-badge.component';
     }
     .pin-badge { background: var(--accent); color: #fff; }
     .closed-badge { background: var(--danger); color: #fff; }
+    .archived-badge { background: var(--bg-surface); color: var(--text-3); }
     .title {
       display: block;
       font-size: 1.05rem;
@@ -143,12 +163,62 @@ import { CategoryBadgeComponent } from './category-badge.component';
       gap: 0.75rem;
       align-items: center;
     }
-    .solution-badge { color: #16a34a; font-weight: 700; }
-    .poll-badge { color: var(--accent); }
+    .solution-badge {
+      color: #16a34a;
+      font-weight: 600;
+      font-size: 0.72rem;
+      background: rgba(22, 163, 74, 0.1);
+      padding: 0.1rem 0.45rem;
+      border-radius: 0.4rem;
+    }
+    .unsolved-badge {
+      color: var(--text-3);
+      font-size: 0.72rem;
+      padding: 0.1rem 0.45rem;
+      border-radius: 0.4rem;
+      background: var(--bg-surface);
+    }
+    .poll-badge {
+      color: #3b82f6;
+      font-weight: 600;
+      font-size: 0.72rem;
+      background: rgba(59, 130, 246, 0.1);
+      padding: 0.1rem 0.45rem;
+      border-radius: 0.4rem;
+    }
+    .card-actions {
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .action-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .archive-action { color: var(--text-3); }
+    .archive-action:hover { border-color: var(--danger); color: var(--danger); }
+    .restore-action { color: var(--accent-text); }
+    .restore-action:hover { border-color: var(--accent); background: var(--accent-glow); }
+    .poll-closed-badge {
+      color: var(--text-3);
+      font-weight: 600;
+      font-size: 0.72rem;
+      background: var(--bg-surface);
+      padding: 0.1rem 0.45rem;
+      border-radius: 0.4rem;
+    }
   `],
 })
 export class ThreadCardComponent {
   readonly thread = input.required<ThreadSummary>();
+  readonly showArchiveBtn = input(false);
+  readonly archive = output<ThreadSummary>();
+  readonly restore = output<ThreadSummary>();
 
   readonly visibleTags = computed(() => this.thread().tags.slice(0, 3));
 

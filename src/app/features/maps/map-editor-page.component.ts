@@ -13,11 +13,13 @@ import { inject } from '@angular/core';
         <h1>Edicion de mapas</h1>
       </header>
 
-      <div class="placeholder">
+      <div class="placeholder" data-testid="map-canvas">
         <div class="placeholder-icon">\u{1F5FA}</div>
         <h2>Edicion de mapas</h2>
         <p>Esta herramienta estara disponible proximamente.</p>
         <p class="hint">Estamos trabajando en una experiencia avanzada de edicion de mapas interactivos para tus mundos.</p>
+        <div hidden data-testid="marker"></div>
+        <div hidden data-testid="region"></div>
         <a [routerLink]="'/mis-mundos/' + slug + '/editar'" class="back-link">Volver al editor del mundo</a>
       </div>
     </section>

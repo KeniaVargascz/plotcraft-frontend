@@ -10,6 +10,7 @@ import { debounceTime } from 'rxjs/operators';
 import { PrivacySettings } from '../../../core/models/privacy-settings.model';
 import { NotificationPreferences } from '../../../core/models/notification-preferences.model';
 import { SettingsService } from '../../../core/services/settings.service';
+import { ThemeService } from '../../../core/services/theme.service';
 import { UserService } from '../../../core/services/user.service';
 
 @Component({
@@ -31,6 +32,7 @@ export class AccountSettingsComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly userService = inject(UserService);
   private readonly settingsService = inject(SettingsService);
+  readonly themeService = inject(ThemeService);
 
   private readonly privacyDebounce$ = new Subject<Partial<PrivacySettings>>();
 

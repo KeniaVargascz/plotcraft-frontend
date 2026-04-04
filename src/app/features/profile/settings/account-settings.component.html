@@ -42,6 +42,27 @@
       <mat-card class="settings-card">
         <div class="card-head">
           <div>
+            <p class="card-kicker">Apariencia</p>
+            <h2>Tema de la aplicacion</h2>
+          </div>
+        </div>
+        <div class="theme-options">
+          @for (theme of themeService.themes; track theme) {
+            <button
+              type="button"
+              class="theme-btn"
+              [class.active]="themeService.theme() === theme"
+              (click)="themeService.applyTheme(theme)"
+            >
+              {{ theme }}
+            </button>
+          }
+        </div>
+      </mat-card>
+
+      <mat-card class="settings-card">
+        <div class="card-head">
+          <div>
             <p class="card-kicker">Acceso</p>
             <h2>Cambiar email</h2>
           </div>

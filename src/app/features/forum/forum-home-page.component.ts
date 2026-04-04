@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ForumCategory, ThreadSummary } from '../../core/models/forum-thread.model';
@@ -41,7 +41,11 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
               <app-thread-card [thread]="thread" />
             }
             @for (thread of regularThreads(); track thread.id) {
-              <app-thread-card [thread]="thread" />
+              <app-thread-card
+                [thread]="thread"
+                [showArchiveBtn]="isMyThread(thread)"
+                (archive)="onArchiveThread($event)"
+              />
             }
           </div>
 
@@ -52,6 +56,12 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
           @if (hasMore()) {
             <button type="button" class="load-more" (click)="loadMore()">Cargar mas</button>
           }
+        }
+
+        @if (isAuthenticated() && archivedCount() > 0) {
+          <a routerLink="/foro/archivados" class="archived-link">
+            \u{1F4E6} Ver mis hilos archivados ({{ archivedCount() }})
+          </a>
         }
       </main>
 
@@ -164,6 +174,19 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
       text-align: left;
     }
     .cat-link:hover { color: var(--accent); }
+    .archived-link {
+      display: block;
+      margin-top: 1rem;
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      text-align: center;
+      text-decoration: none;
+      font-size: 0.85rem;
+      color: var(--text-3);
+      transition: all 0.15s;
+    }
+    .archived-link:hover { color: var(--text-1); border-color: var(--border-s); background: var(--bg-surface); }
     @media (max-width: 900px) {
       .forum-shell { grid-template-columns: 1fr; }
       .sidebar { order: -1; }
@@ -181,6 +204,8 @@ export class ForumHomePageComponent implements OnInit {
   readonly nextCursor = signal<string | null>(null);
   readonly hasMore = signal(false);
   readonly totalThreads = signal(0);
+  readonly myThreads = signal<ThreadSummary[]>([]);
+  readonly archivedCount = computed(() => this.myThreads().filter(t => t.status === 'ARCHIVED').length);
 
   private currentFilters: { category: ForumCategory | null; sort: string; search: string } = {
     category: null,
@@ -204,6 +229,11 @@ export class ForumHomePageComponent implements OnInit {
     return this.authService.isAuthenticated();
   }
 
+  isMyThread(thread: ThreadSummary) {
+    const user = this.authService.getCurrentUserSnapshot();
+    return !!user && thread.author.username === user.username;
+  }
+
   pinnedThreads() {
     return this.threads().filter((t) => t.isPinned);
   }
@@ -214,6 +244,11 @@ export class ForumHomePageComponent implements OnInit {
 
   ngOnInit() {
     this.load(true);
+    if (this.authService.isAuthenticated()) {
+      this.forumService.listMyThreads().subscribe({
+        next: (threads) => this.myThreads.set(threads),
+      });
+    }
   }
 
   onFilterChange(filters: { category: ForumCategory | null; sort: string; search: string }) {
@@ -228,6 +263,15 @@ export class ForumHomePageComponent implements OnInit {
 
   loadMore() {
     this.load(false);
+  }
+
+  onArchiveThread(thread: ThreadSummary) {
+    this.forumService.archiveThread(thread.slug).subscribe({
+      next: () => {
+        this.threads.update(list => list.filter(t => t.id !== thread.id));
+        this.myThreads.update(list => list.map(t => t.id === thread.id ? { ...t, status: 'ARCHIVED' as any } : t));
+      },
+    });
   }
 
   private load(reset: boolean) {

@@ -8,10 +8,14 @@ import { WorldSummary, WORLD_GENRE_LABELS } from '../../../core/models/world.mod
   imports: [RouterLink],
   template: `
     <article class="world-card">
-      <a class="cover" [class]="coverClass()" [routerLink]="['/mundos', world().slug]">
-        <span class="cover-lines"></span>
-        <span class="cover-pattern" [innerHTML]="patternSvg()"></span>
-        <span class="cover-initial">{{ world().name.charAt(0) }}</span>
+      <a class="cover" [class]="world().coverUrl ? '' : coverClass()" [routerLink]="['/mundos', world().slug]">
+        @if (world().coverUrl) {
+          <img [src]="world().coverUrl" [alt]="world().name" class="cover-img" />
+        } @else {
+          <span class="cover-lines"></span>
+          <span class="cover-pattern" [innerHTML]="patternSvg()"></span>
+          <span class="cover-initial">{{ world().name.charAt(0) }}</span>
+        }
         <span class="type-badge">{{ coverBadge() }}</span>
       </a>
 
@@ -90,6 +94,13 @@ import { WorldSummary, WORLD_GENRE_LABELS } from '../../../core/models/world.mod
         display: grid;
         place-items: center;
         text-decoration: none;
+      }
+
+      .cover-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
       }
 
       .cover-tone-0 {

@@ -63,6 +63,20 @@ import { WorldGenre, WorldVisibility, WORLD_GENRE_LABELS } from '../../core/mode
               [disabled]="saving()"
           /></label>
           <label
+            ><span>Imagen del mundo (URL)</span
+            ><input
+              type="url"
+              [(ngModel)]="coverUrl"
+              name="coverUrl"
+              placeholder="https://ejemplo.com/imagen.jpg"
+              [disabled]="saving()"
+          /></label>
+          @if (coverUrl) {
+            <div class="cover-preview">
+              <img [src]="coverUrl" alt="Vista previa" />
+            </div>
+          }
+          <label
             ><span>Descripcion</span
             ><textarea
               [(ngModel)]="description"
@@ -181,6 +195,17 @@ import { WorldGenre, WorldVisibility, WORLD_GENRE_LABELS } from '../../core/mode
         border-radius: 1.25rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
+      }
+      .cover-preview {
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        overflow: hidden;
+      }
+      .cover-preview img {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        display: block;
       }
       .hero {
         display: flex;
@@ -313,6 +338,7 @@ export class WorldFormPageComponent {
   magicSystem = '';
   rules = '';
   tagsRaw = '';
+  coverUrl = '';
   genre: WorldGenre | null = null;
   visibility: WorldVisibility = 'PRIVATE';
   pendingNovelSlug = '';
@@ -340,6 +366,7 @@ export class WorldFormPageComponent {
         this.magicSystem = world.magicSystem ?? '';
         this.rules = world.rules ?? '';
         this.tagsRaw = world.tags.join(', ');
+        this.coverUrl = world.coverUrl ?? '';
         this.genre = world.genre;
         this.visibility = world.visibility;
         this.selectedNovelSlugs.set(world.linkedNovels.map((novel) => novel.slug));
@@ -376,6 +403,7 @@ export class WorldFormPageComponent {
       setting: this.setting.trim() || null,
       magicSystem: this.magicSystem.trim() || null,
       rules: this.rules.trim() || null,
+      coverUrl: this.coverUrl.trim() || null,
       genre: this.genre,
       visibility: this.visibility,
       tags: this.tagsRaw

@@ -22,7 +22,12 @@
           @if (isOwnProfile) {
             <a routerLink="/mi-perfil/editar">{{ 'profile.edit.title' | translate }}</a>
           } @else if (authService.isAuthenticated() && !profile()!.viewerContext.isSelf) {
-            <button type="button" (click)="toggleFollow()" [disabled]="followPending()">
+            <button
+              type="button"
+              data-testid="follow-btn"
+              (click)="toggleFollow()"
+              [disabled]="followPending()"
+            >
               {{
                 profile()!.viewerContext.isFollowing
                   ? ('profile.unfollow' | translate)
@@ -38,10 +43,10 @@
           <strong>{{ profile()!.postsCount }}</strong> {{ 'profile.posts' | translate }}
         </a>
         <a [routerLink]="['/perfil', profile()!.username, 'seguidores']">
-          <strong>{{ profile()!.followersCount }}</strong> {{ 'profile.followers' | translate }}
+          <strong data-testid="followers-count">{{ profile()!.followersCount }}</strong> {{ 'profile.followers' | translate }}
         </a>
         <a [routerLink]="['/perfil', profile()!.username, 'siguiendo']">
-          <strong>{{ profile()!.followingCount }}</strong> {{ 'profile.following' | translate }}
+          <strong data-testid="following-count">{{ profile()!.followingCount }}</strong> {{ 'profile.following' | translate }}
         </a>
       </div>
     </header>

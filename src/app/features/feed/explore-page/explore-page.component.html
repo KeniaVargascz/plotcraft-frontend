@@ -2,17 +2,17 @@
   <header class="page-header">
     <div>
       <p>{{ 'feed.exploreEyebrow' | translate }}</p>
-      <h1>Comunidad</h1>
+      <h1>{{ 'feed.communityTitle' | translate }}</h1>
     </div>
-    <span>Actividad reciente, conversaciones y avances abiertos de la comunidad.</span>
+    <span>{{ 'feed.communitySubtitle' | translate }}</span>
   </header>
 
   <label class="search-row">
-    <span>Buscar posts</span>
+    <span>{{ 'feed.searchPosts' | translate }}</span>
     <input
       [(ngModel)]="search"
       (keydown.enter)="applySearch()"
-      placeholder="escritura, personajes, mundo..."
+      [placeholder]="'feed.searchPlaceholder' | translate"
     />
   </label>
 

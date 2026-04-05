@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserService } from '../../../../core/services/user.service';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-delete-account',
@@ -17,6 +18,7 @@ import { UserService } from '../../../../core/services/user.service';
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
+    TranslatePipe,
   ],
   templateUrl: './delete-account.component.html',
   styleUrl: './delete-account.component.scss',

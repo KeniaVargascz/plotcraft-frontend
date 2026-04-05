@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormBuilder,
@@ -13,9 +14,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { PasswordStrengthComponent } from '../../../shared/components/password-strength/password-strength.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
-const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value;
@@ -33,6 +35,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    PasswordStrengthComponent,
     ReactiveFormsModule,
     TranslatePipe,
   ],
@@ -43,6 +46,7 @@ export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(false);
   readonly errorMessage = signal('');
@@ -68,6 +72,16 @@ export class RegisterComponent {
     { validators: passwordMatchValidator },
   );
 
+  constructor() {
+    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.errorMessage.set('');
+      this.form.controls.email.setErrors(this.removeCustomError(this.form.controls.email.errors, 'taken'));
+      this.form.controls.username.setErrors(
+        this.removeCustomError(this.form.controls.username.errors, 'taken'),
+      );
+    });
+  }
+
   submit(): void {
     if (this.form.invalid || this.loading()) {
       this.form.markAllAsTouched();
@@ -85,21 +99,47 @@ export class RegisterComponent {
       },
       error: (error: unknown) => {
         this.loading.set(false);
-        this.errorMessage.set(this.resolveErrorMessage(error));
+        this.applyErrorState(error);
       },
     });
   }
 
-  private resolveErrorMessage(error: unknown): string {
+  private applyErrorState(error: unknown): void {
     if (!(error instanceof HttpErrorResponse)) {
-      return 'common.error';
+      this.errorMessage.set('auth.errors.generic');
+      return;
     }
 
     if (error.status === 409) {
-      return 'auth.errors.duplicate';
+      const rawMessage = this.extractMessage(error).toLowerCase();
+
+      if (rawMessage.includes('email')) {
+        this.form.controls.email.setErrors({
+          ...(this.form.controls.email.errors ?? {}),
+          taken: true,
+        });
+      }
+
+      if (rawMessage.includes('username')) {
+        this.form.controls.username.setErrors({
+          ...(this.form.controls.username.errors ?? {}),
+          taken: true,
+        });
+      }
+
+      if (!rawMessage.includes('email') && !rawMessage.includes('username')) {
+        this.errorMessage.set('auth.errors.duplicate');
+      }
+
+      return;
     }
 
-    const message = error.error?.message;
+    const message = this.extractMessage(error);
+    this.errorMessage.set(message || 'auth.errors.generic');
+  }
+
+  private extractMessage(error: HttpErrorResponse): string {
+    const message = error.error?.error?.message ?? error.error?.message;
     if (typeof message === 'string' && message.trim()) {
       return message;
     }
@@ -113,6 +153,18 @@ export class RegisterComponent {
       }
     }
 
-    return 'common.error';
+    return '';
+  }
+
+  private removeCustomError(
+    errors: ValidationErrors | null | undefined,
+    errorKey: string,
+  ): ValidationErrors | null {
+    if (!errors || !(errorKey in errors)) {
+      return errors ?? null;
+    }
+
+    const { [errorKey]: _discarded, ...rest } = errors;
+    return Object.keys(rest).length ? rest : null;
   }
 }

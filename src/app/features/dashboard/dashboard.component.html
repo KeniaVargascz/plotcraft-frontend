@@ -1,18 +1,18 @@
 <section class="dashboard-card">
-  <h1>Dashboard</h1>
-  <p>Espacio inicial del usuario autenticado.</p>
+  <h1>{{ 'dashboard.title' | translate }}</h1>
+  <p>{{ 'dashboard.subtitle' | translate }}</p>
   <div class="stats">
     <article>
       <strong>{{ (authService.currentUser$ | async)?.username }}</strong>
-      <span>Usuario activo</span>
+      <span>{{ 'dashboard.cards.activeUser' | translate }}</span>
     </article>
     <article>
       <strong>JWT + Refresh</strong>
-      <span>Sesion persistente</span>
+      <span>{{ 'dashboard.cards.session' | translate }}</span>
     </article>
     <article>
-      <strong>Perfil</strong>
-      <span>Edicion disponible</span>
+      <strong>{{ 'dashboard.cards.profileTitle' | translate }}</strong>
+      <span>{{ 'dashboard.cards.profileHint' | translate }}</span>
     </article>
   </div>
 </section>

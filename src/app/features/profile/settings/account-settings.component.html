@@ -1,39 +1,34 @@
 <section class="account-shell">
   <header class="hero-card">
     <div class="hero-copy">
-      <p class="eyebrow">Cuenta</p>
-      <h1>Configuracion de acceso</h1>
-      <p class="lede">
-        Actualiza tus credenciales, protege tu identidad de autor y controla el acceso a tu perfil.
-      </p>
+      <p class="eyebrow">{{ 'account.hero.eyebrow' | translate }}</p>
+      <h1>{{ 'account.hero.title' | translate }}</h1>
+      <p class="lede">{{ 'account.hero.subtitle' | translate }}</p>
     </div>
 
     <div class="hero-actions">
-      <a mat-stroked-button routerLink="/mi-perfil">Volver a mi perfil</a>
-      <a mat-flat-button routerLink="/mi-perfil/editar">Editar perfil publico</a>
+      <a mat-stroked-button routerLink="/mi-perfil">{{ 'account.actions.backToProfile' | translate }}</a>
+      <a mat-flat-button routerLink="/mi-perfil/editar">{{ 'account.actions.editPublicProfile' | translate }}</a>
     </div>
   </header>
 
   <section class="content-grid">
     <aside class="sidebar-card">
-      <h2>Centro de seguridad</h2>
-      <p>
-        Usa un email vigente, un username estable y una contrasena robusta para mantener tu cuenta
-        segura.
-      </p>
+      <h2>{{ 'account.sidebar.title' | translate }}</h2>
+      <p>{{ 'account.sidebar.subtitle' | translate }}</p>
 
       <div class="tips">
         <article class="tip-pill">
-          <strong>Email</strong>
-          <span>Se usa para acceso, recuperacion y notificaciones clave.</span>
+          <strong>{{ 'account.tip.emailTitle' | translate }}</strong>
+          <span>{{ 'account.tip.emailBody' | translate }}</span>
         </article>
         <article class="tip-pill">
-          <strong>Username</strong>
-          <span>Impacta tu URL publica y como te encuentra la comunidad.</span>
+          <strong>{{ 'account.tip.usernameTitle' | translate }}</strong>
+          <span>{{ 'account.tip.usernameBody' | translate }}</span>
         </article>
         <article class="tip-pill">
-          <strong>Contrasena</strong>
-          <span>Debe combinar mayusculas, minusculas y numeros.</span>
+          <strong>{{ 'account.tip.passwordTitle' | translate }}</strong>
+          <span>{{ 'account.tip.passwordBody' | translate }}</span>
         </article>
       </div>
     </aside>
@@ -72,12 +67,12 @@
         <form [formGroup]="emailForm" (ngSubmit)="submitEmail()">
           <div class="field-grid">
             <mat-form-field appearance="outline">
-              <mat-label>Email</mat-label>
+              <mat-label>{{ 'auth.fields.email' | translate }}</mat-label>
               <input matInput formControlName="email" />
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Contrasena actual</mat-label>
+              <mat-label>{{ 'account.fields.currentPassword' | translate }}</mat-label>
               <input matInput type="password" formControlName="currentPassword" />
             </mat-form-field>
           </div>
@@ -85,8 +80,8 @@
           @if (emailSaving()) {
             <div class="processing-banner" aria-live="polite">
               <span class="processing-dot"></span>
-              <strong>Procesando cambio de email...</strong>
-              <small>Estamos validando tus credenciales y guardando la actualizacion.</small>
+              <strong>{{ 'account.email.processingTitle' | translate }}</strong>
+              <small>{{ 'account.email.processingBody' | translate }}</small>
             </div>
           }
 
@@ -99,7 +94,7 @@
 
           <div class="actions">
             <button mat-flat-button type="submit" [disabled]="emailForm.invalid || emailSaving()">
-              {{ emailSaving() ? 'Guardando...' : 'Guardar email' }}
+              {{ emailSaving() ? ('account.common.saving' | translate) : ('account.email.submit' | translate) }}
             </button>
           </div>
         </form>
@@ -117,12 +112,12 @@
         <form [formGroup]="usernameForm" (ngSubmit)="submitUsername()">
           <div class="field-grid">
             <mat-form-field appearance="outline">
-              <mat-label>Username</mat-label>
+              <mat-label>{{ 'auth.fields.username' | translate }}</mat-label>
               <input matInput formControlName="username" />
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Contrasena actual</mat-label>
+              <mat-label>{{ 'account.fields.currentPassword' | translate }}</mat-label>
               <input matInput type="password" formControlName="currentPassword" />
             </mat-form-field>
           </div>
@@ -130,8 +125,8 @@
           @if (usernameSaving()) {
             <div class="processing-banner" aria-live="polite">
               <span class="processing-dot"></span>
-              <strong>Procesando cambio de username...</strong>
-              <small>Estamos actualizando tu identidad publica y verificando disponibilidad.</small>
+              <strong>{{ 'account.username.processingTitle' | translate }}</strong>
+              <small>{{ 'account.username.processingBody' | translate }}</small>
             </div>
           }
 
@@ -148,7 +143,7 @@
               type="submit"
               [disabled]="usernameForm.invalid || usernameSaving()"
             >
-              {{ usernameSaving() ? 'Guardando...' : 'Guardar username' }}
+              {{ usernameSaving() ? ('account.common.saving' | translate) : ('account.username.submit' | translate) }}
             </button>
           </div>
         </form>
@@ -166,17 +161,17 @@
         <form [formGroup]="passwordForm" (ngSubmit)="submitPassword()">
           <div class="field-grid password-grid">
             <mat-form-field appearance="outline">
-              <mat-label>Contrasena actual</mat-label>
+              <mat-label>{{ 'account.fields.currentPassword' | translate }}</mat-label>
               <input matInput type="password" formControlName="currentPassword" />
             </mat-form-field>
 
             <mat-form-field appearance="outline">
-              <mat-label>Nueva contrasena</mat-label>
+              <mat-label>{{ 'account.fields.newPassword' | translate }}</mat-label>
               <input matInput type="password" formControlName="newPassword" />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-span">
-              <mat-label>Confirmar nueva contrasena</mat-label>
+              <mat-label>{{ 'account.fields.confirmNewPassword' | translate }}</mat-label>
               <input matInput type="password" formControlName="confirmNewPassword" />
             </mat-form-field>
           </div>
@@ -184,8 +179,8 @@
           @if (passwordSaving()) {
             <div class="processing-banner" aria-live="polite">
               <span class="processing-dot"></span>
-              <strong>Procesando cambio de contrasena...</strong>
-              <small>Estamos asegurando la nueva credencial antes de aplicarla.</small>
+              <strong>{{ 'account.password.processingTitle' | translate }}</strong>
+              <small>{{ 'account.password.processingBody' | translate }}</small>
             </div>
           }
 
@@ -202,7 +197,7 @@
               type="submit"
               [disabled]="passwordForm.invalid || passwordSaving()"
             >
-              {{ passwordSaving() ? 'Guardando...' : 'Guardar contrasena' }}
+              {{ passwordSaving() ? ('account.common.saving' | translate) : ('account.password.submit' | translate) }}
             </button>
           </div>
         </form>
@@ -221,7 +216,7 @@
         @if (privacyLoading()) {
           <div class="processing-banner" aria-live="polite">
             <span class="processing-dot"></span>
-            <strong>Cargando preferencias de privacidad...</strong>
+            <strong>{{ 'account.privacy.loading' | translate }}</strong>
           </div>
         } @else {
           <div class="toggle-list">
@@ -301,7 +296,7 @@
         @if (notifLoading()) {
           <div class="processing-banner" aria-live="polite">
             <span class="processing-dot"></span>
-            <strong>Cargando preferencias de notificaciones...</strong>
+            <strong>{{ 'account.notifications.loading' | translate }}</strong>
           </div>
         } @else {
           <div class="toggle-list">
@@ -386,11 +381,11 @@
             <div class="channel-options">
               <label class="channel-option" [class.active]="notifPrefs().channel === 'IN_APP'">
                 <input type="radio" name="channel" value="IN_APP" [checked]="notifPrefs().channel === 'IN_APP'" disabled />
-                En la app
+                {{ 'settings.notifications.channelInApp' | translate }}
               </label>
               <label class="channel-option disabled">
                 <input type="radio" name="channel" value="EMAIL" disabled />
-                Email <span class="coming-soon">proximamente</span>
+                {{ 'settings.notifications.channelEmail' | translate }}
               </label>
             </div>
           </div>
@@ -419,7 +414,7 @@
             [disabled]="exportLoading()"
             (click)="exportData()"
           >
-            {{ exportLoading() ? 'Preparando...' : 'Descargar mis datos' }}
+            {{ exportLoading() ? ('account.export.loading' | translate) : ('settings.export.button' | translate) }}
           </button>
         </div>
       </mat-card>
@@ -438,7 +433,7 @@
         </p>
 
         <div class="actions">
-          <a mat-stroked-button routerLink="/cuenta/eliminar">Eliminar cuenta</a>
+          <a mat-stroked-button routerLink="/cuenta/eliminar">{{ 'account.danger.cta' | translate }}</a>
         </div>
       </mat-card>
     </div>

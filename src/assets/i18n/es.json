@@ -71,11 +71,29 @@
     "register": {
       "title": "Crear cuenta",
       "subtitle": "Empieza tu espacio de autor con validacion en tiempo real.",
-      "loading": "Registrando..."
+      "loading": "Registrando...",
+      "reviewFields": "Revisa los campos requeridos antes de continuar."
     },
     "errors": {
       "invalidCredentials": "Credenciales incorrectas",
-      "duplicate": "El email o username ya existen"
+      "duplicate": "El email o username ya existen",
+      "accountDisabled": "Tu cuenta esta desactivada. Contacta al soporte.",
+      "generic": "No se pudo completar la solicitud. Intenta de nuevo.",
+      "emailTaken": "Este email ya esta registrado.",
+      "usernameTaken": "Este username ya esta en uso."
+    },
+    "passwordStrength": {
+      "title": "Fuerza de la contrasena",
+      "length": "Minimo 8 caracteres",
+      "uppercase": "Al menos una mayuscula",
+      "lowercase": "Al menos una minuscula",
+      "number": "Al menos un numero",
+      "special": "Al menos un caracter especial",
+      "levels": {
+        "weak": "Debil",
+        "medium": "Media",
+        "strong": "Fuerte"
+      }
     }
   },
   "feed": {
@@ -83,6 +101,10 @@
     "explore": "Explorar",
     "exploreEyebrow": "Descubrimiento editorial",
     "exploreHint": "Publicaciones abiertas para inspirarte, reaccionar y descubrir autores.",
+    "communityTitle": "Comunidad",
+    "communitySubtitle": "Actividad reciente, conversaciones y avances abiertos de la comunidad.",
+    "searchPosts": "Buscar posts",
+    "searchPlaceholder": "escritura, personajes, mundo...",
     "empty": "Aun no hay publicaciones.",
     "emptyHint": "Empieza siguiendo a alguien o publica algo.",
     "loadMore": "Cargar mas",
@@ -150,6 +172,12 @@
       "website": "Sitio web",
       "isPublic": "Perfil publico"
     },
+    "editForm": {
+      "avatar": "Avatar del perfil",
+      "avatarHint": "Sube una imagen cuadrada para tu identidad de autor.",
+      "banner": "Banner del perfil",
+      "bannerHint": "Sube una portada horizontal para la cabecera de tu perfil."
+    },
     "tabs": {
       "posts": "Publicaciones",
       "saved": "Guardados",
@@ -159,7 +187,19 @@
     },
     "noNovelsYet": "Este autor aun no ha publicado novelas.",
     "noWorldsYet": "Este autor aun no tiene mundos publicos.",
-    "noCharactersYet": "Este autor aun no tiene personajes publicos."
+    "noCharactersYet": "Este autor aun no tiene personajes publicos.",
+    "emptyBio": "Aun no hay biografia.",
+    "joinedAt": "Miembro desde {{date}}",
+    "stats": {
+      "novelsPublished": "{{count}} novelas publicadas",
+      "chaptersPublished": "{{count}} capitulos publicados",
+      "wordsPublished": "{{count}} palabras publicadas"
+    },
+    "actions": {
+      "editProfile": "Editar perfil",
+      "viewMyNovels": "Ver mis novelas",
+      "accountSettings": "Configuracion de cuenta"
+    }
   },
   "validation": {
     "required": "Este campo es obligatorio",
@@ -167,7 +207,7 @@
     "minLength": "Minimo {{min}} caracteres",
     "maxLength": "Maximo {{max}} caracteres",
     "usernameFormat": "Solo letras, numeros, puntos, guiones y guiones bajos (3-30 caracteres)",
-    "passwordFormat": "Debe tener al menos 8 caracteres, una mayuscula, una minuscula y un numero",
+    "passwordFormat": "Debe tener al menos 8 caracteres, una mayuscula, una minuscula, un numero y un caracter especial",
     "passwordMismatch": "Las contrasenas no coinciden",
     "currentPasswordRequired": "Debes ingresar tu contrasena actual para cambiarla"
   },
@@ -179,6 +219,89 @@
     "loading": "Cargando...",
     "error": "Ocurrio un error. Intenta de nuevo.",
     "success": "Cambios guardados correctamente"
+  },
+  "media": {
+    "changeImage": "Cambiar imagen",
+    "removeImage": "Quitar imagen",
+    "uploading": "Subiendo imagen...",
+    "uploadError": "No se pudo subir la imagen. Intenta de nuevo.",
+    "invalidType": "Solo se permiten imagenes JPEG, PNG, WEBP o GIF.",
+    "fileTooLarge": "La imagen excede el limite de 5 MB.",
+    "supportedFormats": "Formatos permitidos: JPG, PNG, WEBP y GIF. Maximo 5 MB.",
+    "empty": "Sin imagen cargada"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Espacio inicial del usuario autenticado.",
+    "cards": {
+      "activeUser": "Usuario activo",
+      "session": "Sesion persistente",
+      "profileTitle": "Perfil",
+      "profileHint": "Edicion disponible"
+    }
+  },
+  "account": {
+    "hero": {
+      "eyebrow": "Cuenta",
+      "title": "Configuracion de acceso",
+      "subtitle": "Actualiza tus credenciales, protege tu identidad de autor y controla el acceso a tu perfil."
+    },
+    "actions": {
+      "backToProfile": "Volver a mi perfil",
+      "editPublicProfile": "Editar perfil publico"
+    },
+    "sidebar": {
+      "title": "Centro de seguridad",
+      "subtitle": "Usa un email vigente, un username estable y una contrasena robusta para mantener tu cuenta segura."
+    },
+    "tip": {
+      "emailTitle": "Email",
+      "emailBody": "Se usa para acceso, recuperacion y notificaciones clave.",
+      "usernameTitle": "Username",
+      "usernameBody": "Impacta tu URL publica y como te encuentra la comunidad.",
+      "passwordTitle": "Contrasena",
+      "passwordBody": "Debe combinar mayusculas, minusculas, numeros y caracteres especiales."
+    },
+    "fields": {
+      "currentPassword": "Contrasena actual",
+      "newPassword": "Nueva contrasena",
+      "confirmNewPassword": "Confirmar nueva contrasena"
+    },
+    "common": {
+      "saving": "Guardando..."
+    },
+    "email": {
+      "processingTitle": "Procesando cambio de email...",
+      "processingBody": "Estamos validando tus credenciales y guardando la actualizacion.",
+      "submit": "Guardar email"
+    },
+    "username": {
+      "processingTitle": "Procesando cambio de username...",
+      "processingBody": "Estamos actualizando tu identidad publica y verificando disponibilidad.",
+      "submit": "Guardar username"
+    },
+    "password": {
+      "processingTitle": "Procesando cambio de contrasena...",
+      "processingBody": "Estamos asegurando la nueva credencial antes de aplicarla.",
+      "submit": "Guardar contrasena"
+    },
+    "privacy": {
+      "loading": "Cargando preferencias de privacidad..."
+    },
+    "notifications": {
+      "loading": "Cargando preferencias de notificaciones..."
+    },
+    "export": {
+      "loading": "Preparando..."
+    },
+    "danger": {
+      "cta": "Eliminar cuenta"
+    },
+    "delete": {
+      "title": "Eliminar cuenta",
+      "subtitle": "Esta accion es irreversible. Todos tus datos se eliminaran.",
+      "confirm": "Confirmar eliminacion"
+    }
   },
   "reader": {
     "preferences": {

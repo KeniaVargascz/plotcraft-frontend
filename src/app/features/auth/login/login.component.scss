@@ -13,6 +13,14 @@ form {
   gap: 1rem;
 }
 
+.feedback {
+  margin: 0;
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.9rem;
+}
+
 .feedback.error {
   color: var(--danger);
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
 }

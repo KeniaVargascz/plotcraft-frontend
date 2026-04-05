@@ -8,7 +8,7 @@ import { WbSearchBarComponent } from './wb-search-bar.component';
   standalone: true,
   imports: [RouterLink, WbSearchBarComponent],
   template: `
-    <aside class="sidebar">
+    <aside class="sidebar" data-testid="wb-sidebar">
       <a class="world-link" [routerLink]="['/mundos', worldSlug()]">
         {{ worldName() }}
       </a>

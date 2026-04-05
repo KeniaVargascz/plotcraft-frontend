@@ -40,10 +40,17 @@ export class EditProfileComponent {
     displayName: [this.currentUser?.profile?.displayName ?? '', [Validators.maxLength(80)]],
     bio: [this.currentUser?.profile?.bio ?? '', [Validators.maxLength(500)]],
     website: [this.currentUser?.profile?.website ?? ''],
+    avatarUrl: [this.currentUser?.profile?.avatarUrl ?? ''],
+    bannerUrl: [this.currentUser?.profile?.bannerUrl ?? ''],
     isPublic: [this.currentUser?.profile?.isPublic ?? true],
   });
 
   submit(): void {
+    if (this.form.invalid || this.loading()) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
     this.loading.set(true);
 
     this.userService.updateProfile(this.form.getRawValue()).subscribe({

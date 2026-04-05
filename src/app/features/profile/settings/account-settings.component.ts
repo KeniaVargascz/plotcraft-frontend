@@ -12,6 +12,7 @@ import { NotificationPreferences } from '../../../core/models/notification-prefe
 import { SettingsService } from '../../../core/services/settings.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { UserService } from '../../../core/services/user.service';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-account-settings',
@@ -24,6 +25,7 @@ import { UserService } from '../../../core/services/user.service';
     MatInputModule,
     ReactiveFormsModule,
     RouterLink,
+    TranslatePipe,
   ],
   templateUrl: './account-settings.component.html',
   styleUrl: './account-settings.component.scss',
@@ -81,7 +83,10 @@ export class AccountSettingsComponent implements OnInit {
     currentPassword: ['', [Validators.required]],
     newPassword: [
       '',
-      [Validators.required, Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/)],
+      [
+        Validators.required,
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/),
+      ],
     ],
     confirmNewPassword: ['', [Validators.required]],
   });

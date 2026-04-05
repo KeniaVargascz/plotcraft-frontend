@@ -140,7 +140,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
           <p>{{ 'search.noResultsHint' | translate }}</p>
         </div>
       } @else if (activeTab() === 'all' && grouped()) {
-        <div class="results-shell">
+        <div class="results-shell" data-testid="search-results">
           @if (grouped()!.results.novels.items.length) {
             <section class="result-section">
               <div class="section-head">
@@ -222,7 +222,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
           }
         </div>
       } @else {
-        <div class="results-shell">
+        <div class="results-shell" data-testid="search-results">
           @if (activeTab() === 'novels') {
             <div class="grid">
               @for (novel of novels(); track novel.id) {

@@ -22,7 +22,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   standalone: true,
   imports: [FormsModule, RouterLink, TranslatePipe],
   template: `
-    <div class="search-shell" [class.compact]="compact()" #root>
+    <div class="search-shell" [class.compact]="compact()" #root data-testid="searchbar">
       <label class="search-input">
         <span class="icon">⌕</span>
         <input
@@ -42,7 +42,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
       </label>
 
       @if (open()) {
-        <div class="dropdown">
+        <div class="dropdown" data-testid="suggestions-dropdown">
           @if (loading()) {
             <div class="dropdown-block muted">{{ 'search.loading' | translate }}</div>
           } @else if (!query.trim() && history().length) {
@@ -70,6 +70,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
               @for (item of suggestions(); track item.url) {
                 <a
                   class="dropdown-item"
+                  data-testid="suggestion-item"
                   [routerLink]="item.url"
                   (click)="goToSuggestion(item, $event)"
                 >

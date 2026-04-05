@@ -1,15 +1,15 @@
 <mat-card class="danger-card">
-  <h1>Eliminar cuenta</h1>
-  <p>Esta accion es irreversible. Todos tus datos se eliminaran.</p>
+  <h1>{{ 'account.delete.title' | translate }}</h1>
+  <p>{{ 'account.delete.subtitle' | translate }}</p>
 
   <form [formGroup]="form" (ngSubmit)="submit()">
     <mat-form-field appearance="outline">
-      <mat-label>Contrasena actual</mat-label>
+      <mat-label>{{ 'account.fields.currentPassword' | translate }}</mat-label>
       <input matInput type="password" formControlName="password" />
     </mat-form-field>
 
     <button mat-flat-button type="submit" [disabled]="form.invalid || loading()">
-      Confirmar eliminacion
+      {{ 'account.delete.confirm' | translate }}
     </button>
   </form>
 </mat-card>

@@ -544,8 +544,14 @@ export class WbWorkspacePageComponent {
 
   private loadCategories() {
     this.wbService.listCategories(this.worldSlug()).subscribe({
-      next: (cats) => this.categories.set(cats),
-      error: () => this.categories.set([]),
+      next: (cats) => {
+        this.categories.set(cats);
+        this.loadEntries();
+      },
+      error: () => {
+        this.categories.set([]);
+        this.entries.set([]);
+      },
     });
   }
 

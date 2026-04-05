@@ -9,11 +9,19 @@ import { FollowsService } from '../../../core/services/follows.service';
 import { NovelsService } from '../../../core/services/novels.service';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-my-profile',
   standalone: true,
-  imports: [DatePipe, MatButtonModule, RouterLink, ErrorMessageComponent, LoadingSpinnerComponent],
+  imports: [
+    DatePipe,
+    MatButtonModule,
+    RouterLink,
+    ErrorMessageComponent,
+    LoadingSpinnerComponent,
+    TranslatePipe,
+  ],
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.scss',
 })

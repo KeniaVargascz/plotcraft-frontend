@@ -6,7 +6,7 @@ import { WbEntrySummary } from '../../../../core/models/wb-entry.model';
   standalone: true,
   imports: [],
   template: `
-    <article class="entry-card" (click)="select.emit(entry())">
+    <article class="entry-card" data-testid="wb-entry-card" (click)="select.emit(entry())">
       <div
         class="cover"
         [style.background]="entry().coverUrl

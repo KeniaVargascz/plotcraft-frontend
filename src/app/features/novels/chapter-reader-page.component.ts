@@ -59,14 +59,18 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
                 Marcadores
               </button>
             }
-            <button type="button" (click)="showPreferences.update((value) => !value)">
+            <button
+              type="button"
+              data-testid="reader-settings"
+              (click)="showPreferences.update((value) => !value)"
+            >
               Preferencias
             </button>
           </div>
         </header>
 
         @if (preferences().show_progress) {
-          <div class="progress-strip">
+          <div class="progress-strip" data-testid="progress-bar">
             <span [style.width.%]="progressPercent() * 100"></span>
           </div>
         }
@@ -105,6 +109,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
                   max="26"
                   [value]="preferences().font_size"
                   (input)="onPreferenceChange('font_size', +$any($event.target).value)"
+                  data-testid="font-size-slider"
                 />
               </label>
               <label>
@@ -171,17 +176,22 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
 
             @if (preferences().reading_mode === 'paginated') {
               <section class="reader-paginated" #readerContainer>
-                <div class="reader-body" [innerHTML]="pages()[currentPage()]"></div>
+                <div
+                  class="reader-body"
+                  data-testid="chapter-content"
+                  [innerHTML]="pages()[currentPage()]"
+                ></div>
                 <div class="reader-nav">
-                  <button type="button" (click)="goToPreviousPage()">Anterior</button>
+                  <button type="button" data-testid="prev-chapter" (click)="goToPreviousPage()">Anterior</button>
                   <span>Pagina {{ currentPage() + 1 }} de {{ pages().length }}</span>
-                  <button type="button" (click)="goToNextPage()">Siguiente</button>
+                  <button type="button" data-testid="next-chapter" (click)="goToNextPage()">Siguiente</button>
                 </div>
               </section>
             } @else {
               <section
                 class="reader-body"
                 #readerContainer
+                data-testid="chapter-content"
                 [innerHTML]="renderedHtml()"
                 (mouseup)="handleSelection()"
                 (contextmenu)="handleContextMenu($event)"
@@ -206,12 +216,12 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
 
         <footer class="reader-nav">
           @if (currentChapter.navigation?.previous; as previous) {
-            <a [routerLink]="['/novelas', currentChapter.novel.slug, previous.slug]"
+            <a [routerLink]="['/novelas', currentChapter.novel.slug, previous.slug]" data-testid="prev-chapter"
               >← {{ previous.title }}</a
             >
           }
           @if (currentChapter.navigation?.next; as next) {
-            <a [routerLink]="['/novelas', currentChapter.novel.slug, next.slug]"
+            <a [routerLink]="['/novelas', currentChapter.novel.slug, next.slug]" data-testid="next-chapter"
               >{{ next.title }} →</a
             >
           }

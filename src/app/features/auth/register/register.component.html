@@ -12,6 +12,9 @@
       @if (form.controls.email.touched && form.controls.email.hasError('email')) {
         <mat-error>{{ 'validation.email' | translate }}</mat-error>
       }
+      @if (form.controls.email.touched && form.controls.email.hasError('taken')) {
+        <mat-error>{{ 'auth.errors.emailTaken' | translate }}</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -19,6 +22,9 @@
       <input matInput formControlName="username" />
       @if (form.controls.username.touched && form.controls.username.invalid) {
         <mat-error>{{ 'validation.usernameFormat' | translate }}</mat-error>
+      }
+      @if (form.controls.username.touched && form.controls.username.hasError('taken')) {
+        <mat-error>{{ 'auth.errors.usernameTaken' | translate }}</mat-error>
       }
     </mat-form-field>
 
@@ -29,6 +35,8 @@
         <mat-error>{{ 'validation.passwordFormat' | translate }}</mat-error>
       }
     </mat-form-field>
+
+    <app-password-strength [password]="form.controls.password.value" />
 
     <mat-form-field appearance="outline">
       <mat-label>{{ 'auth.fields.confirmPassword' | translate }}</mat-label>
@@ -44,11 +52,11 @@
 
     @if (form.invalid && form.touched) {
       <p class="feedback hint">
-        Revisa los campos requeridos antes de continuar.
+        {{ 'auth.register.reviewFields' | translate }}
       </p>
     }
 
-    <button mat-flat-button type="submit" [disabled]="loading()">
+    <button mat-flat-button type="submit" [disabled]="form.invalid || loading()">
       {{ loading() ? ('auth.register.loading' | translate) : ('nav.register' | translate) }}
     </button>
   </form>

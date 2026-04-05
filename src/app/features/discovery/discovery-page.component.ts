@@ -63,7 +63,7 @@ import { AuthorCardComponent } from './components/author-card.component';
           <div class="section-head">
             <h2>{{ 'discovery.trending.novels' | translate }}</h2>
           </div>
-          <div class="rail">
+          <div class="rail" data-testid="trending-novels">
             @for (novel of snapshot()!.trending.novels; track novel.id) {
               <div class="rail-item">
                 <app-novel-card [novel]="novel" />
@@ -76,7 +76,7 @@ import { AuthorCardComponent } from './components/author-card.component';
           <div class="section-head">
             <h2>{{ 'discovery.newReleases.title' | translate }}</h2>
           </div>
-          <div class="release-grid">
+          <div class="release-grid" data-testid="new-releases">
             @for (release of snapshot()!.new_releases; track release.novel.id; let index = $index) {
               <article class="release-card">
                 <div class="release-strip" [class]="releaseToneClass(index)"></div>

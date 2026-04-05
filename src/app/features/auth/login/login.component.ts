@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -28,6 +29,7 @@ export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(false);
   readonly errorMessage = signal('');
@@ -36,6 +38,12 @@ export class LoginComponent {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
   });
+
+  constructor() {
+    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.errorMessage.set('');
+    });
+  }
 
   submit(): void {
     if (this.form.invalid || this.loading()) {
@@ -54,11 +62,16 @@ export class LoginComponent {
       error: (error: unknown) => {
         this.loading.set(false);
         if (error instanceof HttpErrorResponse && error.status === 401) {
-          this.errorMessage.set('auth.errors.invalidCredentials');
+          const code = error.error?.error?.code;
+          this.errorMessage.set(
+            code === 'ACCOUNT_DISABLED'
+              ? 'auth.errors.accountDisabled'
+              : 'auth.errors.invalidCredentials',
+          );
           return;
         }
 
-        this.errorMessage.set('common.error');
+        this.errorMessage.set('auth.errors.generic');
       },
     });
   }

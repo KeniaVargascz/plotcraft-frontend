@@ -148,7 +148,12 @@ import { WorldsService } from '../../core/services/worlds.service';
         </fieldset>
 
         <label class="inline">
-          <input type="checkbox" [(ngModel)]="isPublic" [disabled]="saving()" />
+          <input
+            type="checkbox"
+            [(ngModel)]="isPublic"
+            [disabled]="saving()"
+            data-testid="is-public-toggle"
+          />
           Hacer publica la novela
         </label>
 

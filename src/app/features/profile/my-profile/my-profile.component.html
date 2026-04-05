@@ -4,15 +4,32 @@
   <app-error-message />
 } @else if (user(); as profileUser) {
   <section class="profile-card">
+    <div
+      class="banner"
+      [class.has-image]="!!profileUser.profile?.bannerUrl"
+      [style.background-image]="
+        profileUser.profile?.bannerUrl ? 'url(' + profileUser.profile?.bannerUrl + ')' : null
+      "
+    ></div>
+
     <div class="identity">
-      <div class="avatar">{{ (profileUser.profile?.displayName || profileUser.username).charAt(0).toUpperCase() }}</div>
+      <div class="avatar" [class.has-image]="!!profileUser.profile?.avatarUrl">
+        @if (profileUser.profile?.avatarUrl) {
+          <img
+            [src]="profileUser.profile?.avatarUrl"
+            [alt]="profileUser.profile?.displayName || profileUser.username"
+          />
+        } @else {
+          {{ (profileUser.profile?.displayName || profileUser.username).charAt(0).toUpperCase() }}
+        }
+      </div>
       <div>
         <h1>{{ profileUser.profile?.displayName || profileUser.username }}</h1>
         <p>@{{ profileUser.username }}</p>
       </div>
     </div>
 
-    <p class="bio">{{ profileUser.profile?.bio || 'Aun no hay biografia.' }}</p>
+    <p class="bio">{{ profileUser.profile?.bio || ('profile.emptyBio' | translate) }}</p>
 
     @if (profileUser.profile?.website) {
       <a class="website" [href]="profileUser.profile?.website" target="_blank" rel="noreferrer">
@@ -20,27 +37,37 @@
       </a>
     }
 
-    <span class="meta">Miembro desde {{ profileUser.createdAt | date: 'longDate' }}</span>
+    <span class="meta">{{
+      'profile.joinedAt' | translate: { date: (profileUser.createdAt | date: 'longDate') ?? '' }
+    }}</span>
 
     <div class="follow-stats">
       <a routerLink="/perfil/{{ profileUser.username }}/seguidores" class="follow-link">
-        <strong>{{ followersCount() }}</strong> seguidores
+        <strong>{{ followersCount() }}</strong> {{ 'profile.followers' | translate }}
       </a>
       <a routerLink="/perfil/{{ profileUser.username }}/siguiendo" class="follow-link">
-        <strong>{{ followingCount() }}</strong> siguiendo
+        <strong>{{ followingCount() }}</strong> {{ 'profile.following' | translate }}
       </a>
     </div>
 
     <div class="stats-summary">
-      <span>{{ novelsCount() }} novelas publicadas</span>
-      <span>{{ publishedChapters() }} capitulos publicados</span>
-      <span>{{ publishedWords() }} palabras publicadas</span>
+      <span>{{ 'profile.stats.novelsPublished' | translate: { count: novelsCount() } }}</span>
+      <span>{{
+        'profile.stats.chaptersPublished' | translate: { count: publishedChapters() }
+      }}</span>
+      <span>{{ 'profile.stats.wordsPublished' | translate: { count: publishedWords() } }}</span>
     </div>
 
     <div class="actions">
-      <a mat-flat-button routerLink="/mi-perfil/editar">Editar perfil</a>
-      <a mat-stroked-button routerLink="/mis-novelas">Ver mis novelas</a>
-      <a mat-stroked-button routerLink="/cuenta">Configuracion de cuenta</a>
+      <a mat-flat-button routerLink="/mi-perfil/editar">{{
+        'profile.actions.editProfile' | translate
+      }}</a>
+      <a mat-stroked-button routerLink="/mis-novelas">{{
+        'profile.actions.viewMyNovels' | translate
+      }}</a>
+      <a mat-stroked-button routerLink="/cuenta">{{
+        'profile.actions.accountSettings' | translate
+      }}</a>
     </div>
   </section>
 }

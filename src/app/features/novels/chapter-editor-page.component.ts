@@ -16,7 +16,7 @@ import { MarkdownService } from '../../core/services/markdown.service';
         <a [routerLink]="['/mis-novelas', slug, 'capitulos']">Volver a capitulos</a>
 
         <div class="meta">
-          <span>{{ wordCount() }} palabras</span>
+          <span data-testid="word-count">{{ wordCount() }} palabras</span>
           @if (loading()) {
             <span>Cargando editor...</span>
           }
@@ -71,6 +71,7 @@ import { MarkdownService } from '../../core/services/markdown.service';
             placeholder="Titulo del capitulo"
             [disabled]="isBusy()"
             (ngModelChange)="onChange()"
+            data-testid="chapter-title"
           />
 
           <textarea
@@ -79,6 +80,7 @@ import { MarkdownService } from '../../core/services/markdown.service';
             placeholder="Escribe tu capitulo en Markdown"
             [disabled]="isBusy()"
             (ngModelChange)="onChange()"
+            data-testid="chapter-content"
           ></textarea>
         </section>
 

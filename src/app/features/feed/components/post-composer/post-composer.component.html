@@ -1,4 +1,4 @@
-<section class="composer-card">
+<section class="composer-card" data-testid="post-composer">
   <header>
     <h2>{{ 'feed.new' | translate }}</h2>
     <span>{{ 'post.charCount' | translate: { current: contentLength, max: 5000 } }}</span>
@@ -21,7 +21,7 @@
         </select>
       </label>
 
-      <button type="submit" [disabled]="form.invalid || publishing()">
+      <button type="submit" [disabled]="form.invalid || publishing()" data-testid="publish-post">
         {{ publishing() ? ('post.publishing' | translate) : ('post.publish' | translate) }}
       </button>
     </div>

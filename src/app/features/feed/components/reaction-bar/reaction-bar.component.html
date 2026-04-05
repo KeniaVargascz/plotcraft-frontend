@@ -2,11 +2,13 @@
   <button
     type="button"
     class="reaction-toggle"
+    data-testid="reaction-btn"
     [class.active]="post.viewerContext?.hasReacted"
     [disabled]="loading()"
     (click)="toggle('LIKE')"
   >
-    {{ 'post.reactions.like' | translate }} · {{ post.stats.reactionsCount }}
+    {{ 'post.reactions.like' | translate }} ·
+    <span data-testid="reaction-count">{{ post.stats.reactionsCount }}</span>
   </button>
 
   <div class="reaction-chips">
@@ -15,12 +17,13 @@
         <button
           type="button"
           class="chip"
+          data-testid="reaction-btn"
           [class.active]="post.viewerContext?.reactionType === option.type"
           [disabled]="loading()"
           (click)="toggle(option.type)"
         >
           <span>{{ option.emoji }}</span>
-          {{ post.stats.reactionsSummary[option.type] }}
+          <span data-testid="count">{{ post.stats.reactionsSummary[option.type] }}</span>
         </button>
       }
     }

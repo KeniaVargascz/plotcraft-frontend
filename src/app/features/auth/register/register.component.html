@@ -42,7 +42,13 @@
       <p class="feedback error">{{ errorMessage() | translate }}</p>
     }
 
-    <button mat-flat-button type="submit" [disabled]="form.invalid || loading()">
+    @if (form.invalid && form.touched) {
+      <p class="feedback hint">
+        Revisa los campos requeridos antes de continuar.
+      </p>
+    }
+
+    <button mat-flat-button type="submit" [disabled]="loading()">
       {{ loading() ? ('auth.register.loading' | translate) : ('nav.register' | translate) }}
     </button>
   </form>

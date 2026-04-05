@@ -85,13 +85,34 @@ export class RegisterComponent {
       },
       error: (error: unknown) => {
         this.loading.set(false);
-        if (error instanceof HttpErrorResponse && error.status === 409) {
-          this.errorMessage.set('auth.errors.duplicate');
-          return;
-        }
-
-        this.errorMessage.set('common.error');
+        this.errorMessage.set(this.resolveErrorMessage(error));
       },
     });
+  }
+
+  private resolveErrorMessage(error: unknown): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return 'common.error';
+    }
+
+    if (error.status === 409) {
+      return 'auth.errors.duplicate';
+    }
+
+    const message = error.error?.message;
+    if (typeof message === 'string' && message.trim()) {
+      return message;
+    }
+
+    if (Array.isArray(message) && message.length) {
+      const firstMessage = message.find(
+        (item): item is string => typeof item === 'string' && item.trim().length > 0,
+      );
+      if (firstMessage) {
+        return firstMessage;
+      }
+    }
+
+    return 'common.error';
   }
 }

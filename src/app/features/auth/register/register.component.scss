@@ -16,3 +16,9 @@ form {
 .feedback.error {
   color: var(--danger);
 }
+
+.feedback.hint {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 0.9rem;
+}

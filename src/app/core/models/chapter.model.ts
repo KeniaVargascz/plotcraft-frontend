@@ -15,6 +15,7 @@ export interface ChapterSummary {
 
 export interface ChapterDetail extends ChapterSummary {
   content: string;
+  votesCount: number;
   contentSnapshot: unknown;
   novel: {
     id: string;

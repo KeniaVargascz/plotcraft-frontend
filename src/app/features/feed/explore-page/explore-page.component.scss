@@ -45,6 +45,21 @@
   padding: 0.8rem 0.9rem;
 }
 
+.clear-search-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  font-size: 0.8rem;
+  width: fit-content;
+
+  &:hover {
+    background: var(--bg-surface);
+  }
+}
+
 .sentinel {
   height: 2rem;
 }

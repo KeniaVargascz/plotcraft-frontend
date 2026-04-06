@@ -6,7 +6,7 @@
       <span class="group-label">{{ 'nav.discovery' | translate }}</span>
       <a routerLink="/feed" routerLinkActive="active">{{ 'nav.feed' | translate }}</a>
       <a routerLink="/descubrir" routerLinkActive="active">{{ 'nav.discovery' | translate }}</a>
-      <a routerLink="/novelas" routerLinkActive="active">{{ 'nav.novels' | translate }}</a>
+      <a routerLink="/novelas" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{ 'nav.novels' | translate }}</a>
       <a routerLink="/mundos" routerLinkActive="active">{{ 'nav.worlds' | translate }}</a>
       <a routerLink="/personajes" routerLinkActive="active">{{ 'nav.characters' | translate }}</a>
       <a routerLink="/foro" routerLinkActive="active">{{ 'nav.forum' | translate }}</a>

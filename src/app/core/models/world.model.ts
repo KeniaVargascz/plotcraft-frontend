@@ -58,9 +58,11 @@ export interface WorldSummary {
     locationsCount: number;
     charactersCount: number;
     novelsCount: number;
+    kudosCount: number;
   };
   viewerContext: {
     isOwner: boolean;
+    hasKudo: boolean;
   } | null;
   wbSummary?: {
     categoriesCount: number;

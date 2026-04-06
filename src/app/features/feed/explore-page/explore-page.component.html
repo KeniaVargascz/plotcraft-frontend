@@ -14,6 +14,15 @@
       (keydown.enter)="applySearch()"
       [placeholder]="'feed.searchPlaceholder' | translate"
     />
+    <app-tag-chips-input
+      [tags]="searchTags()"
+      [maxTags]="5"
+      placeholder="Filtrar por etiqueta..."
+      (tagsChange)="onSearchTagsChange($event)"
+    />
+    @if (search || searchTags().length) {
+      <button type="button" class="clear-search-btn" (click)="clearSearch()">Limpiar busqueda</button>
+    }
   </label>
 
   @if (authService.isAuthenticated()) {

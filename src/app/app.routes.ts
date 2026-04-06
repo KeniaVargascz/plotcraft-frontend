@@ -38,13 +38,6 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'explorar',
-        loadComponent: () =>
-          import('./features/feed/explore-page/explore-page.component').then(
-            (module) => module.ExplorePageComponent,
-          ),
-      },
-      {
         path: 'descubrir',
         loadComponent: () =>
           import('./features/discovery/discovery-page.component').then(
@@ -413,13 +406,6 @@ export const routes: Routes = [
     component: PublicLayoutComponent,
     canMatch: [anonymousMatchGuard],
     children: [
-      {
-        path: 'explorar',
-        loadComponent: () =>
-          import('./features/feed/explore-page/explore-page.component').then(
-            (module) => module.ExplorePageComponent,
-          ),
-      },
       {
         path: 'descubrir',
         loadComponent: () =>

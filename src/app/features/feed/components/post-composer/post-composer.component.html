@@ -11,6 +11,48 @@
       [placeholder]="'post.placeholder' | translate"
     ></textarea>
 
+    <app-tag-chips-input
+      [tags]="tags()"
+      [maxTags]="10"
+      [placeholder]="'feed.composer.tagsPlaceholder' | translate"
+      (tagsChange)="onTagsChange($event)"
+    />
+
+    <div class="image-section">
+      @if (imageUrls().length) {
+        <div class="image-previews">
+          @for (url of imageUrls(); track url; let i = $index) {
+            <div class="image-preview">
+              <img [src]="url" alt="Preview" />
+              <button type="button" class="remove-image" (click)="removeImage(i)">&times;</button>
+            </div>
+          }
+        </div>
+      }
+
+      @if (canAddImages) {
+        <div class="image-url-row">
+          <button type="button" class="add-image-btn" (click)="toggleImageInput()">
+            {{ showImageInput() ? 'Ocultar' : 'Adjuntar imagen (URL)' }}
+          </button>
+        </div>
+      }
+
+      @if (showImageInput() && canAddImages) {
+        <div class="image-url-input-row">
+          <input
+            type="text"
+            [(ngModel)]="imageUrlInput"
+            [ngModelOptions]="{ standalone: true }"
+            (keydown.enter)="$event.preventDefault(); addImageUrl()"
+            placeholder="https://ejemplo.com/imagen.jpg"
+            class="image-url-input"
+          />
+          <button type="button" class="add-url-btn" (click)="addImageUrl()">Agregar</button>
+        </div>
+      }
+    </div>
+
     <div class="composer-actions">
       <label>
         <span>{{ 'feed.title' | translate }}</span>

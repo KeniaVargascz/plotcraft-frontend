@@ -193,7 +193,7 @@ import { AuthorCardComponent } from './components/author-card.component';
         <section class="section">
           <div class="section-head">
             <h2>{{ 'discovery.community.title' | translate }}</h2>
-            <a routerLink="/explorar">{{ 'discovery.community.viewFeed' | translate }}</a>
+            <a routerLink="/feed">{{ 'discovery.community.viewFeed' | translate }}</a>
           </div>
           <div class="community-list">
             @for (post of snapshot()!.community_posts; track post.id) {

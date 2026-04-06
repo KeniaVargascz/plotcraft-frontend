@@ -23,6 +23,7 @@ import { ChaptersService } from '../../core/services/chapters.service';
 import { HighlightsService } from '../../core/services/highlights.service';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { ReaderService } from '../../core/services/reader.service';
+import { VotesService } from '../../core/services/votes.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PromptDialogComponent, PromptDialogData } from '../../shared/components/prompt-dialog/prompt-dialog.component';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
@@ -214,6 +215,13 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
           </section>
         </div>
 
+        <div class="chapter-vote-section">
+          <button type="button" class="vote-action" [class.vote-active]="chapterHasVoted()" (click)="toggleChapterVote()">
+            &#9650; {{ chapterHasVoted() ? 'Votado' : 'Votar' }}
+          </button>
+          <span class="vote-label">{{ chapterVotesCount() === 1 ? '1 voto' : chapterVotesCount() + ' votos' }}</span>
+        </div>
+
         <footer class="reader-nav">
           @if (currentChapter.navigation?.previous; as previous) {
             <a [routerLink]="['/novelas', currentChapter.novel.slug, previous.slug]" data-testid="prev-chapter"
@@ -345,6 +353,28 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
       a {
         color: var(--accent-text);
       }
+      .chapter-vote-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 1.5rem 0;
+        border-top: 1px solid var(--border);
+      }
+      .vote-action {
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .vote-active,
+      .vote-active:hover {
+        background: var(--accent-glow) !important;
+        color: var(--accent-text) !important;
+        border-color: var(--accent-text) !important;
+      }
+      .vote-label {
+        color: var(--text-2);
+        font-size: 0.85rem;
+      }
       @media (max-width: 960px) {
         .reader-layout {
           display: grid;
@@ -363,6 +393,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   private readonly highlightsService = inject(HighlightsService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly dialog = inject(MatDialog);
+  private readonly votesService = inject(VotesService);
 
   @ViewChild('readerContainer') readerContainer?: ElementRef<HTMLElement>;
 
@@ -391,6 +422,9 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     created_at: '',
     updated_at: '',
   });
+
+  readonly chapterVotesCount = signal(0);
+  readonly chapterHasVoted = signal(false);
 
   readonly colors: HighlightColor[] = ['yellow', 'green', 'blue', 'pink'];
   readonly colorMap: Record<HighlightColor, string> = {
@@ -440,6 +474,37 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
 
   isAuthenticated() {
     return this.authService.isAuthenticated();
+  }
+
+  toggleChapterVote() {
+    if (!this.authService.isAuthenticated()) {
+      return;
+    }
+
+    const chapter = this.chapter();
+    if (!chapter) return;
+
+    const wasVoted = this.chapterHasVoted();
+    const prevCount = this.chapterVotesCount();
+
+    // Optimistic update
+    this.chapterHasVoted.set(!wasVoted);
+    this.chapterVotesCount.set(prevCount + (wasVoted ? -1 : 1));
+
+    const action = wasVoted
+      ? this.votesService.removeVote(chapter.id)
+      : this.votesService.castVote(chapter.id);
+
+    action.subscribe({
+      next: (response) => {
+        this.chapterVotesCount.set(response.votesCount);
+        this.chapterHasVoted.set(response.hasVoted);
+      },
+      error: () => {
+        this.chapterHasVoted.set(wasVoted);
+        this.chapterVotesCount.set(prevCount);
+      },
+    });
   }
 
   @HostListener('window:scroll')
@@ -637,6 +702,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     this.chaptersService.getReaderChapter(this.slug, this.chapterSlug).subscribe({
       next: (chapter) => {
         this.chapter.set(chapter);
+        this.chapterVotesCount.set(chapter.votesCount ?? 0);
         this.loadPreferences();
         this.refreshRenderedContent();
         this.buildPages();
@@ -648,6 +714,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
           this.loadChapterBookmarks(chapter.id);
           this.loadChapterHighlights(chapter.id);
           this.restoreProgress(chapter.novel.id);
+          this.loadVoteStatus(chapter.id);
         }
       },
       error: () => {
@@ -874,6 +941,15 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       '--reader-font-family',
       fontMap[this.preferences().font_family] ?? fontMap['crimson'],
     );
+  }
+
+  private loadVoteStatus(chapterId: string) {
+    this.votesService.getVoteStatus(chapterId).subscribe({
+      next: (response) => {
+        this.chapterVotesCount.set(response.votesCount);
+        this.chapterHasVoted.set(response.hasVoted);
+      },
+    });
   }
 
   private escapeHtml(value: string) {

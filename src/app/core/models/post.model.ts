@@ -25,6 +25,8 @@ export interface PostModel {
   id: string;
   content: string;
   type: PostType;
+  imageUrls: string[];
+  tags: string[];
   createdAt: string;
   updatedAt: string;
   author: PostAuthor;

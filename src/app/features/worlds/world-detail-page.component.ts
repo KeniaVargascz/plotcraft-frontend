@@ -1,9 +1,11 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { WorldsService } from '../../core/services/worlds.service';
 import { WorldbuildingService } from '../../core/services/worldbuilding.service';
+import { KudosService } from '../../core/services/kudos.service';
+import { AuthService } from '../../core/services/auth.service';
 import { WorldDetail, WORLD_GENRE_LABELS } from '../../core/models/world.model';
 import { WbCategorySummary } from '../../core/models/wb-category.model';
 import { WbEntrySummary } from '../../core/models/wb-entry.model';
@@ -41,6 +43,13 @@ import { WbEntryCardComponent } from './worldbuilding/components/wb-entry-card.c
               <span>{{ currentWorld.stats.charactersCount }} personajes</span>
               <span>{{ currentWorld.stats.locationsCount }} lugares</span>
               <span>{{ currentWorld.stats.novelsCount }} novelas</span>
+              <span class="kudo-count">{{ currentWorld.stats.kudosCount }} kudos</span>
+              @if (!currentWorld.viewerContext?.isOwner) {
+                <button type="button" class="kudo-btn" [class.kudo-active]="currentWorld.viewerContext?.hasKudo" [disabled]="kudoLoading()" (click)="toggleWorldKudo()">
+                  <span [class.kudo-beat]="kudoBeat()">&#9829;</span>
+                  {{ currentWorld.viewerContext?.hasKudo ? 'Kudo dado' : 'Dar kudo' }}
+                </button>
+              }
             </div>
           </header>
 
@@ -311,6 +320,11 @@ import { WbEntryCardComponent } from './worldbuilding/components/wb-entry-card.c
         margin-top: 0.5rem;
       }
       .ref-add-btn:hover { border-color: var(--accent); color: var(--accent-text); }
+      .kudo-btn { padding: 0.4rem 0.7rem; border-radius: 999px; background: var(--accent-glow); color: var(--text-2); border: 1px solid var(--border); cursor: pointer; font-size: 0.85rem; }
+      .kudo-active { color: #e05555; border-color: #e05555; background: rgba(224,85,85,0.1); }
+      .kudo-beat { display: inline-block; animation: beat 300ms ease-in-out; }
+      .kudo-count { font-size: 0.85rem; color: var(--text-2); }
+      @keyframes beat { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
       .simple-link {
         display: block;
         padding: 0.6rem 0;
@@ -349,12 +363,17 @@ import { WbEntryCardComponent } from './worldbuilding/components/wb-entry-card.c
 })
 export class WorldDetailPageComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly worldsService = inject(WorldsService);
   private readonly charactersService = inject(CharactersService);
   private readonly wbService = inject(WorldbuildingService);
+  private readonly kudosService = inject(KudosService);
+  private readonly authService = inject(AuthService);
   readonly markdownService = inject(MarkdownService);
 
   readonly world = signal<WorldDetail | null>(null);
+  readonly kudoLoading = signal(false);
+  readonly kudoBeat = signal(false);
   readonly characters = signal<CharacterSummary[]>([]);
   readonly loreCategories = signal<WbCategorySummary[]>([]);
   readonly loreEntries = signal<Record<string, WbEntrySummary[]>>({});
@@ -410,6 +429,37 @@ export class WorldDetailPageComponent {
           this.loading.set(false);
         },
       });
+    });
+  }
+
+  toggleWorldKudo() {
+    const w = this.world();
+    if (!w) return;
+
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+
+    this.kudoLoading.set(true);
+    const action = w.viewerContext?.hasKudo
+      ? this.kudosService.removeWorldKudo(w.id)
+      : this.kudosService.addWorldKudo(w.id);
+
+    action.subscribe({
+      next: (response) => {
+        this.world.set({
+          ...w,
+          stats: { ...w.stats, kudosCount: response.kudosCount },
+          viewerContext: w.viewerContext ? { ...w.viewerContext, hasKudo: response.hasKudo } : null,
+        });
+        if (response.hasKudo) {
+          this.kudoBeat.set(true);
+          setTimeout(() => this.kudoBeat.set(false), 300);
+        }
+        this.kudoLoading.set(false);
+      },
+      error: () => this.kudoLoading.set(false),
     });
   }
 

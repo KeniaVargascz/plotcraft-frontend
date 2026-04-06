@@ -12,6 +12,11 @@ type FeedQuery = {
   type?: PostType | 'ALL' | null;
 };
 
+type FeedSearchQuery = FeedQuery & {
+  search?: string | null;
+  tags?: string[];
+};
+
 @Injectable({ providedIn: 'root' })
 export class FeedService {
   private readonly http = inject(HttpClient);
@@ -30,6 +35,38 @@ export class FeedService {
         params: this.buildParams(query),
       })
       .pipe(map((response) => response.data));
+  }
+
+  searchFeed(query: FeedSearchQuery): Observable<PaginatedResponse<PostModel>> {
+    return this.http
+      .get<ApiResponse<PaginatedResponse<PostModel>>>(`${environment.apiUrl}/feed/search`, {
+        params: this.buildSearchParams(query),
+      })
+      .pipe(map((response) => response.data));
+  }
+
+  searchExplore(query: FeedSearchQuery): Observable<PaginatedResponse<PostModel>> {
+    return this.http
+      .get<ApiResponse<PaginatedResponse<PostModel>>>(`${environment.apiUrl}/feed/explore/search`, {
+        params: this.buildSearchParams(query),
+      })
+      .pipe(map((response) => response.data));
+  }
+
+  private buildSearchParams(query: FeedSearchQuery) {
+    let params = this.buildParams(query);
+
+    if (query.search) {
+      params = params.set('search', query.search);
+    }
+
+    if (query.tags?.length) {
+      for (const tag of query.tags) {
+        params = params.append('tags', tag);
+      }
+    }
+
+    return params;
   }
 
   private buildParams(query: FeedQuery) {

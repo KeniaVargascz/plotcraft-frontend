@@ -5,9 +5,6 @@ type ReactionKey = 'LIKE' | 'HELPFUL' | 'INSIGHTFUL' | 'FUNNY';
 
 const REACTION_MAP: { key: ReactionKey; emoji: string; label: string }[] = [
   { key: 'LIKE', emoji: '\u{1F44D}', label: 'Like' },
-  { key: 'HELPFUL', emoji: '\u{1F64F}', label: 'Util' },
-  { key: 'INSIGHTFUL', emoji: '\u{1F4A1}', label: 'Perspicaz' },
-  { key: 'FUNNY', emoji: '\u{1F604}', label: 'Gracioso' },
 ];
 
 @Component({

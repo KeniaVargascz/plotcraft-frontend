@@ -34,10 +34,13 @@ export interface NovelSummary {
     bookmarksCount: number;
     worldsCount: number;
     charactersCount: number;
+    kudosCount: number;
+    votesCount: number;
   };
   viewerContext: {
     hasLiked: boolean;
     hasBookmarked: boolean;
+    hasKudo: boolean;
     isAuthor: boolean;
     reading_progress: {
       chapter_id: string;

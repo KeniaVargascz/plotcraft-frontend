@@ -48,9 +48,11 @@ export interface CharacterSummary {
   stats: {
     relationshipsCount: number;
     novelsCount: number;
+    kudosCount: number;
   };
   viewerContext: {
     isOwner: boolean;
+    hasKudo: boolean;
   } | null;
 }
 

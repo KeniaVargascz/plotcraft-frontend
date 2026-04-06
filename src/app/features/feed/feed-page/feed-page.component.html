@@ -1,5 +1,23 @@
 <section class="feed-layout">
   <div class="feed-column">
+    <div class="search-bar">
+      <input
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        (keydown.enter)="onSearch()"
+        placeholder="Buscar en tu feed..."
+        class="search-input"
+      />
+      <button type="button" class="search-btn" (click)="onSearch()">Buscar</button>
+    </div>
+
+    @if (isSearching()) {
+      <div class="search-indicator">
+        <span>Mostrando resultados para: "{{ searchQuery() }}"</span>
+        <button type="button" (click)="clearSearch()">&times; Limpiar</button>
+      </div>
+    }
+
     <app-post-composer (postCreated)="addPost($event)" />
 
     <app-post-type-filter
@@ -13,9 +31,9 @@
       <div class="state-card">{{ 'common.error' | translate }}</div>
     } @else if (posts().length === 0) {
       <div class="state-card empty">
-        <h2>{{ 'feed.empty' | translate }}</h2>
-        <p>{{ 'feed.emptyHint' | translate }}</p>
-        <a routerLink="/explorar">{{ 'feed.explore' | translate }}</a>
+        <h2>{{ 'feed.empty.noFollowsTitle' | translate }}</h2>
+        <p>{{ 'feed.empty.noFollowsSubtitle' | translate }}</p>
+        <a routerLink="/descubrir" class="cta-btn">Descubrir autores</a>
       </div>
     } @else {
       <div class="post-stack">
@@ -57,9 +75,9 @@
     </section>
 
     <section class="sidebar-card highlight">
-      <h3>{{ 'feed.explore' | translate }}</h3>
-      <p>{{ 'feed.exploreHint' | translate }}</p>
-      <a routerLink="/explorar">{{ 'feed.explore' | translate }}</a>
+      <h3>{{ 'feed.discover' | translate }}</h3>
+      <p>{{ 'feed.discoverHint' | translate }}</p>
+      <a routerLink="/descubrir">{{ 'feed.discover' | translate }}</a>
     </section>
   </aside>
 </section>

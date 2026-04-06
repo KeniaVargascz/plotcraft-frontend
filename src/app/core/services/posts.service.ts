@@ -18,7 +18,7 @@ type PostQuery = {
 export class PostsService {
   private readonly http = inject(HttpClient);
 
-  create(payload: { content: string; type: PostType }): Observable<PostModel> {
+  create(payload: { content: string; type: PostType; image_urls?: string[]; tags?: string[] }): Observable<PostModel> {
     return this.http
       .post<ApiResponse<PostModel>>(`${environment.apiUrl}/posts`, payload)
       .pipe(map((response) => response.data));

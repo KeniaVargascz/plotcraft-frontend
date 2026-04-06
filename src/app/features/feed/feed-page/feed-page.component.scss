@@ -60,6 +60,61 @@
   text-align: center;
 }
 
+.search-bar {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.search-input {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-1);
+  font-size: 0.9rem;
+}
+
+.search-btn {
+  padding: 0.7rem 1.2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--accent-glow);
+  color: var(--accent-text);
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.search-indicator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  border-radius: 0.75rem;
+  background: var(--accent-glow);
+  color: var(--accent-text);
+  font-size: 0.85rem;
+}
+
+.search-indicator button {
+  background: none;
+  border: none;
+  color: var(--accent-text);
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.cta-btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  background: var(--accent-glow);
+  color: var(--accent-text);
+  text-decoration: none;
+  font-weight: 600;
+}
+
 @media (max-width: 1080px) {
   .feed-layout {
     grid-template-columns: 1fr;

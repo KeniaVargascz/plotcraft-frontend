@@ -1,10 +1,11 @@
 import { DatePipe } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { NovelDetail } from '../../core/models/novel.model';
 import { AuthService } from '../../core/services/auth.service';
+import { KudosService } from '../../core/services/kudos.service';
 import { NovelsService } from '../../core/services/novels.service';
 import { ReadingList } from '../../core/models/reading-list.model';
 import { ReadingListsService } from '../../core/services/reading-lists.service';
@@ -73,18 +74,20 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
                 </a>
               }
 
-              @if (currentNovel.viewerContext && !currentNovel.viewerContext.isAuthor) {
-                <button type="button" (click)="toggleLike()">
-                  {{ currentNovel.viewerContext.hasLiked ? 'Quitar like' : 'Dar like' }}
+              @if (!currentNovel.viewerContext?.isAuthor) {
+                <button type="button" [disabled]="kudoLoading()" (click)="toggleKudo()" [class.active]="currentNovel.viewerContext?.hasKudo">
+                  <span [class.kudo-beat]="kudoBeat()">&#9829;</span>
+                  {{ currentNovel.viewerContext?.hasKudo ? 'Kudo dado' : 'Dar kudo' }}
                 </button>
+              }
+
+              @if (currentNovel.viewerContext && !currentNovel.viewerContext.isAuthor) {
                 <button type="button" (click)="toggleBookmark()">
                   {{ currentNovel.viewerContext.hasBookmarked ? 'Quitar guardado' : 'Guardar' }}
                 </button>
-                @if (authService.isAuthenticated()) {
-                  <button type="button" [disabled]="listsLoading()" (click)="toggleListsMenu()">
-                    {{ listsLoading() ? 'Cargando listas...' : 'Guardar en lista' }}
-                  </button>
-                }
+                <button type="button" [disabled]="listsLoading()" (click)="toggleListsMenu()">
+                  {{ listsLoading() ? 'Cargando listas...' : 'Guardar en lista' }}
+                </button>
               }
 
               @if (currentNovel.viewerContext?.isAuthor) {
@@ -158,8 +161,9 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
           <aside class="stats card">
             <h3>Estadisticas</h3>
             <span>{{ currentNovel.stats.chaptersCount }} capitulos</span>
-            <span>{{ currentNovel.stats.likesCount }} likes</span>
+            <span>{{ currentNovel.stats.kudosCount }} kudos</span>
             <span>{{ currentNovel.stats.bookmarksCount }} guardados</span>
+            <span>{{ currentNovel.stats.votesCount }} votos</span>
             <span>{{ currentNovel.stats.worldsCount }} mundos</span>
             <span>{{ currentNovel.stats.charactersCount }} personajes</span>
             <span>{{ currentNovel.viewsCount }} vistas</span>
@@ -410,6 +414,20 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
         text-decoration: none;
       }
       .tl-see-all:hover { background: var(--accent-glow); }
+      .actions button.active,
+      .actions button.active:hover {
+        background: rgba(224, 85, 85, 0.15);
+        color: #e05555;
+      }
+      .kudo-beat {
+        display: inline-block;
+        animation: beat 300ms ease-in-out;
+      }
+      @keyframes beat {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.3); }
+        100% { transform: scale(1); }
+      }
       @media (max-width: 900px) {
         .hero,
         .content-grid,
@@ -423,8 +441,10 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
 })
 export class NovelDetailPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly novelsService = inject(NovelsService);
+  private readonly kudosService = inject(KudosService);
   private readonly readingListsService = inject(ReadingListsService);
   private readonly timelineService = inject(TimelineService);
   readonly authService = inject(AuthService);
@@ -440,6 +460,8 @@ export class NovelDetailPageComponent implements OnInit {
   readonly listsError = signal<string | null>(null);
   readonly listsMessage = signal<string | null>(null);
   readonly listActionId = signal<string | null>(null);
+  readonly kudoLoading = signal(false);
+  readonly kudoBeat = signal(false);
 
   ngOnInit() {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
@@ -476,26 +498,6 @@ export class NovelDetailPageComponent implements OnInit {
     });
   }
 
-  toggleLike() {
-    const novel = this.novel();
-    if (!novel) {
-      return;
-    }
-
-    this.novelsService.toggleLike(novel.slug).subscribe((response) => {
-      this.novel.set({
-        ...novel,
-        stats: {
-          ...novel.stats,
-          likesCount: novel.stats.likesCount + (response.hasLiked ? 1 : -1),
-        },
-        viewerContext: novel.viewerContext
-          ? { ...novel.viewerContext, hasLiked: response.hasLiked }
-          : null,
-      });
-    });
-  }
-
   toggleBookmark() {
     const novel = this.novel();
     if (!novel) {
@@ -513,6 +515,39 @@ export class NovelDetailPageComponent implements OnInit {
           ? { ...novel.viewerContext, hasBookmarked: response.hasBookmarked }
           : null,
       });
+    });
+  }
+
+  toggleKudo() {
+    const novel = this.novel();
+    if (!novel) return;
+
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+
+    this.kudoLoading.set(true);
+    const action = novel.viewerContext?.hasKudo
+      ? this.kudosService.removeKudo(novel.slug)
+      : this.kudosService.addKudo(novel.slug);
+
+    action.subscribe({
+      next: (response) => {
+        this.novel.set({
+          ...novel,
+          stats: { ...novel.stats, kudosCount: response.kudosCount },
+          viewerContext: novel.viewerContext
+            ? { ...novel.viewerContext, hasKudo: response.hasKudo }
+            : null,
+        });
+        if (response.hasKudo) {
+          this.kudoBeat.set(true);
+          setTimeout(() => this.kudoBeat.set(false), 300);
+        }
+        this.kudoLoading.set(false);
+      },
+      error: () => this.kudoLoading.set(false),
     });
   }
 

@@ -6,9 +6,4 @@ export const FEED_ROUTES: Routes = [
     loadComponent: () =>
       import('./feed-page/feed-page.component').then((module) => module.FeedPageComponent),
   },
-  {
-    path: 'explorar',
-    loadComponent: () =>
-      import('./explore-page/explore-page.component').then((module) => module.ExplorePageComponent),
-  },
 ];

@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { PostModel } from '../../../../core/models/post.model';
 import { AuthService } from '../../../../core/services/auth.service';
 import { PostsService } from '../../../../core/services/posts.service';
+import { LightboxComponent } from '../../../../shared/components/lightbox/lightbox.component';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { CommentListComponent } from '../comment-list/comment-list.component';
 import { ReactionBarComponent } from '../reaction-bar/reaction-bar.component';
@@ -17,6 +18,7 @@ import { ReactionBarComponent } from '../reaction-bar/reaction-bar.component';
     TranslatePipe,
     CommentListComponent,
     ReactionBarComponent,
+    LightboxComponent,
   ],
   templateUrl: './post-card.component.html',
   styleUrl: './post-card.component.scss',
@@ -33,6 +35,8 @@ export class PostCardComponent {
   readonly editing = signal(false);
   readonly loading = signal(false);
   readonly commentsOpen = signal(false);
+  readonly lightboxOpen = signal(false);
+  readonly lightboxIndex = signal(0);
   readonly form = this.formBuilder.nonNullable.group({
     content: ['', [Validators.required, Validators.maxLength(5000)]],
   });
@@ -110,6 +114,15 @@ export class PostCardComponent {
         this.loading.set(false);
       },
     });
+  }
+
+  openLightbox(index: number) {
+    this.lightboxIndex.set(index);
+    this.lightboxOpen.set(true);
+  }
+
+  closeLightbox() {
+    this.lightboxOpen.set(false);
   }
 
   toggleComments() {

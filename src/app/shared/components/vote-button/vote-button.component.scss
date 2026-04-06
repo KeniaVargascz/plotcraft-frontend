@@ -1,0 +1,39 @@
+.vote-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.15s;
+
+  &:hover:not(:disabled) {
+    background: var(--accent-glow);
+    color: var(--accent-text);
+    border-color: var(--accent-text);
+  }
+
+  &.voted {
+    background: var(--accent-glow);
+    color: var(--accent-text);
+    border-color: var(--accent-text);
+  }
+
+  &.is-author,
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.vote-icon {
+  font-size: 0.7rem;
+}
+
+.vote-count {
+  font-weight: 600;
+}

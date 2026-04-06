@@ -1,10 +1,11 @@
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CharactersService } from '../../core/services/characters.service';
+import { KudosService } from '../../core/services/kudos.service';
+import { AuthService } from '../../core/services/auth.service';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { CharacterDetail, CharacterRelationship } from '../../core/models/character.model';
-
 @Component({
   selector: 'app-character-detail-page',
   standalone: true,
@@ -31,6 +32,15 @@ import { CharacterDetail, CharacterRelationship } from '../../core/models/charac
                   {{ currentCharacter.world.name }}
                 </a>
               }
+              <div class="kudo-row">
+                @if (!currentCharacter.viewerContext?.isOwner) {
+                  <button type="button" class="kudo-btn" [class.kudo-active]="currentCharacter.viewerContext?.hasKudo" [disabled]="kudoLoading()" (click)="toggleCharacterKudo()">
+                    <span [class.kudo-beat]="kudoBeat()">&#9829;</span>
+                    {{ currentCharacter.viewerContext?.hasKudo ? 'Kudo dado' : 'Dar kudo' }}
+                  </button>
+                }
+                <span class="kudo-count">{{ currentCharacter.stats.kudosCount }} kudos</span>
+              </div>
             </div>
           </header>
 
@@ -139,6 +149,12 @@ import { CharacterDetail, CharacterRelationship } from '../../core/models/charac
         fill: var(--text-1);
         font-size: 11px;
       }
+      .kudo-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
+      .kudo-btn { padding: 0.4rem 0.7rem; border-radius: 999px; background: var(--accent-glow); color: var(--text-2); border: 1px solid var(--border); cursor: pointer; font-size: 0.85rem; }
+      .kudo-active { color: #e05555; border-color: #e05555; background: rgba(224,85,85,0.1); }
+      .kudo-beat { display: inline-block; animation: beat 300ms ease-in-out; }
+      .kudo-count { font-size: 0.85rem; color: var(--text-2); }
+      @keyframes beat { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
       @media (max-width: 960px) {
         .hero,
         .content-grid {
@@ -150,13 +166,18 @@ import { CharacterDetail, CharacterRelationship } from '../../core/models/charac
 })
 export class CharacterDetailPageComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly charactersService = inject(CharactersService);
+  private readonly kudosService = inject(KudosService);
+  private readonly authService = inject(AuthService);
   readonly markdownService = inject(MarkdownService);
 
   readonly character = signal<CharacterDetail | null>(null);
   readonly relationships = signal<CharacterRelationship[]>([]);
   readonly loading = signal(true);
+  readonly kudoLoading = signal(false);
+  readonly kudoBeat = signal(false);
   readonly graphNodes = computed(() => {
     const items = this.relationships();
     return items.map((item, index) => {
@@ -191,6 +212,37 @@ export class CharacterDetailPageComponent {
           this.loading.set(false);
         },
       });
+    });
+  }
+
+  toggleCharacterKudo() {
+    const char = this.character();
+    if (!char) return;
+
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+
+    this.kudoLoading.set(true);
+    const action = char.viewerContext?.hasKudo
+      ? this.kudosService.removeCharacterKudo(char.id)
+      : this.kudosService.addCharacterKudo(char.id);
+
+    action.subscribe({
+      next: (response) => {
+        this.character.set({
+          ...char,
+          stats: { ...char.stats, kudosCount: response.kudosCount },
+          viewerContext: char.viewerContext ? { ...char.viewerContext, hasKudo: response.hasKudo } : null,
+        });
+        if (response.hasKudo) {
+          this.kudoBeat.set(true);
+          setTimeout(() => this.kudoBeat.set(false), 300);
+        }
+        this.kudoLoading.set(false);
+      },
+      error: () => this.kudoLoading.set(false),
     });
   }
 

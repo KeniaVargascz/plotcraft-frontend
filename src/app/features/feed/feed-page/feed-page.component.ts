@@ -7,11 +7,13 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { FollowModel } from '../../../core/models/follow.model';
 import { PostModel, PostType } from '../../../core/models/post.model';
 import { FeedService } from '../../../core/services/feed.service';
 import { FollowsService } from '../../../core/services/follows.service';
+import { TagChipsInputComponent } from '../../../shared/components/tag-chips-input/tag-chips-input.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { PostCardComponent } from '../components/post-card/post-card.component';
 import { PostComposerComponent } from '../components/post-composer/post-composer.component';
@@ -21,11 +23,13 @@ import { PostTypeFilterComponent } from '../components/post-type-filter/post-typ
   selector: 'app-feed-page',
   standalone: true,
   imports: [
+    FormsModule,
     RouterLink,
     TranslatePipe,
     PostComposerComponent,
     PostTypeFilterComponent,
     PostCardComponent,
+    TagChipsInputComponent,
   ],
   templateUrl: './feed-page.component.html',
   styleUrl: './feed-page.component.scss',
@@ -45,6 +49,10 @@ export class FeedPageComponent implements AfterViewInit, OnDestroy {
   readonly selectedType = signal<PostType | 'ALL'>('ALL');
   readonly nextCursor = signal<string | null>(null);
   readonly hasMore = signal(false);
+  readonly searchQuery = signal('');
+  readonly searchTags = signal<string[]>([]);
+  readonly isSearching = signal(false);
+  readonly followingCount = signal<number | null>(null);
 
   constructor() {
     this.loadPosts(true);
@@ -76,6 +84,43 @@ export class FeedPageComponent implements AfterViewInit, OnDestroy {
 
   removePost(postId: string) {
     this.posts.update((items) => items.filter((post) => post.id !== postId));
+  }
+
+  onSearch() {
+    const q = this.searchQuery();
+    const tags = this.searchTags();
+    if (!q && !tags.length) {
+      this.isSearching.set(false);
+      this.loadPosts(true);
+      return;
+    }
+    this.isSearching.set(true);
+    this.loading.set(true);
+    this.feedService
+      .searchFeed({ search: q || null, tags: tags.length ? tags : undefined })
+      .subscribe({
+        next: (response) => {
+          this.posts.set(response.data);
+          this.nextCursor.set(response.pagination.nextCursor);
+          this.hasMore.set(response.pagination.hasMore);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.error.set(true);
+          this.loading.set(false);
+        },
+      });
+  }
+
+  clearSearch() {
+    this.searchQuery.set('');
+    this.searchTags.set([]);
+    this.isSearching.set(false);
+    this.loadPosts(true);
+  }
+
+  onSearchTagsChange(tags: string[]) {
+    this.searchTags.set(tags);
   }
 
   followSuggestion(username: string) {

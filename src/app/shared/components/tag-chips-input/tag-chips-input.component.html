@@ -1,0 +1,20 @@
+<div class="chips-wrapper">
+  @for (tag of tags; track tag; let i = $index) {
+    <span class="chip">
+      #{{ tag }}
+      <button type="button" class="chip-remove" (click)="removeTag(i)">&times;</button>
+    </span>
+  }
+
+  @if (!isMaxReached) {
+    <input
+      type="text"
+      [(ngModel)]="inputValue"
+      (keydown)="onKeydown($event)"
+      [placeholder]="placeholder"
+      class="chip-input"
+    />
+  } @else {
+    <span class="max-hint">Maximo {{ maxTags }} etiquetas</span>
+  }
+</div>

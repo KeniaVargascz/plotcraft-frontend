@@ -1,0 +1,19 @@
+<div class="lightbox-overlay" (click)="onOverlayClick($event)">
+  <button class="lightbox-close" (click)="close()">&times;</button>
+
+  @if (images.length > 1) {
+    <span class="lightbox-counter">{{ currentIndex + 1 }} / {{ images.length }}</span>
+  }
+
+  <div class="lightbox-content">
+    @if (images.length > 1 && currentIndex > 0) {
+      <button class="lightbox-nav lightbox-prev" (click)="prev()">&larr;</button>
+    }
+
+    <img [src]="images[currentIndex]" [alt]="'Imagen ' + (currentIndex + 1)" class="lightbox-image" />
+
+    @if (images.length > 1 && currentIndex < images.length - 1) {
+      <button class="lightbox-nav lightbox-next" (click)="next()">&rarr;</button>
+    }
+  </div>
+</div>

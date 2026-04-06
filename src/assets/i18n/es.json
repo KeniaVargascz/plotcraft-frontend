@@ -99,20 +99,28 @@
   "feed": {
     "title": "Feed",
     "explore": "Explorar",
+    "discover": "Descubrir",
+    "discoverHint": "Explora publicaciones y encuentra nuevos autores.",
     "exploreEyebrow": "Descubrimiento editorial",
     "exploreHint": "Publicaciones abiertas para inspirarte, reaccionar y descubrir autores.",
-    "communityTitle": "Comunidad",
-    "communitySubtitle": "Actividad reciente, conversaciones y avances abiertos de la comunidad.",
-    "searchPosts": "Buscar posts",
-    "searchPlaceholder": "escritura, personajes, mundo...",
-    "empty": "Aun no hay publicaciones.",
+    "communityTitle": "Descubrir",
+    "communitySubtitle": "Publicaciones abiertas para inspirarte, reaccionar y descubrir autores.",
+    "searchPosts": "Buscar publicaciones",
+    "searchPlaceholder": "Buscar...",
+    "empty": {
+      "noFollowsTitle": "Tu feed esta vacio",
+      "noFollowsSubtitle": "Sigue a otros autores para ver sus publicaciones aqui."
+    },
     "emptyHint": "Empieza siguiendo a alguien o publica algo.",
     "loadMore": "Cargar mas",
     "loading": "Cargando publicaciones...",
     "new": "Nueva publicacion",
     "all": "Todas",
     "suggestions": "Sugerencias para seguir",
-    "noSuggestions": "Ya sigues a todos los perfiles sugeridos."
+    "noSuggestions": "Ya sigues a todos los perfiles sugeridos.",
+    "composer": {
+      "tagsPlaceholder": "Anadir etiqueta..."
+    }
   },
   "post": {
     "placeholder": "Que tienes en mente?",
@@ -218,7 +226,10 @@
     "confirm": "Confirmar",
     "loading": "Cargando...",
     "error": "Ocurrio un error. Intenta de nuevo.",
-    "success": "Cambios guardados correctamente"
+    "success": "Cambios guardados correctamente",
+    "tags": {
+      "maxReached": "Maximo de etiquetas alcanzado"
+    }
   },
   "media": {
     "changeImage": "Cambiar imagen",
@@ -963,5 +974,21 @@
     "saving": "Guardando...",
     "loadError": "No se pudo cargar el mapa",
     "emptyHint": "Usa las herramientas para colocar marcadores y regiones en el mapa."
+  },
+  "novels": {
+    "kudos": {
+      "give": "Dar kudo",
+      "given": "Kudo dado",
+      "count_one": "{{count}} kudo",
+      "count_other": "{{count}} kudos",
+      "removeTooltip": "Quitar kudo"
+    }
+  },
+  "votes": {
+    "vote": "Votar",
+    "voted": "Votado",
+    "remove": "Retirar voto",
+    "count_one": "1 voto",
+    "count_other": "{{count}} votos"
   }
 }

@@ -1,0 +1,11 @@
+<button
+  type="button"
+  class="vote-btn"
+  [class.voted]="hasVoted"
+  [class.is-disabled]="disabled"
+  [disabled]="disabled || loading()"
+  (click)="toggleVote()"
+>
+  <span class="vote-icon">&#9650;</span>
+  <span class="vote-count">{{ votesCount }}</span>
+</button>

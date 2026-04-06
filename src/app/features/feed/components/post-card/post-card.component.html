@@ -33,6 +33,30 @@
     <p class="post-content">{{ post.content }}</p>
   }
 
+  @if (post.imageUrls?.length) {
+    <div class="post-gallery" [class]="'gallery-' + post.imageUrls.length">
+      @for (url of post.imageUrls; track url; let i = $index) {
+        <img [src]="url" [alt]="'Imagen ' + (i + 1)" (click)="openLightbox(i)" class="gallery-img" />
+      }
+    </div>
+  }
+
+  @if (post.tags?.length) {
+    <div class="post-tags">
+      @for (tag of post.tags; track tag) {
+        <span class="tag-chip">#{{ tag }}</span>
+      }
+    </div>
+  }
+
+  @if (lightboxOpen()) {
+    <app-lightbox
+      [images]="post.imageUrls"
+      [initialIndex]="lightboxIndex()"
+      (closed)="closeLightbox()"
+    />
+  }
+
   <app-reaction-bar [post]="post" (postChange)="postChange.emit($event)" />
 
   <footer class="post-footer">

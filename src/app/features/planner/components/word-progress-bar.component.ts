@@ -17,29 +17,31 @@ import { Component, computed, input } from '@angular/core';
       </span>
     </div>
   `,
-  styles: [`
-    .progress-wrapper {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      width: 100%;
-    }
-    .progress-track {
-      height: 6px;
-      border-radius: 3px;
-      background: var(--border);
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 0.3s ease;
-    }
-    .progress-label {
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-  `],
+  styles: [
+    `
+      .progress-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+      }
+      .progress-track {
+        height: 6px;
+        border-radius: 3px;
+        background: var(--border);
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.3s ease;
+      }
+      .progress-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+    `,
+  ],
 })
 export class WordProgressBarComponent {
   actual = input.required<number>();
@@ -65,7 +67,8 @@ export class WordProgressBarComponent {
     const a = this.actual();
     const t = this.target();
     const pct = this.percentage();
-    if (a >= t && t > 0) return `Meta alcanzada (${a.toLocaleString()} / ${t.toLocaleString()} palabras)`;
+    if (a >= t && t > 0)
+      return `Meta alcanzada (${a.toLocaleString()} / ${t.toLocaleString()} palabras)`;
     return `${a.toLocaleString()} / ${t.toLocaleString()} palabras (${pct}%)`;
   });
 }

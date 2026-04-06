@@ -2,6 +2,8 @@ import { Component, input, output, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FieldDefinition, FieldType } from '../../../../core/models/field-definition.model';
 
+type FieldPropValue = FieldDefinition[keyof FieldDefinition];
+
 @Component({
   selector: 'app-wb-field-schema-builder',
   standalone: true,
@@ -25,7 +27,9 @@ import { FieldDefinition, FieldType } from '../../../../core/models/field-defini
             @if (field.required) {
               <span class="required-badge">Requerido</span>
             }
-            <span class="expand-icon">{{ expandedIndex() === $index ? '&#9650;' : '&#9660;' }}</span>
+            <span class="expand-icon">{{
+              expandedIndex() === $index ? '&#9650;' : '&#9660;'
+            }}</span>
           </div>
 
           @if (expandedIndex() === $index) {
@@ -38,7 +42,9 @@ import { FieldDefinition, FieldType } from '../../../../core/models/field-defini
                   (ngModelChange)="updateFieldKey($index, $event)"
                   placeholder="ej: population"
                 />
-                <span class="hint">Solo letras minusculas y guion bajo. Se convierte automaticamente.</span>
+                <span class="hint"
+                  >Solo letras minusculas y guion bajo. Se convierte automaticamente.</span
+                >
               </label>
               <label>
                 <span>Etiqueta</span>
@@ -90,12 +96,18 @@ import { FieldDefinition, FieldType } from '../../../../core/models/field-defini
               }
               <div class="field-actions">
                 @if ($index > 0) {
-                  <button type="button" class="move-btn" (click)="moveField($index, -1)">&#8593; Subir</button>
+                  <button type="button" class="move-btn" (click)="moveField($index, -1)">
+                    &#8593; Subir
+                  </button>
                 }
                 @if ($index < fields().length - 1) {
-                  <button type="button" class="move-btn" (click)="moveField($index, 1)">&#8595; Bajar</button>
+                  <button type="button" class="move-btn" (click)="moveField($index, 1)">
+                    &#8595; Bajar
+                  </button>
                 }
-                <button type="button" class="remove-btn" (click)="removeField($index)">Eliminar campo</button>
+                <button type="button" class="remove-btn" (click)="removeField($index)">
+                  Eliminar campo
+                </button>
               </div>
             </div>
           }
@@ -107,102 +119,158 @@ import { FieldDefinition, FieldType } from '../../../../core/models/field-defini
       }
     </div>
   `,
-  styles: [`
-    .schema-builder { display: grid; gap: 0.75rem; }
-    .header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .header-row h4 { margin: 0; color: var(--text-1); font-size: 0.95rem; }
-    .add-btn {
-      padding: 0.45rem 0.85rem;
-      border-radius: 0.75rem;
-      border: 1px dashed var(--border);
-      background: transparent;
-      color: var(--accent-text);
-      font-size: 0.78rem;
-      cursor: pointer;
-    }
-    .add-btn:hover { background: var(--bg-surface); }
-    .error-msg { color: #b42318; font-size: 0.8rem; margin: 0; }
-    .field-block {
-      border: 1px solid var(--border);
-      border-radius: 0.75rem;
-      overflow: hidden;
-    }
-    .field-block.expanded { border-color: var(--accent-glow); }
-    .field-summary {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.6rem 0.85rem;
-      cursor: pointer;
-      background: var(--bg-surface);
-    }
-    .field-summary:hover { background: var(--bg-card); }
-    .field-key { flex: 1; font-size: 0.85rem; color: var(--text-1); font-weight: 500; }
-    .field-type-badge {
-      padding: 0.12rem 0.4rem;
-      border-radius: 999px;
-      background: var(--accent-glow);
-      color: var(--accent-text);
-      font-size: 0.65rem;
-      font-weight: 600;
-    }
-    .required-badge {
-      padding: 0.12rem 0.4rem;
-      border-radius: 999px;
-      background: #b4231822;
-      color: #b42318;
-      font-size: 0.65rem;
-    }
-    .expand-icon { color: var(--text-3); font-size: 0.7rem; }
-    .field-detail {
-      display: grid;
-      gap: 0.65rem;
-      padding: 0.85rem;
-      background: var(--bg-card);
-    }
-    .field-detail label { display: grid; gap: 0.3rem; }
-    .field-detail label span { font-size: 0.78rem; color: var(--text-2); }
-    .field-detail input, .field-detail select {
-      padding: 0.55rem 0.75rem;
-      border-radius: 0.65rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-1);
-      font-size: 0.82rem;
-    }
-    .toggle-label {
-      flex-direction: row !important;
-      display: flex !important;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .toggle-label input[type=checkbox] { width: 1rem; height: 1rem; }
-    .field-actions {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      padding-top: 0.5rem;
-      border-top: 1px solid var(--border);
-    }
-    .move-btn, .remove-btn {
-      padding: 0.35rem 0.65rem;
-      border-radius: 0.5rem;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-2);
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-    .move-btn:hover { background: var(--bg-surface); }
-    .remove-btn { color: #b42318; border-color: #b4231844; margin-left: auto; }
-    .remove-btn:hover { background: #b4231811; }
-    .hint { font-size: 0.7rem; color: var(--text-3); font-style: italic; }
-    .empty-msg { color: var(--text-3); font-size: 0.82rem; text-align: center; margin: 0; padding: 1rem; }
-  `],
+  styles: [
+    `
+      .schema-builder {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .header-row h4 {
+        margin: 0;
+        color: var(--text-1);
+        font-size: 0.95rem;
+      }
+      .add-btn {
+        padding: 0.45rem 0.85rem;
+        border-radius: 0.75rem;
+        border: 1px dashed var(--border);
+        background: transparent;
+        color: var(--accent-text);
+        font-size: 0.78rem;
+        cursor: pointer;
+      }
+      .add-btn:hover {
+        background: var(--bg-surface);
+      }
+      .error-msg {
+        color: #b42318;
+        font-size: 0.8rem;
+        margin: 0;
+      }
+      .field-block {
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        overflow: hidden;
+      }
+      .field-block.expanded {
+        border-color: var(--accent-glow);
+      }
+      .field-summary {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 0.85rem;
+        cursor: pointer;
+        background: var(--bg-surface);
+      }
+      .field-summary:hover {
+        background: var(--bg-card);
+      }
+      .field-key {
+        flex: 1;
+        font-size: 0.85rem;
+        color: var(--text-1);
+        font-weight: 500;
+      }
+      .field-type-badge {
+        padding: 0.12rem 0.4rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.65rem;
+        font-weight: 600;
+      }
+      .required-badge {
+        padding: 0.12rem 0.4rem;
+        border-radius: 999px;
+        background: #b4231822;
+        color: #b42318;
+        font-size: 0.65rem;
+      }
+      .expand-icon {
+        color: var(--text-3);
+        font-size: 0.7rem;
+      }
+      .field-detail {
+        display: grid;
+        gap: 0.65rem;
+        padding: 0.85rem;
+        background: var(--bg-card);
+      }
+      .field-detail label {
+        display: grid;
+        gap: 0.3rem;
+      }
+      .field-detail label span {
+        font-size: 0.78rem;
+        color: var(--text-2);
+      }
+      .field-detail input,
+      .field-detail select {
+        padding: 0.55rem 0.75rem;
+        border-radius: 0.65rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        font-size: 0.82rem;
+      }
+      .toggle-label {
+        flex-direction: row !important;
+        display: flex !important;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .toggle-label input[type='checkbox'] {
+        width: 1rem;
+        height: 1rem;
+      }
+      .field-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--border);
+      }
+      .move-btn,
+      .remove-btn {
+        padding: 0.35rem 0.65rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text-2);
+        font-size: 0.75rem;
+        cursor: pointer;
+      }
+      .move-btn:hover {
+        background: var(--bg-surface);
+      }
+      .remove-btn {
+        color: #b42318;
+        border-color: #b4231844;
+        margin-left: auto;
+      }
+      .remove-btn:hover {
+        background: #b4231811;
+      }
+      .hint {
+        font-size: 0.7rem;
+        color: var(--text-3);
+        font-style: italic;
+      }
+      .empty-msg {
+        color: var(--text-3);
+        font-size: 0.82rem;
+        text-align: center;
+        margin: 0;
+        padding: 1rem;
+      }
+    `,
+  ],
 })
 export class WbFieldSchemaBuilderComponent {
   readonly fieldSchema = input<FieldDefinition[]>([]);
@@ -212,7 +280,16 @@ export class WbFieldSchemaBuilderComponent {
   readonly expandedIndex = signal<number | null>(null);
   readonly error = signal<string | null>(null);
 
-  readonly fieldTypes: FieldType[] = ['text', 'textarea', 'number', 'select', 'multiselect', 'boolean', 'url', 'markdown'];
+  readonly fieldTypes: FieldType[] = [
+    'text',
+    'textarea',
+    'number',
+    'select',
+    'multiselect',
+    'boolean',
+    'url',
+    'markdown',
+  ];
 
   private initialized = false;
 
@@ -255,7 +332,8 @@ export class WbFieldSchemaBuilderComponent {
 
   private toSnakeCase(value: string): string {
     return value
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '_')
       .replace(/^_|_$/g, '')
@@ -289,7 +367,7 @@ export class WbFieldSchemaBuilderComponent {
     this.emitChange();
   }
 
-  updateFieldProp(index: number, prop: string, value: any) {
+  updateFieldProp(index: number, prop: keyof FieldDefinition, value: FieldPropValue) {
     this.fields.update((f) => {
       const updated = [...f];
       updated[index] = { ...updated[index], [prop]: value };
@@ -300,7 +378,10 @@ export class WbFieldSchemaBuilderComponent {
   }
 
   updateFieldOptions(index: number, raw: string) {
-    const options = raw.split(',').map((o) => o.trim()).filter(Boolean);
+    const options = raw
+      .split(',')
+      .map((o) => o.trim())
+      .filter(Boolean);
     this.fields.update((f) => {
       const updated = [...f];
       updated[index] = { ...updated[index], options };
@@ -322,7 +403,9 @@ export class WbFieldSchemaBuilderComponent {
   }
 
   private validateKeys() {
-    const keys = this.fields().map((f) => f.key).filter(Boolean);
+    const keys = this.fields()
+      .map((f) => f.key)
+      .filter(Boolean);
     const unique = new Set(keys);
     if (keys.length !== unique.size) {
       this.error.set('Las claves de los campos deben ser unicas.');

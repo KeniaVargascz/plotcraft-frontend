@@ -38,7 +38,9 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
             } @else {
               <form (ngSubmit)="submitTemplate()">
                 <div class="tpl-preview">
-                  <span class="tpl-preview-icon">{{ overrideIcon || selectedTemplate()!.icon }}</span>
+                  <span class="tpl-preview-icon">{{
+                    overrideIcon || selectedTemplate()!.icon
+                  }}</span>
                   <div>
                     <p class="tpl-preview-name">{{ selectedTemplate()!.name }}</p>
                     <p class="tpl-preview-desc">{{ selectedTemplate()!.description }}</p>
@@ -51,15 +53,31 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
 
                 <label>
                   <span>Nombre (opcional, override)</span>
-                  <input type="text" [(ngModel)]="overrideName" name="overrideName" [placeholder]="selectedTemplate()!.name" />
+                  <input
+                    type="text"
+                    [(ngModel)]="overrideName"
+                    name="overrideName"
+                    [placeholder]="selectedTemplate()!.name"
+                  />
                 </label>
                 <label>
                   <span>Icono (opcional)</span>
-                  <input type="text" [(ngModel)]="overrideIcon" name="overrideIcon" [placeholder]="selectedTemplate()!.icon" maxlength="4" />
+                  <input
+                    type="text"
+                    [(ngModel)]="overrideIcon"
+                    name="overrideIcon"
+                    [placeholder]="selectedTemplate()!.icon"
+                    maxlength="4"
+                  />
                 </label>
                 <label>
                   <span>Color (opcional)</span>
-                  <input type="text" [(ngModel)]="overrideColor" name="overrideColor" [placeholder]="selectedTemplate()!.color" />
+                  <input
+                    type="text"
+                    [(ngModel)]="overrideColor"
+                    name="overrideColor"
+                    [placeholder]="selectedTemplate()!.color"
+                  />
                 </label>
 
                 @if (errorMsg()) {
@@ -67,7 +85,14 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
                 }
 
                 <div class="dialog-actions">
-                  <button type="button" class="secondary" (click)="selectedTemplate.set(null)" [disabled]="saving()">Volver</button>
+                  <button
+                    type="button"
+                    class="secondary"
+                    (click)="selectedTemplate.set(null)"
+                    [disabled]="saving()"
+                  >
+                    Volver
+                  </button>
                   <button type="submit" [disabled]="saving()">
                     {{ saving() ? 'Creando...' : 'Crear desde plantilla' }}
                   </button>
@@ -79,124 +104,190 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
       </div>
     }
   `,
-  styles: [`
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      display: grid;
-      place-items: center;
-      z-index: 1000;
-      padding: 1rem;
-      overflow-y: auto;
-    }
-    .dialog {
-      width: 100%;
-      max-width: 42rem;
-      max-height: 90vh;
-      overflow-y: auto;
-      border-radius: 1.25rem;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      box-shadow: 0 24px 48px rgba(0,0,0,0.2);
-    }
-    .dialog-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.25rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .dialog-header h2 { margin: 0; font-size: 1.1rem; color: var(--text-1); }
-    .close-btn {
-      width: 2rem; height: 2rem;
-      border: none; border-radius: 999px;
-      background: var(--bg-surface); color: var(--text-2);
-      cursor: pointer; display: grid; place-items: center;
-    }
-    .dialog-body { padding: 1.25rem; display: grid; gap: 1rem; }
-    .state { color: var(--text-3); text-align: center; }
-    .templates-grid {
-      display: grid;
-      gap: 0.75rem;
-      grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
-    }
-    .template-card {
-      display: grid;
-      gap: 0.3rem;
-      padding: 1rem;
-      border-radius: 1rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.15s;
-    }
-    .template-card:hover {
-      border-color: var(--accent-glow);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .tpl-icon { font-size: 1.6rem; }
-    .tpl-name { font-size: 0.9rem; font-weight: 600; color: var(--text-1); }
-    .tpl-desc { font-size: 0.75rem; color: var(--text-2); line-height: 1.4; }
-    .tpl-fields {
-      font-size: 0.68rem;
-      color: var(--accent-text);
-      padding: 0.15rem 0.45rem;
-      border-radius: 999px;
-      background: var(--accent-glow);
-      width: fit-content;
-    }
-    .tpl-preview {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-      padding: 0.75rem;
-      border-radius: 0.75rem;
-      background: var(--bg-surface);
-    }
-    .tpl-preview-icon { font-size: 2rem; }
-    .tpl-preview-name { margin: 0; font-weight: 600; color: var(--text-1); }
-    .tpl-preview-desc { margin: 0; font-size: 0.8rem; color: var(--text-2); }
-    .fields-preview h4 { margin: 0; font-size: 0.85rem; color: var(--text-2); }
-    .field-pills { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-    .field-pill {
-      padding: 0.2rem 0.5rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      font-size: 0.7rem;
-      color: var(--text-2);
-    }
-    form { display: grid; gap: 0.85rem; }
-    label { display: grid; gap: 0.3rem; }
-    label span { font-size: 0.82rem; color: var(--text-2); }
-    input {
-      padding: 0.65rem 0.85rem;
-      border-radius: 0.75rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-1);
-      font-size: 0.85rem;
-    }
-    input:focus { outline: 1px solid var(--accent-glow); }
-    .error-msg { color: #b42318; font-size: 0.82rem; margin: 0; }
-    .dialog-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.75rem;
-    }
-    .dialog-actions button {
-      padding: 0.7rem 1.1rem;
-      border-radius: 1rem;
-      border: 1px solid var(--border);
-      background: var(--accent-glow);
-      color: var(--accent-text);
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-    .secondary { background: transparent !important; color: var(--text-1) !important; }
-    .dialog-actions button:disabled { opacity: 0.5; }
-  `],
+  styles: [
+    `
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        display: grid;
+        place-items: center;
+        z-index: 1000;
+        padding: 1rem;
+        overflow-y: auto;
+      }
+      .dialog {
+        width: 100%;
+        max-width: 42rem;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 1.25rem;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+      }
+      .dialog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .dialog-header h2 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--text-1);
+      }
+      .close-btn {
+        width: 2rem;
+        height: 2rem;
+        border: none;
+        border-radius: 999px;
+        background: var(--bg-surface);
+        color: var(--text-2);
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+      }
+      .dialog-body {
+        padding: 1.25rem;
+        display: grid;
+        gap: 1rem;
+      }
+      .state {
+        color: var(--text-3);
+        text-align: center;
+      }
+      .templates-grid {
+        display: grid;
+        gap: 0.75rem;
+        grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+      }
+      .template-card {
+        display: grid;
+        gap: 0.3rem;
+        padding: 1rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        cursor: pointer;
+        text-align: left;
+        transition: all 0.15s;
+      }
+      .template-card:hover {
+        border-color: var(--accent-glow);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .tpl-icon {
+        font-size: 1.6rem;
+      }
+      .tpl-name {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-1);
+      }
+      .tpl-desc {
+        font-size: 0.75rem;
+        color: var(--text-2);
+        line-height: 1.4;
+      }
+      .tpl-fields {
+        font-size: 0.68rem;
+        color: var(--accent-text);
+        padding: 0.15rem 0.45rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        width: fit-content;
+      }
+      .tpl-preview {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        background: var(--bg-surface);
+      }
+      .tpl-preview-icon {
+        font-size: 2rem;
+      }
+      .tpl-preview-name {
+        margin: 0;
+        font-weight: 600;
+        color: var(--text-1);
+      }
+      .tpl-preview-desc {
+        margin: 0;
+        font-size: 0.8rem;
+        color: var(--text-2);
+      }
+      .fields-preview h4 {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--text-2);
+      }
+      .field-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+      .field-pill {
+        padding: 0.2rem 0.5rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        font-size: 0.7rem;
+        color: var(--text-2);
+      }
+      form {
+        display: grid;
+        gap: 0.85rem;
+      }
+      label {
+        display: grid;
+        gap: 0.3rem;
+      }
+      label span {
+        font-size: 0.82rem;
+        color: var(--text-2);
+      }
+      input {
+        padding: 0.65rem 0.85rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        font-size: 0.85rem;
+      }
+      input:focus {
+        outline: 1px solid var(--accent-glow);
+      }
+      .error-msg {
+        color: #b42318;
+        font-size: 0.82rem;
+        margin: 0;
+      }
+      .dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+      }
+      .dialog-actions button {
+        padding: 0.7rem 1.1rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+      .secondary {
+        background: transparent !important;
+        color: var(--text-1) !important;
+      }
+      .dialog-actions button:disabled {
+        opacity: 0.5;
+      }
+    `,
+  ],
 })
 export class WbTemplatePickerDialogComponent {
   private readonly wbService = inject(WorldbuildingService);
@@ -214,6 +305,26 @@ export class WbTemplatePickerDialogComponent {
   overrideName = '';
   overrideIcon = '';
   overrideColor = '';
+
+  private buildTemplatePayload(tpl: CategoryTemplate): {
+    templateKey: string;
+    name?: string;
+    icon?: string;
+    color?: string;
+  } {
+    const payload: {
+      templateKey: string;
+      name?: string;
+      icon?: string;
+      color?: string;
+    } = { templateKey: tpl.key };
+
+    if (this.overrideName.trim()) payload.name = this.overrideName.trim();
+    if (this.overrideIcon.trim()) payload.icon = this.overrideIcon.trim();
+    if (this.overrideColor.trim()) payload.color = this.overrideColor.trim();
+
+    return payload;
+  }
 
   open() {
     this.selectedTemplate.set(null);
@@ -242,10 +353,7 @@ export class WbTemplatePickerDialogComponent {
     this.saving.set(true);
     this.errorMsg.set(null);
 
-    const payload: any = { templateKey: tpl.key };
-    if (this.overrideName.trim()) payload.name = this.overrideName.trim();
-    if (this.overrideIcon.trim()) payload.icon = this.overrideIcon.trim();
-    if (this.overrideColor.trim()) payload.color = this.overrideColor.trim();
+    const payload = this.buildTemplatePayload(tpl);
 
     this.wbService.instantiateTemplate(this.worldSlug(), payload).subscribe({
       next: (cat) => {

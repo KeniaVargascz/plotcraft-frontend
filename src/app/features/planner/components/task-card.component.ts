@@ -55,9 +55,7 @@ const PRIORITY_LABELS: Record<string, string> = {
         <h4 class="task-title">{{ task().title }}</h4>
 
         <div class="badge-row">
-          <span class="type-badge">
-            {{ typeIcon() }} {{ typeLabel() }}
-          </span>
+          <span class="type-badge"> {{ typeIcon() }} {{ typeLabel() }} </span>
           <span class="priority-badge" [style.color]="priorityColor()">
             {{ priorityLabel() }}
           </span>
@@ -104,129 +102,135 @@ const PRIORITY_LABELS: Record<string, string> = {
       </div>
 
       @if (hovered) {
-        <button class="delete-btn" (click)="onDelete($event)" title="Eliminar tarea">&#10005;</button>
+        <button class="delete-btn" (click)="onDelete($event)" title="Eliminar tarea">
+          &#10005;
+        </button>
       }
     </article>
   `,
-  styles: [`
-    .task-card {
-      position: relative;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      cursor: grab;
-      transition: box-shadow 0.2s, border-color 0.2s;
-    }
-    .task-card:hover {
-      border-color: var(--border-s);
-      box-shadow: var(--shadow);
-    }
-    .task-card:active {
-      cursor: grabbing;
-    }
-    .priority-bar {
-      height: 3px;
-      width: 100%;
-    }
-    .task-body {
-      padding: 0.625rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.375rem;
-    }
-    .task-title {
-      font-size: 0.825rem;
-      font-weight: 600;
-      color: var(--text-1);
-      margin: 0;
-      line-height: 1.3;
-    }
-    .badge-row {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .type-badge,
-    .priority-badge {
-      font-size: 0.675rem;
-      padding: 1px 6px;
-      border-radius: 4px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-    }
-    .priority-badge {
-      font-weight: 600;
-    }
-    .due-date {
-      font-size: 0.7rem;
-      color: var(--text-3);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .due-date.overdue {
-      color: var(--danger);
-      font-weight: 600;
-    }
-    .cal-icon {
-      font-size: 0.8rem;
-    }
-    .overdue-icon {
-      font-size: 0.8rem;
-    }
-    .ref-chips {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
-    .ref-chip {
-      font-size: 0.65rem;
-      padding: 1px 6px;
-      border-radius: 9999px;
-      background: color-mix(in srgb, var(--accent) 12%, transparent);
-      color: var(--accent);
-      border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
-    }
-    .tags-row {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-    }
-    .tag {
-      font-size: 0.625rem;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: var(--bg-surface);
-      color: var(--text-3);
-    }
-    .tag.more {
-      font-weight: 600;
-      color: var(--text-2);
-    }
-    .delete-btn {
-      position: absolute;
-      top: 8px;
-      right: 6px;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      color: var(--danger);
-      font-size: 0.7rem;
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      padding: 0;
-    }
-    .delete-btn:hover {
-      background: var(--danger);
-      color: white;
-    }
-  `],
+  styles: [
+    `
+      .task-card {
+        position: relative;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        cursor: grab;
+        transition:
+          box-shadow 0.2s,
+          border-color 0.2s;
+      }
+      .task-card:hover {
+        border-color: var(--border-s);
+        box-shadow: var(--shadow);
+      }
+      .task-card:active {
+        cursor: grabbing;
+      }
+      .priority-bar {
+        height: 3px;
+        width: 100%;
+      }
+      .task-body {
+        padding: 0.625rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+      }
+      .task-title {
+        font-size: 0.825rem;
+        font-weight: 600;
+        color: var(--text-1);
+        margin: 0;
+        line-height: 1.3;
+      }
+      .badge-row {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .type-badge,
+      .priority-badge {
+        font-size: 0.675rem;
+        padding: 1px 6px;
+        border-radius: 4px;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+      }
+      .priority-badge {
+        font-weight: 600;
+      }
+      .due-date {
+        font-size: 0.7rem;
+        color: var(--text-3);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .due-date.overdue {
+        color: var(--danger);
+        font-weight: 600;
+      }
+      .cal-icon {
+        font-size: 0.8rem;
+      }
+      .overdue-icon {
+        font-size: 0.8rem;
+      }
+      .ref-chips {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      .ref-chip {
+        font-size: 0.65rem;
+        padding: 1px 6px;
+        border-radius: 9999px;
+        background: color-mix(in srgb, var(--accent) 12%, transparent);
+        color: var(--accent);
+        border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+      }
+      .tags-row {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+      }
+      .tag {
+        font-size: 0.625rem;
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: var(--bg-surface);
+        color: var(--text-3);
+      }
+      .tag.more {
+        font-weight: 600;
+        color: var(--text-2);
+      }
+      .delete-btn {
+        position: absolute;
+        top: 8px;
+        right: 6px;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--danger);
+        font-size: 0.7rem;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+      }
+      .delete-btn:hover {
+        background: var(--danger);
+        color: white;
+      }
+    `,
+  ],
 })
 export class TaskCardComponent {
   task = input.required<WritingTask>();

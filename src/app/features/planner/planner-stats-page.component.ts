@@ -68,13 +68,17 @@ const TYPE_LABELS: Record<string, string> = {
             <div class="stat-card circle-card">
               <svg viewBox="0 0 36 36" class="donut completion-donut">
                 <circle
-                  cx="18" cy="18" r="15.9"
+                  cx="18"
+                  cy="18"
+                  r="15.9"
                   fill="none"
                   stroke="var(--border)"
                   stroke-width="3"
                 />
                 <circle
-                  cx="18" cy="18" r="15.9"
+                  cx="18"
+                  cy="18"
+                  r="15.9"
                   fill="none"
                   stroke="var(--accent)"
                   stroke-width="3"
@@ -129,14 +133,18 @@ const TYPE_LABELS: Record<string, string> = {
             <div class="donut-wrapper">
               <svg viewBox="0 0 36 36" class="donut priority-donut">
                 <circle
-                  cx="18" cy="18" r="15.9"
+                  cx="18"
+                  cy="18"
+                  r="15.9"
                   fill="none"
                   stroke="var(--border)"
                   stroke-width="3.8"
                 />
                 @for (seg of prioritySegments(); track seg.key) {
                   <circle
-                    cx="18" cy="18" r="15.9"
+                    cx="18"
+                    cy="18"
+                    r="15.9"
                     fill="none"
                     [attr.stroke]="seg.color"
                     stroke-width="3.8"
@@ -165,7 +173,8 @@ const TYPE_LABELS: Record<string, string> = {
                   <span class="c-check">&#10003;</span>
                   <div class="c-info">
                     <span class="c-title">{{ task.title }}</span>
-                    <span class="c-meta">{{ task.project.name }}
+                    <span class="c-meta"
+                      >{{ task.project.name }}
                       @if (task.completedAt) {
                         &middot; {{ formatDate(task.completedAt) }}
                       }
@@ -182,217 +191,225 @@ const TYPE_LABELS: Record<string, string> = {
       }
     </div>
   `,
-  styles: [`
-    .stats-shell {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      padding: 1.5rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-    .stats-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .back-btn {
-      font-size: 0.85rem;
-      color: var(--text-2);
-      text-decoration: none;
-    }
-    .back-btn:hover {
-      color: var(--text-1);
-    }
-    .stats-header h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text-1);
-      margin: 0;
-    }
-    .stats-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    /* Summary row */
-    .summary-row {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.25rem;
-      flex: 1;
-      min-width: 120px;
-    }
-    .stat-value {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--text-1);
-    }
-    .stat-card.accent .stat-value { color: #22c55e; }
-    .stat-card.warn .stat-value { color: #f59e0b; }
-    .stat-card.danger .stat-value { color: var(--danger); }
-    .stat-label {
-      font-size: 0.75rem;
-      color: var(--text-3);
-    }
-    .circle-card {
-      min-width: 140px;
-    }
-    .completion-donut {
-      width: 80px;
-      height: 80px;
-    }
-    .donut-text {
-      font-size: 7px;
-      font-weight: 700;
-      fill: var(--text-1);
-    }
-    /* Words card */
-    .words-card,
-    .chart-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.25rem;
-    }
-    .card-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-1);
-      margin: 0 0 0.75rem;
-    }
-    .word-details {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.75rem;
-      color: var(--text-3);
-      margin-top: 0.5rem;
-    }
-    /* Bar chart */
-    .bar-chart {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .bar-row {
-      display: flex;
-      align-items: center;
-      gap: 0.625rem;
-    }
-    .bar-label {
-      font-size: 0.75rem;
-      color: var(--text-2);
-      min-width: 90px;
-      text-align: right;
-    }
-    .bar-track {
-      flex: 1;
-      height: 18px;
-      border-radius: 4px;
-      background: var(--border);
-      overflow: hidden;
-    }
-    .bar-fill {
-      height: 100%;
-      border-radius: 4px;
-      transition: width 0.3s;
-      min-width: 2px;
-    }
-    .bar-count {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-1);
-      min-width: 28px;
-    }
-    /* Donut chart */
-    .donut-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-    }
-    .priority-donut {
-      width: 120px;
-      height: 120px;
-    }
-    .donut-legend {
-      display: flex;
-      flex-direction: column;
-      gap: 0.375rem;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .legend-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-    .legend-label {
-      font-size: 0.8rem;
-      color: var(--text-2);
-    }
-    /* Completions list */
-    .completions-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .completion-item {
-      display: flex;
-      align-items: center;
-      gap: 0.625rem;
-      padding: 0.5rem;
-      border-radius: 6px;
-      text-decoration: none;
-      color: inherit;
-      transition: background 0.1s;
-    }
-    .completion-item:hover {
-      background: var(--bg-surface);
-    }
-    .c-check {
-      color: #22c55e;
-      font-size: 0.85rem;
-      flex-shrink: 0;
-    }
-    .c-info {
-      flex: 1;
-      min-width: 0;
-    }
-    .c-title {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-1);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .c-meta {
-      font-size: 0.7rem;
-      color: var(--text-3);
-    }
-    .empty-text {
-      font-size: 0.8rem;
-      color: var(--text-3);
-      text-align: center;
-      padding: 1rem 0;
-      margin: 0;
-    }
-  `],
+  styles: [
+    `
+      .stats-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      .stats-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .back-btn {
+        font-size: 0.85rem;
+        color: var(--text-2);
+        text-decoration: none;
+      }
+      .back-btn:hover {
+        color: var(--text-1);
+      }
+      .stats-header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-1);
+        margin: 0;
+      }
+      .stats-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      /* Summary row */
+      .summary-row {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .stat-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        flex: 1;
+        min-width: 120px;
+      }
+      .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-1);
+      }
+      .stat-card.accent .stat-value {
+        color: #22c55e;
+      }
+      .stat-card.warn .stat-value {
+        color: #f59e0b;
+      }
+      .stat-card.danger .stat-value {
+        color: var(--danger);
+      }
+      .stat-label {
+        font-size: 0.75rem;
+        color: var(--text-3);
+      }
+      .circle-card {
+        min-width: 140px;
+      }
+      .completion-donut {
+        width: 80px;
+        height: 80px;
+      }
+      .donut-text {
+        font-size: 7px;
+        font-weight: 700;
+        fill: var(--text-1);
+      }
+      /* Words card */
+      .words-card,
+      .chart-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.25rem;
+      }
+      .card-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--text-1);
+        margin: 0 0 0.75rem;
+      }
+      .word-details {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: var(--text-3);
+        margin-top: 0.5rem;
+      }
+      /* Bar chart */
+      .bar-chart {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .bar-row {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+      }
+      .bar-label {
+        font-size: 0.75rem;
+        color: var(--text-2);
+        min-width: 90px;
+        text-align: right;
+      }
+      .bar-track {
+        flex: 1;
+        height: 18px;
+        border-radius: 4px;
+        background: var(--border);
+        overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%;
+        border-radius: 4px;
+        transition: width 0.3s;
+        min-width: 2px;
+      }
+      .bar-count {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-1);
+        min-width: 28px;
+      }
+      /* Donut chart */
+      .donut-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+      .priority-donut {
+        width: 120px;
+        height: 120px;
+      }
+      .donut-legend {
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .legend-label {
+        font-size: 0.8rem;
+        color: var(--text-2);
+      }
+      /* Completions list */
+      .completions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .completion-item {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: 0.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        color: inherit;
+        transition: background 0.1s;
+      }
+      .completion-item:hover {
+        background: var(--bg-surface);
+      }
+      .c-check {
+        color: #22c55e;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+      }
+      .c-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .c-title {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-1);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .c-meta {
+        font-size: 0.7rem;
+        color: var(--text-3);
+      }
+      .empty-text {
+        font-size: 0.8rem;
+        color: var(--text-3);
+        text-align: center;
+        padding: 1rem 0;
+        margin: 0;
+      }
+    `,
+  ],
 })
 export class PlannerStatsPageComponent implements OnInit {
   private readonly plannerService = inject(PlannerService);
@@ -418,8 +435,18 @@ export class PlannerStatsPageComponent implements OnInit {
 
   prioritySegments = computed(() => {
     const byPriority = this.stats()?.byPriority ?? {};
-    const total = Math.max(1, Object.values(byPriority).reduce((a, b) => a + b, 0));
-    const segments: Array<{ key: string; label: string; color: string; count: number; dash: string; offset: number }> = [];
+    const total = Math.max(
+      1,
+      Object.values(byPriority).reduce((a, b) => a + b, 0),
+    );
+    const segments: Array<{
+      key: string;
+      label: string;
+      color: string;
+      count: number;
+      dash: string;
+      offset: number;
+    }> = [];
     let cumulative = 0;
 
     for (const key of ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']) {

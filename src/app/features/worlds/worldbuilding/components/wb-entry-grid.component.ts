@@ -25,18 +25,20 @@ import { WbEntryCardComponent } from './wb-entry-card.component';
       </div>
     }
   `,
-  styles: [`
-    .grid {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-    }
-    .empty {
-      padding: 2rem;
-      text-align: center;
-      color: var(--text-3);
-    }
-  `],
+  styles: [
+    `
+      .grid {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+      }
+      .empty {
+        padding: 2rem;
+        text-align: center;
+        color: var(--text-3);
+      }
+    `,
+  ],
 })
 export class WbEntryGridComponent {
   readonly entries = input.required<WbEntrySummary[]>();

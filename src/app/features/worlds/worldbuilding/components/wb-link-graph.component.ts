@@ -39,7 +39,9 @@ import { WbEntryLink } from '../../../../core/models/wb-entry.model';
           fill="var(--accent-text)"
           font-size="10"
           font-weight="600"
-        >{{ truncate(centralEntry().name, 10) }}</text>
+        >
+          {{ truncate(centralEntry().name, 10) }}
+        </text>
 
         <!-- Connected nodes -->
         @for (node of nodePositions(); track node.slug) {
@@ -60,7 +62,9 @@ import { WbEntryLink } from '../../../../core/models/wb-entry.model';
               fill="var(--text-1)"
               font-size="8"
               font-weight="500"
-            >{{ truncate(node.name, 9) }}</text>
+            >
+              {{ truncate(node.name, 9) }}
+            </text>
             <text
               [attr.x]="node.x"
               [attr.y]="node.y + 8"
@@ -68,7 +72,9 @@ import { WbEntryLink } from '../../../../core/models/wb-entry.model';
               dominant-baseline="central"
               fill="var(--text-3)"
               font-size="6"
-            >{{ truncate(node.relation, 12) }}</text>
+            >
+              {{ truncate(node.relation, 12) }}
+            </text>
 
             <!-- Tooltip on hover via title -->
             <title>{{ node.relation }}: {{ node.name }}</title>
@@ -77,22 +83,24 @@ import { WbEntryLink } from '../../../../core/models/wb-entry.model';
       </svg>
     </div>
   `,
-  styles: [`
-    .graph-container {
-      width: 100%;
-      max-width: 100%;
-      overflow: hidden;
-    }
-    .graph-svg {
-      width: 100%;
-      height: auto;
-      min-height: 14rem;
-    }
-    .node-group:hover circle {
-      stroke-width: 2.5;
-      filter: brightness(1.2);
-    }
-  `],
+  styles: [
+    `
+      .graph-container {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+      }
+      .graph-svg {
+        width: 100%;
+        height: auto;
+        min-height: 14rem;
+      }
+      .node-group:hover circle {
+        stroke-width: 2.5;
+        filter: brightness(1.2);
+      }
+    `,
+  ],
 })
 export class WbLinkGraphComponent {
   private readonly router = inject(Router);

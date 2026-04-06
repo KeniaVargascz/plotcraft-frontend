@@ -6,11 +6,26 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
 import { WbFieldSchemaBuilderComponent } from './components/wb-field-schema-builder.component';
 
 const COLOR_SWATCHES = [
-  '#6366f1', '#8b5cf6', '#a855f7', '#d946ef',
-  '#ec4899', '#f43f5e', '#ef4444', '#f97316',
-  '#f59e0b', '#eab308', '#84cc16', '#22c55e',
-  '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9',
-  '#3b82f6', '#6b7280', '#78716c', '#ffffff',
+  '#6366f1',
+  '#8b5cf6',
+  '#a855f7',
+  '#d946ef',
+  '#ec4899',
+  '#f43f5e',
+  '#ef4444',
+  '#f97316',
+  '#f59e0b',
+  '#eab308',
+  '#84cc16',
+  '#22c55e',
+  '#10b981',
+  '#14b8a6',
+  '#06b6d4',
+  '#0ea5e9',
+  '#3b82f6',
+  '#6b7280',
+  '#78716c',
+  '#ffffff',
 ];
 
 @Component({
@@ -34,7 +49,13 @@ const COLOR_SWATCHES = [
 
             <label>
               <span>Icono (emoji)</span>
-              <input type="text" [(ngModel)]="icon" name="icon" placeholder="ej: &#128081;" maxlength="4" />
+              <input
+                type="text"
+                [(ngModel)]="icon"
+                name="icon"
+                placeholder="ej: &#128081;"
+                maxlength="4"
+              />
             </label>
 
             <div class="color-section">
@@ -61,7 +82,9 @@ const COLOR_SWATCHES = [
             <div class="divider"></div>
 
             @if (category()?.isSystem) {
-              <p class="system-note">Esta es una categoria del sistema. Los campos base son de solo lectura.</p>
+              <p class="system-note">
+                Esta es una categoria del sistema. Los campos base son de solo lectura.
+              </p>
             }
 
             <app-wb-field-schema-builder
@@ -74,7 +97,9 @@ const COLOR_SWATCHES = [
             }
 
             <div class="dialog-actions">
-              <button type="button" class="secondary" (click)="close()" [disabled]="saving()">Cancelar</button>
+              <button type="button" class="secondary" (click)="close()" [disabled]="saving()">
+                Cancelar
+              </button>
               <button type="submit" [disabled]="saving() || !name.trim()">
                 {{ saving() ? 'Guardando...' : category() ? 'Guardar cambios' : 'Crear categoria' }}
               </button>
@@ -84,99 +109,142 @@ const COLOR_SWATCHES = [
       </div>
     }
   `,
-  styles: [`
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      display: grid;
-      place-items: center;
-      z-index: 1000;
-      padding: 1rem;
-      overflow-y: auto;
-    }
-    .dialog {
-      width: 100%;
-      max-width: 36rem;
-      max-height: 90vh;
-      overflow-y: auto;
-      border-radius: 1.25rem;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      box-shadow: 0 24px 48px rgba(0,0,0,0.2);
-    }
-    .dialog-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.25rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .dialog-header h2 { margin: 0; font-size: 1.1rem; color: var(--text-1); }
-    .close-btn {
-      width: 2rem;
-      height: 2rem;
-      border: none;
-      border-radius: 999px;
-      background: var(--bg-surface);
-      color: var(--text-2);
-      cursor: pointer;
-      font-size: 0.85rem;
-      display: grid;
-      place-items: center;
-    }
-    .close-btn:hover { color: var(--text-1); }
-    .dialog-body {
-      display: grid;
-      gap: 1rem;
-      padding: 1.25rem;
-    }
-    .dialog-body label { display: grid; gap: 0.35rem; }
-    .dialog-body label span, .label-text { font-size: 0.82rem; color: var(--text-2); }
-    input, textarea, select {
-      padding: 0.7rem 0.85rem;
-      border-radius: 0.75rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-1);
-      font-size: 0.85rem;
-    }
-    input:focus, textarea:focus { outline: 1px solid var(--accent-glow); }
-    .color-section { display: grid; gap: 0.4rem; }
-    .color-swatches {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-    }
-    .swatch {
-      width: 1.6rem;
-      height: 1.6rem;
-      border-radius: 999px;
-      border: 2px solid transparent;
-      cursor: pointer;
-    }
-    .swatch.active { border-color: var(--text-1); box-shadow: 0 0 0 2px var(--accent-glow); }
-    .divider { border-top: 1px solid var(--border); }
-    .system-note { color: var(--text-3); font-size: 0.82rem; margin: 0; font-style: italic; }
-    .error-msg { color: #b42318; font-size: 0.82rem; margin: 0; }
-    .dialog-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.75rem;
-      padding-top: 0.5rem;
-    }
-    .dialog-actions button {
-      padding: 0.7rem 1.1rem;
-      border-radius: 1rem;
-      border: 1px solid var(--border);
-      background: var(--accent-glow);
-      color: var(--accent-text);
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-    .secondary { background: transparent !important; color: var(--text-1) !important; }
-    .dialog-actions button:disabled { opacity: 0.5; cursor: not-allowed; }
-  `],
+  styles: [
+    `
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        display: grid;
+        place-items: center;
+        z-index: 1000;
+        padding: 1rem;
+        overflow-y: auto;
+      }
+      .dialog {
+        width: 100%;
+        max-width: 36rem;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 1.25rem;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+      }
+      .dialog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .dialog-header h2 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--text-1);
+      }
+      .close-btn {
+        width: 2rem;
+        height: 2rem;
+        border: none;
+        border-radius: 999px;
+        background: var(--bg-surface);
+        color: var(--text-2);
+        cursor: pointer;
+        font-size: 0.85rem;
+        display: grid;
+        place-items: center;
+      }
+      .close-btn:hover {
+        color: var(--text-1);
+      }
+      .dialog-body {
+        display: grid;
+        gap: 1rem;
+        padding: 1.25rem;
+      }
+      .dialog-body label {
+        display: grid;
+        gap: 0.35rem;
+      }
+      .dialog-body label span,
+      .label-text {
+        font-size: 0.82rem;
+        color: var(--text-2);
+      }
+      input,
+      textarea,
+      select {
+        padding: 0.7rem 0.85rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        font-size: 0.85rem;
+      }
+      input:focus,
+      textarea:focus {
+        outline: 1px solid var(--accent-glow);
+      }
+      .color-section {
+        display: grid;
+        gap: 0.4rem;
+      }
+      .color-swatches {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+      .swatch {
+        width: 1.6rem;
+        height: 1.6rem;
+        border-radius: 999px;
+        border: 2px solid transparent;
+        cursor: pointer;
+      }
+      .swatch.active {
+        border-color: var(--text-1);
+        box-shadow: 0 0 0 2px var(--accent-glow);
+      }
+      .divider {
+        border-top: 1px solid var(--border);
+      }
+      .system-note {
+        color: var(--text-3);
+        font-size: 0.82rem;
+        margin: 0;
+        font-style: italic;
+      }
+      .error-msg {
+        color: #b42318;
+        font-size: 0.82rem;
+        margin: 0;
+      }
+      .dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        padding-top: 0.5rem;
+      }
+      .dialog-actions button {
+        padding: 0.7rem 1.1rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+      .secondary {
+        background: transparent !important;
+        color: var(--text-1) !important;
+      }
+      .dialog-actions button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    `,
+  ],
 })
 export class WbCategoryFormDialogComponent {
   private readonly wbService = inject(WorldbuildingService);

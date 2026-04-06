@@ -3,7 +3,6 @@ import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { WritingProjectSummary } from '../../core/models/writing-project.model';
 import { WritingTask } from '../../core/models/writing-task.model';
-import { PlannerStats } from '../../core/models/planner-stats.model';
 import { PlannerService } from '../../core/services/planner.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
@@ -70,8 +69,12 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
                       <span class="archived-color" [style.background]="project.color"></span>
                     }
                     <span class="archived-name">{{ project.name }}</span>
-                    <button class="restore-btn" (click)="onRestoreProject(project)">Restaurar</button>
-                    <button class="delete-archived-btn" (click)="onDeleteProject(project)">Eliminar</button>
+                    <button class="restore-btn" (click)="onRestoreProject(project)">
+                      Restaurar
+                    </button>
+                    <button class="delete-archived-btn" (click)="onDeleteProject(project)">
+                      Eliminar
+                    </button>
                   </div>
                 }
               </div>
@@ -132,263 +135,282 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
       }
     </section>
   `,
-  styles: [`
-    .page-shell {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      padding: 1.5rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .page-header h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text-1);
-      margin: 0;
-    }
-    .page-header p {
-      color: var(--text-3);
-      font-size: 0.875rem;
-      margin: 0.25rem 0 0;
-    }
-    .header-actions {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .secondary {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
-      color: var(--text-2);
-      text-decoration: none;
-      cursor: pointer;
-      transition: border-color 0.15s;
-    }
-    .secondary:hover {
-      border-color: var(--border-s);
-      color: var(--text-1);
-    }
-    .primary {
-      background: var(--accent);
-      border: none;
-      border-radius: 8px;
-      padding: 0.5rem 1.25rem;
-      font-size: 0.85rem;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: filter 0.15s;
-    }
-    .primary:hover {
-      filter: brightness(1.15);
-    }
-    .section-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text-1);
-      margin: 0 0 0.75rem;
-    }
-    .projects-scroll {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      padding-bottom: 0.5rem;
-    }
-    .projects-scroll::-webkit-scrollbar {
-      height: 4px;
-    }
-    .projects-scroll::-webkit-scrollbar-thumb {
-      background: var(--border-s);
-      border-radius: 2px;
-    }
-    .empty-card {
-      min-width: 260px;
-      max-width: 320px;
-      background: var(--bg-card);
-      border: 2px dashed var(--border);
-      border-radius: 10px;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      cursor: pointer;
-      color: var(--text-3);
-      font-size: 0.85rem;
-      transition: border-color 0.15s;
-    }
-    .empty-card:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    .empty-icon {
-      font-size: 2rem;
-      font-weight: 300;
-    }
-    .archived-section { margin-top: 0.5rem; }
-    .archived-toggle {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.5rem 1rem;
-      font-size: 0.82rem;
-      color: var(--text-3);
-      cursor: pointer;
-      transition: color 0.15s;
-    }
-    .archived-toggle:hover { color: var(--text-1); border-color: var(--border-s); }
-    .toggle-icon { font-size: 0.65rem; }
-    .archived-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-top: 0.75rem;
-    }
-    .archived-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.6rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--bg-card);
-    }
-    .archived-color {
-      width: 4px;
-      height: 24px;
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-    .archived-name {
-      flex: 1;
-      font-size: 0.85rem;
-      color: var(--text-2);
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .restore-btn {
-      background: none;
-      border: 1px solid var(--accent);
-      border-radius: 6px;
-      padding: 0.3rem 0.75rem;
-      font-size: 0.75rem;
-      color: var(--accent-text);
-      cursor: pointer;
-      transition: background 0.15s;
-      white-space: nowrap;
-    }
-    .restore-btn:hover { background: var(--accent-glow); }
-    .delete-archived-btn {
-      background: none;
-      border: 1px solid var(--danger);
-      border-radius: 6px;
-      padding: 0.3rem 0.75rem;
-      font-size: 0.75rem;
-      color: var(--danger);
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .delete-archived-btn:hover { background: color-mix(in srgb, var(--danger) 10%, transparent); }
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1rem;
-    }
-    .dash-col {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .col-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin: 0 0 0.25rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .urgent-title { color: var(--danger); }
-    .progress-title { color: #f59e0b; }
-    .done-title { color: #22c55e; }
-    .mini-task {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.375rem 0;
-      cursor: pointer;
-      border-radius: 4px;
-      transition: background 0.1s;
-      text-decoration: none;
-      color: inherit;
-    }
-    .mini-task:hover {
-      background: var(--bg-surface);
-    }
-    .mini-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .mini-title {
-      flex: 1;
-      font-size: 0.8rem;
-      color: var(--text-1);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .mini-due {
-      font-size: 0.7rem;
-      color: var(--text-3);
-      white-space: nowrap;
-    }
-    .mini-due.overdue {
-      color: var(--danger);
-      font-weight: 600;
-    }
-    .mini-project {
-      font-size: 0.65rem;
-      color: var(--text-3);
-      white-space: nowrap;
-    }
-    .mini-check {
-      color: #22c55e;
-      font-size: 0.8rem;
-      flex-shrink: 0;
-    }
-    .done-task {
-      opacity: 0.7;
-    }
-    .empty-text {
-      font-size: 0.8rem;
-      color: var(--text-3);
-      text-align: center;
-      padding: 1rem 0;
-      margin: 0;
-    }
-  `],
+  styles: [
+    `
+      .page-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .page-header h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-1);
+        margin: 0;
+      }
+      .page-header p {
+        color: var(--text-3);
+        font-size: 0.875rem;
+        margin: 0.25rem 0 0;
+      }
+      .header-actions {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .secondary {
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        color: var(--text-2);
+        text-decoration: none;
+        cursor: pointer;
+        transition: border-color 0.15s;
+      }
+      .secondary:hover {
+        border-color: var(--border-s);
+        color: var(--text-1);
+      }
+      .primary {
+        background: var(--accent);
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1.25rem;
+        font-size: 0.85rem;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        transition: filter 0.15s;
+      }
+      .primary:hover {
+        filter: brightness(1.15);
+      }
+      .section-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-1);
+        margin: 0 0 0.75rem;
+      }
+      .projects-scroll {
+        display: flex;
+        gap: 1rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+      }
+      .projects-scroll::-webkit-scrollbar {
+        height: 4px;
+      }
+      .projects-scroll::-webkit-scrollbar-thumb {
+        background: var(--border-s);
+        border-radius: 2px;
+      }
+      .empty-card {
+        min-width: 260px;
+        max-width: 320px;
+        background: var(--bg-card);
+        border: 2px dashed var(--border);
+        border-radius: 10px;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        color: var(--text-3);
+        font-size: 0.85rem;
+        transition: border-color 0.15s;
+      }
+      .empty-card:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .empty-icon {
+        font-size: 2rem;
+        font-weight: 300;
+      }
+      .archived-section {
+        margin-top: 0.5rem;
+      }
+      .archived-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-size: 0.82rem;
+        color: var(--text-3);
+        cursor: pointer;
+        transition: color 0.15s;
+      }
+      .archived-toggle:hover {
+        color: var(--text-1);
+        border-color: var(--border-s);
+      }
+      .toggle-icon {
+        font-size: 0.65rem;
+      }
+      .archived-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+      }
+      .archived-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.6rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg-card);
+      }
+      .archived-color {
+        width: 4px;
+        height: 24px;
+        border-radius: 2px;
+        flex-shrink: 0;
+      }
+      .archived-name {
+        flex: 1;
+        font-size: 0.85rem;
+        color: var(--text-2);
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .restore-btn {
+        background: none;
+        border: 1px solid var(--accent);
+        border-radius: 6px;
+        padding: 0.3rem 0.75rem;
+        font-size: 0.75rem;
+        color: var(--accent-text);
+        cursor: pointer;
+        transition: background 0.15s;
+        white-space: nowrap;
+      }
+      .restore-btn:hover {
+        background: var(--accent-glow);
+      }
+      .delete-archived-btn {
+        background: none;
+        border: 1px solid var(--danger);
+        border-radius: 6px;
+        padding: 0.3rem 0.75rem;
+        font-size: 0.75rem;
+        color: var(--danger);
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .delete-archived-btn:hover {
+        background: color-mix(in srgb, var(--danger) 10%, transparent);
+      }
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem;
+      }
+      .dash-col {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .col-title {
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .urgent-title {
+        color: var(--danger);
+      }
+      .progress-title {
+        color: #f59e0b;
+      }
+      .done-title {
+        color: #22c55e;
+      }
+      .mini-task {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.375rem 0;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background 0.1s;
+        text-decoration: none;
+        color: inherit;
+      }
+      .mini-task:hover {
+        background: var(--bg-surface);
+      }
+      .mini-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .mini-title {
+        flex: 1;
+        font-size: 0.8rem;
+        color: var(--text-1);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .mini-due {
+        font-size: 0.7rem;
+        color: var(--text-3);
+        white-space: nowrap;
+      }
+      .mini-due.overdue {
+        color: var(--danger);
+        font-weight: 600;
+      }
+      .mini-project {
+        font-size: 0.65rem;
+        color: var(--text-3);
+        white-space: nowrap;
+      }
+      .mini-check {
+        color: #22c55e;
+        font-size: 0.8rem;
+        flex-shrink: 0;
+      }
+      .done-task {
+        opacity: 0.7;
+      }
+      .empty-text {
+        font-size: 0.8rem;
+        color: var(--text-3);
+        text-align: center;
+        padding: 1rem 0;
+        margin: 0;
+      }
+    `,
+  ],
 })
 export class PlannerDashboardPageComponent implements OnInit {
   private readonly plannerService = inject(PlannerService);
@@ -468,9 +490,7 @@ export class PlannerDashboardPageComponent implements OnInit {
       if (result) {
         this.plannerService.updateProject(project.id, result).subscribe({
           next: (updated) =>
-            this.allProjects.update((list) =>
-              list.map((p) => (p.id === updated.id ? updated : p)),
-            ),
+            this.allProjects.update((list) => list.map((p) => (p.id === updated.id ? updated : p))),
         });
       }
     });
@@ -478,17 +498,19 @@ export class PlannerDashboardPageComponent implements OnInit {
 
   onArchiveProject(project: WritingProjectSummary): void {
     this.plannerService.archiveProject(project.id).subscribe({
-      next: () => this.allProjects.update((list) =>
-        list.map((p) => (p.id === project.id ? { ...p, isActive: false } : p)),
-      ),
+      next: () =>
+        this.allProjects.update((list) =>
+          list.map((p) => (p.id === project.id ? { ...p, isActive: false } : p)),
+        ),
     });
   }
 
   onRestoreProject(project: WritingProjectSummary): void {
     this.plannerService.restoreProject(project.id).subscribe({
-      next: () => this.allProjects.update((list) =>
-        list.map((p) => (p.id === project.id ? { ...p, isActive: true } : p)),
-      ),
+      next: () =>
+        this.allProjects.update((list) =>
+          list.map((p) => (p.id === project.id ? { ...p, isActive: true } : p)),
+        ),
     });
   }
 

@@ -1,13 +1,22 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { NovelSummary } from '../../../core/models/novel.model';
 import { NovelsService } from '../../../core/services/novels.service';
 
 const COLOR_SWATCHES = [
-  '#6366f1', '#8b5cf6', '#a855f7', '#ec4899',
-  '#ef4444', '#f59e0b', '#22c55e', '#14b8a6',
-  '#06b6d4', '#3b82f6', '#64748b', '#f97316',
+  '#6366f1',
+  '#8b5cf6',
+  '#a855f7',
+  '#ec4899',
+  '#ef4444',
+  '#f59e0b',
+  '#22c55e',
+  '#14b8a6',
+  '#06b6d4',
+  '#3b82f6',
+  '#64748b',
+  '#f97316',
 ];
 
 @Component({
@@ -26,7 +35,11 @@ const COLOR_SWATCHES = [
 
         <label class="field">
           <span class="field-label">Descripcion</span>
-          <textarea [(ngModel)]="description" rows="2" placeholder="Descripcion opcional"></textarea>
+          <textarea
+            [(ngModel)]="description"
+            rows="2"
+            placeholder="Descripcion opcional"
+          ></textarea>
         </label>
 
         <div class="field">
@@ -60,112 +73,116 @@ const COLOR_SWATCHES = [
       <button class="btn-save" [disabled]="!name.trim()" (click)="onSave()">Crear proyecto</button>
     </mat-dialog-actions>
   `,
-  styles: [`
-    :host {
-      display: block;
-      width: min(460px, 90vw);
-    }
-    h2[mat-dialog-title] {
-      color: var(--text-1);
-      font-size: 1.15rem;
-      margin: 0;
-      padding: 1rem 1.25rem 0.5rem;
-    }
-    mat-dialog-content {
-      padding: 0 1.25rem;
-    }
-    .form-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 0.875rem;
-      padding-bottom: 0.5rem;
-    }
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .field-label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--text-2);
-    }
-    input,
-    textarea,
-    select {
-      background: var(--bg-base);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.5rem 0.625rem;
-      font-size: 0.85rem;
-      color: var(--text-1);
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: var(--accent);
-    }
-    textarea {
-      resize: vertical;
-    }
-    .swatches {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .swatch {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: transform 0.15s, border-color 0.15s;
-    }
-    .swatch:hover {
-      transform: scale(1.15);
-    }
-    .swatch.selected {
-      border-color: var(--text-1);
-      box-shadow: 0 0 0 2px var(--bg-card);
-    }
-    mat-dialog-actions {
-      padding: 0.75rem 1.25rem;
-      gap: 0.5rem;
-    }
-    .btn-cancel {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
-      color: var(--text-2);
-      cursor: pointer;
-    }
-    .btn-cancel:hover {
-      border-color: var(--border-s);
-    }
-    .btn-save {
-      background: var(--accent);
-      border: none;
-      border-radius: 6px;
-      padding: 0.5rem 1.25rem;
-      font-size: 0.85rem;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: filter 0.15s;
-    }
-    .btn-save:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .btn-save:hover:not(:disabled) {
-      filter: brightness(1.15);
-    }
-  `],
+  styles: [
+    `
+      :host {
+        display: block;
+        width: min(460px, 90vw);
+      }
+      h2[mat-dialog-title] {
+        color: var(--text-1);
+        font-size: 1.15rem;
+        margin: 0;
+        padding: 1rem 1.25rem 0.5rem;
+      }
+      mat-dialog-content {
+        padding: 0 1.25rem;
+      }
+      .form-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0.875rem;
+        padding-bottom: 0.5rem;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .field-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--text-2);
+      }
+      input,
+      textarea,
+      select {
+        background: var(--bg-base);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.5rem 0.625rem;
+        font-size: 0.85rem;
+        color: var(--text-1);
+        font-family: inherit;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        border-color: var(--accent);
+      }
+      textarea {
+        resize: vertical;
+      }
+      .swatches {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .swatch {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition:
+          transform 0.15s,
+          border-color 0.15s;
+      }
+      .swatch:hover {
+        transform: scale(1.15);
+      }
+      .swatch.selected {
+        border-color: var(--text-1);
+        box-shadow: 0 0 0 2px var(--bg-card);
+      }
+      mat-dialog-actions {
+        padding: 0.75rem 1.25rem;
+        gap: 0.5rem;
+      }
+      .btn-cancel {
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        color: var(--text-2);
+        cursor: pointer;
+      }
+      .btn-cancel:hover {
+        border-color: var(--border-s);
+      }
+      .btn-save {
+        background: var(--accent);
+        border: none;
+        border-radius: 6px;
+        padding: 0.5rem 1.25rem;
+        font-size: 0.85rem;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        transition: filter 0.15s;
+      }
+      .btn-save:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .btn-save:hover:not(:disabled) {
+        filter: brightness(1.15);
+      }
+    `,
+  ],
 })
 export class CreateProjectDialogComponent implements OnInit {
   private readonly dialogRef = inject(MatDialogRef<CreateProjectDialogComponent>);

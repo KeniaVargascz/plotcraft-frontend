@@ -1,4 +1,14 @@
-export type FieldType = 'text' | 'textarea' | 'number' | 'select' | 'multiselect' | 'boolean' | 'url' | 'markdown';
+export type FieldType =
+  | 'text'
+  | 'textarea'
+  | 'number'
+  | 'select'
+  | 'multiselect'
+  | 'boolean'
+  | 'url'
+  | 'markdown';
+
+export type FieldValue = string | number | boolean | string[] | null;
 
 export interface FieldDefinition {
   key: string;
@@ -7,6 +17,6 @@ export interface FieldDefinition {
   required: boolean;
   placeholder: string | null;
   options: string[] | null;
-  default: any | null;
+  default: FieldValue;
   sortOrder: number;
 }

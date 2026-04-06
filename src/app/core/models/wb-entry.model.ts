@@ -1,3 +1,5 @@
+import { FieldDefinition, FieldValue } from './field-definition.model';
+
 export interface WbEntrySummary {
   id: string;
   name: string;
@@ -11,11 +13,18 @@ export interface WbEntrySummary {
 
 export interface WbEntryDetail extends WbEntrySummary {
   content: string | null;
-  fields: Record<string, any>;
+  fields: Record<string, FieldValue>;
   sortOrder: number;
   createdAt: string;
   updatedAt: string;
-  category: { id: string; name: string; slug: string; icon: string | null; color: string | null; fieldSchema: any[] };
+  category: {
+    id: string;
+    name: string;
+    slug: string;
+    icon: string | null;
+    color: string | null;
+    fieldSchema: FieldDefinition[];
+  };
   world: { id: string; name: string; slug: string };
   author: { username: string; displayName: string };
   links: WbEntryLink[];

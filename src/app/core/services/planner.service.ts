@@ -4,8 +4,17 @@ import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 import { PlannerStats } from '../models/planner-stats.model';
+import { TaskStatus } from '../models/writing-project.model';
 import { WritingProjectSummary } from '../models/writing-project.model';
 import { WritingTask } from '../models/writing-task.model';
+
+type PlannerTaskQuery = Partial<{
+  status: TaskStatus;
+  chapterId: string;
+  characterId: string;
+  dueFrom: string;
+  dueTo: string;
+}>;
 
 @Injectable({ providedIn: 'root' })
 export class PlannerService {
@@ -32,7 +41,15 @@ export class PlannerService {
       .pipe(map((r) => r.data));
   }
 
-  updateProject(id: string, payload: Partial<{ name: string; description: string | null; color: string | null; isActive: boolean }>) {
+  updateProject(
+    id: string,
+    payload: Partial<{
+      name: string;
+      description: string | null;
+      color: string | null;
+      isActive: boolean;
+    }>,
+  ) {
     return this.http
       .patch<ApiResponse<WritingProjectSummary>>(`${this.baseUrl}/projects/${id}`, payload)
       .pipe(map((r) => r.data));
@@ -58,15 +75,13 @@ export class PlannerService {
 
   getByNovelSlug(slug: string) {
     return this.http
-      .get<ApiResponse<WritingProjectSummary>>(
-        `${environment.apiUrl}/novels/${slug}/planner`,
-      )
+      .get<ApiResponse<WritingProjectSummary>>(`${environment.apiUrl}/novels/${slug}/planner`)
       .pipe(map((r) => r.data));
   }
 
   /* ─── Tasks ─── */
 
-  listTasks(projectId: string, query?: Record<string, any>): Observable<WritingTask[]> {
+  listTasks(projectId: string, query?: PlannerTaskQuery): Observable<WritingTask[]> {
     let params = new HttpParams();
     if (query) {
       Object.entries(query).forEach(([key, value]) => {
@@ -76,54 +91,48 @@ export class PlannerService {
       });
     }
     return this.http
-      .get<ApiResponse<WritingTask[]>>(
-        `${this.baseUrl}/projects/${projectId}/tasks`,
-        { params },
-      )
+      .get<ApiResponse<WritingTask[]>>(`${this.baseUrl}/projects/${projectId}/tasks`, { params })
       .pipe(map((r) => r.data));
   }
 
   createTask(projectId: string, payload: Partial<WritingTask>) {
     return this.http
-      .post<ApiResponse<WritingTask>>(
-        `${this.baseUrl}/projects/${projectId}/tasks`,
-        payload,
-      )
+      .post<ApiResponse<WritingTask>>(`${this.baseUrl}/projects/${projectId}/tasks`, payload)
       .pipe(map((r) => r.data));
   }
 
   updateTask(projectId: string, taskId: string, payload: Partial<WritingTask>) {
     return this.http
-      .patch<ApiResponse<WritingTask>>(
-        `${this.baseUrl}/projects/${projectId}/tasks/${taskId}`,
-        payload,
-      )
+      .patch<
+        ApiResponse<WritingTask>
+      >(`${this.baseUrl}/projects/${projectId}/tasks/${taskId}`, payload)
       .pipe(map((r) => r.data));
   }
 
   deleteTask(projectId: string, taskId: string) {
     return this.http
-      .delete<ApiResponse<{ message: string }>>(
-        `${this.baseUrl}/projects/${projectId}/tasks/${taskId}`,
-      )
+      .delete<
+        ApiResponse<{ message: string }>
+      >(`${this.baseUrl}/projects/${projectId}/tasks/${taskId}`)
       .pipe(map((r) => r.data));
   }
 
   moveTask(projectId: string, taskId: string, payload: { status: string; sortOrder?: number }) {
     return this.http
-      .post<ApiResponse<WritingTask>>(
-        `${this.baseUrl}/projects/${projectId}/tasks/${taskId}/move`,
-        payload,
-      )
+      .post<
+        ApiResponse<WritingTask>
+      >(`${this.baseUrl}/projects/${projectId}/tasks/${taskId}/move`, payload)
       .pipe(map((r) => r.data));
   }
 
-  reorderTasks(projectId: string, payload: { tasks: Array<{ id: string; sortOrder: number }>; status: string }) {
+  reorderTasks(
+    projectId: string,
+    payload: { tasks: Array<{ id: string; sortOrder: number }>; status: string },
+  ) {
     return this.http
-      .patch<ApiResponse<{ message: string }>>(
-        `${this.baseUrl}/projects/${projectId}/tasks/reorder`,
-        payload,
-      )
+      .patch<
+        ApiResponse<{ message: string }>
+      >(`${this.baseUrl}/projects/${projectId}/tasks/reorder`, payload)
       .pipe(map((r) => r.data));
   }
 

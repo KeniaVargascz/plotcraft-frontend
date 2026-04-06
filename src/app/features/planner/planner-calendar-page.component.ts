@@ -14,8 +14,18 @@ interface CalendarDay {
 
 const DAY_NAMES = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
 const MONTH_NAMES = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
 ];
 
 const PRIORITY_COLORS: Record<string, string> = {
@@ -111,251 +121,255 @@ const PRIORITY_COLORS: Record<string, string> = {
       }
     </div>
   `,
-  styles: [`
-    .calendar-shell {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      padding: 1.5rem;
-      max-width: 1100px;
-      margin: 0 auto;
-      position: relative;
-    }
-    .calendar-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .back-btn {
-      font-size: 0.85rem;
-      color: var(--text-2);
-      text-decoration: none;
-    }
-    .back-btn:hover {
-      color: var(--text-1);
-    }
-    .nav-row {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      flex: 1;
-      justify-content: center;
-    }
-    .nav-btn {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.25rem 0.75rem;
-      font-size: 1.25rem;
-      color: var(--text-2);
-      cursor: pointer;
-    }
-    .nav-btn:hover {
-      border-color: var(--border-s);
-      color: var(--text-1);
-    }
-    .month-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--text-1);
-      margin: 0;
-      min-width: 180px;
-      text-align: center;
-    }
-    .today-btn {
-      background: var(--accent);
-      border: none;
-      border-radius: 6px;
-      padding: 0.375rem 1rem;
-      font-size: 0.8rem;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: filter 0.15s;
-    }
-    .today-btn:hover { filter: brightness(1.15); }
-    .calendar-grid-wrapper {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .day-headers {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      border-bottom: 1px solid var(--border);
-    }
-    .day-header {
-      text-align: center;
-      padding: 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-3);
-      text-transform: uppercase;
-    }
-    .day-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-    }
-    .day-cell {
-      min-height: 90px;
-      padding: 0.375rem;
-      border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      cursor: pointer;
-      transition: background 0.1s;
-    }
-    .day-cell:nth-child(7n) {
-      border-right: none;
-    }
-    .day-cell:hover {
-      background: var(--bg-surface);
-    }
-    .day-cell.other-month {
-      opacity: 0.35;
-    }
-    .day-cell.today .day-num {
-      background: var(--accent);
-      color: #fff;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .day-num {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-1);
-      display: block;
-      margin-bottom: 4px;
-    }
-    .task-dots {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .task-dot {
-      border-radius: 3px;
-      padding: 1px 4px;
-      overflow: hidden;
-    }
-    .dot-title {
-      font-size: 0.6rem;
-      color: white;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: block;
-    }
-    .more-indicator {
-      font-size: 0.6rem;
-      color: var(--text-3);
-      font-weight: 600;
-    }
-    /* Side panel */
-    .side-panel {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.3);
-      z-index: 100;
-      display: flex;
-      justify-content: flex-end;
-    }
-    .panel-content {
-      width: min(400px, 90vw);
-      background: var(--bg-card);
-      border-left: 1px solid var(--border);
-      height: 100%;
-      overflow-y: auto;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .panel-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .panel-header h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--text-1);
-      margin: 0;
-    }
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      color: var(--text-3);
-      cursor: pointer;
-    }
-    .close-btn:hover {
-      color: var(--text-1);
-    }
-    .panel-tasks {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .panel-task {
-      display: flex;
-      align-items: center;
-      gap: 0.625rem;
-      padding: 0.625rem;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      text-decoration: none;
-      color: inherit;
-      transition: border-color 0.15s;
-    }
-    .panel-task:hover {
-      border-color: var(--border-s);
-    }
-    .p-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .p-info {
-      flex: 1;
-      min-width: 0;
-    }
-    .p-title {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-1);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .p-meta {
-      font-size: 0.7rem;
-      color: var(--text-3);
-    }
-    .p-overdue {
-      font-size: 0.65rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: color-mix(in srgb, var(--danger) 15%, transparent);
-      color: var(--danger);
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .panel-empty {
-      color: var(--text-3);
-      font-size: 0.85rem;
-      text-align: center;
-      padding: 2rem 0;
-      margin: 0;
-    }
-  `],
+  styles: [
+    `
+      .calendar-shell {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem;
+        max-width: 1100px;
+        margin: 0 auto;
+        position: relative;
+      }
+      .calendar-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .back-btn {
+        font-size: 0.85rem;
+        color: var(--text-2);
+        text-decoration: none;
+      }
+      .back-btn:hover {
+        color: var(--text-1);
+      }
+      .nav-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex: 1;
+        justify-content: center;
+      }
+      .nav-btn {
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.25rem 0.75rem;
+        font-size: 1.25rem;
+        color: var(--text-2);
+        cursor: pointer;
+      }
+      .nav-btn:hover {
+        border-color: var(--border-s);
+        color: var(--text-1);
+      }
+      .month-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--text-1);
+        margin: 0;
+        min-width: 180px;
+        text-align: center;
+      }
+      .today-btn {
+        background: var(--accent);
+        border: none;
+        border-radius: 6px;
+        padding: 0.375rem 1rem;
+        font-size: 0.8rem;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        transition: filter 0.15s;
+      }
+      .today-btn:hover {
+        filter: brightness(1.15);
+      }
+      .calendar-grid-wrapper {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .day-headers {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        border-bottom: 1px solid var(--border);
+      }
+      .day-header {
+        text-align: center;
+        padding: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-3);
+        text-transform: uppercase;
+      }
+      .day-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+      }
+      .day-cell {
+        min-height: 90px;
+        padding: 0.375rem;
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+      .day-cell:nth-child(7n) {
+        border-right: none;
+      }
+      .day-cell:hover {
+        background: var(--bg-surface);
+      }
+      .day-cell.other-month {
+        opacity: 0.35;
+      }
+      .day-cell.today .day-num {
+        background: var(--accent);
+        color: #fff;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .day-num {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-1);
+        display: block;
+        margin-bottom: 4px;
+      }
+      .task-dots {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .task-dot {
+        border-radius: 3px;
+        padding: 1px 4px;
+        overflow: hidden;
+      }
+      .dot-title {
+        font-size: 0.6rem;
+        color: white;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: block;
+      }
+      .more-indicator {
+        font-size: 0.6rem;
+        color: var(--text-3);
+        font-weight: 600;
+      }
+      /* Side panel */
+      .side-panel {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.3);
+        z-index: 100;
+        display: flex;
+        justify-content: flex-end;
+      }
+      .panel-content {
+        width: min(400px, 90vw);
+        background: var(--bg-card);
+        border-left: 1px solid var(--border);
+        height: 100%;
+        overflow-y: auto;
+        padding: 1.25rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .panel-header h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-1);
+        margin: 0;
+      }
+      .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--text-3);
+        cursor: pointer;
+      }
+      .close-btn:hover {
+        color: var(--text-1);
+      }
+      .panel-tasks {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      .panel-task {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: 0.625rem;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        text-decoration: none;
+        color: inherit;
+        transition: border-color 0.15s;
+      }
+      .panel-task:hover {
+        border-color: var(--border-s);
+      }
+      .p-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .p-info {
+        flex: 1;
+        min-width: 0;
+      }
+      .p-title {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-1);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .p-meta {
+        font-size: 0.7rem;
+        color: var(--text-3);
+      }
+      .p-overdue {
+        font-size: 0.65rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: color-mix(in srgb, var(--danger) 15%, transparent);
+        color: var(--danger);
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .panel-empty {
+        color: var(--text-3);
+        font-size: 0.85rem;
+        text-align: center;
+        padding: 2rem 0;
+        margin: 0;
+      }
+    `,
+  ],
 })
 export class PlannerCalendarPageComponent implements OnInit {
   private readonly plannerService = inject(PlannerService);
@@ -445,8 +459,8 @@ export class PlannerCalendarPageComponent implements OnInit {
     const to = new Date(year, month + 1, 0).toISOString().substring(0, 10);
 
     this.plannerService.getCalendar(from, to).subscribe({
-      next: (response: any) => {
-        this.tasks.set(Array.isArray(response) ? response : response.tasks ?? []);
+      next: (response: WritingTask[]) => {
+        this.tasks.set(response);
         this.loading.set(false);
       },
       error: () => {

@@ -1,7 +1,7 @@
 import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { ForumCategory, ThreadSummary } from '../../core/models/forum-thread.model';
+import { ForumCategory, ThreadStatus, ThreadSummary } from '../../core/models/forum-thread.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ForumService } from '../../core/services/forum.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
@@ -60,7 +60,7 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
 
         @if (isAuthenticated() && archivedCount() > 0) {
           <a routerLink="/foro/archivados" class="archived-link">
-            \u{1F4E6} Ver mis hilos archivados ({{ archivedCount() }})
+            📦 Ver mis hilos archivados ({{ archivedCount() }})
           </a>
         }
       </main>
@@ -86,112 +86,132 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
       </aside>
     </section>
   `,
-  styles: [`
-    .forum-shell {
-      display: grid;
-      grid-template-columns: 1fr 280px;
-      gap: 1.5rem;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 1.5rem;
-    }
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-    .page-title {
-      font-size: 1.5rem;
-      color: var(--text-1);
-      margin: 0;
-    }
-    .new-btn {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.55rem 1.1rem;
-      border-radius: 0.75rem;
-      background: var(--accent);
-      color: #fff;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-    .new-btn:hover { box-shadow: 0 0 12px var(--accent-glow); }
-    .thread-list {
-      display: grid;
-      gap: 0.75rem;
-      margin-top: 1rem;
-    }
-    .empty {
-      text-align: center;
-      padding: 2rem;
-      color: var(--text-3);
-    }
-    .load-more {
-      display: block;
-      margin: 1rem auto 0;
-      padding: 0.55rem 1.5rem;
-      border-radius: 0.75rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-1);
-      cursor: pointer;
-      font-weight: 500;
-    }
-    .load-more:hover { border-color: var(--accent); }
-    .sidebar {
-      display: grid;
-      align-content: start;
-      gap: 1rem;
-    }
-    .sidebar-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1rem 1.15rem;
-    }
-    .sidebar-card h3 {
-      margin: 0 0 0.5rem;
-      font-size: 0.95rem;
-      color: var(--text-1);
-    }
-    .stat { color: var(--text-2); font-size: 0.9rem; margin: 0; }
-    .cat-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: grid;
-      gap: 0.25rem;
-    }
-    .cat-link {
-      background: none;
-      border: none;
-      color: var(--text-2);
-      font-size: 0.85rem;
-      cursor: pointer;
-      padding: 0.25rem 0;
-      text-align: left;
-    }
-    .cat-link:hover { color: var(--accent); }
-    .archived-link {
-      display: block;
-      margin-top: 1rem;
-      padding: 0.7rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 0.75rem;
-      text-align: center;
-      text-decoration: none;
-      font-size: 0.85rem;
-      color: var(--text-3);
-      transition: all 0.15s;
-    }
-    .archived-link:hover { color: var(--text-1); border-color: var(--border-s); background: var(--bg-surface); }
-    @media (max-width: 900px) {
-      .forum-shell { grid-template-columns: 1fr; }
-      .sidebar { order: -1; }
-    }
-  `],
+  styles: [
+    `
+      .forum-shell {
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 1.5rem;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 1.5rem;
+      }
+      .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+      }
+      .page-title {
+        font-size: 1.5rem;
+        color: var(--text-1);
+        margin: 0;
+      }
+      .new-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.55rem 1.1rem;
+        border-radius: 0.75rem;
+        background: var(--accent);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+      .new-btn:hover {
+        box-shadow: 0 0 12px var(--accent-glow);
+      }
+      .thread-list {
+        display: grid;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+      .empty {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-3);
+      }
+      .load-more {
+        display: block;
+        margin: 1rem auto 0;
+        padding: 0.55rem 1.5rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        cursor: pointer;
+        font-weight: 500;
+      }
+      .load-more:hover {
+        border-color: var(--accent);
+      }
+      .sidebar {
+        display: grid;
+        align-content: start;
+        gap: 1rem;
+      }
+      .sidebar-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 1rem 1.15rem;
+      }
+      .sidebar-card h3 {
+        margin: 0 0 0.5rem;
+        font-size: 0.95rem;
+        color: var(--text-1);
+      }
+      .stat {
+        color: var(--text-2);
+        font-size: 0.9rem;
+        margin: 0;
+      }
+      .cat-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 0.25rem;
+      }
+      .cat-link {
+        background: none;
+        border: none;
+        color: var(--text-2);
+        font-size: 0.85rem;
+        cursor: pointer;
+        padding: 0.25rem 0;
+        text-align: left;
+      }
+      .cat-link:hover {
+        color: var(--accent);
+      }
+      .archived-link {
+        display: block;
+        margin-top: 1rem;
+        padding: 0.7rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        text-align: center;
+        text-decoration: none;
+        font-size: 0.85rem;
+        color: var(--text-3);
+        transition: all 0.15s;
+      }
+      .archived-link:hover {
+        color: var(--text-1);
+        border-color: var(--border-s);
+        background: var(--bg-surface);
+      }
+      @media (max-width: 900px) {
+        .forum-shell {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          order: -1;
+        }
+      }
+    `,
+  ],
 })
 export class ForumHomePageComponent implements OnInit {
   private readonly forumService = inject(ForumService);
@@ -205,7 +225,9 @@ export class ForumHomePageComponent implements OnInit {
   readonly hasMore = signal(false);
   readonly totalThreads = signal(0);
   readonly myThreads = signal<ThreadSummary[]>([]);
-  readonly archivedCount = computed(() => this.myThreads().filter(t => t.status === 'ARCHIVED').length);
+  readonly archivedCount = computed(
+    () => this.myThreads().filter((t) => t.status === 'ARCHIVED').length,
+  );
 
   private currentFilters: { category: ForumCategory | null; sort: string; search: string } = {
     category: null,
@@ -268,8 +290,12 @@ export class ForumHomePageComponent implements OnInit {
   onArchiveThread(thread: ThreadSummary) {
     this.forumService.archiveThread(thread.slug).subscribe({
       next: () => {
-        this.threads.update(list => list.filter(t => t.id !== thread.id));
-        this.myThreads.update(list => list.map(t => t.id === thread.id ? { ...t, status: 'ARCHIVED' as any } : t));
+        this.threads.update((list) => list.filter((t) => t.id !== thread.id));
+        this.myThreads.update((list) =>
+          list.map((item) =>
+            item.id === thread.id ? { ...item, status: 'ARCHIVED' as ThreadStatus } : item,
+          ),
+        );
       },
     });
   }

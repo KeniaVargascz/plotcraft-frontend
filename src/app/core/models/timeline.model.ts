@@ -1,4 +1,10 @@
-export type TimelineEventType = 'WORLD_EVENT' | 'STORY_EVENT' | 'CHARACTER_ARC' | 'CHAPTER_EVENT' | 'LORE_EVENT' | 'NOTE';
+export type TimelineEventType =
+  | 'WORLD_EVENT'
+  | 'STORY_EVENT'
+  | 'CHARACTER_ARC'
+  | 'CHAPTER_EVENT'
+  | 'LORE_EVENT'
+  | 'NOTE';
 export type TimelineEventRelevance = 'CRITICAL' | 'MAJOR' | 'MINOR' | 'BACKGROUND';
 
 export interface TimelineEvent {
@@ -16,7 +22,12 @@ export interface TimelineEvent {
   chapter: { id: string; slug: string; title: string; order: number } | null;
   character: { id: string; slug: string; name: string; avatarUrl: string | null } | null;
   world: { id: string; slug: string; name: string } | null;
-  wbEntry: { id: string; slug: string; name: string; category: { name: string; icon: string | null; color: string | null } } | null;
+  wbEntry: {
+    id: string;
+    slug: string;
+    name: string;
+    category: { name: string; icon: string | null; color: string | null };
+  } | null;
 }
 
 export interface TimelineSummary {

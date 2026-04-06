@@ -3,13 +3,19 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { finalize } from 'rxjs';
-import { WbEntryDetail } from '../../../core/models/wb-entry.model';
+import { WbEntryLink } from '../../../core/models/wb-entry.model';
 import { WbCategory } from '../../../core/models/wb-category.model';
-import { FieldDefinition } from '../../../core/models/field-definition.model';
+import { FieldDefinition, FieldValue } from '../../../core/models/field-definition.model';
 import { WorldbuildingService } from '../../../core/services/worldbuilding.service';
 import { MarkdownService } from '../../../core/services/markdown.service';
-import { PromptDialogComponent, PromptDialogData } from '../../../shared/components/prompt-dialog/prompt-dialog.component';
-import { AlertDialogComponent, AlertDialogData } from '../../../shared/components/alert-dialog/alert-dialog.component';
+import {
+  PromptDialogComponent,
+  PromptDialogData,
+} from '../../../shared/components/prompt-dialog/prompt-dialog.component';
+import {
+  AlertDialogComponent,
+  AlertDialogData,
+} from '../../../shared/components/alert-dialog/alert-dialog.component';
 import { WbDynamicFieldComponent } from './components/wb-dynamic-field.component';
 import { WbEntryLinksComponent } from './components/wb-entry-links.component';
 
@@ -21,7 +27,9 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
     <div class="form-page">
       <header class="topbar">
         <div class="topbar-left">
-          <a class="back-btn" [routerLink]="['/mis-mundos', worldSlug(), 'world-building']">&#8592; Volver</a>
+          <a class="back-btn" [routerLink]="['/mis-mundos', worldSlug(), 'world-building']"
+            >&#8592; Volver</a
+          >
           <div class="title-area">
             <input
               type="text"
@@ -32,7 +40,11 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
               (ngModelChange)="markDirty()"
             />
             @if (category()) {
-              <span class="cat-badge" [style.background]="(category()!.color || '#6366f1') + '22'" [style.color]="category()!.color || '#6366f1'">
+              <span
+                class="cat-badge"
+                [style.background]="(category()!.color || '#6366f1') + '22'"
+                [style.color]="category()!.color || '#6366f1'"
+              >
                 {{ category()!.icon }} {{ category()!.name }}
               </span>
             }
@@ -43,10 +55,20 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
             <span class="save-indicator">{{ autoSaveMsg() }}</span>
           }
           <label class="toggle-public">
-            <input type="checkbox" [(ngModel)]="isPublic" name="isPublic" (ngModelChange)="markDirty()" />
+            <input
+              type="checkbox"
+              [(ngModel)]="isPublic"
+              name="isPublic"
+              (ngModelChange)="markDirty()"
+            />
             <span>{{ isPublic ? 'Publico' : 'Privado' }}</span>
           </label>
-          <button type="button" class="save-btn" (click)="save()" [disabled]="saving() || !name.trim()">
+          <button
+            type="button"
+            class="save-btn"
+            (click)="save()"
+            [disabled]="saving() || !name.trim()"
+          >
             {{ saving() ? 'Guardando...' : 'Guardar' }}
           </button>
         </div>
@@ -59,26 +81,61 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
           <div class="left-col">
             <label>
               <span>Resumen</span>
-              <textarea [(ngModel)]="summary" name="summary" rows="3" placeholder="Breve descripcion..." (ngModelChange)="markDirty()"></textarea>
+              <textarea
+                [(ngModel)]="summary"
+                name="summary"
+                rows="3"
+                placeholder="Breve descripcion..."
+                (ngModelChange)="markDirty()"
+              ></textarea>
             </label>
 
             <label>
               <span>URL de portada</span>
-              <input type="url" [(ngModel)]="coverUrl" name="coverUrl" placeholder="https://..." (ngModelChange)="markDirty()" />
+              <input
+                type="url"
+                [(ngModel)]="coverUrl"
+                name="coverUrl"
+                placeholder="https://..."
+                (ngModelChange)="markDirty()"
+              />
             </label>
 
             <div class="content-section">
               <div class="content-header-row">
                 <span>Contenido</span>
                 <div class="content-tabs">
-                  <button type="button" class="tab-btn" [class.active]="!showContentPreview()" (click)="showContentPreview.set(false)">Editar</button>
-                  <button type="button" class="tab-btn" [class.active]="showContentPreview()" (click)="showContentPreview.set(true)">Preview</button>
+                  <button
+                    type="button"
+                    class="tab-btn"
+                    [class.active]="!showContentPreview()"
+                    (click)="showContentPreview.set(false)"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    type="button"
+                    class="tab-btn"
+                    [class.active]="showContentPreview()"
+                    (click)="showContentPreview.set(true)"
+                  >
+                    Preview
+                  </button>
                 </div>
               </div>
               @if (!showContentPreview()) {
-                <textarea [(ngModel)]="content" name="content" rows="16" placeholder="Escribe en Markdown..." (ngModelChange)="markDirty()"></textarea>
+                <textarea
+                  [(ngModel)]="content"
+                  name="content"
+                  rows="16"
+                  placeholder="Escribe en Markdown..."
+                  (ngModelChange)="markDirty()"
+                ></textarea>
               } @else {
-                <div class="content-preview" [innerHTML]="markdownService.render(content || 'Sin contenido.')"></div>
+                <div
+                  class="content-preview"
+                  [innerHTML]="markdownService.render(content || 'Sin contenido.')"
+                ></div>
               }
             </div>
 
@@ -130,140 +187,224 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
       }
     </div>
   `,
-  styles: [`
-    .form-page { display: grid; gap: 0; min-height: 100vh; grid-template-rows: auto 1fr; }
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      padding: 0.75rem 1.25rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-card);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .topbar-left { display: flex; align-items: center; gap: 0.75rem; flex: 1; min-width: 0; }
-    .topbar-right { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
-    .back-btn {
-      padding: 0.5rem 0.75rem;
-      border-radius: 0.75rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-1);
-      text-decoration: none;
-      font-size: 0.82rem;
-      white-space: nowrap;
-    }
-    .title-area { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0; }
-    .name-input {
-      flex: 1;
-      min-width: 10rem;
-      padding: 0.5rem 0.75rem;
-      border: none;
-      background: transparent;
-      color: var(--text-1);
-      font-size: 1.15rem;
-      font-weight: 600;
-    }
-    .name-input:focus { outline: none; border-bottom: 2px solid var(--accent-glow); }
-    .cat-badge {
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-    .save-indicator { font-size: 0.75rem; color: var(--text-3); }
-    .toggle-public {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.82rem;
-      color: var(--text-2);
-      cursor: pointer;
-    }
-    .toggle-public input { accent-color: var(--accent-text); }
-    .save-btn {
-      padding: 0.6rem 1.2rem;
-      border-radius: 1rem;
-      border: none;
-      background: var(--accent-glow);
-      color: var(--accent-text);
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .state { color: var(--text-3); text-align: center; padding: 3rem; }
-    .editor-layout {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 1.25rem;
-      padding: 1.25rem;
-      align-items: start;
-    }
-    .left-col, .right-col { display: grid; gap: 1rem; }
-    .card {
-      padding: 1rem;
-      border-radius: 1.25rem;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      display: grid;
-      gap: 0.75rem;
-    }
-    .card h3 { margin: 0; font-size: 0.92rem; color: var(--text-1); }
-    label { display: grid; gap: 0.35rem; }
-    label span { font-size: 0.82rem; color: var(--text-2); }
-    input, textarea, select {
-      padding: 0.7rem 0.85rem;
-      border-radius: 0.75rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-1);
-      font-size: 0.85rem;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    input:focus, textarea:focus { outline: 1px solid var(--accent-glow); }
-    .content-section { display: grid; gap: 0.35rem; }
-    .content-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .content-header-row > span { font-size: 0.82rem; color: var(--text-2); }
-    .content-tabs { display: flex; gap: 0; }
-    .tab-btn {
-      padding: 0.35rem 0.7rem;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-3);
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-    .tab-btn:first-child { border-radius: 0.5rem 0 0 0.5rem; }
-    .tab-btn:last-child { border-radius: 0 0.5rem 0.5rem 0; }
-    .tab-btn.active { background: var(--accent-glow); color: var(--accent-text); }
-    .content-preview {
-      padding: 1rem;
-      border: 1px solid var(--border);
-      border-radius: 0.75rem;
-      background: var(--bg-surface);
-      min-height: 20rem;
-      font-size: 0.85rem;
-      line-height: 1.6;
-      color: var(--text-1);
-    }
-    .error-msg { color: #b42318; font-size: 0.82rem; margin: 0; }
-    .success-msg { color: #027a48; font-size: 0.82rem; margin: 0; }
-    @media (max-width: 960px) {
-      .editor-layout { grid-template-columns: 1fr; }
-    }
-  `],
+  styles: [
+    `
+      .form-page {
+        display: grid;
+        gap: 0;
+        min-height: 100vh;
+        grid-template-rows: auto 1fr;
+      }
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 0.75rem 1.25rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-card);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex: 1;
+        min-width: 0;
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-shrink: 0;
+      }
+      .back-btn {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        text-decoration: none;
+        font-size: 0.82rem;
+        white-space: nowrap;
+      }
+      .title-area {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1;
+        min-width: 0;
+      }
+      .name-input {
+        flex: 1;
+        min-width: 10rem;
+        padding: 0.5rem 0.75rem;
+        border: none;
+        background: transparent;
+        color: var(--text-1);
+        font-size: 1.15rem;
+        font-weight: 600;
+      }
+      .name-input:focus {
+        outline: none;
+        border-bottom: 2px solid var(--accent-glow);
+      }
+      .cat-badge {
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .save-indicator {
+        font-size: 0.75rem;
+        color: var(--text-3);
+      }
+      .toggle-public {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-size: 0.82rem;
+        color: var(--text-2);
+        cursor: pointer;
+      }
+      .toggle-public input {
+        accent-color: var(--accent-text);
+      }
+      .save-btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: 1rem;
+        border: none;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .save-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .state {
+        color: var(--text-3);
+        text-align: center;
+        padding: 3rem;
+      }
+      .editor-layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 1.25rem;
+        padding: 1.25rem;
+        align-items: start;
+      }
+      .left-col,
+      .right-col {
+        display: grid;
+        gap: 1rem;
+      }
+      .card {
+        padding: 1rem;
+        border-radius: 1.25rem;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        display: grid;
+        gap: 0.75rem;
+      }
+      .card h3 {
+        margin: 0;
+        font-size: 0.92rem;
+        color: var(--text-1);
+      }
+      label {
+        display: grid;
+        gap: 0.35rem;
+      }
+      label span {
+        font-size: 0.82rem;
+        color: var(--text-2);
+      }
+      input,
+      textarea,
+      select {
+        padding: 0.7rem 0.85rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        font-size: 0.85rem;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      input:focus,
+      textarea:focus {
+        outline: 1px solid var(--accent-glow);
+      }
+      .content-section {
+        display: grid;
+        gap: 0.35rem;
+      }
+      .content-header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .content-header-row > span {
+        font-size: 0.82rem;
+        color: var(--text-2);
+      }
+      .content-tabs {
+        display: flex;
+        gap: 0;
+      }
+      .tab-btn {
+        padding: 0.35rem 0.7rem;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text-3);
+        font-size: 0.75rem;
+        cursor: pointer;
+      }
+      .tab-btn:first-child {
+        border-radius: 0.5rem 0 0 0.5rem;
+      }
+      .tab-btn:last-child {
+        border-radius: 0 0.5rem 0.5rem 0;
+      }
+      .tab-btn.active {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
+      .content-preview {
+        padding: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        background: var(--bg-surface);
+        min-height: 20rem;
+        font-size: 0.85rem;
+        line-height: 1.6;
+        color: var(--text-1);
+      }
+      .error-msg {
+        color: #b42318;
+        font-size: 0.82rem;
+        margin: 0;
+      }
+      .success-msg {
+        color: #027a48;
+        font-size: 0.82rem;
+        margin: 0;
+      }
+      @media (max-width: 960px) {
+        .editor-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+    `,
+  ],
 })
 export class WbEntryFormPageComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
@@ -282,8 +423,8 @@ export class WbEntryFormPageComponent implements OnDestroy {
   readonly showContentPreview = signal(false);
   readonly category = signal<WbCategory | null>(null);
   readonly fieldSchema = signal<FieldDefinition[]>([]);
-  readonly fields = signal<Record<string, any>>({});
-  readonly links = signal<any[]>([]);
+  readonly fields = signal<Record<string, FieldValue>>({});
+  readonly links = signal<WbEntryLink[]>([]);
   readonly namePlaceholder = computed(() => {
     const cat = this.category();
     return cat ? `Nombre de la nueva ${cat.name.toLowerCase()}` : 'Nombre de la entrada';
@@ -292,7 +433,7 @@ export class WbEntryFormPageComponent implements OnDestroy {
   private entrySlug: string | null = null;
   private catSlug: string | null = null;
   private dirty = false;
-  private autoSaveTimer: any = null;
+  private autoSaveTimer: ReturnType<typeof setInterval> | null = null;
 
   name = '';
   summary = '';
@@ -333,9 +474,10 @@ export class WbEntryFormPageComponent implements OnDestroy {
         },
         error: (err) => {
           this.loading.set(false);
-          const msg = err?.status === 404
-            ? 'Categoria no encontrada. Verifica que la URL sea correcta.'
-            : 'No se pudo cargar la categoria.';
+          const msg =
+            err?.status === 404
+              ? 'Categoria no encontrada. Verifica que la URL sea correcta.'
+              : 'No se pudo cargar la categoria.';
           this.errorMsg.set(msg);
         },
       });
@@ -357,7 +499,7 @@ export class WbEntryFormPageComponent implements OnDestroy {
     this.autoSaveMsg.set(null);
   }
 
-  onFieldChange(key: string, value: any) {
+  onFieldChange(key: string, value: FieldValue) {
     this.fields.update((f) => ({ ...f, [key]: value }));
     this.markDirty();
   }
@@ -370,12 +512,13 @@ export class WbEntryFormPageComponent implements OnDestroy {
 
     const payload = this.buildPayload();
 
-    const req = this.isEdit() && this.entrySlug
-      ? this.wbService.updateEntry(this.worldSlug(), this.entrySlug!, payload)
-      : this.wbService.createEntry(this.worldSlug(), {
-          ...payload,
-          categoryId: this.category()!.id,
-        });
+    const req =
+      this.isEdit() && this.entrySlug
+        ? this.wbService.updateEntry(this.worldSlug(), this.entrySlug!, payload)
+        : this.wbService.createEntry(this.worldSlug(), {
+            ...payload,
+            categoryId: this.category()!.id,
+          });
 
     req.pipe(finalize(() => this.saving.set(false))).subscribe({
       next: (entry) => {
@@ -393,9 +536,10 @@ export class WbEntryFormPageComponent implements OnDestroy {
         }
       },
       error: (err) => {
-        const msg = err?.error?.error?.errors?.join(', ')
-          || err?.error?.error?.message
-          || 'No se pudo guardar la entrada.';
+        const msg =
+          err?.error?.error?.errors?.join(', ') ||
+          err?.error?.error?.message ||
+          'No se pudo guardar la entrada.';
         this.errorMsg.set(msg);
       },
     });
@@ -411,37 +555,57 @@ export class WbEntryFormPageComponent implements OnDestroy {
   onAddLink() {
     if (!this.entrySlug) return;
 
-    this.dialog.open(PromptDialogComponent, {
-      width: '400px',
-      data: { title: 'Vincular entrada', label: 'Nombre o slug de la entrada a vincular', placeholder: 'Ej: elfos-del-velo' } as PromptDialogData,
-    }).afterClosed().subscribe((targetName: string | null) => {
-      if (!targetName) return;
-
-      this.dialog.open(PromptDialogComponent, {
+    this.dialog
+      .open(PromptDialogComponent, {
         width: '400px',
-        data: { title: 'Tipo de relacion', label: 'Relacion', placeholder: 'Ej: es aliado de', value: 'relacionado con' } as PromptDialogData,
-      }).afterClosed().subscribe((relation: string | null) => {
-        const rel = relation || 'relacionado con';
+        data: {
+          title: 'Vincular entrada',
+          label: 'Nombre o slug de la entrada a vincular',
+          placeholder: 'Ej: elfos-del-velo',
+        } as PromptDialogData,
+      })
+      .afterClosed()
+      .subscribe((targetName: string | null) => {
+        if (!targetName) return;
 
-        this.wbService.searchEntries(this.worldSlug(), targetName).subscribe({
-          next: (res) => {
-            if (!res.data.length) {
-              this.showAlert('Sin resultados', 'No se encontro ninguna entrada con ese nombre.');
-              return;
-            }
-            const target = res.data[0];
-            this.wbService.createLink(this.worldSlug(), this.entrySlug!, {
-              targetEntryId: target.id,
-              relation: rel,
-              isMutual: true,
-            }).subscribe({
-              next: (link) => this.links.update((l) => [...l, link]),
-              error: () => this.showAlert('Error', 'No se pudo crear el vinculo.'),
+        this.dialog
+          .open(PromptDialogComponent, {
+            width: '400px',
+            data: {
+              title: 'Tipo de relacion',
+              label: 'Relacion',
+              placeholder: 'Ej: es aliado de',
+              value: 'relacionado con',
+            } as PromptDialogData,
+          })
+          .afterClosed()
+          .subscribe((relation: string | null) => {
+            const rel = relation || 'relacionado con';
+
+            this.wbService.searchEntries(this.worldSlug(), targetName).subscribe({
+              next: (res) => {
+                if (!res.data.length) {
+                  this.showAlert(
+                    'Sin resultados',
+                    'No se encontro ninguna entrada con ese nombre.',
+                  );
+                  return;
+                }
+                const target = res.data[0];
+                this.wbService
+                  .createLink(this.worldSlug(), this.entrySlug!, {
+                    targetEntryId: target.id,
+                    relation: rel,
+                    isMutual: true,
+                  })
+                  .subscribe({
+                    next: (link) => this.links.update((l) => [...l, link]),
+                    error: () => this.showAlert('Error', 'No se pudo crear el vinculo.'),
+                  });
+              },
             });
-          },
-        });
+          });
       });
-    });
   }
 
   private showAlert(title: string, message: string) {
@@ -478,7 +642,7 @@ export class WbEntryFormPageComponent implements OnDestroy {
     this.coverUrl = '';
     this.tagsRaw = '';
     this.isPublic = false;
-    const defaults: Record<string, any> = {};
+    const defaults: Record<string, FieldValue> = {};
     for (const field of this.fieldSchema()) {
       if (field.default !== null && field.default !== undefined) {
         defaults[field.key] = field.default;
@@ -513,7 +677,10 @@ export class WbEntryFormPageComponent implements OnDestroy {
       content: this.content.trim() || null,
       coverUrl: this.coverUrl.trim() || null,
       fields: this.fields(),
-      tags: this.tagsRaw.split(',').map((t) => t.trim()).filter(Boolean),
+      tags: this.tagsRaw
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean),
       isPublic: this.isPublic,
     };
   }

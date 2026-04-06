@@ -3,7 +3,23 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
-import { TimelineDetail, TimelineEvent, TimelineSummary } from '../models/timeline.model';
+import {
+  TimelineDetail,
+  TimelineEvent,
+  TimelineEventRelevance,
+  TimelineEventType,
+  TimelineSummary,
+} from '../models/timeline.model';
+
+type TimelineEventQuery = Partial<{
+  type: TimelineEventType;
+  relevance: TimelineEventRelevance;
+  characterId: string;
+  chapterId: string;
+  worldId: string;
+  search: string;
+  sort: 'order' | 'type' | 'relevance';
+}>;
 
 @Injectable({ providedIn: 'root' })
 export class TimelineService {
@@ -13,9 +29,7 @@ export class TimelineService {
   /* ─── Timelines ─── */
 
   listMine(): Observable<TimelineSummary[]> {
-    return this.http
-      .get<ApiResponse<TimelineSummary[]>>(this.baseUrl)
-      .pipe(map((r) => r.data));
+    return this.http.get<ApiResponse<TimelineSummary[]>>(this.baseUrl).pipe(map((r) => r.data));
   }
 
   create(payload: { name: string; description?: string; novelId?: string }) {
@@ -46,15 +60,13 @@ export class TimelineService {
 
   getByNovelSlug(slug: string) {
     return this.http
-      .get<ApiResponse<TimelineDetail>>(
-        `${environment.apiUrl}/novels/${slug}/timeline`,
-      )
+      .get<ApiResponse<TimelineDetail>>(`${environment.apiUrl}/novels/${slug}/timeline`)
       .pipe(map((r) => r.data));
   }
 
   /* ─── Events ─── */
 
-  listEvents(timelineId: string, query?: Record<string, any>): Observable<TimelineEvent[]> {
+  listEvents(timelineId: string, query?: TimelineEventQuery): Observable<TimelineEvent[]> {
     let params = new HttpParams();
     if (query) {
       Object.entries(query).forEach(([key, value]) => {
@@ -64,45 +76,33 @@ export class TimelineService {
       });
     }
     return this.http
-      .get<ApiResponse<TimelineEvent[]>>(
-        `${this.baseUrl}/${timelineId}/events`,
-        { params },
-      )
+      .get<ApiResponse<TimelineEvent[]>>(`${this.baseUrl}/${timelineId}/events`, { params })
       .pipe(map((r) => r.data));
   }
 
   createEvent(timelineId: string, payload: Partial<TimelineEvent>) {
     return this.http
-      .post<ApiResponse<TimelineEvent>>(
-        `${this.baseUrl}/${timelineId}/events`,
-        payload,
-      )
+      .post<ApiResponse<TimelineEvent>>(`${this.baseUrl}/${timelineId}/events`, payload)
       .pipe(map((r) => r.data));
   }
 
   updateEvent(timelineId: string, eventId: string, payload: Partial<TimelineEvent>) {
     return this.http
-      .patch<ApiResponse<TimelineEvent>>(
-        `${this.baseUrl}/${timelineId}/events/${eventId}`,
-        payload,
-      )
+      .patch<ApiResponse<TimelineEvent>>(`${this.baseUrl}/${timelineId}/events/${eventId}`, payload)
       .pipe(map((r) => r.data));
   }
 
   deleteEvent(timelineId: string, eventId: string) {
     return this.http
-      .delete<ApiResponse<{ message: string }>>(
-        `${this.baseUrl}/${timelineId}/events/${eventId}`,
-      )
+      .delete<ApiResponse<{ message: string }>>(`${this.baseUrl}/${timelineId}/events/${eventId}`)
       .pipe(map((r) => r.data));
   }
 
   reorderEvents(timelineId: string, events: Array<{ id: string; sortOrder: number }>) {
     return this.http
-      .patch<ApiResponse<{ message: string }>>(
-        `${this.baseUrl}/${timelineId}/events/reorder`,
-        { events },
-      )
+      .patch<
+        ApiResponse<{ message: string }>
+      >(`${this.baseUrl}/${timelineId}/events/reorder`, { events })
       .pipe(map((r) => r.data));
   }
 

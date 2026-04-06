@@ -1,6 +1,8 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { ChapterSummary } from '../../../core/models/chapter.model';
+import { CharacterSummary } from '../../../core/models/character.model';
 import { WritingTask } from '../../../core/models/writing-task.model';
 import { TaskPriority, TaskStatus, TaskType } from '../../../core/models/writing-project.model';
 import { ChaptersService } from '../../../core/services/chapters.service';
@@ -13,6 +15,17 @@ export interface TaskFormDialogData {
   defaultStatus?: TaskStatus;
   novelSlug?: string;
 }
+
+type TaskDialogResult = Pick<
+  WritingTask,
+  'title' | 'description' | 'type' | 'priority' | 'status' | 'tags'
+> & {
+  dueDate: string | null;
+  targetWords?: number | null;
+  actualWords?: number | null;
+  chapterId?: string;
+  characterId?: string;
+};
 
 const TASK_TYPES: { value: TaskType; label: string }[] = [
   { value: 'CHAPTER', label: 'Capitulo' },
@@ -59,7 +72,11 @@ const STATUSES: { value: TaskStatus; label: string }[] = [
 
           <label class="field">
             <span class="field-label">Descripcion</span>
-            <textarea [(ngModel)]="description" rows="3" placeholder="Descripcion opcional"></textarea>
+            <textarea
+              [(ngModel)]="description"
+              rows="3"
+              placeholder="Descripcion opcional"
+            ></textarea>
           </label>
 
           <div class="field-row">
@@ -163,114 +180,116 @@ const STATUSES: { value: TaskStatus; label: string }[] = [
       </button>
     </mat-dialog-actions>
   `,
-  styles: [`
-    :host {
-      display: block;
-      width: min(560px, 90vw);
-    }
-    h2[mat-dialog-title] {
-      color: var(--text-1);
-      font-size: 1.15rem;
-      margin: 0;
-      padding: 1rem 1.25rem 0.5rem;
-    }
-    mat-dialog-content {
-      padding: 0 1.25rem;
-      max-height: 65vh;
-      overflow-y: auto;
-    }
-    .form-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      padding-bottom: 0.5rem;
-    }
-    .form-section {
-      display: flex;
-      flex-direction: column;
-      gap: 0.625rem;
-    }
-    .section-title {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-2);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin: 0;
-      padding-bottom: 0.25rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      flex: 1;
-    }
-    .field-label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--text-2);
-    }
-    .field-row {
-      display: flex;
-      gap: 0.75rem;
-    }
-    input,
-    textarea,
-    select {
-      background: var(--bg-base);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.5rem 0.625rem;
-      font-size: 0.85rem;
-      color: var(--text-1);
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: var(--accent);
-    }
-    textarea {
-      resize: vertical;
-    }
-    mat-dialog-actions {
-      padding: 0.75rem 1.25rem;
-      gap: 0.5rem;
-    }
-    .btn-cancel {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
-      color: var(--text-2);
-      cursor: pointer;
-    }
-    .btn-cancel:hover {
-      border-color: var(--border-s);
-    }
-    .btn-save {
-      background: var(--accent);
-      border: none;
-      border-radius: 6px;
-      padding: 0.5rem 1.25rem;
-      font-size: 0.85rem;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: filter 0.15s;
-    }
-    .btn-save:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .btn-save:hover:not(:disabled) {
-      box-shadow: var(--accent-glow);
-    }
-  `],
+  styles: [
+    `
+      :host {
+        display: block;
+        width: min(560px, 90vw);
+      }
+      h2[mat-dialog-title] {
+        color: var(--text-1);
+        font-size: 1.15rem;
+        margin: 0;
+        padding: 1rem 1.25rem 0.5rem;
+      }
+      mat-dialog-content {
+        padding: 0 1.25rem;
+        max-height: 65vh;
+        overflow-y: auto;
+      }
+      .form-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        padding-bottom: 0.5rem;
+      }
+      .form-section {
+        display: flex;
+        flex-direction: column;
+        gap: 0.625rem;
+      }
+      .section-title {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-2);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin: 0;
+        padding-bottom: 0.25rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+      }
+      .field-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--text-2);
+      }
+      .field-row {
+        display: flex;
+        gap: 0.75rem;
+      }
+      input,
+      textarea,
+      select {
+        background: var(--bg-base);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.5rem 0.625rem;
+        font-size: 0.85rem;
+        color: var(--text-1);
+        font-family: inherit;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        border-color: var(--accent);
+      }
+      textarea {
+        resize: vertical;
+      }
+      mat-dialog-actions {
+        padding: 0.75rem 1.25rem;
+        gap: 0.5rem;
+      }
+      .btn-cancel {
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        color: var(--text-2);
+        cursor: pointer;
+      }
+      .btn-cancel:hover {
+        border-color: var(--border-s);
+      }
+      .btn-save {
+        background: var(--accent);
+        border: none;
+        border-radius: 6px;
+        padding: 0.5rem 1.25rem;
+        font-size: 0.85rem;
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        transition: filter 0.15s;
+      }
+      .btn-save:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .btn-save:hover:not(:disabled) {
+        box-shadow: var(--accent-glow);
+      }
+    `,
+  ],
 })
 export class TaskFormDialogComponent implements OnInit {
   readonly data = inject<TaskFormDialogData>(MAT_DIALOG_DATA);
@@ -329,7 +348,14 @@ export class TaskFormDialogComponent implements OnInit {
     if (this.chaptersLoaded || !this.data.novelSlug) return;
     this.chaptersLoaded = true;
     this.chaptersService.listDrafts(this.data.novelSlug, { limit: 50 }).subscribe({
-      next: (res) => this.chapters.set(res.data.map((c: any) => ({ id: c.id, title: c.title, order: c.order }))),
+      next: (res) =>
+        this.chapters.set(
+          res.data.map((chapter: ChapterSummary) => ({
+            id: chapter.id,
+            title: chapter.title,
+            order: chapter.order,
+          })),
+        ),
       error: () => this.chapters.set([]),
     });
   }
@@ -338,7 +364,13 @@ export class TaskFormDialogComponent implements OnInit {
     if (this.charactersLoaded) return;
     this.charactersLoaded = true;
     this.charactersService.listMine({ limit: 50 }).subscribe({
-      next: (res) => this.charactersList.set(res.data.map((c: any) => ({ id: c.id, name: c.name }))),
+      next: (res) =>
+        this.charactersList.set(
+          res.data.map((character: CharacterSummary) => ({
+            id: character.id,
+            name: character.name,
+          })),
+        ),
       error: () => this.charactersList.set([]),
     });
   }
@@ -353,7 +385,7 @@ export class TaskFormDialogComponent implements OnInit {
       .map((t) => t.trim())
       .filter((t) => t.length > 0);
 
-    const result: any = {
+    const result: TaskDialogResult = {
       title: this.title.trim(),
       description: this.description.trim() || null,
       type: this.type,

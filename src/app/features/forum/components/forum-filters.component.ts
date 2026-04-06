@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ForumCategory } from '../../../core/models/forum-thread.model';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 
 type CategoryOption = { value: ForumCategory | ''; label: string };
 
@@ -55,52 +55,65 @@ const CATEGORIES: CategoryOption[] = [
       </div>
     </div>
   `,
-  styles: [`
-    .filters-bar {
-      display: grid;
-      gap: 0.75rem;
-    }
-    .categories {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-    .chip {
-      padding: 0.3rem 0.75rem;
-      border-radius: 9999px;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-2);
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .chip:hover { border-color: var(--accent); }
-    .chip.active {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
-    .controls {
-      display: flex;
-      gap: 0.65rem;
-      flex-wrap: wrap;
-    }
-    .sort-select,
-    .search-input {
-      padding: 0.55rem 0.75rem;
-      border-radius: 0.65rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-1);
-      font-size: 0.85rem;
-    }
-    .search-input { flex: 1; min-width: 160px; }
-    .sort-select { min-width: 140px; }
-  `],
+  styles: [
+    `
+      .filters-bar {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .categories {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .chip {
+        padding: 0.3rem 0.75rem;
+        border-radius: 9999px;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-2);
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .chip:hover {
+        border-color: var(--accent);
+      }
+      .chip.active {
+        background: var(--accent);
+        color: #fff;
+        border-color: var(--accent);
+      }
+      .controls {
+        display: flex;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+      .sort-select,
+      .search-input {
+        padding: 0.55rem 0.75rem;
+        border-radius: 0.65rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        font-size: 0.85rem;
+      }
+      .search-input {
+        flex: 1;
+        min-width: 160px;
+      }
+      .sort-select {
+        min-width: 140px;
+      }
+    `,
+  ],
 })
 export class ForumFiltersComponent implements OnInit, OnDestroy {
-  readonly filterChange = output<{ category: ForumCategory | null; sort: string; search: string }>();
+  readonly filterChange = output<{
+    category: ForumCategory | null;
+    sort: string;
+    search: string;
+  }>();
 
   readonly categories = CATEGORIES;
   readonly selectedCategory = signal<ForumCategory | ''>('');
@@ -108,7 +121,7 @@ export class ForumFiltersComponent implements OnInit, OnDestroy {
   searchText = '';
 
   private readonly searchSubject = new Subject<string>();
-  private searchSub: any;
+  private searchSub: Subscription | null = null;
 
   ngOnInit() {
     this.searchSub = this.searchSubject

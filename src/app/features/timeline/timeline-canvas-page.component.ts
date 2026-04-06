@@ -4,11 +4,14 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { finalize } from 'rxjs';
-import { TimelineDetail, TimelineEvent, TimelineEventType, TimelineEventRelevance } from '../../core/models/timeline.model';
+import { TimelineDetail, TimelineEvent } from '../../core/models/timeline.model';
 import { TimelineService } from '../../core/services/timeline.service';
 import { TimelineEventCardComponent } from './components/timeline-event-card.component';
 import { TimelineFiltersComponent, TimelineFilters } from './components/timeline-filters.component';
-import { TimelineEventFormDialogComponent, TimelineEventFormData } from './components/timeline-event-form-dialog.component';
+import {
+  TimelineEventFormDialogComponent,
+  TimelineEventFormData,
+} from './components/timeline-event-form-dialog.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
@@ -30,7 +33,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
         <!-- Topbar -->
         <header class="topbar">
           <div class="topbar-left">
-            <a routerLink="/mis-timelines" class="back-btn">\u2190 Volver</a>
+            <a routerLink="/mis-timelines" class="back-btn">← Volver</a>
             <input
               type="text"
               class="title-input"
@@ -44,7 +47,9 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
           </div>
 
           <div class="topbar-right">
-            <button type="button" class="tb-btn primary" (click)="openEventDialog()">+ Evento</button>
+            <button type="button" class="tb-btn primary" (click)="openEventDialog()">
+              + Evento
+            </button>
             <button type="button" class="tb-btn" (click)="exportJson()">Exportar JSON</button>
             <div class="view-toggle">
               <button
@@ -52,13 +57,17 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
                 class="toggle-opt"
                 [class.active]="viewMode() === 'canvas'"
                 (click)="viewMode.set('canvas')"
-              >Linea</button>
+              >
+                Linea
+              </button>
               <button
                 type="button"
                 class="toggle-opt"
                 [class.active]="viewMode() === 'list'"
                 (click)="viewMode.set('list')"
-              >Lista</button>
+              >
+                Lista
+              </button>
             </div>
           </div>
         </header>
@@ -130,7 +139,11 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
                   <span class="col-num">{{ i + 1 }}</span>
                   <span class="col-date">{{ ev.dateLabel || '-' }}</span>
                   <span class="col-type">
-                    <span class="type-chip" [style.background]="typeColor(ev.type) + '22'" [style.color]="typeColor(ev.type)">
+                    <span
+                      class="type-chip"
+                      [style.background]="typeColor(ev.type) + '22'"
+                      [style.color]="typeColor(ev.type)"
+                    >
                       {{ typeIcon(ev.type) }} {{ typeLabel(ev.type) }}
                     </span>
                   </span>
@@ -139,14 +152,26 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
                   </span>
                   <span class="col-title">{{ ev.title }}</span>
                   <span class="col-refs">
-                    @if (ev.chapter) { <span class="ref-tag">\u{1F4C4}</span> }
-                    @if (ev.character) { <span class="ref-tag">\u{1F3AD}</span> }
-                    @if (ev.world) { <span class="ref-tag">\u{1F30D}</span> }
-                    @if (ev.wbEntry) { <span class="ref-tag">\u{1F4DC}</span> }
+                    @if (ev.chapter) {
+                      <span class="ref-tag">📄</span>
+                    }
+                    @if (ev.character) {
+                      <span class="ref-tag">🎭</span>
+                    }
+                    @if (ev.world) {
+                      <span class="ref-tag">🌍</span>
+                    }
+                    @if (ev.wbEntry) {
+                      <span class="ref-tag">📜</span>
+                    }
                   </span>
                   <span class="col-acts">
-                    <button type="button" class="row-btn" (click)="openEventDialog(ev)">Editar</button>
-                    <button type="button" class="row-btn danger" (click)="confirmDeleteEvent(ev)">Eliminar</button>
+                    <button type="button" class="row-btn" (click)="openEventDialog(ev)">
+                      Editar
+                    </button>
+                    <button type="button" class="row-btn danger" (click)="confirmDeleteEvent(ev)">
+                      Eliminar
+                    </button>
                   </span>
                 </div>
               }
@@ -160,255 +185,300 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
       </section>
     }
   `,
-  styles: [`
-    .loading-shell {
-      display: grid;
-      place-items: center;
-      min-height: 100vh;
-      color: var(--text-2);
-    }
-    .canvas-shell {
-      display: grid;
-      gap: 0.5rem;
-      padding: 0.75rem 1rem;
-      min-height: 100vh;
-      background: var(--bg-base);
-    }
+  styles: [
+    `
+      .loading-shell {
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        color: var(--text-2);
+      }
+      .canvas-shell {
+        display: grid;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        min-height: 100vh;
+        background: var(--bg-base);
+      }
 
-    /* ─── Topbar ─── */
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      padding: 0.5rem 0.75rem;
-      background: var(--bg-card);
-      border-radius: 1rem;
-      border: 1px solid var(--border);
-    }
-    .topbar-left, .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .back-btn {
-      padding: 0.4rem 0.75rem;
-      border-radius: 0.6rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-2);
-      text-decoration: none;
-      font-size: 0.8rem;
-    }
-    .back-btn:hover { color: var(--text-1); }
-    .title-input {
-      padding: 0.35rem 0.6rem;
-      border-radius: 0.5rem;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--text-1);
-      font-size: 1.1rem;
-      font-weight: 700;
-      min-width: 200px;
-    }
-    .title-input:hover, .title-input:focus {
-      border-color: var(--border);
-      background: var(--bg-surface);
-      outline: none;
-    }
-    .novel-badge {
-      padding: 0.2rem 0.6rem;
-      border-radius: 999px;
-      background: var(--accent-glow);
-      color: var(--accent-text);
-      font-size: 0.72rem;
-      font-weight: 600;
-    }
-    .tb-btn {
-      padding: 0.4rem 0.85rem;
-      border-radius: 0.65rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-1);
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-    .tb-btn:hover { border-color: var(--accent); }
-    .tb-btn.primary {
-      background: var(--accent-glow);
-      color: var(--accent-text);
-      border-color: var(--accent);
-    }
-    .view-toggle {
-      display: flex;
-      border: 1px solid var(--border);
-      border-radius: 0.6rem;
-      overflow: hidden;
-    }
-    .toggle-opt {
-      padding: 0.35rem 0.7rem;
-      border: none;
-      background: var(--bg-surface);
-      color: var(--text-2);
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-    .toggle-opt.active {
-      background: var(--accent-glow);
-      color: var(--accent-text);
-    }
+      /* ─── Topbar ─── */
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        padding: 0.5rem 0.75rem;
+        background: var(--bg-card);
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+      }
+      .topbar-left,
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .back-btn {
+        padding: 0.4rem 0.75rem;
+        border-radius: 0.6rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-2);
+        text-decoration: none;
+        font-size: 0.8rem;
+      }
+      .back-btn:hover {
+        color: var(--text-1);
+      }
+      .title-input {
+        padding: 0.35rem 0.6rem;
+        border-radius: 0.5rem;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--text-1);
+        font-size: 1.1rem;
+        font-weight: 700;
+        min-width: 200px;
+      }
+      .title-input:hover,
+      .title-input:focus {
+        border-color: var(--border);
+        background: var(--bg-surface);
+        outline: none;
+      }
+      .novel-badge {
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.72rem;
+        font-weight: 600;
+      }
+      .tb-btn {
+        padding: 0.4rem 0.85rem;
+        border-radius: 0.65rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        font-size: 0.8rem;
+        cursor: pointer;
+      }
+      .tb-btn:hover {
+        border-color: var(--accent);
+      }
+      .tb-btn.primary {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        border-color: var(--accent);
+      }
+      .view-toggle {
+        display: flex;
+        border: 1px solid var(--border);
+        border-radius: 0.6rem;
+        overflow: hidden;
+      }
+      .toggle-opt {
+        padding: 0.35rem 0.7rem;
+        border: none;
+        background: var(--bg-surface);
+        color: var(--text-2);
+        font-size: 0.75rem;
+        cursor: pointer;
+      }
+      .toggle-opt.active {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
 
-    /* ─── Canvas mode ─── */
-    .canvas-viewport {
-      overflow-x: auto;
-      overflow-y: hidden;
-      padding: 2rem 0;
-      min-height: 420px;
-    }
-    .canvas-track {
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-      position: relative;
-      min-width: max-content;
-      padding: 0 2rem;
-      min-height: 380px;
-    }
-    .axis-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 50%;
-      height: 3px;
-      background: var(--border-s);
-      z-index: 0;
-    }
-    .canvas-node {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: grab;
-    }
-    .canvas-node.above {
-      align-self: flex-start;
-      margin-top: 0;
-    }
-    .canvas-node.below {
-      align-self: flex-end;
-      margin-bottom: 0;
-    }
-    .node-connector {
-      width: 2px;
-      height: 40px;
-      background: var(--border-s);
-    }
-    .canvas-node.above .node-connector { order: 2; }
-    .canvas-node.above app-timeline-event-card { order: 1; }
-    .canvas-node.above .axis-label { order: 3; }
-    .canvas-node.below .node-connector { order: 1; }
-    .canvas-node.below app-timeline-event-card { order: 2; }
-    .canvas-node.below .axis-label { order: 0; }
-    .axis-label {
-      font-size: 0.68rem;
-      color: var(--text-3);
-      padding: 0.15rem 0.4rem;
-      border-radius: 0.3rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      white-space: nowrap;
-    }
-    .canvas-empty {
-      display: grid;
-      place-items: center;
-      min-width: 300px;
-      color: var(--text-3);
-      z-index: 1;
-    }
+      /* ─── Canvas mode ─── */
+      .canvas-viewport {
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 2rem 0;
+        min-height: 420px;
+      }
+      .canvas-track {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        position: relative;
+        min-width: max-content;
+        padding: 0 2rem;
+        min-height: 380px;
+      }
+      .axis-line {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        height: 3px;
+        background: var(--border-s);
+        z-index: 0;
+      }
+      .canvas-node {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: grab;
+      }
+      .canvas-node.above {
+        align-self: flex-start;
+        margin-top: 0;
+      }
+      .canvas-node.below {
+        align-self: flex-end;
+        margin-bottom: 0;
+      }
+      .node-connector {
+        width: 2px;
+        height: 40px;
+        background: var(--border-s);
+      }
+      .canvas-node.above .node-connector {
+        order: 2;
+      }
+      .canvas-node.above app-timeline-event-card {
+        order: 1;
+      }
+      .canvas-node.above .axis-label {
+        order: 3;
+      }
+      .canvas-node.below .node-connector {
+        order: 1;
+      }
+      .canvas-node.below app-timeline-event-card {
+        order: 2;
+      }
+      .canvas-node.below .axis-label {
+        order: 0;
+      }
+      .axis-label {
+        font-size: 0.68rem;
+        color: var(--text-3);
+        padding: 0.15rem 0.4rem;
+        border-radius: 0.3rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        white-space: nowrap;
+      }
+      .canvas-empty {
+        display: grid;
+        place-items: center;
+        min-width: 300px;
+        color: var(--text-3);
+        z-index: 1;
+      }
 
-    /* CDK drag placeholder */
-    .cdk-drag-preview {
-      opacity: 0.85;
-      box-shadow: var(--shadow);
-    }
-    .cdk-drag-placeholder {
-      opacity: 0.3;
-    }
+      /* CDK drag placeholder */
+      .cdk-drag-preview {
+        opacity: 0.85;
+        box-shadow: var(--shadow);
+      }
+      .cdk-drag-placeholder {
+        opacity: 0.3;
+      }
 
-    /* ─── List mode ─── */
-    .list-viewport {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      overflow: hidden;
-    }
-    .list-header, .list-row {
-      display: grid;
-      grid-template-columns: 40px 100px 110px 90px 1fr 100px 130px;
-      gap: 0.5rem;
-      align-items: center;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.8rem;
-    }
-    .list-header {
-      font-weight: 700;
-      color: var(--text-2);
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-surface);
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-    .list-row {
-      border-bottom: 1px solid var(--border);
-      color: var(--text-1);
-      cursor: grab;
-    }
-    .list-row:hover { background: var(--bg-surface); }
-    .col-num { text-align: center; color: var(--text-3); font-size: 0.72rem; }
-    .col-date { font-size: 0.75rem; color: var(--text-2); }
-    .type-chip {
-      font-size: 0.68rem;
-      padding: 0.12rem 0.45rem;
-      border-radius: 999px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .rel-chip {
-      font-size: 0.65rem;
-      color: var(--text-3);
-      text-transform: uppercase;
-    }
-    .col-refs { display: flex; gap: 0.25rem; }
-    .ref-tag { font-size: 0.85rem; }
-    .col-acts { display: flex; gap: 0.3rem; }
-    .row-btn {
-      padding: 0.2rem 0.45rem;
-      border-radius: 0.4rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-2);
-      font-size: 0.7rem;
-      cursor: pointer;
-    }
-    .row-btn:hover { background: var(--accent-glow); color: var(--accent-text); }
-    .row-btn.danger:hover { background: var(--danger); color: #fff; }
-    .list-empty {
-      padding: 2rem;
-      text-align: center;
-      color: var(--text-3);
-    }
-
-    @media (max-width: 768px) {
-      .list-header, .list-row {
-        grid-template-columns: 30px 80px 90px 70px 1fr 60px 100px;
+      /* ─── List mode ─── */
+      .list-viewport {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        overflow: hidden;
+      }
+      .list-header,
+      .list-row {
+        display: grid;
+        grid-template-columns: 40px 100px 110px 90px 1fr 100px 130px;
+        gap: 0.5rem;
+        align-items: center;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+      }
+      .list-header {
+        font-weight: 700;
+        color: var(--text-2);
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-surface);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .list-row {
+        border-bottom: 1px solid var(--border);
+        color: var(--text-1);
+        cursor: grab;
+      }
+      .list-row:hover {
+        background: var(--bg-surface);
+      }
+      .col-num {
+        text-align: center;
+        color: var(--text-3);
         font-size: 0.72rem;
       }
-    }
-  `],
+      .col-date {
+        font-size: 0.75rem;
+        color: var(--text-2);
+      }
+      .type-chip {
+        font-size: 0.68rem;
+        padding: 0.12rem 0.45rem;
+        border-radius: 999px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .rel-chip {
+        font-size: 0.65rem;
+        color: var(--text-3);
+        text-transform: uppercase;
+      }
+      .col-refs {
+        display: flex;
+        gap: 0.25rem;
+      }
+      .ref-tag {
+        font-size: 0.85rem;
+      }
+      .col-acts {
+        display: flex;
+        gap: 0.3rem;
+      }
+      .row-btn {
+        padding: 0.2rem 0.45rem;
+        border-radius: 0.4rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-2);
+        font-size: 0.7rem;
+        cursor: pointer;
+      }
+      .row-btn:hover {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
+      .row-btn.danger:hover {
+        background: var(--danger);
+        color: #fff;
+      }
+      .list-empty {
+        padding: 2rem;
+        text-align: center;
+        color: var(--text-3);
+      }
+
+      @media (max-width: 768px) {
+        .list-header,
+        .list-row {
+          grid-template-columns: 30px 80px 90px 70px 1fr 60px 100px;
+          font-size: 0.72rem;
+        }
+      }
+    `,
+  ],
 })
 export class TimelineCanvasPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -433,20 +503,21 @@ export class TimelineCanvasPageComponent implements OnInit {
   readonly filteredEvents = computed(() => {
     let events = this.allEvents();
     const f = this.filters();
-    if (f.type) events = events.filter(e => e.type === f.type);
-    if (f.relevance) events = events.filter(e => e.relevance === f.relevance);
+    if (f.type) events = events.filter((e) => e.type === f.type);
+    if (f.relevance) events = events.filter((e) => e.relevance === f.relevance);
     if (f.search) {
       const q = f.search.toLowerCase();
-      events = events.filter(e =>
-        e.title.toLowerCase().includes(q) ||
-        (e.dateLabel || '').toLowerCase().includes(q) ||
-        (e.description || '').toLowerCase().includes(q)
+      events = events.filter(
+        (e) =>
+          e.title.toLowerCase().includes(q) ||
+          (e.dateLabel || '').toLowerCase().includes(q) ||
+          (e.description || '').toLowerCase().includes(q),
       );
     }
     return events.sort((a, b) => a.sortOrder - b.sortOrder);
   });
 
-  private titleTimeout: any = null;
+  private titleTimeout: ReturnType<typeof setTimeout> | null = null;
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
@@ -462,7 +533,9 @@ export class TimelineCanvasPageComponent implements OnInit {
   }
 
   onTitleChange(name: string) {
-    clearTimeout(this.titleTimeout);
+    if (this.titleTimeout !== null) {
+      clearTimeout(this.titleTimeout);
+    }
     this.titleTimeout = setTimeout(() => {
       if (!name.trim()) return;
       this.timelineService.update(this.timelineId(), { name: name.trim() }).subscribe();
@@ -493,9 +566,7 @@ export class TimelineCanvasPageComponent implements OnInit {
         // Update
         this.timelineService.updateEvent(this.timelineId(), event.id, result).subscribe({
           next: (updated) => {
-            this.allEvents.update(evts =>
-              evts.map(e => e.id === updated.id ? updated : e)
-            );
+            this.allEvents.update((evts) => evts.map((e) => (e.id === updated.id ? updated : e)));
           },
         });
       } else {
@@ -503,7 +574,7 @@ export class TimelineCanvasPageComponent implements OnInit {
         const payload = { ...result, sortOrder: this.allEvents().length + 1 };
         this.timelineService.createEvent(this.timelineId(), payload).subscribe({
           next: (created) => {
-            this.allEvents.update(evts => [...evts, created]);
+            this.allEvents.update((evts) => [...evts, created]);
           },
         });
       }
@@ -524,7 +595,7 @@ export class TimelineCanvasPageComponent implements OnInit {
       if (confirmed !== 'true') return;
       this.timelineService.deleteEvent(this.timelineId(), event.id).subscribe({
         next: () => {
-          this.allEvents.update(evts => evts.filter(e => e.id !== event.id));
+          this.allEvents.update((evts) => evts.filter((e) => e.id !== event.id));
         },
       });
     });
@@ -538,14 +609,17 @@ export class TimelineCanvasPageComponent implements OnInit {
     const reordered = events.map((e, i) => ({ ...e, sortOrder: i + 1 }));
     this.allEvents.set(reordered);
     this.timelineService
-      .reorderEvents(this.timelineId(), reordered.map(e => ({ id: e.id, sortOrder: e.sortOrder })))
+      .reorderEvents(
+        this.timelineId(),
+        reordered.map((e) => ({ id: e.id, sortOrder: e.sortOrder })),
+      )
       .subscribe();
   }
 
   /* ─── Export ─── */
 
   exportJson() {
-    this.timelineService.exportTimeline(this.timelineId()).subscribe(blob => {
+    this.timelineService.exportTimeline(this.timelineId()).subscribe((blob) => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -584,9 +658,15 @@ export class TimelineCanvasPageComponent implements OnInit {
     NOTE: 'Nota',
   };
 
-  typeColor(type: string) { return this.TYPE_COLORS[type] || '#6b7280'; }
-  typeIcon(type: string) { return this.TYPE_ICONS[type] || ''; }
-  typeLabel(type: string) { return this.TYPE_LABELS[type] || type; }
+  typeColor(type: string) {
+    return this.TYPE_COLORS[type] || '#6b7280';
+  }
+  typeIcon(type: string) {
+    return this.TYPE_ICONS[type] || '';
+  }
+  typeLabel(type: string) {
+    return this.TYPE_LABELS[type] || type;
+  }
 
   private loadTimeline(id: string) {
     this.loading.set(true);

@@ -90,6 +90,7 @@ export interface NovelFilters {
               </div>
             </div>
 
+            @if (pairingsAllowed) {
             <div class="field span-full">
               <span class="field-label">Parejas</span>
               @if (pairingsList.length) {
@@ -152,6 +153,11 @@ export interface NovelFilters {
                 <p class="pair-error">{{ pairingError }}</p>
               }
             </div>
+            } @else {
+              <p class="hint span-full">
+                Para filtrar por parejas, agrega el género <strong>Fanfiction</strong> en los filtros generales.
+              </p>
+            }
 
             <label class="field checkbox span-full">
               <input type="checkbox" [(ngModel)]="onlyCompleted" />
@@ -160,10 +166,7 @@ export interface NovelFilters {
           </div>
 
           <div class="actions">
-            <button type="button" (click)="clear()">Limpiar filtros</button>
-            <button type="button" class="primary" (click)="apply()">
-              Aplicar filtros
-            </button>
+            <button type="button" (click)="clear()">Limpiar avanzados</button>
           </div>
         </div>
       }
@@ -455,6 +458,8 @@ export class AdvancedNovelFiltersComponent {
   private readonly pairingASearch$ = new Subject<string>();
   private readonly pairingBSearch$ = new Subject<string>();
 
+  @Input() pairingsAllowed = false;
+
   @Input() set initialFilters(value: NovelFilters) {
     this.filters = { ...value };
     this.tags = value.tags ?? [];
@@ -618,12 +623,12 @@ export class AdvancedNovelFiltersComponent {
 
   apply(): void {
     // Auto-commit any pending pair input the user filled but didn't click "+ Añadir"
-    if (this.pairingA.trim() || this.pairingB.trim()) {
+    if (this.pairingsAllowed && (this.pairingA.trim() || this.pairingB.trim())) {
       this.addPairingEntry();
     }
-    const pairings = this.pairingsList
-      .map((p) => `${p.a}|${p.b}`)
-      .filter((entry) => entry !== '|');
+    const pairings = this.pairingsAllowed
+      ? this.pairingsList.map((p) => `${p.a}|${p.b}`).filter((entry) => entry !== '|')
+      : [];
     const out: NovelFilters = {
       ...this.filters,
       tags: this.tags.length ? this.tags : undefined,

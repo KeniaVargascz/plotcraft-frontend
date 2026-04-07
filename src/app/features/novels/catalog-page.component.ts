@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal, DestroyRef } from '@angular/core';
+import { Component, OnInit, ViewChild, computed, inject, signal, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -87,12 +87,19 @@ import {
           </select>
         </label>
 
-        <button type="button" (click)="applyFilters()">Aplicar filtros</button>
-
         <app-advanced-novel-filters
+          #advancedFiltersRef
           [initialFilters]="advancedFilters()"
+          [pairingsAllowed]="hasFanfictionGenre()"
           (filtersChange)="onAdvancedFiltersChange($event)"
         />
+
+        <div class="apply-row">
+          <button type="button" (click)="clearAllFilters()">Limpiar filtros</button>
+          <button type="button" class="primary-apply" (click)="applyAllFilters()">
+            Aplicar filtros
+          </button>
+        </div>
       </aside>
 
       <div class="results">
@@ -236,6 +243,20 @@ import {
       .load-more {
         margin-top: 1rem;
       }
+      .apply-row {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .apply-row button {
+        flex: 1;
+      }
+      .apply-row .primary-apply {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        border-color: transparent;
+        font-weight: 600;
+      }
       @media (max-width: 900px) {
         .catalog-shell {
           grid-template-columns: 1fr;
@@ -260,6 +281,8 @@ export class CatalogPageComponent implements OnInit {
   readonly title = signal('Novelas');
   readonly subtitle = signal('Explora historias publicadas por la comunidad.');
 
+  @ViewChild('advancedFiltersRef') advancedFiltersRef?: AdvancedNovelFiltersComponent;
+
   search = '';
   genre = '';
   sort: 'recent' | 'popular' | 'views' = 'recent';
@@ -281,17 +304,19 @@ export class CatalogPageComponent implements OnInit {
       .filter((g) => !term || g.label.toLowerCase().includes(term));
   });
 
+  readonly hasFanfictionGenre = computed(() =>
+    this.selectedGenreSlugs().includes('fanfiction'),
+  );
+
   addGenre(slug: string) {
     if (this.selectedGenreSlugs().includes(slug)) return;
     this.selectedGenreSlugs.update((list) => [...list, slug]);
     this.genreSearch = '';
     this.genreDropdownOpen.set(false);
-    this.applyFilters();
   }
 
   removeGenre(slug: string) {
     this.selectedGenreSlugs.update((list) => list.filter((s) => s !== slug));
-    this.applyFilters();
   }
 
   ngOnInit() {
@@ -321,6 +346,22 @@ export class CatalogPageComponent implements OnInit {
         this.load(true);
       },
     );
+  }
+
+  applyAllFilters() {
+    this.advancedFiltersRef?.apply();
+    // apply() emits filtersChange which is handled by onAdvancedFiltersChange and triggers navigate
+  }
+
+  clearAllFilters() {
+    this.search = '';
+    this.sort = 'recent';
+    this.selectedGenreSlugs.set([]);
+    this.genreSearch = '';
+    this.advancedFilters.set({});
+    this.advancedFiltersRef?.clear();
+    const target = this.genre ? ['/novelas/genero', this.genre] : ['/novelas'];
+    void this.router.navigate(target);
   }
 
   applyFilters() {

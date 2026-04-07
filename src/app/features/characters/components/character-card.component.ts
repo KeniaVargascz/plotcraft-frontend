@@ -36,17 +36,19 @@ import { CharacterRole, CharacterSummary } from '../../../core/models/character.
         }
       </div>
 
-      <footer class="card-footer">
-        <span class="stat">
-          <span class="stat-value">{{ character.stats.relationshipsCount }}</span>
-          <span class="stat-label">relaciones</span>
-        </span>
-        <span class="divider"></span>
-        <span class="stat">
-          <span class="stat-value">{{ character.stats.novelsCount }}</span>
-          <span class="stat-label">novelas</span>
-        </span>
-      </footer>
+      @if (character.stats) {
+        <footer class="card-footer">
+          <span class="stat">
+            <span class="stat-value">{{ character.stats.relationshipsCount }}</span>
+            <span class="stat-label">relaciones</span>
+          </span>
+          <span class="divider"></span>
+          <span class="stat">
+            <span class="stat-value">{{ character.stats.novelsCount }}</span>
+            <span class="stat-label">novelas</span>
+          </span>
+        </footer>
+      }
     </article>
   `,
   styles: [

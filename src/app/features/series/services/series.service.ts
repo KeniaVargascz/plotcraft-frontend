@@ -13,6 +13,12 @@ import {
   UpdateSeriesPayload,
 } from '../models/series.model';
 
+export interface RemoveNovelResult {
+  deleted: boolean;
+  series: SeriesDetail | null;
+  message?: string;
+}
+
 export interface SeriesQuery {
   cursor?: string | null;
   limit?: number;
@@ -71,9 +77,30 @@ export class SeriesService {
       .pipe(map((r) => r.data));
   }
 
-  removeNovel(slug: string, novelId: string): Observable<SeriesDetail> {
+  removeNovel(slug: string, novelId: string): Observable<RemoveNovelResult> {
     return this.http
-      .delete<ApiResponse<SeriesDetail>>(`${this.baseUrl}/${slug}/novels/${novelId}`)
+      .delete<ApiResponse<any>>(`${this.baseUrl}/${slug}/novels/${novelId}`)
+      .pipe(
+        map((r) => {
+          const data = r.data;
+          if (data && data.deleted === true) {
+            return { deleted: true, series: null, message: data.message };
+          }
+          return { deleted: false, series: data as SeriesDetail };
+        }),
+      );
+  }
+
+  listByAuthor(
+    username: string,
+    query: SeriesQuery = {},
+  ): Observable<PaginatedResponse<SeriesSummary>> {
+    return this.list({ ...query, authorUsername: username });
+  }
+
+  updateParent(slug: string, parentId: string | null): Observable<SeriesDetail> {
+    return this.http
+      .patch<ApiResponse<SeriesDetail>>(`${this.baseUrl}/${slug}`, { parentId })
       .pipe(map((r) => r.data));
   }
 

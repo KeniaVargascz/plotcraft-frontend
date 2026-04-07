@@ -381,7 +381,17 @@ export class SeriesFormPageComponent implements OnInit {
   removeNovel(novel: SeriesNovelItem): void {
     if (!this.slug) return;
     this.seriesService.removeNovel(this.slug, novel.id).subscribe({
-      next: (s) => this.applySeries(s),
+      next: (result) => {
+        if (result.deleted) {
+          alert(
+            result.message ||
+              'La colección se eliminó porque era su última novela. Las novelas no se eliminaron.',
+          );
+          this.router.navigate(['/mis-sagas']);
+        } else if (result.series) {
+          this.applySeries(result.series);
+        }
+      },
     });
   }
 

@@ -182,12 +182,93 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
             <span>{{ currentNovel.stats.kudosCount }} kudos</span>
             <span>{{ currentNovel.stats.bookmarksCount }} guardados</span>
             <span>{{ currentNovel.stats.votesCount }} votos</span>
-            <span>{{ currentNovel.stats.subscribersCount }} suscriptores</span>
             <span>{{ currentNovel.stats.worldsCount }} mundos</span>
             <span>{{ currentNovel.stats.charactersCount }} personajes</span>
             <span>{{ currentNovel.viewsCount }} vistas</span>
             <span>Actualizada {{ currentNovel.updatedAt | date: 'longDate' }}</span>
           </aside>
+        </section>
+
+        <section class="related-block">
+          <div class="section-head">
+            <h2>Detalle</h2>
+          </div>
+          <div class="detail-card card">
+            @if (currentNovel.genres?.length) {
+              <div class="detail-row">
+                <span class="detail-label">Géneros</span>
+                <div class="chips-block">
+                  @for (g of currentNovel.genres; track g.id) {
+                    <span class="chip chip-genre">{{ g.label }}</span>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (currentNovel.romanceGenres?.length) {
+              <div class="detail-row">
+                <span class="detail-label">Romance</span>
+                <div class="chips-block">
+                  @for (rg of currentNovel.romanceGenres; track rg) {
+                    <span class="romance-genre-badge">{{ romanceGenreLabel(rg) }}</span>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (currentNovel.pairings?.length) {
+              <div class="detail-row">
+                <span class="detail-label">Parejas</span>
+                <div class="pairings-block">
+                  @for (p of currentNovel.pairings; track p.id) {
+                    <span class="pairing-pill" [class.is-main]="p.isMain">
+                      @if (p.isMain) {
+                        <span class="main-tag">★ Principal</span>
+                      }
+                      {{ p.characterA.name }} × {{ p.characterB.name }}
+                    </span>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (currentNovel.tags?.length) {
+              <div class="detail-row">
+                <span class="detail-label">Etiquetas</span>
+                <div class="chips-block">
+                  @for (t of currentNovel.tags; track t) {
+                    <span class="chip chip-tag">#{{ t }}</span>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (currentNovel.warnings?.length) {
+              <div class="detail-row">
+                <span class="detail-label">Advertencias</span>
+                <div class="chips-block">
+                  @for (w of currentNovel.warnings; track w) {
+                    <span class="chip chip-warning">⚠ {{ w }}</span>
+                  }
+                </div>
+              </div>
+            }
+
+            <div class="detail-row">
+              <span class="detail-label">Idioma</span>
+              <span class="chip chip-meta">{{ currentNovel.language?.name || currentNovel.language?.code || 'es' }}</span>
+            </div>
+
+            <div class="detail-row">
+              <span class="detail-label">Estado</span>
+              <span class="chip chip-meta">{{ currentNovel.status }}</span>
+            </div>
+
+            <div class="detail-row">
+              <span class="detail-label">Clasificación</span>
+              <span class="chip chip-meta">{{ currentNovel.rating }}</span>
+            </div>
+          </div>
         </section>
 
         @if (currentNovel.worlds.length) {
@@ -360,6 +441,107 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
         display: grid;
         gap: 1rem;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .romance-card {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+      }
+      .detail-card {
+        display: grid;
+        gap: 0.75rem;
+        padding: 1.25rem;
+      }
+      .detail-row {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 0.75rem;
+        align-items: start;
+      }
+      .detail-label {
+        color: var(--text-3);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 700;
+        padding-top: 0.4rem;
+      }
+      .chips-block {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        white-space: nowrap;
+      }
+      .chip-genre {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
+      .chip-tag {
+        background: rgba(122, 156, 220, 0.14);
+        color: #9bb6e8;
+        border: 1px solid rgba(122, 156, 220, 0.3);
+      }
+      .chip-warning {
+        background: rgba(214, 154, 91, 0.12);
+        color: #e0b07a;
+        border: 1px solid rgba(214, 154, 91, 0.3);
+      }
+      .chip-meta {
+        background: var(--bg-surface);
+        color: var(--text-2);
+        border: 1px solid var(--border);
+      }
+      @media (max-width: 640px) {
+        .detail-row {
+          grid-template-columns: 1fr;
+          gap: 0.4rem;
+        }
+        .detail-label {
+          padding-top: 0;
+        }
+      }
+      .romance-genre-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      .pairings-block {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .pairing-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 999px;
+        background: rgba(224, 85, 85, 0.12);
+        color: #e89a9a;
+        border: 1px solid rgba(224, 85, 85, 0.3);
+        font-size: 0.85rem;
+      }
+      .pairing-pill.is-main {
+        background: rgba(224, 85, 85, 0.22);
+        color: #f0b0b0;
+        border-color: rgba(224, 85, 85, 0.55);
+        font-weight: 600;
+      }
+      .pairing-pill .main-tag {
+        font-size: 0.7rem;
+        opacity: 0.85;
       }
       .chapter-item {
         display: flex;
@@ -702,6 +884,16 @@ export class NovelDetailPageComponent implements OnInit {
   eventTypeIcon(type: string): string {
     const icons: Record<string, string> = { WORLD_EVENT: '\u{1F30D}', STORY_EVENT: '\u{1F4D6}', CHARACTER_ARC: '\u{1F3AD}', CHAPTER_EVENT: '\u{1F4C4}', LORE_EVENT: '\u{1F4DC}', NOTE: '\u{1F4DD}' };
     return icons[type] || '\u{1F4CC}';
+  }
+
+  romanceGenreLabel(value: string | null): string {
+    const labels: Record<string, string> = {
+      BL: 'BL (Boys Love)',
+      GL: 'GL (Girls Love)',
+      HETEROSEXUAL: 'Heterosexual',
+      OTHER: 'Otros',
+    };
+    return value ? (labels[value] ?? value) : '';
   }
 
   createTimeline(novelSlug: string) {

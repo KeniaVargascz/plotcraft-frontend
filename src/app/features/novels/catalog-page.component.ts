@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, DestroyRef } from '@angular/core';
+import { Component, OnInit, computed, inject, signal, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -36,15 +36,47 @@ import {
           <input [(ngModel)]="search" placeholder="Buscar novelas..." />
         </label>
 
-        <label>
-          Genero
-          <select [(ngModel)]="genre">
-            <option value="">Todos</option>
-            @for (item of genres(); track item.id) {
-              <option [value]="item.slug">{{ item.label }}</option>
-            }
-          </select>
-        </label>
+        <div class="genre-field">
+          <span class="field-label">Géneros</span>
+
+          @if (selectedGenres().length) {
+            <ul class="picked-pills">
+              @for (g of selectedGenres(); track g.id) {
+                <li>
+                  <span>{{ g.label }}</span>
+                  <button type="button" (click)="removeGenre(g.slug)">✕</button>
+                </li>
+              }
+            </ul>
+          }
+
+          @if (availableGenresFiltered().length === 0 && !genreSearch.trim() && selectedGenreSlugs().length === genres().length) {
+            <p class="hint">Has seleccionado todos los géneros disponibles.</p>
+          } @else {
+            <div class="char-search">
+              <input
+                type="text"
+                [(ngModel)]="genreSearch"
+                (focus)="genreDropdownOpen.set(true)"
+                placeholder="Buscar género..."
+              />
+              @if (genreDropdownOpen() && availableGenresFiltered().length) {
+                <ul class="dropdown">
+                  @for (g of availableGenresFiltered(); track g.id) {
+                    <li>
+                      <button type="button" (click)="addGenre(g.slug)">
+                        {{ g.label }}
+                      </button>
+                    </li>
+                  }
+                </ul>
+              }
+              @if (genreDropdownOpen() && availableGenresFiltered().length === 0 && genreSearch.trim()) {
+                <p class="hint">Sin resultados.</p>
+              }
+            </div>
+          }
+        </div>
 
         <label>
           Orden
@@ -123,6 +155,83 @@ import {
         display: grid;
         gap: 1rem;
       }
+      .genre-field {
+        display: grid;
+        gap: 0.4rem;
+        color: var(--text-2);
+      }
+      .field-label {
+        font-size: 0.85rem;
+      }
+      .picked-pills {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .picked-pills li {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.7rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.78rem;
+      }
+      .picked-pills button {
+        background: transparent;
+        border: 0;
+        color: inherit;
+        cursor: pointer;
+        padding: 0;
+        font-size: 0.85rem;
+      }
+      .char-search {
+        position: relative;
+      }
+      .char-search input {
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .char-search .dropdown {
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: 0.25rem 0 0;
+        padding: 0.25rem;
+        list-style: none;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 0.75rem;
+        max-height: 220px;
+        overflow-y: auto;
+        z-index: 10;
+        box-shadow: 0 12px 28px -16px var(--shadow);
+      }
+      .char-search .dropdown li {
+        padding: 0;
+      }
+      .char-search .dropdown button {
+        width: 100%;
+        text-align: left;
+        background: transparent;
+        border: 0;
+        padding: 0.5rem 0.65rem;
+        border-radius: 0.5rem;
+        color: var(--text-1);
+        cursor: pointer;
+      }
+      .char-search .dropdown button:hover {
+        background: var(--bg-surface);
+      }
+      .hint {
+        margin: 0;
+        font-size: 0.78rem;
+        color: var(--text-3);
+      }
       .empty,
       .load-more {
         margin-top: 1rem;
@@ -155,6 +264,35 @@ export class CatalogPageComponent implements OnInit {
   genre = '';
   sort: 'recent' | 'popular' | 'views' = 'recent';
   readonly advancedFilters = signal<NovelFilters>({});
+  readonly selectedGenreSlugs = signal<string[]>([]);
+  readonly genreDropdownOpen = signal(false);
+  genreSearch = '';
+
+  readonly selectedGenres = computed(() => {
+    const slugs = this.selectedGenreSlugs();
+    return this.genres().filter((g) => slugs.includes(g.slug));
+  });
+
+  readonly availableGenresFiltered = computed(() => {
+    const slugs = this.selectedGenreSlugs();
+    const term = this.genreSearch.trim().toLowerCase();
+    return this.genres()
+      .filter((g) => !slugs.includes(g.slug))
+      .filter((g) => !term || g.label.toLowerCase().includes(term));
+  });
+
+  addGenre(slug: string) {
+    if (this.selectedGenreSlugs().includes(slug)) return;
+    this.selectedGenreSlugs.update((list) => [...list, slug]);
+    this.genreSearch = '';
+    this.genreDropdownOpen.set(false);
+    this.applyFilters();
+  }
+
+  removeGenre(slug: string) {
+    this.selectedGenreSlugs.update((list) => list.filter((s) => s !== slug));
+    this.applyFilters();
+  }
 
   ngOnInit() {
     this.genresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((genres) => {
@@ -169,14 +307,16 @@ export class CatalogPageComponent implements OnInit {
         const sort = queryParams.get('sort');
         this.sort = sort === 'popular' || sort === 'views' ? sort : 'recent';
         this.advancedFilters.set({
-          language: queryParams.get('language'),
+          languageId: queryParams.get('languageId'),
           updatedAfter: queryParams.get('updatedAfter'),
           updatedBefore: queryParams.get('updatedBefore'),
           tags: queryParams.getAll('tags'),
-          ships: queryParams.getAll('ships'),
           status: queryParams.get('status'),
           sortBy: queryParams.get('sortBy'),
+          romanceGenres: queryParams.getAll('romanceGenres'),
+          pairings: queryParams.getAll('pairings'),
         });
+        this.selectedGenreSlugs.set(queryParams.getAll('genres'));
         this.syncGenreCopy();
         this.load(true);
       },
@@ -184,21 +324,28 @@ export class CatalogPageComponent implements OnInit {
   }
 
   applyFilters() {
-    const queryParams = {
+    const adv = this.advancedFilters();
+    const queryParams: Record<string, string | string[] | null> = {
       search: this.search || null,
       sort: this.sort !== 'recent' ? this.sort : null,
+      genres: this.selectedGenreSlugs().length ? this.selectedGenreSlugs() : null,
+      // Preserve advanced filter state in URL on basic filter apply
+      languageId: adv.languageId || null,
+      updatedAfter: adv.updatedAfter || null,
+      updatedBefore: adv.updatedBefore || null,
+      tags: adv.tags?.length ? adv.tags : null,
+      status: adv.status || null,
+      sortBy: adv.sortBy && adv.sortBy !== 'newest' ? adv.sortBy : null,
+      romanceGenres: adv.romanceGenres?.length ? adv.romanceGenres : null,
+      pairings: adv.pairings?.length ? adv.pairings : null,
     };
 
     if (this.genre) {
-      void this.router.navigate(['/novelas/genero', this.genre], {
-        queryParams,
-      });
+      void this.router.navigate(['/novelas/genero', this.genre], { queryParams });
       return;
     }
 
-    void this.router.navigate(['/novelas'], {
-      queryParams,
-    });
+    void this.router.navigate(['/novelas'], { queryParams });
   }
 
   loadMore() {
@@ -210,13 +357,15 @@ export class CatalogPageComponent implements OnInit {
     const queryParams: Record<string, string | string[] | null> = {
       search: this.search || null,
       sort: this.sort !== 'recent' ? this.sort : null,
-      language: filters.language || null,
+      languageId: filters.languageId || null,
       updatedAfter: filters.updatedAfter || null,
       updatedBefore: filters.updatedBefore || null,
       tags: filters.tags?.length ? filters.tags : null,
-      ships: filters.ships?.length ? filters.ships : null,
       status: filters.status || null,
       sortBy: filters.sortBy && filters.sortBy !== 'newest' ? filters.sortBy : null,
+      romanceGenres: filters.romanceGenres?.length ? filters.romanceGenres : null,
+      pairings: filters.pairings?.length ? filters.pairings : null,
+      genres: this.selectedGenreSlugs().length ? this.selectedGenreSlugs() : null,
     };
 
     const target = this.genre ? ['/novelas/genero', this.genre] : ['/novelas'];
@@ -234,13 +383,15 @@ export class CatalogPageComponent implements OnInit {
         search: this.search || null,
         genre: this.genre || null,
         sort: this.sort,
-        language: adv.language,
+        languageId: adv.languageId,
         updatedAfter: adv.updatedAfter,
         updatedBefore: adv.updatedBefore,
         tags: adv.tags,
-        ships: adv.ships,
         status: (adv.status as 'COMPLETED' | null) || null,
         sortBy: adv.sortBy,
+        romanceGenres: (adv.romanceGenres as ('BL' | 'GL' | 'HETEROSEXUAL' | 'OTHER')[] | null) || null,
+        pairings: adv.pairings ?? null,
+        genres: this.selectedGenreSlugs().length ? this.selectedGenreSlugs() : null,
       })
       .subscribe({
         next: (response) => {

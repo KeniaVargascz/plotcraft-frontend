@@ -158,17 +158,13 @@ export const routes: Routes = [
       },
       {
         path: 'mis-sagas',
-        loadComponent: () =>
-          import('./features/series/my-series-page.component').then(
-            (m) => m.MySeriesPageComponent,
-          ),
+        redirectTo: 'biblioteca/colecciones',
+        pathMatch: 'full',
       },
       {
         path: 'mis-sagas/nueva',
-        loadComponent: () =>
-          import('./features/series/series-form-page.component').then(
-            (m) => m.SeriesFormPageComponent,
-          ),
+        redirectTo: 'biblioteca/colecciones',
+        pathMatch: 'full',
       },
       {
         path: 'mis-sagas/:slug/editar',
@@ -301,6 +297,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/library/library-page.component').then(
             (module) => module.LibraryPageComponent,
+          ),
+      },
+      {
+        path: 'biblioteca/colecciones',
+        loadComponent: () =>
+          import('./features/library/organize-collections-page.component').then(
+            (m) => m.OrganizeCollectionsPageComponent,
           ),
       },
       {

@@ -13,8 +13,8 @@ import { NovelSummary } from '../../../core/models/novel.model';
         <a class="cover" [class]="coverClass()" [routerLink]="['/novelas', novel().slug]">
           <span class="cover-texture"></span>
           <span class="cover-letter">{{ novel().title.charAt(0) }}</span>
-          @if (novel().language && novel().language !== 'es') {
-            <span class="lang-badge">{{ novel().language.toUpperCase() }}</span>
+          @if (novel().language?.code && novel().language?.code !== 'es') {
+            <span class="lang-badge">{{ novel().language?.code?.toUpperCase() }}</span>
           }
         </a>
 

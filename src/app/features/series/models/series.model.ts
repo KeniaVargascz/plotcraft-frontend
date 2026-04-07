@@ -53,6 +53,9 @@ export interface SeriesSummary {
   novelCovers?: (string | null)[];
   createdAt: string;
   updatedAt: string;
+  parentId: string | null;
+  parent: { id: string; title: string; slug: string } | null;
+  children: { id: string; title: string; slug: string }[];
 }
 
 export interface SeriesDetail extends SeriesSummary {
@@ -64,6 +67,8 @@ export interface CreateSeriesPayload {
   description?: string;
   type: SeriesType;
   coverUrl?: string;
+  novelIds?: string[];
+  childSeriesIds?: string[];
 }
 
 export interface UpdateSeriesPayload {

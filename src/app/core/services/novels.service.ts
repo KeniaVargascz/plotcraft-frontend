@@ -4,22 +4,24 @@ import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 import { PaginatedResponse } from '../models/feed-pagination.model';
-import { NovelDetail, NovelRating, NovelStatus, NovelSummary } from '../models/novel.model';
+import { NovelDetail, NovelRating, NovelStatus, NovelSummary, RomanceGenre } from '../models/novel.model';
 
 export type NovelQuery = {
   cursor?: string | null;
   limit?: number;
   genre?: string | null;
+  genres?: string[] | null;
   search?: string | null;
   status?: NovelStatus | null;
   rating?: NovelRating | null;
   sort?: 'recent' | 'popular' | 'views' | null;
-  language?: string | null;
+  languageId?: string | null;
   updatedAfter?: string | null;
   updatedBefore?: string | null;
   tags?: string[];
-  ships?: string[];
   sortBy?: string | null;
+  romanceGenres?: RomanceGenre[] | null;
+  pairings?: string[] | null;
 };
 
 export type NovelPayload = {
@@ -32,7 +34,9 @@ export type NovelPayload = {
   warnings?: string[];
   genreIds?: string[];
   isPublic?: boolean;
-  language?: string;
+  languageId?: string;
+  romanceGenres?: RomanceGenre[] | null;
+  pairings?: { characterAId: string; characterBId: string; isMain?: boolean }[];
 };
 
 @Injectable({ providedIn: 'root' })
@@ -119,6 +123,11 @@ export class NovelsService {
     if (query.genre) {
       params = params.set('genre', query.genre);
     }
+    if (query.genres?.length) {
+      for (const g of query.genres) {
+        params = params.append('genres', g);
+      }
+    }
     if (query.search) {
       params = params.set('search', query.search);
     }
@@ -131,8 +140,8 @@ export class NovelsService {
     if (query.sort) {
       params = params.set('sort', query.sort);
     }
-    if (query.language) {
-      params = params.set('language', query.language);
+    if (query.languageId) {
+      params = params.set('languageId', query.languageId);
     }
     if (query.updatedAfter) {
       params = params.set('updatedAfter', query.updatedAfter);
@@ -145,13 +154,18 @@ export class NovelsService {
         params = params.append('tags', tag);
       }
     }
-    if (query.ships?.length) {
-      for (const ship of query.ships) {
-        params = params.append('ships', ship);
-      }
-    }
     if (query.sortBy) {
       params = params.set('sortBy', query.sortBy);
+    }
+    if (query.romanceGenres?.length) {
+      for (const g of query.romanceGenres) {
+        params = params.append('romanceGenres', g);
+      }
+    }
+    if (query.pairings?.length) {
+      for (const p of query.pairings) {
+        params = params.append('pairings', p);
+      }
     }
 
     return params;

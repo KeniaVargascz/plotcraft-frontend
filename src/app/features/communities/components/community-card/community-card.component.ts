@@ -15,16 +15,18 @@ import { COMMUNITY_TYPE_LABELS, Community } from '../../models/community.model';
       </div>
       <div class="body">
         <h3 class="name">{{ community.name }}</h3>
-        <div class="owner">
-          <div class="avatar">
-            @if (community.owner.avatarUrl) {
-              <img [src]="community.owner.avatarUrl" [alt]="community.owner.displayName" />
-            } @else {
-              <span>{{ community.owner.displayName.charAt(0) }}</span>
-            }
+        @if (community.owner) {
+          <div class="owner">
+            <div class="avatar">
+              @if (community.owner.avatarUrl) {
+                <img [src]="community.owner.avatarUrl" [alt]="community.owner.displayName" />
+              } @else {
+                <span>{{ community.owner.displayName.charAt(0) }}</span>
+              }
+            </div>
+            <span>{{ community.owner.displayName }}</span>
           </div>
-          <span>{{ community.owner.displayName }}</span>
-        </div>
+        }
         @if (community.description) {
           <p class="desc">{{ community.description }}</p>
         }

@@ -29,16 +29,18 @@ import { CommunityService } from './services/community.service';
                 <span class="type">{{ typeLabel(c) }}</span>
                 <span class="date">{{ c.createdAt | date: 'short' }}</span>
               </div>
-              <div class="owner">
-                <div class="avatar">
-                  @if (c.owner.avatarUrl) {
-                    <img [src]="c.owner.avatarUrl" [alt]="c.owner.displayName" />
-                  } @else {
-                    <span>{{ c.owner.displayName.charAt(0) }}</span>
-                  }
+              @if (c.owner) {
+                <div class="owner">
+                  <div class="avatar">
+                    @if (c.owner.avatarUrl) {
+                      <img [src]="c.owner.avatarUrl" [alt]="c.owner.displayName" />
+                    } @else {
+                      <span>{{ c.owner.displayName.charAt(0) }}</span>
+                    }
+                  </div>
+                  <span>{{ c.owner.displayName }} (&#64;{{ c.owner.username }})</span>
                 </div>
-                <span>{{ c.owner.displayName }} (&#64;{{ c.owner.username }})</span>
-              </div>
+              }
               @if (c.description) {
                 <p class="desc">{{ c.description }}</p>
               }

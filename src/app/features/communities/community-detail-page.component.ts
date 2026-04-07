@@ -99,22 +99,24 @@ import { CommunityService } from './services/community.service';
               }
             }
 
-            <div class="card">
-              <h3>Creador</h3>
-              <a class="owner-link" [routerLink]="['/perfil', c.owner.username]">
-                <div class="avatar">
-                  @if (c.owner.avatarUrl) {
-                    <img [src]="c.owner.avatarUrl" [alt]="c.owner.displayName" />
-                  } @else {
-                    <span>{{ c.owner.displayName.charAt(0) }}</span>
-                  }
-                </div>
-                <div>
-                  <strong>{{ c.owner.displayName }}</strong>
-                  <span>&#64;{{ c.owner.username }}</span>
-                </div>
-              </a>
-            </div>
+            @if (c.owner) {
+              <div class="card">
+                <h3>Creador</h3>
+                <a class="owner-link" [routerLink]="['/perfil', c.owner.username]">
+                  <div class="avatar">
+                    @if (c.owner.avatarUrl) {
+                      <img [src]="c.owner.avatarUrl" [alt]="c.owner.displayName" />
+                    } @else {
+                      <span>{{ c.owner.displayName.charAt(0) }}</span>
+                    }
+                  </div>
+                  <div>
+                    <strong>{{ c.owner.displayName }}</strong>
+                    <span>&#64;{{ c.owner.username }}</span>
+                  </div>
+                </a>
+              </div>
+            }
 
             @if (c.linkedNovel) {
               <div class="card">

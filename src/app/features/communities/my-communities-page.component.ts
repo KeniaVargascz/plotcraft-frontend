@@ -73,15 +73,17 @@ import { CommunityService } from './services/community.service';
                 <textarea formControlName="rules" rows="5" maxlength="5000"></textarea>
               </label>
 
-              <label>
-                URL de portada
-                <input type="url" formControlName="coverUrl" placeholder="https://..." />
-              </label>
+              @if (type() === 'PRIVATE') {
+                <label>
+                  URL de portada
+                  <input type="url" formControlName="coverUrl" placeholder="https://..." />
+                </label>
 
-              <label>
-                URL de banner
-                <input type="url" formControlName="bannerUrl" placeholder="https://..." />
-              </label>
+                <label>
+                  URL de banner
+                  <input type="url" formControlName="bannerUrl" placeholder="https://..." />
+                </label>
+              }
 
               @if (type() === 'PRIVATE') {
                 <label>
@@ -145,9 +147,13 @@ import { CommunityService } from './services/community.service';
               <div class="actions">
                 @if (c.status === 'ACTIVE') {
                   <a [routerLink]="['/comunidades', c.slug]">Ver</a>
-                  <a [routerLink]="['/mis-comunidades', c.slug, 'editar']">Editar</a>
                 }
-                <button type="button" (click)="remove(c)">Eliminar</button>
+                @if (c.type === 'PRIVATE' || c.status !== 'ACTIVE') {
+                  @if (c.status === 'ACTIVE') {
+                    <a [routerLink]="['/mis-comunidades', c.slug, 'editar']">Editar</a>
+                  }
+                  <button type="button" (click)="remove(c)">Eliminar</button>
+                }
               </div>
             </li>
           }
@@ -475,8 +481,8 @@ export class MyCommunitiesPageComponent implements OnInit {
         name: v.name!,
         description: v.description || undefined,
         rules: v.rules || undefined,
-        coverUrl: v.coverUrl || undefined,
-        bannerUrl: v.bannerUrl || undefined,
+        coverUrl: t === 'PRIVATE' ? v.coverUrl || undefined : undefined,
+        bannerUrl: t === 'PRIVATE' ? v.bannerUrl || undefined : undefined,
         linkedNovelId: t === 'PRIVATE' ? v.linkedNovelId || undefined : undefined,
       })
       .subscribe({

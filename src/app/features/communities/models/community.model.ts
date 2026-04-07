@@ -40,7 +40,7 @@ export interface Community {
   rejectionReason: string | null;
   membersCount: number;
   followersCount: number;
-  owner: CommunityOwner;
+  owner: CommunityOwner | null;
   linkedNovel: CommunityLinkedNovel | null;
   isMember: boolean;
   isFollowing: boolean;

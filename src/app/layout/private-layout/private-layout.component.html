@@ -77,7 +77,7 @@
       </div>
 
       <div class="user-actions">
-        <span>{{ (authService.currentUser$ | async)?.username }}</span>
+        <a routerLink="/mi-perfil" class="user-link">{{ (authService.currentUser$ | async)?.username }}</a>
         <button mat-stroked-button type="button" (click)="logout()">
           {{ 'nav.logout' | translate }}
         </button>

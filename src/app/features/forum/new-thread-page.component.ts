@@ -1,9 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ForumCategory } from '../../core/models/forum-thread.model';
 import { ForumService } from '../../core/services/forum.service';
 import { MarkdownService } from '../../core/services/markdown.service';
+import { CommunityService } from '../communities/services/community.service';
+import { Community } from '../communities/models/community.model';
 
 type CategoryOption = { value: ForumCategory; label: string };
 
@@ -105,6 +107,50 @@ const CATEGORIES: CategoryOption[] = [
             ></textarea>
           }
         </div>
+
+        @if (myCommunities().length) {
+          <div class="field">
+            <span class="label">Vincular a comunidades en las que participas</span>
+            <span class="counter">
+              Aparecerán en la sección "Foros comentando sobre…" de cada comunidad.
+            </span>
+            @if (selectedCommunities().length) {
+              <div class="link-list">
+                @for (c of selectedCommunities(); track c.id) {
+                  <span class="link-chip selected">
+                    {{ c.name }}
+                    <button type="button" class="chip-remove" (click)="toggleLinked(c.id)">×</button>
+                  </span>
+                }
+              </div>
+            }
+            <input
+              type="text"
+              class="input"
+              placeholder="Buscar comunidad..."
+              [(ngModel)]="communitySearch"
+              (focus)="communitySearchFocused.set(true)"
+              (blur)="onCommunitySearchBlur()"
+            />
+            @if (communitySearchFocused() && filteredCommunities().length) {
+              <div class="community-suggestions">
+                @for (c of filteredCommunities(); track c.id) {
+                  <button
+                    type="button"
+                    class="suggestion"
+                    [class.linked]="isLinked(c.id)"
+                    (mousedown)="toggleLinked(c.id); $event.preventDefault()"
+                  >
+                    <span>{{ c.name }}</span>
+                    @if (isLinked(c.id)) {
+                      <span class="check">✓</span>
+                    }
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        }
 
         <!-- Poll (collapsible) -->
         <div class="field">
@@ -355,14 +401,107 @@ const CATEGORIES: CategoryOption[] = [
       font-size: 0.85rem;
       margin: 0;
     }
+    .link-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .link-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-1);
+    }
+    .link-chip.selected {
+      background: var(--accent-glow);
+      color: var(--accent-text);
+      border-color: transparent;
+    }
+    .chip-remove {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0;
+    }
+    .community-suggestions {
+      margin-top: 0.35rem;
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 0.65rem;
+      background: var(--bg-card);
+      display: grid;
+    }
+    .suggestion {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0.85rem;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-1);
+      font-size: 0.88rem;
+      cursor: pointer;
+      text-align: left;
+    }
+    .suggestion:last-child { border-bottom: 0; }
+    .suggestion:hover { background: var(--bg-surface); }
+    .suggestion.linked .check { color: var(--accent); font-weight: 700; }
   `],
 })
-export class NewThreadPageComponent {
+export class NewThreadPageComponent implements OnInit {
   private readonly forumService = inject(ForumService);
   private readonly router = inject(Router);
   private readonly md = inject(MarkdownService);
+  private readonly communitiesService = inject(CommunityService);
 
   readonly categories = CATEGORIES;
+  readonly myCommunities = signal<Community[]>([]);
+  readonly linkedCommunityIds = signal<string[]>([]);
+  readonly communitySearchFocused = signal(false);
+  communitySearch = '';
+
+  readonly selectedCommunities = computed(() =>
+    this.myCommunities().filter((c) => this.linkedCommunityIds().includes(c.id)),
+  );
+
+  readonly filteredCommunities = computed(() => {
+    const q = this.communitySearch.trim().toLowerCase();
+    const all = this.myCommunities();
+    if (!q) return all.slice(0, 20);
+    return all.filter((c) => c.name.toLowerCase().includes(q)).slice(0, 20);
+  });
+
+  ngOnInit(): void {
+    this.communitiesService.getMyCommunities().subscribe({
+      next: (list) => this.myCommunities.set(list),
+      error: () => this.myCommunities.set([]),
+    });
+  }
+
+  isLinked(id: string): boolean {
+    return this.linkedCommunityIds().includes(id);
+  }
+
+  toggleLinked(id: string): void {
+    this.linkedCommunityIds.update((ids) =>
+      ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id],
+    );
+  }
+
+  onCommunitySearchBlur(): void {
+    setTimeout(() => this.communitySearchFocused.set(false), 150);
+  }
 
   title = '';
   category: ForumCategory = 'GENERAL';
@@ -423,6 +562,9 @@ export class NewThreadPageComponent {
       content: contentVal,
       category: this.category,
       tags: this.tags().length ? this.tags() : undefined,
+      linkedCommunityIds: this.linkedCommunityIds().length
+        ? this.linkedCommunityIds()
+        : undefined,
     };
 
     if (this.showPoll() && this.pollQuestion.trim()) {

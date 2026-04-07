@@ -29,6 +29,25 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
           }
         </div>
 
+        @if (isAuthenticated()) {
+          <div class="scope-tabs">
+            <button
+              type="button"
+              [class.active]="relevantOnly()"
+              (click)="setScope(true)"
+            >
+              Para ti
+            </button>
+            <button
+              type="button"
+              [class.active]="!relevantOnly()"
+              (click)="setScope(false)"
+            >
+              Todos los hilos
+            </button>
+          </div>
+        }
+
         <app-forum-filters (filterChange)="onFilterChange($event)" />
 
         @if (loading()) {
@@ -202,6 +221,24 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
         border-color: var(--border-s);
         background: var(--bg-surface);
       }
+      .scope-tabs {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .scope-tabs button {
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-2);
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .scope-tabs button.active {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        border-color: transparent;
+      }
       @media (max-width: 900px) {
         .forum-shell {
           grid-template-columns: 1fr;
@@ -225,6 +262,7 @@ export class ForumHomePageComponent implements OnInit {
   readonly hasMore = signal(false);
   readonly totalThreads = signal(0);
   readonly myThreads = signal<ThreadSummary[]>([]);
+  readonly relevantOnly = signal(true);
   readonly archivedCount = computed(
     () => this.myThreads().filter((t) => t.status === 'ARCHIVED').length,
   );
@@ -273,6 +311,12 @@ export class ForumHomePageComponent implements OnInit {
     }
   }
 
+  setScope(relevant: boolean) {
+    if (this.relevantOnly() === relevant) return;
+    this.relevantOnly.set(relevant);
+    this.load(true);
+  }
+
   onFilterChange(filters: { category: ForumCategory | null; sort: string; search: string }) {
     this.currentFilters = filters;
     this.load(true);
@@ -311,6 +355,7 @@ export class ForumHomePageComponent implements OnInit {
         cursor: reset ? null : this.nextCursor(),
         category: this.currentFilters.category,
         search: this.currentFilters.search || null,
+        relevant: this.relevantOnly() && this.authService.isAuthenticated(),
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({

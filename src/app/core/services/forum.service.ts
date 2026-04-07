@@ -15,6 +15,7 @@ type ThreadQuery = {
   status?: string | null;
   search?: string | null;
   tag?: string | null;
+  relevant?: boolean;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -187,6 +188,10 @@ export class ForumService {
 
     if (query.search) {
       params = params.set('search', query.search);
+    }
+
+    if (query.relevant) {
+      params = params.set('relevant', 'true');
     }
 
     if (query.tag) {

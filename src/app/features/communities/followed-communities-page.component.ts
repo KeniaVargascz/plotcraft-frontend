@@ -1,5 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { AuthService } from '../../core/services/auth.service';
 import { CommunityCardComponent } from './components/community-card/community-card.component';
 import { Community } from './models/community.model';
@@ -14,7 +16,7 @@ import { CommunityService } from './services/community.service';
       <header class="header">
         <div>
           <h1>Comunidades</h1>
-          <p>Las comunidades a las que sigues.</p>
+          <p>Las comunidades a las que perteneces o sigues.</p>
         </div>
         <a class="primary" routerLink="/comunidades/explorar">Explorar todas las comunidades</a>
       </header>
@@ -23,11 +25,11 @@ import { CommunityService } from './services/community.service';
         <p class="muted">Cargando comunidades…</p>
       } @else if (!isAuth()) {
         <p class="empty">
-          Inicia sesión para ver las comunidades que sigues.
+          Inicia sesión para ver tus comunidades.
         </p>
       } @else if (!items().length) {
         <div class="empty-state">
-          <p>Aún no sigues ninguna comunidad.</p>
+          <p>Aún no perteneces ni sigues ninguna comunidad.</p>
           <a class="primary" routerLink="/comunidades/explorar">Explorar comunidades</a>
         </div>
       } @else {
@@ -83,15 +85,18 @@ export class FollowedCommunitiesPageComponent implements OnInit {
       this.loading.set(false);
       return;
     }
-    this.service.getMyFollowedCommunities().subscribe({
-      next: (list) => {
-        this.items.set(list);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.items.set([]);
-        this.loading.set(false);
-      },
+    forkJoin({
+      member: this.service.getMyCommunities().pipe(catchError(() => of([] as Community[]))),
+      followed: this.service
+        .getMyFollowedCommunities()
+        .pipe(catchError(() => of([] as Community[]))),
+    }).subscribe(({ member, followed }) => {
+      const map = new Map<string, Community>();
+      for (const c of [...member, ...followed]) {
+        if (!map.has(c.id)) map.set(c.id, c);
+      }
+      this.items.set(Array.from(map.values()));
+      this.loading.set(false);
     });
   }
 }

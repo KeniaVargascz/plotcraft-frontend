@@ -128,6 +128,28 @@ export interface CreateThreadPayload {
     options: string[];
     closesAt?: string | null;
   } | null;
+  linkedCommunityIds?: string[];
+}
+
+export interface DiscussedThread {
+  id: string;
+  title: string;
+  slug: string;
+  repliesCount: number;
+  reactionsCount: number;
+  createdAt: string;
+  author: {
+    username: string;
+    displayName: string;
+    avatarUrl: string | null;
+  };
+  forum: {
+    name: string;
+    slug: string;
+    communitySlug: string;
+    communityName: string;
+  } | null;
+  url: string;
 }
 
 export interface ForumMembershipResult {

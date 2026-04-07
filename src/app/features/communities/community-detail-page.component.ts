@@ -8,7 +8,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
 import { COMMUNITY_TYPE_LABELS, Community } from './models/community.model';
 import { CommunityService } from './services/community.service';
 import { CommunityForumsService } from '../community-forums/services/community-forums.service';
-import { CommunityForum } from '../community-forums/models/community-forum.model';
+import { CommunityForum, DiscussedThread } from '../community-forums/models/community-forum.model';
 import { ForumCardComponent } from '../community-forums/components/forum-card/forum-card.component';
 import { CreateForumDialogComponent } from '../community-forums/components/create-forum-dialog/create-forum-dialog.component';
 
@@ -92,6 +92,28 @@ import { CreateForumDialogComponent } from '../community-forums/components/creat
                 </div>
               }
             </section>
+
+            @if (discussedThreads().length) {
+              <section class="block">
+                <h2>Foros comentando sobre {{ c.name }}</h2>
+                <ul class="discussed-list">
+                  @for (t of discussedThreads(); track t.id) {
+                    <li class="discussed-item">
+                      <a class="dt-title" [href]="t.url">{{ t.title }}</a>
+                      <div class="dt-meta">
+                        <span>@{{ t.author.username }}</span>
+                        @if (t.forum) {
+                          <span>· {{ t.forum.name }} en {{ t.forum.communityName }}</span>
+                        } @else {
+                          <span>· Foro general</span>
+                        }
+                        <span>· {{ t.repliesCount }} respuestas · {{ t.reactionsCount }} reacciones</span>
+                      </div>
+                    </li>
+                  }
+                </ul>
+              </section>
+            }
           </main>
 
           <aside class="side">
@@ -291,6 +313,32 @@ import { CreateForumDialogComponent } from '../community-forums/components/creat
         display: grid;
         gap: 0.75rem;
       }
+      .discussed-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 0.75rem;
+      }
+      .discussed-item {
+        padding: 0.75rem 1rem;
+        border: 1px solid var(--border);
+        border-radius: 0.85rem;
+        background: var(--bg-card);
+      }
+      .dt-title {
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--text-1);
+      }
+      .dt-meta {
+        margin-top: 0.25rem;
+        font-size: 0.8rem;
+        color: var(--text-3);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
       .side {
         display: grid;
         gap: 1rem;
@@ -418,6 +466,7 @@ export class CommunityDetailPageComponent implements OnInit {
   readonly notFound = signal(false);
   readonly forums = signal<CommunityForum[]>([]);
   readonly forumsLoading = signal(false);
+  readonly discussedThreads = signal<DiscussedThread[]>([]);
 
   readonly typeLabel = computed(() => {
     const c = this.community();
@@ -533,6 +582,10 @@ export class CommunityDetailPageComponent implements OnInit {
         this.forums.set([]);
         this.forumsLoading.set(false);
       },
+    });
+    this.forumsService.listDiscussedThreads(slug, 5).subscribe({
+      next: (list) => this.discussedThreads.set(list),
+      error: () => this.discussedThreads.set([]),
     });
   }
 

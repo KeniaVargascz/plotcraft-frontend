@@ -7,6 +7,7 @@ import {
   CommunityForum,
   CreateForumPayload,
   CreateThreadPayload,
+  DiscussedThread,
   ForumMembershipResult,
   ForumReply,
   ForumThread,
@@ -124,6 +125,15 @@ export class CommunityForumsService {
       .get<ApiResponse<ReplyListResponse>>(
         `${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}/replies`,
         { params },
+      )
+      .pipe(map((r) => r.data));
+  }
+
+  listDiscussedThreads(communitySlug: string, limit = 5): Observable<DiscussedThread[]> {
+    return this.http
+      .get<ApiResponse<DiscussedThread[]>>(
+        `${this.baseUrl}/${communitySlug}/discussed-threads`,
+        { params: { limit } },
       )
       .pipe(map((r) => r.data));
   }

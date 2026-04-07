@@ -150,6 +150,48 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'sagas',
+        loadComponent: () =>
+          import('./features/series/series-catalog-page.component').then(
+            (m) => m.SeriesCatalogPageComponent,
+          ),
+      },
+      {
+        path: 'mis-sagas',
+        loadComponent: () =>
+          import('./features/series/my-series-page.component').then(
+            (m) => m.MySeriesPageComponent,
+          ),
+      },
+      {
+        path: 'mis-sagas/nueva',
+        loadComponent: () =>
+          import('./features/series/series-form-page.component').then(
+            (m) => m.SeriesFormPageComponent,
+          ),
+      },
+      {
+        path: 'mis-sagas/:slug/editar',
+        loadComponent: () =>
+          import('./features/series/series-form-page.component').then(
+            (m) => m.SeriesFormPageComponent,
+          ),
+      },
+      {
+        path: 'sagas/:slug',
+        loadComponent: () =>
+          import('./features/series/series-detail-page.component').then(
+            (m) => m.SeriesDetailPageComponent,
+          ),
+      },
+      {
+        path: 'mis-suscripciones',
+        loadComponent: () =>
+          import('./features/novels/my-subscriptions-page.component').then(
+            (m) => m.MySubscriptionsPageComponent,
+          ),
+      },
+      {
         path: 'mis-mundos',
         loadComponent: () =>
           import('./features/worlds/my-worlds-page.component').then(
@@ -509,6 +551,20 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/novels/novel-detail-page.component').then(
             (module) => module.NovelDetailPageComponent,
+          ),
+      },
+      {
+        path: 'sagas',
+        loadComponent: () =>
+          import('./features/series/series-catalog-page.component').then(
+            (m) => m.SeriesCatalogPageComponent,
+          ),
+      },
+      {
+        path: 'sagas/:slug',
+        loadComponent: () =>
+          import('./features/series/series-detail-page.component').then(
+            (m) => m.SeriesDetailPageComponent,
           ),
       },
       {

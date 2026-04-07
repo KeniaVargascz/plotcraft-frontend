@@ -982,7 +982,49 @@
       "count_one": "{{count}} kudo",
       "count_other": "{{count}} kudos",
       "removeTooltip": "Quitar kudo"
+    },
+    "subscription": {
+      "subscribe": "🔔 Suscribirse",
+      "subscribed": "🔔 Suscrito",
+      "unsubscribe": "Cancelar suscripción",
+      "count_one": "1 suscriptor",
+      "count_other": "{{count}} suscriptores"
     }
+  },
+  "series": {
+    "title": "Sagas y Series",
+    "subtitle": "Colecciones de novelas agrupadas por universo",
+    "new": "Nueva saga",
+    "types": {
+      "SAGA": "Saga",
+      "TRILOGY": "Trilogía",
+      "DILOGY": "Bilogía",
+      "SERIES": "Serie"
+    },
+    "statuses": {
+      "IN_PROGRESS": "En progreso",
+      "COMPLETED": "Completada",
+      "ABANDONED": "Abandonada",
+      "HIATUS": "En pausa"
+    },
+    "empty": "Aún no hay sagas publicadas.",
+    "mySeriesTitle": "Mis sagas y series"
+  },
+  "filters": {
+    "advanced": "Filtros avanzados",
+    "language": "Idioma",
+    "allLanguages": "Todos los idiomas",
+    "updatedBetween": "Actualizado entre",
+    "from": "Desde",
+    "to": "Hasta",
+    "tags": "Etiquetas",
+    "ships": "Parejas/Ships",
+    "onlyCompleted": "Solo completas",
+    "sortBy": "Ordenar por",
+    "apply": "Aplicar filtros",
+    "clear": "Limpiar filtros",
+    "activeFilters_one": "{{count}} filtro activo",
+    "activeFilters_other": "{{count}} filtros activos"
   },
   "votes": {
     "vote": "Votar",

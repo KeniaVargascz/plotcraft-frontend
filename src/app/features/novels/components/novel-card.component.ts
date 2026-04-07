@@ -13,6 +13,9 @@ import { NovelSummary } from '../../../core/models/novel.model';
         <a class="cover" [class]="coverClass()" [routerLink]="['/novelas', novel().slug]">
           <span class="cover-texture"></span>
           <span class="cover-letter">{{ novel().title.charAt(0) }}</span>
+          @if (novel().language && novel().language !== 'es') {
+            <span class="lang-badge">{{ novel().language.toUpperCase() }}</span>
+          }
         </a>
 
         <div class="body">
@@ -166,6 +169,20 @@ import { NovelSummary } from '../../../core/models/novel.model';
           transparent 1px,
           transparent 7px
         );
+      }
+
+      .lang-badge {
+        position: absolute;
+        top: 0.35rem;
+        right: 0.35rem;
+        z-index: 2;
+        padding: 0.12rem 0.4rem;
+        border-radius: 0.35rem;
+        background: rgba(0, 0, 0, 0.65);
+        color: #fff;
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
       }
 
       .cover-letter {

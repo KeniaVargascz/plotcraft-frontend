@@ -18,6 +18,9 @@ export interface NovelSummary {
   isPublic: boolean;
   wordCount: number;
   viewsCount: number;
+  language: string;
+  totalWordsCount: number;
+  chaptersCount?: number;
   createdAt: string;
   updatedAt: string;
   author: {
@@ -36,12 +39,14 @@ export interface NovelSummary {
     charactersCount: number;
     kudosCount: number;
     votesCount: number;
+    subscribersCount: number;
   };
   viewerContext: {
     hasLiked: boolean;
     hasBookmarked: boolean;
     hasKudo: boolean;
     isAuthor: boolean;
+    isSubscribed: boolean;
     reading_progress: {
       chapter_id: string;
       chapter_slug: string;
@@ -67,4 +72,13 @@ export interface NovelDetail extends NovelSummary {
   chapters: NovelChapterSummary[];
   worlds: WorldSummary[];
   characters: CharacterSummary[];
+  series: {
+    id: string;
+    title: string;
+    slug: string;
+    type: string;
+    status: string;
+    novelsCount: number;
+    orderIndex: number;
+  } | null;
 }

@@ -11,6 +11,7 @@ import { CharactersService } from '../../core/services/characters.service';
 import { GenresService } from '../../core/services/genres.service';
 import { NovelsService } from '../../core/services/novels.service';
 import { WorldsService } from '../../core/services/worlds.service';
+import { SUPPORTED_LANGUAGES } from '../../shared/constants/languages';
 
 @Component({
   selector: 'app-novel-form-page',
@@ -40,6 +41,15 @@ import { WorldsService } from '../../core/services/worlds.service';
           <select [(ngModel)]="rating" [disabled]="saving()">
             @for (item of ratingOptions; track item) {
               <option [value]="item">{{ item }}</option>
+            }
+          </select>
+        </label>
+
+        <label>
+          Idioma
+          <select [(ngModel)]="language" [disabled]="saving()">
+            @for (lang of languages; track lang.code) {
+              <option [value]="lang.code">{{ lang.name }}</option>
             }
           </select>
         </label>
@@ -321,12 +331,14 @@ export class NovelFormPageComponent implements OnInit {
 
   readonly statusOptions: NovelStatus[] = ['DRAFT', 'IN_PROGRESS', 'COMPLETED', 'ARCHIVED'];
   readonly ratingOptions: NovelRating[] = ['G', 'PG', 'PG13', 'R', 'EXPLICIT'];
+  readonly languages = SUPPORTED_LANGUAGES;
 
   slug: string | null = null;
   title = '';
   synopsis = '';
   status: NovelStatus = 'DRAFT';
   rating: NovelRating = 'G';
+  language = 'es';
   tags = '';
   warnings = '';
   isPublic = false;
@@ -356,6 +368,7 @@ export class NovelFormPageComponent implements OnInit {
         this.synopsis = novel.synopsis || '';
         this.status = novel.status;
         this.rating = novel.rating;
+        this.language = novel.language || 'es';
         this.tags = novel.tags.join(', ');
         this.warnings = novel.warnings.join(', ');
         this.isPublic = novel.isPublic;
@@ -414,6 +427,7 @@ export class NovelFormPageComponent implements OnInit {
       synopsis: this.synopsis || null,
       status: this.status,
       rating: this.rating,
+      language: this.language,
       tags: this.tags
         .split(',')
         .map((item) => item.trim())

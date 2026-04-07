@@ -14,6 +14,12 @@ export type NovelQuery = {
   status?: NovelStatus | null;
   rating?: NovelRating | null;
   sort?: 'recent' | 'popular' | 'views' | null;
+  language?: string | null;
+  updatedAfter?: string | null;
+  updatedBefore?: string | null;
+  tags?: string[];
+  ships?: string[];
+  sortBy?: string | null;
 };
 
 export type NovelPayload = {
@@ -26,6 +32,7 @@ export type NovelPayload = {
   warnings?: string[];
   genreIds?: string[];
   isPublic?: boolean;
+  language?: string;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -123,6 +130,28 @@ export class NovelsService {
     }
     if (query.sort) {
       params = params.set('sort', query.sort);
+    }
+    if (query.language) {
+      params = params.set('language', query.language);
+    }
+    if (query.updatedAfter) {
+      params = params.set('updatedAfter', query.updatedAfter);
+    }
+    if (query.updatedBefore) {
+      params = params.set('updatedBefore', query.updatedBefore);
+    }
+    if (query.tags?.length) {
+      for (const tag of query.tags) {
+        params = params.append('tags', tag);
+      }
+    }
+    if (query.ships?.length) {
+      for (const ship of query.ships) {
+        params = params.append('ships', ship);
+      }
+    }
+    if (query.sortBy) {
+      params = params.set('sortBy', query.sortBy);
     }
 
     return params;

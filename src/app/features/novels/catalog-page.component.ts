@@ -10,11 +10,21 @@ import { NovelsService } from '../../core/services/novels.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { NovelCardComponent } from './components/novel-card.component';
+import {
+  AdvancedNovelFiltersComponent,
+  NovelFilters,
+} from './components/advanced-novel-filters/advanced-novel-filters.component';
 
 @Component({
   selector: 'app-catalog-page',
   standalone: true,
-  imports: [FormsModule, ErrorMessageComponent, LoadingSpinnerComponent, NovelCardComponent],
+  imports: [
+    FormsModule,
+    ErrorMessageComponent,
+    LoadingSpinnerComponent,
+    NovelCardComponent,
+    AdvancedNovelFiltersComponent,
+  ],
   template: `
     <section class="catalog-shell">
       <aside class="filters">
@@ -46,6 +56,11 @@ import { NovelCardComponent } from './components/novel-card.component';
         </label>
 
         <button type="button" (click)="applyFilters()">Aplicar filtros</button>
+
+        <app-advanced-novel-filters
+          [initialFilters]="advancedFilters()"
+          (filtersChange)="onAdvancedFiltersChange($event)"
+        />
       </aside>
 
       <div class="results">
@@ -139,6 +154,7 @@ export class CatalogPageComponent implements OnInit {
   search = '';
   genre = '';
   sort: 'recent' | 'popular' | 'views' = 'recent';
+  readonly advancedFilters = signal<NovelFilters>({});
 
   ngOnInit() {
     this.genresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((genres) => {
@@ -152,6 +168,15 @@ export class CatalogPageComponent implements OnInit {
         this.search = queryParams.get('search') ?? '';
         const sort = queryParams.get('sort');
         this.sort = sort === 'popular' || sort === 'views' ? sort : 'recent';
+        this.advancedFilters.set({
+          language: queryParams.get('language'),
+          updatedAfter: queryParams.get('updatedAfter'),
+          updatedBefore: queryParams.get('updatedBefore'),
+          tags: queryParams.getAll('tags'),
+          ships: queryParams.getAll('ships'),
+          status: queryParams.get('status'),
+          sortBy: queryParams.get('sortBy'),
+        });
         this.syncGenreCopy();
         this.load(true);
       },
@@ -180,16 +205,42 @@ export class CatalogPageComponent implements OnInit {
     this.load(false);
   }
 
+  onAdvancedFiltersChange(filters: NovelFilters) {
+    this.advancedFilters.set(filters);
+    const queryParams: Record<string, string | string[] | null> = {
+      search: this.search || null,
+      sort: this.sort !== 'recent' ? this.sort : null,
+      language: filters.language || null,
+      updatedAfter: filters.updatedAfter || null,
+      updatedBefore: filters.updatedBefore || null,
+      tags: filters.tags?.length ? filters.tags : null,
+      ships: filters.ships?.length ? filters.ships : null,
+      status: filters.status || null,
+      sortBy: filters.sortBy && filters.sortBy !== 'newest' ? filters.sortBy : null,
+    };
+
+    const target = this.genre ? ['/novelas/genero', this.genre] : ['/novelas'];
+    void this.router.navigate(target, { queryParams });
+  }
+
   private load(reset: boolean) {
     this.loading.set(reset);
     this.error.set(false);
 
+    const adv = this.advancedFilters();
     this.novelsService
       .listPublic({
         cursor: reset ? null : this.nextCursor(),
         search: this.search || null,
         genre: this.genre || null,
         sort: this.sort,
+        language: adv.language,
+        updatedAfter: adv.updatedAfter,
+        updatedBefore: adv.updatedBefore,
+        tags: adv.tags,
+        ships: adv.ships,
+        status: (adv.status as 'COMPLETED' | null) || null,
+        sortBy: adv.sortBy,
       })
       .subscribe({
         next: (response) => {

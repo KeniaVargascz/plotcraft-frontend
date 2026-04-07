@@ -7,6 +7,7 @@ import { NovelDetail } from '../../core/models/novel.model';
 import { AuthService } from '../../core/services/auth.service';
 import { KudosService } from '../../core/services/kudos.service';
 import { NovelsService } from '../../core/services/novels.service';
+import { SubscriptionsService } from '../../core/services/subscriptions.service';
 import { ReadingList } from '../../core/models/reading-list.model';
 import { ReadingListsService } from '../../core/services/reading-lists.service';
 import { TimelineService } from '../../core/services/timeline.service';
@@ -44,6 +45,15 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
               <span>{{ currentNovel.wordCount }} palabras</span>
             </div>
             <h1>{{ currentNovel.title }}</h1>
+            @if (currentNovel.series; as novelSeries) {
+              <a [routerLink]="['/sagas', novelSeries.slug]" class="series-badge">
+                📚 Parte de {{ novelSeries.title }}
+                <span>Libro {{ novelSeries.orderIndex }} de {{ novelSeries.novelsCount }}</span>
+                @if (novelSeries.status === 'COMPLETED') {
+                  <span class="complete-badge">Serie completa</span>
+                }
+              </a>
+            }
             <p class="author">
               por
               <a [routerLink]="['/perfil', currentNovel.author.username]"
@@ -78,6 +88,14 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
                 <button type="button" [disabled]="kudoLoading()" (click)="toggleKudo()" [class.active]="currentNovel.viewerContext?.hasKudo">
                   <span [class.kudo-beat]="kudoBeat()">&#9829;</span>
                   {{ currentNovel.viewerContext?.hasKudo ? 'Kudo dado' : 'Dar kudo' }}
+                </button>
+                <button
+                  type="button"
+                  [class.active]="currentNovel.viewerContext?.isSubscribed"
+                  [disabled]="subscribeLoading()"
+                  (click)="toggleSubscription()"
+                >
+                  {{ currentNovel.viewerContext?.isSubscribed ? '🔔 Suscrito' : '🔔 Suscribirse' }}
                 </button>
               }
 
@@ -164,6 +182,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
             <span>{{ currentNovel.stats.kudosCount }} kudos</span>
             <span>{{ currentNovel.stats.bookmarksCount }} guardados</span>
             <span>{{ currentNovel.stats.votesCount }} votos</span>
+            <span>{{ currentNovel.stats.subscribersCount }} suscriptores</span>
             <span>{{ currentNovel.stats.worldsCount }} mundos</span>
             <span>{{ currentNovel.stats.charactersCount }} personajes</span>
             <span>{{ currentNovel.viewsCount }} vistas</span>
@@ -414,6 +433,26 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
         text-decoration: none;
       }
       .tl-see-all:hover { background: var(--accent-glow); }
+      .series-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.85rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        text-decoration: none;
+        font-size: 0.85rem;
+        width: fit-content;
+      }
+      .series-badge .complete-badge {
+        background: rgba(77, 184, 138, 0.25);
+        color: #63d4a2;
+        padding: 0.1rem 0.5rem;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 700;
+      }
       .actions button.active,
       .actions button.active:hover {
         background: rgba(224, 85, 85, 0.15);
@@ -445,6 +484,7 @@ export class NovelDetailPageComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly novelsService = inject(NovelsService);
   private readonly kudosService = inject(KudosService);
+  private readonly subscriptionsService = inject(SubscriptionsService);
   private readonly readingListsService = inject(ReadingListsService);
   private readonly timelineService = inject(TimelineService);
   readonly authService = inject(AuthService);
@@ -462,6 +502,65 @@ export class NovelDetailPageComponent implements OnInit {
   readonly listActionId = signal<string | null>(null);
   readonly kudoLoading = signal(false);
   readonly kudoBeat = signal(false);
+  readonly subscribeLoading = signal(false);
+
+  toggleSubscription() {
+    const novel = this.novel();
+    if (!novel) return;
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+      return;
+    }
+    const ctx = novel.viewerContext;
+    if (!ctx) return;
+
+    const wasSubscribed = ctx.isSubscribed;
+    // Optimistic
+    this.novel.set({
+      ...novel,
+      stats: {
+        ...novel.stats,
+        subscribersCount: novel.stats.subscribersCount + (wasSubscribed ? -1 : 1),
+      },
+      viewerContext: { ...ctx, isSubscribed: !wasSubscribed },
+    });
+    this.subscribeLoading.set(true);
+    const action = wasSubscribed
+      ? this.subscriptionsService.unsubscribe(novel.slug)
+      : this.subscriptionsService.subscribe(novel.slug);
+
+    action.subscribe({
+      next: (res) => {
+        const latest = this.novel();
+        if (!latest) return;
+        this.novel.set({
+          ...latest,
+          stats: { ...latest.stats, subscribersCount: res.subscribersCount },
+          viewerContext: latest.viewerContext
+            ? { ...latest.viewerContext, isSubscribed: res.isSubscribed }
+            : null,
+        });
+        this.subscribeLoading.set(false);
+      },
+      error: () => {
+        // Rollback
+        const latest = this.novel();
+        if (latest) {
+          this.novel.set({
+            ...latest,
+            stats: {
+              ...latest.stats,
+              subscribersCount: novel.stats.subscribersCount,
+            },
+            viewerContext: latest.viewerContext
+              ? { ...latest.viewerContext, isSubscribed: wasSubscribed }
+              : null,
+          });
+        }
+        this.subscribeLoading.set(false);
+      },
+    });
+  }
 
   ngOnInit() {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {

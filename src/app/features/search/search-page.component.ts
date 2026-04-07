@@ -12,14 +12,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
+  MixedSearchResponse,
   SearchCharactersResponse,
   SearchNovelsResponse,
   SearchPostsResponse,
   SearchResponse,
+  SearchResult,
   SearchTab,
   SearchUsersResponse,
   SearchWorldsResponse,
 } from '../../core/models/search.model';
+import { SearchResultCardComponent } from '../../shared/components/search-result-card/search-result-card.component';
 import { Genre } from '../../core/models/genre.model';
 import { GenresService } from '../../core/services/genres.service';
 import { SearchService } from '../../core/services/search.service';
@@ -42,6 +45,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
     NovelCardComponent,
     WorldCardComponent,
     CharacterCardComponent,
+    SearchResultCardComponent,
   ],
   template: `
     <section class="search-page">
@@ -139,9 +143,9 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
           <h2>{{ 'search.noResults' | translate: { query: query() } }}</h2>
           <p>{{ 'search.noResultsHint' | translate }}</p>
         </div>
-      } @else if (activeTab() === 'all' && grouped()) {
+      } @else if (activeTab() === 'all') {
         <div class="results-shell" data-testid="search-results">
-          @if (grouped()!.results.novels.items.length) {
+          @if (grouped() && grouped()!.results.novels.items.length) {
             <section class="result-section">
               <div class="section-head">
                 <h2>{{ 'search.types.novels' | translate }}</h2>
@@ -157,7 +161,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
             </section>
           }
 
-          @if (grouped()!.results.worlds.items.length) {
+          @if (grouped() && grouped()!.results.worlds.items.length) {
             <section class="result-section">
               <div class="section-head">
                 <h2>{{ 'search.types.worlds' | translate }}</h2>
@@ -170,7 +174,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
             </section>
           }
 
-          @if (grouped()!.results.characters.items.length) {
+          @if (grouped() && grouped()!.results.characters.items.length) {
             <section class="result-section">
               <div class="section-head">
                 <h2>{{ 'search.types.characters' | translate }}</h2>
@@ -183,7 +187,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
             </section>
           }
 
-          @if (grouped()!.results.users.items.length) {
+          @if (grouped() && grouped()!.results.users.items.length) {
             <section class="result-section">
               <div class="section-head">
                 <h2>{{ 'search.types.users' | translate }}</h2>
@@ -202,7 +206,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
             </section>
           }
 
-          @if (grouped()!.results.posts.items.length) {
+          @if (grouped() && grouped()!.results.posts.items.length) {
             <section class="result-section">
               <div class="section-head">
                 <h2>{{ 'search.types.posts' | translate }}</h2>
@@ -216,6 +220,19 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
                       {{ post.stats.reactions_count }} reacciones</span
                     >
                   </article>
+                }
+              </div>
+            </section>
+          }
+
+          @if (mixed().length) {
+            <section class="result-section">
+              <div class="section-head">
+                <h2>{{ 'search.types.mixed' | translate }}</h2>
+              </div>
+              <div class="post-list">
+                @for (r of mixed(); track r.id) {
+                  <app-search-result-card [result]="r" [query]="query()" />
                 }
               </div>
             </section>
@@ -261,6 +278,14 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
                     >
                   </div>
                 </a>
+              }
+            </div>
+          }
+
+          @if (activeTab() === 'mixed') {
+            <div class="post-list">
+              @for (r of mixed(); track r.id) {
+                <app-search-result-card [result]="r" [query]="query()" />
               }
             </div>
           }
@@ -447,7 +472,10 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
     { value: 'characters' as const, labelKey: 'search.types.characters' },
     { value: 'users' as const, labelKey: 'search.types.users' },
     { value: 'posts' as const, labelKey: 'search.types.posts' },
+    { value: 'mixed' as const, labelKey: 'search.types.mixed' },
   ];
+
+  readonly mixed = signal<SearchResult[]>([]);
 
   constructor() {
     this.genresService.list().subscribe((genres) => this.genres.set(genres));
@@ -479,7 +507,8 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
         results.worlds.total_hint +
         results.characters.total_hint +
         results.users.total_hint +
-        results.posts.total_hint
+        results.posts.total_hint +
+        this.mixed().length
       );
     }
 
@@ -488,7 +517,8 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
       this.worlds().length +
       this.characters().length +
       this.users().length +
-      this.posts().length
+      this.posts().length +
+      this.mixed().length
     );
   }
 
@@ -535,17 +565,31 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
       this.characters.set([]);
       this.users.set([]);
       this.posts.set([]);
+      this.mixed.set([]);
       return;
     }
 
     this.loading.set(reset);
 
     if (this.activeTab() === 'all') {
-      this.searchService.searchAll({ q: this.query().trim(), limit: 5 }).subscribe((response) => {
-        this.grouped.set(response);
-        this.hasMore.set(false);
-        this.loading.set(false);
+      this.searchService.searchAll({ q: this.query().trim(), limit: 5 }).subscribe({
+        next: (response) => {
+          this.grouped.set(response);
+          this.hasMore.set(false);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.grouped.set(null);
+          this.hasMore.set(false);
+          this.loading.set(false);
+        },
       });
+      this.searchService
+        .searchMixed({ q: this.query().trim(), types: ['posts', 'threads', 'communities'] })
+        .subscribe({
+          next: (response) => this.mixed.set(response.results ?? []),
+          error: () => this.mixed.set([]),
+        });
       return;
     }
 
@@ -559,7 +603,10 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
           genre: this.genre || null,
           sort: this.novelSort,
         })
-        .subscribe((response) => this.consumeNovels(response, reset));
+        .subscribe({
+          next: (response) => this.consumeNovels(response, reset),
+          error: () => this.finishSpecificLoad(null, false),
+        });
       return;
     }
 
@@ -570,7 +617,10 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
           cursor,
           sort: this.worldSort,
         })
-        .subscribe((response) => this.consumeWorlds(response, reset));
+        .subscribe({
+          next: (response) => this.consumeWorlds(response, reset),
+          error: () => this.finishSpecificLoad(null, false),
+        });
       return;
     }
 
@@ -580,7 +630,10 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
           q: this.query().trim(),
           cursor,
         })
-        .subscribe((response) => this.consumeCharacters(response, reset));
+        .subscribe({
+          next: (response) => this.consumeCharacters(response, reset),
+          error: () => this.finishSpecificLoad(null, false),
+        });
       return;
     }
 
@@ -591,7 +644,24 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
           cursor,
           sort: this.userSort,
         })
-        .subscribe((response) => this.consumeUsers(response, reset));
+        .subscribe({
+          next: (response) => this.consumeUsers(response, reset),
+          error: () => this.finishSpecificLoad(null, false),
+        });
+      return;
+    }
+
+    if (this.activeTab() === 'mixed') {
+      this.searchService
+        .searchMixed({
+          q: this.query().trim(),
+          cursor,
+          types: ['posts', 'threads', 'communities'],
+        })
+        .subscribe({
+          next: (response) => this.consumeMixed(response, reset),
+          error: () => this.finishSpecificLoad(null, false),
+        });
       return;
     }
 
@@ -601,7 +671,19 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
         cursor,
         sort: this.postSort,
       })
-      .subscribe((response) => this.consumePosts(response, reset));
+      .subscribe({
+        next: (response) => this.consumePosts(response, reset),
+        error: () => this.finishSpecificLoad(null, false),
+      });
+  }
+
+  private consumeMixed(response: MixedSearchResponse, reset: boolean) {
+    this.grouped.set(null);
+    this.mixed.set(reset ? response.results : [...this.mixed(), ...response.results]);
+    this.finishSpecificLoad(
+      response.pagination?.nextCursor ?? null,
+      !!response.pagination?.hasMore,
+    );
   }
 
   private consumeNovels(response: SearchNovelsResponse, reset: boolean) {

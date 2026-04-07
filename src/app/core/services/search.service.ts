@@ -4,6 +4,7 @@ import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 import {
+  MixedSearchResponse,
   SearchCharactersResponse,
   SearchHistoryResponse,
   SearchPostsResponse,
@@ -29,6 +30,19 @@ export class SearchService {
       .get<ApiResponse<SearchResponse>>(`${environment.apiUrl}/search`, {
         params: this.buildParams(query),
       })
+      .pipe(map((response) => response.data));
+  }
+
+  searchMixed(
+    query: BaseQuery & { types?: string[] },
+  ): Observable<MixedSearchResponse> {
+    let params = this.buildParams({ q: query.q, cursor: query.cursor, limit: query.limit });
+    const types = query.types ?? ['posts', 'threads', 'communities'];
+    for (const t of types) {
+      params = params.append('types[]', t);
+    }
+    return this.http
+      .get<ApiResponse<MixedSearchResponse>>(`${environment.apiUrl}/search/unified`, { params })
       .pipe(map((response) => response.data));
   }
 

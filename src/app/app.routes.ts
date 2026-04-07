@@ -443,6 +443,13 @@ export const routes: Routes = [
       {
         path: 'comunidades',
         loadComponent: () =>
+          import('./features/communities/followed-communities-page.component').then(
+            (m) => m.FollowedCommunitiesPageComponent,
+          ),
+      },
+      {
+        path: 'comunidades/explorar',
+        loadComponent: () =>
           import('./features/communities/communities-page.component').then(
             (m) => m.CommunitiesPageComponent,
           ),
@@ -459,6 +466,27 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/communities/community-detail-page.component').then(
             (m) => m.CommunityDetailPageComponent,
+          ),
+      },
+      {
+        path: 'comunidades/:slug/foros/:forumSlug',
+        loadComponent: () =>
+          import('./features/community-forums/forum-page.component').then(
+            (m) => m.ForumPageComponent,
+          ),
+      },
+      {
+        path: 'comunidades/:slug/foros/:forumSlug/nuevo-hilo',
+        loadComponent: () =>
+          import('./features/community-forums/create-thread-page.component').then(
+            (m) => m.CreateThreadPageComponent,
+          ),
+      },
+      {
+        path: 'comunidades/:slug/foros/:forumSlug/hilos/:threadSlug',
+        loadComponent: () =>
+          import('./features/community-forums/thread-detail-page.component').then(
+            (m) => m.CommunityThreadDetailPageComponent,
           ),
       },
       {

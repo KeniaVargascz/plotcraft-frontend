@@ -11,6 +11,9 @@ import { CharacterCardComponent } from '../characters/components/character-card.
 import { NovelCardComponent } from '../novels/components/novel-card.component';
 import { WorldCardComponent } from '../worlds/components/world-card.component';
 import { AuthorCardComponent } from './components/author-card.component';
+import { CommunityCardComponent } from '../communities/components/community-card/community-card.component';
+import { CommunityService } from '../communities/services/community.service';
+import { Community } from '../communities/models/community.model';
 
 @Component({
   selector: 'app-discovery-page',
@@ -24,6 +27,7 @@ import { AuthorCardComponent } from './components/author-card.component';
     WorldCardComponent,
     CharacterCardComponent,
     AuthorCardComponent,
+    CommunityCardComponent,
   ],
   template: `
     <section class="discovery-page">
@@ -189,6 +193,22 @@ import { AuthorCardComponent } from './components/author-card.component';
             }
           </div>
         </section>
+
+        @if (popularCommunities().length) {
+          <section class="section">
+            <div class="section-head">
+              <h2>Comunidades populares</h2>
+              <a routerLink="/comunidades/explorar">Explorar todas las comunidades</a>
+            </div>
+            <div class="rail">
+              @for (c of popularCommunities(); track c.id) {
+                <div class="rail-item">
+                  <app-community-card [community]="c" />
+                </div>
+              }
+            </div>
+          </section>
+        }
 
         <section class="section">
           <div class="section-head">
@@ -703,16 +723,22 @@ import { AuthorCardComponent } from './components/author-card.component';
 export class DiscoveryPageComponent {
   private readonly discoveryService = inject(DiscoveryService);
   private readonly genresService = inject(GenresService);
+  private readonly communitiesService = inject(CommunityService);
 
   readonly snapshot = signal<DiscoverySnapshot | null>(null);
   readonly loading = signal(true);
   readonly genres = signal<Genre[]>([]);
+  readonly popularCommunities = signal<Community[]>([]);
   readonly visibleGenres = computed(() => this.genres().slice(0, 4));
 
   constructor() {
     this.genresService.list().subscribe({
       next: (genres) => this.genres.set(genres),
       error: () => this.genres.set([]),
+    });
+    this.communitiesService.getCommunities({ limit: 6 }).subscribe({
+      next: (res) => this.popularCommunities.set(res.data),
+      error: () => this.popularCommunities.set([]),
     });
     this.load();
   }

@@ -7,11 +7,15 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { COMMUNITY_TYPE_LABELS, Community } from './models/community.model';
 import { CommunityService } from './services/community.service';
+import { CommunityForumsService } from '../community-forums/services/community-forums.service';
+import { CommunityForum } from '../community-forums/models/community-forum.model';
+import { ForumCardComponent } from '../community-forums/components/forum-card/forum-card.component';
+import { CreateForumDialogComponent } from '../community-forums/components/create-forum-dialog/create-forum-dialog.component';
 
 @Component({
   selector: 'app-community-detail-page',
   standalone: true,
-  imports: [RouterLink, LoadingSpinnerComponent],
+  imports: [RouterLink, LoadingSpinnerComponent, ForumCardComponent],
   template: `
     @if (loading()) {
       <app-loading-spinner />
@@ -63,8 +67,30 @@ import { CommunityService } from './services/community.service';
               </section>
             }
             <section class="block">
-              <h2>Foros</h2>
-              <p class="muted">Los foros estarán disponibles próximamente.</p>
+              <div class="forums-head">
+                <h2>Foros</h2>
+                @if (c.isOwner) {
+                  <button type="button" class="new-forum-btn" (click)="openCreateForum()">
+                    + Nuevo foro
+                  </button>
+                }
+              </div>
+              @if (forumsLoading()) {
+                <p class="muted">Cargando foros...</p>
+              } @else if (forums().length === 0) {
+                <p class="muted">Esta comunidad aún no tiene foros.</p>
+              } @else {
+                <div class="forum-list">
+                  @for (f of forums(); track f.id) {
+                    <app-forum-card
+                      [value]="f"
+                      [communitySlug]="c.slug"
+                      [canEnterPrivate]="c.isMember || c.isOwner"
+                      (changed)="onForumChanged($event)"
+                    />
+                  }
+                </div>
+              }
             </section>
           </main>
 
@@ -73,7 +99,12 @@ import { CommunityService } from './services/community.service';
               @if (isAuth()) {
                 <div class="actions">
                   @if (!c.isMember && !c.isOwner) {
-                    <button class="primary" type="button" (click)="join()">Unirse</button>
+                    @if (c.type === 'PRIVATE' && !c.isFollowingOwner) {
+                      <button class="primary" type="button" disabled>Unirse</button>
+                      <p class="join-hint">Sigue al autor para poder unirte a su comunidad.</p>
+                    } @else {
+                      <button class="primary" type="button" (click)="join()">Unirse</button>
+                    }
                   }
                   @if (c.isMember && !c.isOwner) {
                     <button type="button" (click)="confirmLeave()">✓ Miembro</button>
@@ -241,6 +272,25 @@ import { CommunityService } from './services/community.service';
       .muted {
         color: var(--text-3);
       }
+      .forums-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+      }
+      .new-forum-btn {
+        padding: 0.45rem 0.85rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .forum-list {
+        display: grid;
+        gap: 0.75rem;
+      }
       .side {
         display: grid;
         gap: 1rem;
@@ -272,6 +322,16 @@ import { CommunityService } from './services/community.service';
         margin: 0;
         text-align: center;
         color: var(--text-2);
+      }
+      .join-hint {
+        margin: 0;
+        font-size: 0.78rem;
+        color: var(--text-3);
+        text-align: center;
+      }
+      button.primary[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
       .card {
         padding: 1rem;
@@ -351,10 +411,13 @@ export class CommunityDetailPageComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly markdown = inject(MarkdownService);
   private readonly dialog = inject(MatDialog);
+  private readonly forumsService = inject(CommunityForumsService);
 
   readonly community = signal<Community | null>(null);
   readonly loading = signal(true);
   readonly notFound = signal(false);
+  readonly forums = signal<CommunityForum[]>([]);
+  readonly forumsLoading = signal(false);
 
   readonly typeLabel = computed(() => {
     const c = this.community();
@@ -388,6 +451,7 @@ export class CommunityDetailPageComponent implements OnInit {
         next: (c) => {
           this.community.set(c);
           this.loading.set(false);
+          this.loadForums(c.slug);
         },
         error: (err) => {
           if (err?.status === 404) this.notFound.set(true);
@@ -456,6 +520,37 @@ export class CommunityDetailPageComponent implements OnInit {
             : cur,
         ),
     });
+  }
+
+  loadForums(slug: string): void {
+    this.forumsLoading.set(true);
+    this.forumsService.listForums(slug).subscribe({
+      next: (list) => {
+        this.forums.set(list);
+        this.forumsLoading.set(false);
+      },
+      error: () => {
+        this.forums.set([]);
+        this.forumsLoading.set(false);
+      },
+    });
+  }
+
+  onForumChanged(updated: CommunityForum): void {
+    this.forums.update((list) => list.map((f) => (f.id === updated.id ? updated : f)));
+  }
+
+  openCreateForum(): void {
+    const c = this.community();
+    if (!c) return;
+    this.dialog
+      .open(CreateForumDialogComponent, { data: { communitySlug: c.slug } })
+      .afterClosed()
+      .subscribe((created: CommunityForum | undefined) => {
+        if (created) {
+          this.forums.update((list) => [...list, created]);
+        }
+      });
   }
 
   unfollow(): void {

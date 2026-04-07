@@ -432,8 +432,16 @@
       "worlds": "Mundos",
       "characters": "Personajes",
       "users": "Usuarios",
-      "posts": "Posts"
+      "posts": "Posts",
+      "mixed": "Publicaciones y foros"
     },
+    "sections": {
+      "feed": "Feed",
+      "foro": "Foro",
+      "comunidad": "Comunidad"
+    },
+    "inForum": "en {{forumName}}",
+    "inCommunity": "en {{communityName}}",
     "sort": {
       "relevance": "Mas relevantes",
       "recent": "Mas recientes",
@@ -1065,6 +1073,42 @@
       "active": "Activa",
       "rejected": "Rechazada",
       "suspended": "Suspendida"
+    }
+  },
+  "forums": {
+    "title": "Foros",
+    "newForum": "Nuevo foro",
+    "noForums": "Esta comunidad aún no tiene foros.",
+    "private": "Privado",
+    "membersOnly": "Solo para miembros de la comunidad",
+    "join": "Unirse al foro",
+    "leave": "Salir del foro",
+    "enter": "Entrar",
+    "newThread": "Nuevo hilo",
+    "noThreads": "Todavía no hay hilos. ¡Sé el primero!",
+    "closed": "Este hilo está cerrado.",
+    "pinned": "Fijado",
+    "thread": {
+      "title": "Título del hilo",
+      "content": "Contenido",
+      "tags": "Etiquetas",
+      "addPoll": "Añadir encuesta",
+      "publish": "Publicar hilo",
+      "reply": "Responder",
+      "replies_one": "{{count}} respuesta",
+      "replies_other": "{{count}} respuestas",
+      "loginToReply": "Inicia sesión para responder."
+    },
+    "sortBy": {
+      "newest": "Recientes",
+      "mostReplies": "Más respondidos",
+      "mostReactions": "Más reacciones"
+    },
+    "createForum": {
+      "name": "Nombre del foro",
+      "description": "Descripción",
+      "privateToggle": "Foro privado (solo miembros de la comunidad)",
+      "save": "Crear foro"
     }
   }
 }

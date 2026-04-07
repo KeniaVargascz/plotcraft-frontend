@@ -4,7 +4,42 @@ import { NovelSummary } from './novel.model';
 import { PostType } from './post.model';
 import { WorldSummary } from './world.model';
 
-export type SearchTab = 'all' | 'novels' | 'worlds' | 'characters' | 'users' | 'posts';
+export type SearchTab =
+  | 'all'
+  | 'novels'
+  | 'worlds'
+  | 'characters'
+  | 'users'
+  | 'posts'
+  | 'mixed';
+
+export type SearchSection =
+  | 'novelas'
+  | 'mundos'
+  | 'personajes'
+  | 'usuarios'
+  | 'feed'
+  | 'foro'
+  | 'comunidad';
+
+export interface SearchResult {
+  id: string;
+  type: 'novel' | 'world' | 'character' | 'user' | 'post' | 'thread' | 'community';
+  section: SearchSection;
+  title: string;
+  excerpt: string;
+  author: { username: string; displayName: string; avatarUrl: string | null } | null;
+  url: string;
+  metadata: Record<string, any>;
+  createdAt: string;
+}
+
+export interface MixedSearchResponse {
+  query: string;
+  results: SearchResult[];
+  pagination?: { nextCursor: string | null; hasMore: boolean };
+}
+
 export type SearchNovelSort = 'relevance' | 'recent' | 'popular' | 'views';
 export type SearchWorldSort = 'relevance' | 'recent' | 'popular';
 export type SearchUserSort = 'relevance' | 'followers' | 'recent';

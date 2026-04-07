@@ -45,6 +45,7 @@ export interface Community {
   isMember: boolean;
   isFollowing: boolean;
   isOwner: boolean;
+  isFollowingOwner: boolean;
   forums: unknown[];
   createdAt: string;
   updatedAt: string;

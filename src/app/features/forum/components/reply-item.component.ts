@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ForumReply } from '../../../core/models/forum-reply.model';
+import { AuthService } from '../../../core/services/auth.service';
 import { ForumService } from '../../../core/services/forum.service';
 import { MarkdownService } from '../../../core/services/markdown.service';
 import { ForumReactionBarComponent } from './forum-reaction-bar.component';
@@ -47,8 +48,10 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
                   {{ replying() ? 'Cancelar' : 'Responder' }}
                 </button>
               }
-              <button type="button" class="action-btn" (click)="startEdit()">Editar</button>
-              <button type="button" class="action-btn danger" (click)="remove()">Eliminar</button>
+              @if (isOwnReply()) {
+                <button type="button" class="action-btn" (click)="startEdit()">Editar</button>
+                <button type="button" class="action-btn danger" (click)="remove()">Eliminar</button>
+              }
             }
             @if (isThreadAuthor()) {
               @if (reply().isSolution) {
@@ -109,6 +112,7 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
                 [threadSlug]="threadSlug()"
                 [isThreadAuthor]="isThreadAuthor()"
                 [canReply]="canReply()"
+                [depth]="depth() + 1"
                 (replyAdded)="replyAdded.emit($event)"
                 (solutionToggle)="solutionToggle.emit($event)"
                 (deleted)="deleted.emit($event)"
@@ -260,12 +264,14 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
 export class ReplyItemComponent {
   private readonly forumService = inject(ForumService);
   private readonly md = inject(MarkdownService);
+  private readonly authService = inject(AuthService);
 
   readonly reply = input.required<ForumReply>();
   readonly allReplies = input<ForumReply[]>([]);
   readonly threadSlug = input.required<string>();
   readonly isThreadAuthor = input(false);
   readonly canReply = input(true);
+  readonly depth = input(0);
 
   readonly solutionToggle = output<string>();
   readonly deleted = output<string>();
@@ -278,9 +284,35 @@ export class ReplyItemComponent {
   editContent = '';
   replyContent = '';
 
-  readonly children = computed(() =>
-    this.allReplies().filter((r) => r.parentReplyId === this.reply().id),
-  );
+  readonly children = computed(() => {
+    const depth = this.depth();
+    const all = this.allReplies();
+    if (depth === 0) {
+      // Level 0 -> render direct children as level 1 cards
+      return all.filter((r) => r.parentReplyId === this.reply().id);
+    }
+    if (depth === 1) {
+      // Level 1 -> flatten ALL descendants beneath this reply as level-2 siblings
+      const descendants: ForumReply[] = [];
+      const queue = [this.reply().id];
+      while (queue.length) {
+        const id = queue.shift()!;
+        for (const r of all) {
+          if (r.parentReplyId === id) {
+            descendants.push(r);
+            queue.push(r.id);
+          }
+        }
+      }
+      return descendants;
+    }
+    return [];
+  });
+
+  readonly isOwnReply = computed(() => {
+    const me = this.authService.getCurrentUserSnapshot();
+    return !!me && me.username === this.reply().author.username;
+  });
 
   readonly parentAuthor = computed(() => {
     const pid = this.reply().parentReplyId;

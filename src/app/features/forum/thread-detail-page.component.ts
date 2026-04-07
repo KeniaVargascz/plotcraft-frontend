@@ -143,7 +143,7 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
                 [allReplies]="allReplies()"
                 [threadSlug]="slug()"
                 [isThreadAuthor]="isAuthor()"
-                [canReply]="authenticated() && thread()?.status !== 'CLOSED'"
+                [canReply]="!!thread()?.canReply && thread()?.status !== 'CLOSED'"
                 (replyAdded)="onReplyAdded($event)"
                 (solutionToggle)="reload()"
                 (deleted)="onReplyDeleted($event)"
@@ -159,11 +159,17 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
 
         <!-- Composer -->
         @if (t.status !== 'CLOSED' && authenticated()) {
-          <app-reply-composer
-            [threadSlug]="slug()"
-            [disabled]="submitting()"
-            (submitted)="onSubmitReply($event)"
-          />
+          @if (t.canReply) {
+            <app-reply-composer
+              [threadSlug]="slug()"
+              [disabled]="submitting()"
+              (submitted)="onSubmitReply($event)"
+            />
+          } @else {
+            <p class="reply-locked">
+              Sigue a este usuario o únete a la comunidad para poder comentar.
+            </p>
+          }
         }
       </section>
     }
@@ -333,6 +339,16 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
       padding: 0.75rem 1rem;
       color: var(--danger);
       font-size: 0.9rem;
+      text-align: center;
+    }
+    .reply-locked {
+      margin: 0;
+      padding: 0.85rem 1rem;
+      border: 1px dashed var(--border);
+      border-radius: 0.75rem;
+      background: var(--bg-surface);
+      color: var(--text-2);
+      font-size: 0.88rem;
       text-align: center;
     }
     .replies-section { display: grid; gap: 0.75rem; }

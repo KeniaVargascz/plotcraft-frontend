@@ -49,4 +49,5 @@ export interface ThreadDetail extends ThreadSummary {
   content: string;
   replies: ForumReply[];
   poll: ForumPoll | null;
+  canReply?: boolean;
 }

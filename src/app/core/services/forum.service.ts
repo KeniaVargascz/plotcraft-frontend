@@ -76,7 +76,10 @@ export class ForumService {
       .pipe(map((response) => response.data));
   }
 
-  createReply(slug: string, payload: { content: string }): Observable<ForumReply> {
+  createReply(
+    slug: string,
+    payload: { content: string; parentReplyId?: string },
+  ): Observable<ForumReply> {
     return this.http
       .post<ApiResponse<ForumReply>>(`${this.baseUrl}/${slug}/replies`, payload)
       .pipe(map((response) => response.data));

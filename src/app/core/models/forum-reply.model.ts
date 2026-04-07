@@ -1,6 +1,7 @@
 export interface ForumReply {
   id: string;
   content: string;
+  parentReplyId: string | null;
   isSolution: boolean;
   isDeleted: boolean;
   createdAt: string;

@@ -140,8 +140,11 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
             @for (reply of sortedReplies(); track reply.id) {
               <app-reply-item
                 [reply]="reply"
+                [allReplies]="allReplies()"
                 [threadSlug]="slug()"
                 [isThreadAuthor]="isAuthor()"
+                [canReply]="authenticated() && thread()?.status !== 'CLOSED'"
+                (replyAdded)="onReplyAdded($event)"
                 (solutionToggle)="reload()"
                 (deleted)="onReplyDeleted($event)"
                 (updated)="onReplyUpdated($event)"
@@ -374,10 +377,13 @@ export class ThreadDetailPageComponent implements OnInit {
   readonly sortedReplies = computed(() => {
     const t = this.thread();
     if (!t) return [];
-    const solution = t.replies.filter((r) => r.isSolution);
-    const rest = t.replies.filter((r) => !r.isSolution);
+    const topLevel = t.replies.filter((r) => !r.parentReplyId);
+    const solution = topLevel.filter((r) => r.isSolution);
+    const rest = topLevel.filter((r) => !r.isSolution);
     return [...solution, ...rest];
   });
+
+  readonly allReplies = computed(() => this.thread()?.replies ?? []);
 
   readonly threadReactions = computed(() => {
     const t = this.thread();
@@ -455,6 +461,12 @@ export class ThreadDetailPageComponent implements OnInit {
       },
       error: () => this.submitting.set(false),
     });
+  }
+
+  onReplyAdded(reply: ForumReply) {
+    const t = this.thread();
+    if (!t) return;
+    this.thread.set({ ...t, replies: [...t.replies, reply] });
   }
 
   onReplyDeleted(replyId: string) {

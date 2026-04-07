@@ -8,14 +8,23 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
 @Component({
   selector: 'app-reply-item',
   standalone: true,
-  imports: [FormsModule, ForumReactionBarComponent],
+  imports: [FormsModule, ForumReactionBarComponent, ReplyItemComponent],
   template: `
     @if (reply().isDeleted) {
-      <div class="reply deleted">
+      <div class="reply deleted" [class.is-child]="!!parentAuthor()">
         <p class="deleted-text">[Respuesta eliminada]</p>
       </div>
     } @else {
-      <div class="reply" [class.solution]="reply().isSolution">
+      <div
+        class="reply"
+        [class.solution]="reply().isSolution"
+        [class.is-child]="!!parentAuthor()"
+      >
+        @if (parentAuthor()) {
+          <div class="reply-to">
+            ↳ Respondiendo a <strong>&#64;{{ parentAuthor() }}</strong>
+          </div>
+        }
         @if (reply().isSolution) {
           <div class="solution-label">&#10003; Solucion</div>
         }
@@ -33,6 +42,11 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
 
           <div class="actions">
             @if (!editing()) {
+              @if (canReply()) {
+                <button type="button" class="action-btn" (click)="toggleReplyBox()">
+                  {{ replying() ? 'Cancelar' : 'Responder' }}
+                </button>
+              }
               <button type="button" class="action-btn" (click)="startEdit()">Editar</button>
               <button type="button" class="action-btn danger" (click)="remove()">Eliminar</button>
             }
@@ -68,6 +82,41 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
           [threadSlug]="threadSlug()"
           [replyId]="reply().id"
         />
+
+        @if (replying()) {
+          <div class="reply-box">
+            <textarea
+              [(ngModel)]="replyContent"
+              class="edit-textarea"
+              rows="3"
+              placeholder="Escribe tu respuesta..."
+            ></textarea>
+            <div class="edit-actions">
+              <button type="button" class="save-btn" (click)="submitReply()" [disabled]="submittingReply()">
+                {{ submittingReply() ? 'Enviando...' : 'Responder' }}
+              </button>
+              <button type="button" class="cancel-btn" (click)="toggleReplyBox()">Cancelar</button>
+            </div>
+          </div>
+        }
+
+        @if (children().length) {
+          <div class="children">
+            @for (child of children(); track child.id) {
+              <app-reply-item
+                [reply]="child"
+                [allReplies]="allReplies()"
+                [threadSlug]="threadSlug()"
+                [isThreadAuthor]="isThreadAuthor()"
+                [canReply]="canReply()"
+                (replyAdded)="replyAdded.emit($event)"
+                (solutionToggle)="solutionToggle.emit($event)"
+                (deleted)="deleted.emit($event)"
+                (updated)="updated.emit($event)"
+              />
+            }
+          </div>
+        }
       </div>
     }
   `,
@@ -77,6 +126,18 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
       border: 1px solid var(--border);
       border-radius: 0.85rem;
       padding: 1rem 1.25rem;
+    }
+    .reply.is-child {
+      background: var(--bg-surface);
+      border-style: dashed;
+      padding: 0.75rem 1rem;
+      font-size: 0.92em;
+    }
+    .reply-to {
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+      font-weight: 600;
     }
     .reply.solution {
       border-color: #16a34a;
@@ -186,6 +247,14 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
       color: var(--text-2);
       cursor: pointer;
     }
+    .reply-box { margin-top: 0.5rem; }
+    .children {
+      margin-top: 0.85rem;
+      padding-left: 1rem;
+      border-left: 2px solid var(--border);
+      display: grid;
+      gap: 0.65rem;
+    }
   `],
 })
 export class ReplyItemComponent {
@@ -193,15 +262,32 @@ export class ReplyItemComponent {
   private readonly md = inject(MarkdownService);
 
   readonly reply = input.required<ForumReply>();
+  readonly allReplies = input<ForumReply[]>([]);
   readonly threadSlug = input.required<string>();
   readonly isThreadAuthor = input(false);
+  readonly canReply = input(true);
 
   readonly solutionToggle = output<string>();
   readonly deleted = output<string>();
   readonly updated = output<ForumReply>();
+  readonly replyAdded = output<ForumReply>();
 
   readonly editing = signal(false);
+  readonly replying = signal(false);
+  readonly submittingReply = signal(false);
   editContent = '';
+  replyContent = '';
+
+  readonly children = computed(() =>
+    this.allReplies().filter((r) => r.parentReplyId === this.reply().id),
+  );
+
+  readonly parentAuthor = computed(() => {
+    const pid = this.reply().parentReplyId;
+    if (!pid) return null;
+    const parent = this.allReplies().find((r) => r.id === pid);
+    return parent?.author.username ?? null;
+  });
 
   renderedContent = computed(() => this.md.render(this.reply().content));
 
@@ -251,5 +337,27 @@ export class ReplyItemComponent {
       ? this.forumService.unmarkSolution(this.threadSlug(), id)
       : this.forumService.markSolution(this.threadSlug(), id);
     obs.subscribe(() => this.solutionToggle.emit(id));
+  }
+
+  toggleReplyBox() {
+    this.replying.update((v) => !v);
+    if (!this.replying()) this.replyContent = '';
+  }
+
+  submitReply() {
+    const content = this.replyContent.trim();
+    if (!content) return;
+    this.submittingReply.set(true);
+    this.forumService
+      .createReply(this.threadSlug(), { content, parentReplyId: this.reply().id })
+      .subscribe({
+        next: (r) => {
+          this.submittingReply.set(false);
+          this.replying.set(false);
+          this.replyContent = '';
+          this.replyAdded.emit(r);
+        },
+        error: () => this.submittingReply.set(false),
+      });
   }
 }

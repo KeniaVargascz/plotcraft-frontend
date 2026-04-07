@@ -53,8 +53,28 @@ export class AuthService {
   me(): Observable<User> {
     return this.http.get<ApiResponse<User>>(`${environment.apiUrl}/auth/me`).pipe(
       map((response) => response.data),
+      map((user) => this.enrichWithJwtClaims(user)),
       tap((user) => this.currentUserSubject.next(user)),
     );
+  }
+
+  isAdmin(): boolean {
+    return Boolean(this.getCurrentUserSnapshot()?.isAdmin);
+  }
+
+  private enrichWithJwtClaims(user: User): User {
+    if (user.isAdmin !== undefined) return user;
+    const token = this.tokenService.getAccessToken();
+    if (!token) return user;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (typeof payload?.isAdmin === 'boolean') {
+        return { ...user, isAdmin: payload.isAdmin };
+      }
+    } catch {
+      // ignore decode errors
+    }
+    return user;
   }
 
   refresh(): Observable<string | null> {
@@ -124,8 +144,9 @@ export class AuthService {
 
   private handleAuthResponse(data: AuthResponse): User {
     this.tokenService.setTokens(data.accessToken, data.refreshToken);
-    this.currentUserSubject.next(data.user);
-    return data.user;
+    const user = this.enrichWithJwtClaims(data.user);
+    this.currentUserSubject.next(user);
+    return user;
   }
 
   private clearSession(): void {

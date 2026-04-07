@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
+import { adminMatchGuard } from './core/guards/admin-match.guard';
 import { anonymousMatchGuard, authenticatedMatchGuard } from './core/guards/session-match.guard';
 import { MinimalLayoutComponent } from './layout/minimal-layout/minimal-layout.component';
 import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
@@ -440,6 +441,49 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'comunidades',
+        loadComponent: () =>
+          import('./features/communities/communities-page.component').then(
+            (m) => m.CommunitiesPageComponent,
+          ),
+      },
+      {
+        path: 'comunidades/nueva',
+        loadComponent: () =>
+          import('./features/communities/create-community-page.component').then(
+            (m) => m.CreateCommunityPageComponent,
+          ),
+      },
+      {
+        path: 'comunidades/:slug',
+        loadComponent: () =>
+          import('./features/communities/community-detail-page.component').then(
+            (m) => m.CommunityDetailPageComponent,
+          ),
+      },
+      {
+        path: 'mis-comunidades',
+        loadComponent: () =>
+          import('./features/communities/my-communities-page.component').then(
+            (m) => m.MyCommunitiesPageComponent,
+          ),
+      },
+      {
+        path: 'mis-comunidades/:slug/editar',
+        loadComponent: () =>
+          import('./features/communities/edit-community-page.component').then(
+            (m) => m.EditCommunityPageComponent,
+          ),
+      },
+      {
+        path: 'admin/comunidades',
+        canMatch: [adminMatchGuard],
+        loadComponent: () =>
+          import('./features/communities/admin-communities-page.component').then(
+            (m) => m.AdminCommunitiesPageComponent,
+          ),
+      },
+      {
         path: '',
         loadChildren: () =>
           import('./features/profile/profile.routes').then((module) => module.PROFILE_ROUTES),
@@ -582,6 +626,20 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/forum/thread-detail-page.component').then(
             (module) => module.ThreadDetailPageComponent,
+          ),
+      },
+      {
+        path: 'comunidades',
+        loadComponent: () =>
+          import('./features/communities/communities-page.component').then(
+            (m) => m.CommunitiesPageComponent,
+          ),
+      },
+      {
+        path: 'comunidades/:slug',
+        loadComponent: () =>
+          import('./features/communities/community-detail-page.component').then(
+            (m) => m.CommunityDetailPageComponent,
           ),
       },
     ],

@@ -1032,5 +1032,39 @@
     "remove": "Retirar voto",
     "count_one": "1 voto",
     "count_other": "{{count}} votos"
+  },
+  "communities": {
+    "title": "Comunidades",
+    "subtitle": "Descubre y únete a comunidades de lectores y autores.",
+    "create": "Crear comunidad",
+    "mine": "Mis comunidades",
+    "adminPanel": "Panel de revisión",
+    "join": "Unirse",
+    "leave": "Salir",
+    "follow": "Seguir",
+    "following": "Siguiendo",
+    "members": "Miembros",
+    "followers": "Seguidores",
+    "rules": "Reglas",
+    "description": "Descripción",
+    "forumsSoon": "Los foros estarán disponibles próximamente.",
+    "pendingNotice": "Esta comunidad está pendiente de aprobación.",
+    "suspendedNotice": "Esta comunidad está suspendida.",
+    "notFound": "Comunidad no encontrada.",
+    "empty": "No hay comunidades para mostrar.",
+    "loginToJoin": "Inicia sesión para unirte",
+    "manage": "Gestionar comunidad",
+    "owner": "Eres el creador",
+    "type": {
+      "private": "Privada",
+      "public": "Pública",
+      "fandom": "Fandom"
+    },
+    "status": {
+      "pending": "Pendiente de revisión",
+      "active": "Activa",
+      "rejected": "Rechazada",
+      "suspended": "Suspendida"
+    }
   }
 }

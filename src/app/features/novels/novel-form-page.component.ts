@@ -1001,7 +1001,7 @@ export class NovelFormPageComponent implements OnInit {
   newCollDescription = '';
 
   readonly statusOptions: NovelStatus[] = ['DRAFT', 'IN_PROGRESS', 'COMPLETED', 'ARCHIVED'];
-  readonly ratingOptions: NovelRating[] = ['G', 'PG', 'PG13', 'R', 'EXPLICIT'];
+  readonly ratingOptions: NovelRating[] = ['G', 'PG', 'T', 'R', 'EXPLICIT'];
 
   slug: string | null = null;
   title = '';

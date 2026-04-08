@@ -547,8 +547,8 @@ export class NovelCardComponent {
 
   private formatRatingLabel(rating: NovelSummary['rating']): string {
     switch (rating) {
-      case 'PG13':
-        return 'PG-13';
+      case 'T':
+        return 'T';
       case 'EXPLICIT':
         return '18+';
       default:

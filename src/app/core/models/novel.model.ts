@@ -4,7 +4,7 @@ import { CharacterSummary } from './character.model';
 import { WorldSummary } from './world.model';
 
 export type NovelStatus = 'DRAFT' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
-export type NovelRating = 'G' | 'PG' | 'PG13' | 'R' | 'EXPLICIT';
+export type NovelRating = 'G' | 'PG' | 'T' | 'R' | 'EXPLICIT';
 export type RomanceGenre = 'BL' | 'GL' | 'HETEROSEXUAL' | 'OTHER';
 
 export interface NovelPairing {

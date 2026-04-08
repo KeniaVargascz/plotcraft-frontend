@@ -41,3 +41,8 @@ La URL del backend se define en:
 Por defecto apunta a:
 
 - `http://localhost:3000/api`
+
+## Cambio reciente de rating
+
+- El frontend usa `T` en lugar de `PG13` para `NovelRating`.
+- El cambio ya esta reflejado en el modelo, el formulario de novela y las tarjetas/resumenes donde se muestra la clasificacion.

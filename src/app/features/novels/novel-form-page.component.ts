@@ -472,15 +472,11 @@ interface PairingDraft {
         </fieldset>
         }
 
-        @if (novelType === 'FANFIC' && (!linkedCommunityId || (!catalogLoading() && !catalogCharacters().length))) {
+        @if (novelType === 'FANFIC') {
           <fieldset class="full linked-block">
             <legend>Personajes</legend>
             <p class="hint">
-              @if (!linkedCommunityId) {
-                No vinculaste una comunidad. Agrega los personajes que aparecen en tu fanfic; se guardarán como tags para ayudar en las búsquedas.
-              } @else {
-                Este fandom aún no tiene personajes en su catálogo. Agrégalos como texto libre; se guardarán como tags.
-              }
+              Agrega personajes en texto libre. Se guardarán como tags y estarán disponibles para crear parejas.
             </p>
             <app-tag-chips-input
               [tags]="customCharacterList()"
@@ -499,28 +495,36 @@ interface PairingDraft {
             } @else if (!catalogCharacters().length) {
               <p class="hint">Este fandom aún no tiene personajes en su catálogo.</p>
             } @else {
-              <ul class="catalog-list">
-                @for (cc of catalogCharacters(); track cc.id) {
-                  <li>
-                    <label class="catalog-row">
-                      <input
-                        type="checkbox"
-                        [checked]="selectedCommunityCharacterIds().includes(cc.id)"
-                        [disabled]="saving()"
-                        (change)="toggleCommunityCharacter(cc.id)"
-                      />
-                      <div class="cc-avatar">
-                        @if (cc.avatarUrl) {
-                          <img [src]="cc.avatarUrl" [alt]="cc.name" />
-                        } @else {
-                          <span>{{ cc.name.charAt(0) }}</span>
-                        }
-                      </div>
+              <div class="linked-selector">
+                <select
+                  [ngModel]="pendingCatalogCharacterId"
+                  (ngModelChange)="addCatalogCharacter($event)"
+                  name="pendingCatalogCharacterId"
+                  [disabled]="saving()"
+                >
+                  <option [ngValue]="''">Selecciona un personaje</option>
+                  @for (cc of availableCatalogCharacters(); track cc.id) {
+                    <option [ngValue]="cc.id">{{ cc.name }}</option>
+                  }
+                </select>
+              </div>
+              @if (selectedCommunityCharacterIds().length) {
+                <div class="selected-items">
+                  @for (cc of selectedCatalogCharacters(); track cc.id) {
+                    <button
+                      type="button"
+                      class="linked-pill"
+                      [disabled]="saving()"
+                      (click)="toggleCommunityCharacter(cc.id)"
+                    >
                       <span>{{ cc.name }}</span>
-                    </label>
-                  </li>
-                }
-              </ul>
+                      <strong>×</strong>
+                    </button>
+                  }
+                </div>
+              } @else {
+                <p class="hint">Aún no has añadido personajes del catálogo.</p>
+              }
             }
           </fieldset>
         }
@@ -929,6 +933,23 @@ export class NovelFormPageComponent implements OnInit {
     );
   }
 
+  pendingCatalogCharacterId = '';
+  readonly availableCatalogCharacters = computed(() => {
+    const taken = new Set(this.selectedCommunityCharacterIds());
+    return this.catalogCharacters().filter((c) => !taken.has(c.id));
+  });
+  readonly selectedCatalogCharacters = computed(() => {
+    const ids = this.selectedCommunityCharacterIds();
+    return this.catalogCharacters().filter((c) => ids.includes(c.id));
+  });
+  addCatalogCharacter(id: string): void {
+    if (!id) return;
+    if (!this.selectedCommunityCharacterIds().includes(id)) {
+      this.selectedCommunityCharacterIds.update((list) => [...list, id]);
+    }
+    this.pendingCatalogCharacterId = '';
+  }
+
   readonly genres = signal<Genre[]>([]);
   readonly characters = signal<CharacterSummary[]>([]);
   readonly worlds = signal<WorldSummary[]>([]);
@@ -1164,7 +1185,9 @@ export class NovelFormPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.genresService.list().subscribe((genres) => this.genres.set(genres));
+    this.genresService.list().subscribe((genres) =>
+      this.genres.set(genres.filter((g) => g.slug !== 'fanfiction')),
+    );
     this.languagesService.list().subscribe({
       next: (languages) => {
         this.languages.set(languages);

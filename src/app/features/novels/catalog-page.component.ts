@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, computed, inject, signal, DestroyRef } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild, computed, inject, signal, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -36,7 +36,7 @@ import {
           <input [(ngModel)]="search" placeholder="Buscar novelas..." />
         </label>
 
-        <div class="genre-field">
+        <div class="genre-field" #genreField>
           <span class="field-label">Géneros</span>
 
           @if (selectedGenres().length) {
@@ -289,6 +289,16 @@ export class CatalogPageComponent implements OnInit {
   readonly advancedFilters = signal<NovelFilters>({});
   readonly selectedGenreSlugs = signal<string[]>([]);
   readonly genreDropdownOpen = signal(false);
+  @ViewChild('genreField') genreFieldRef?: ElementRef<HTMLElement>;
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.genreDropdownOpen()) return;
+    const el = this.genreFieldRef?.nativeElement;
+    if (el && !el.contains(event.target as Node)) {
+      this.genreDropdownOpen.set(false);
+    }
+  }
   genreSearch = '';
 
   readonly selectedGenres = computed(() => {
@@ -340,6 +350,8 @@ export class CatalogPageComponent implements OnInit {
           sortBy: queryParams.get('sortBy'),
           romanceGenres: queryParams.getAll('romanceGenres'),
           pairings: queryParams.getAll('pairings'),
+          novelType: (queryParams.get('novelType') as 'ORIGINAL' | 'FANFIC' | null) || '',
+          fandomSlug: queryParams.get('fandomSlug'),
         });
         this.selectedGenreSlugs.set(queryParams.getAll('genres'));
         this.syncGenreCopy();
@@ -406,6 +418,8 @@ export class CatalogPageComponent implements OnInit {
       sortBy: filters.sortBy && filters.sortBy !== 'newest' ? filters.sortBy : null,
       romanceGenres: filters.romanceGenres?.length ? filters.romanceGenres : null,
       pairings: filters.pairings?.length ? filters.pairings : null,
+      novelType: filters.novelType || null,
+      fandomSlug: filters.fandomSlug || null,
       genres: this.selectedGenreSlugs().length ? this.selectedGenreSlugs() : null,
     };
 
@@ -432,6 +446,8 @@ export class CatalogPageComponent implements OnInit {
         sortBy: adv.sortBy,
         romanceGenres: (adv.romanceGenres as ('BL' | 'GL' | 'HETEROSEXUAL' | 'OTHER')[] | null) || null,
         pairings: adv.pairings ?? null,
+        novelType: (adv.novelType as 'ORIGINAL' | 'FANFIC') || null,
+        fandomSlug: adv.fandomSlug || null,
         genres: this.selectedGenreSlugs().length ? this.selectedGenreSlugs() : null,
       })
       .subscribe({

@@ -45,6 +45,15 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
               <span>{{ currentNovel.wordCount }} palabras</span>
             </div>
             <h1>{{ currentNovel.title }}</h1>
+            @if (currentNovel.novelType === 'FANFIC' && currentNovel.linkedCommunity) {
+              <a
+                class="fanfic-badge"
+                [routerLink]="['/comunidades', currentNovel.linkedCommunity.slug]"
+                title="Ver comunidad"
+              >
+                ★ Fanfic de {{ currentNovel.linkedCommunity.name }}
+              </a>
+            }
             @if (currentNovel.series; as novelSeries) {
               <a [routerLink]="['/sagas', novelSeries.slug]" class="series-badge">
                 📚 Parte de {{ novelSeries.title }}
@@ -216,7 +225,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
               </div>
             }
 
-            @if (currentNovel.pairings?.length) {
+            @if (currentNovel.pairings?.length || pairingTags(currentNovel).length) {
               <div class="detail-row">
                 <span class="detail-label">Parejas</span>
                 <div class="pairings-block">
@@ -228,15 +237,18 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
                       {{ p.characterA.name }} × {{ p.characterB.name }}
                     </span>
                   }
+                  @for (pt of pairingTags(currentNovel); track pt) {
+                    <span class="pairing-pill">{{ pt }}</span>
+                  }
                 </div>
               </div>
             }
 
-            @if (currentNovel.tags?.length) {
+            @if (nonPairingTags(currentNovel).length) {
               <div class="detail-row">
                 <span class="detail-label">Etiquetas</span>
                 <div class="chips-block">
-                  @for (t of currentNovel.tags; track t) {
+                  @for (t of nonPairingTags(currentNovel); track t) {
                     <span class="chip chip-tag">#{{ t }}</span>
                   }
                 </div>
@@ -271,7 +283,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
           </div>
         </section>
 
-        @if (currentNovel.worlds.length) {
+        @if (currentNovel.worlds.length && currentNovel.novelType !== 'FANFIC') {
           <section class="related-block">
             <div class="section-head">
               <h2>Mundos vinculados</h2>
@@ -285,17 +297,50 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
           </section>
         }
 
-        @if (currentNovel.characters.length) {
+        @if (currentNovel.characters.length || currentNovel.communityCharacters?.length) {
           <section class="related-block">
             <div class="section-head">
               <h2>Personajes</h2>
               <a routerLink="/personajes">Explorar personajes</a>
             </div>
-            <div class="character-grid">
-              @for (character of currentNovel.characters; track character.id) {
-                <app-character-card [character]="character" />
+
+            @if (currentNovel.communityCharacters?.length) {
+              @if (currentNovel.novelType === 'FANFIC' && currentNovel.linkedCommunity) {
+                <h3 class="char-group-title">Personajes del fandom</h3>
               }
-            </div>
+              <div class="character-grid">
+                @for (cc of currentNovel.communityCharacters!; track cc.id) {
+                  <article class="cc-mini">
+                    <div class="avatar">
+                      @if (cc.avatarUrl) {
+                        <img [src]="cc.avatarUrl" [alt]="cc.name" />
+                      } @else {
+                        <span>{{ cc.name.charAt(0) }}</span>
+                      }
+                    </div>
+                    <div class="body">
+                      <strong>{{ cc.name }}</strong>
+                      @if (currentNovel.linkedCommunity) {
+                        <span class="canon-badge">
+                          Canon de {{ currentNovel.linkedCommunity.name }}
+                        </span>
+                      }
+                    </div>
+                  </article>
+                }
+              </div>
+            }
+
+            @if (currentNovel.characters.length) {
+              @if (currentNovel.novelType === 'FANFIC' && currentNovel.communityCharacters?.length) {
+                <h3 class="char-group-title">Personajes originales</h3>
+              }
+              <div class="character-grid">
+                @for (character of currentNovel.characters; track character.id) {
+                  <app-character-card [character]="character" />
+                }
+              </div>
+            }
           </section>
         }
 
@@ -484,6 +529,65 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
       .chip-genre {
         background: var(--accent-glow);
         color: var(--accent-text);
+      }
+      .fanfic-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 0.9rem;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #6f3aff, #b34dff);
+        color: #fff;
+        font-weight: 600;
+        text-decoration: none;
+        font-size: 0.85rem;
+        width: fit-content;
+      }
+      .char-group-title {
+        margin: 1rem 0 0.5rem;
+        font-size: 0.95rem;
+        color: var(--text-2);
+      }
+      .character-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 0.75rem;
+      }
+      .cc-mini {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: 0.5rem;
+        padding: 0.6rem;
+        border: 1px solid var(--border);
+        border-radius: 0.85rem;
+        background: var(--bg-card);
+      }
+      .cc-mini .avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: var(--bg-surface);
+        overflow: hidden;
+        display: grid;
+        place-items: center;
+      }
+      .cc-mini .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .cc-mini .body {
+        display: grid;
+        gap: 0.2rem;
+      }
+      .canon-badge {
+        display: inline-block;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        padding: 0.15rem 0.5rem;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        width: fit-content;
       }
       .chip-tag {
         background: rgba(122, 156, 220, 0.14);
@@ -894,6 +998,33 @@ export class NovelDetailPageComponent implements OnInit {
       OTHER: 'Otros',
     };
     return value ? (labels[value] ?? value) : '';
+  }
+
+  private isPairingTag(tag: string): boolean {
+    if (!tag.includes('/')) return false;
+    const parts = tag.split('/');
+    return parts.length === 2 && parts[0].length > 0 && parts[1].length > 0;
+  }
+
+  private prettifyName(s: string): string {
+    return s
+      .split('-')
+      .filter(Boolean)
+      .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+      .join(' ');
+  }
+
+  pairingTags(novel: { tags?: string[] | null }): string[] {
+    return (novel.tags ?? [])
+      .filter((t) => this.isPairingTag(t))
+      .map((t) => {
+        const [a, b] = t.split('/');
+        return `${this.prettifyName(a)} × ${this.prettifyName(b)}`;
+      });
+  }
+
+  nonPairingTags(novel: { tags?: string[] | null }): string[] {
+    return (novel.tags ?? []).filter((t) => !this.isPairingTag(t));
   }
 
   createTimeline(novelSlug: string) {

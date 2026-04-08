@@ -93,6 +93,7 @@ export class FollowedCommunitiesPageComponent implements OnInit {
     }).subscribe(({ member, followed }) => {
       const map = new Map<string, Community>();
       for (const c of [...member, ...followed]) {
+        if (c.status !== 'ACTIVE') continue;
         if (!map.has(c.id)) map.set(c.id, c);
       }
       this.items.set(Array.from(map.values()));

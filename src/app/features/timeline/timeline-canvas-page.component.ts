@@ -592,7 +592,7 @@ export class TimelineCanvasPageComponent implements OnInit {
     });
 
     ref.afterClosed().subscribe((confirmed) => {
-      if (confirmed !== 'true') return;
+      if (confirmed !== true) return;
       this.timelineService.deleteEvent(this.timelineId(), event.id).subscribe({
         next: () => {
           this.allEvents.update((evts) => evts.filter((e) => e.id !== event.id));

@@ -5,7 +5,9 @@ import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 import {
   CharacterDetail,
+  CharacterKinshipType,
   CharacterRelationship,
+  CharacterRelationshipCategory,
   CharacterRole,
   CharacterStatus,
   CharacterSummary,
@@ -132,7 +134,14 @@ export class CharactersService {
   createRelationship(
     username: string,
     slug: string,
-    payload: { targetId: string; type: string; description?: string | null; isMutual?: boolean },
+    payload: {
+      targetId: string;
+      category?: CharacterRelationshipCategory;
+      kinshipType?: CharacterKinshipType;
+      type?: string;
+      description?: string | null;
+      isMutual?: boolean;
+    },
   ) {
     return this.http
       .post<

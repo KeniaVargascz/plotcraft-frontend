@@ -68,6 +68,9 @@
 }
 
 .user-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
   color: inherit;
   text-decoration: none;
 
@@ -75,6 +78,32 @@
     text-decoration: none;
     opacity: 0.8;
   }
+}
+
+.user-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--accent-glow) 78%, var(--bg-card));
+  color: var(--accent-text);
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid var(--border);
+}
+
+.user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.user-name {
+  white-space: nowrap;
 }
 
 .search-slot {

@@ -148,7 +148,7 @@ export class MySeriesPageComponent implements OnInit {
       },
     });
     ref.afterClosed().subscribe((ok) => {
-      if (!ok) return;
+      if (ok !== true) return;
       this.seriesService.delete(series.slug).subscribe({
         next: () => this.items.update((list) => list.filter((s) => s.id !== series.id)),
       });

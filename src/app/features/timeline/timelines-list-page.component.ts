@@ -397,7 +397,7 @@ export class TimelinesListPageComponent {
     });
 
     ref.afterClosed().subscribe((confirmed) => {
-      if (confirmed !== 'true') return;
+      if (confirmed !== true) return;
       this.removing.set(tl.id);
       this.timelineService
         .remove(tl.id, true)

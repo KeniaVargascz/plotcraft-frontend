@@ -10,6 +10,23 @@ export type CharacterRole =
 
 export type CharacterStatus = 'ALIVE' | 'DECEASED' | 'UNKNOWN' | 'UNDEAD' | 'TRANSFORMED';
 
+export type CharacterRelationshipCategory = 'KINSHIP' | 'OTHER';
+
+export type CharacterKinshipType =
+  | 'PARENT'
+  | 'CHILD'
+  | 'SIBLING'
+  | 'GRANDPARENT'
+  | 'GRANDCHILD'
+  | 'UNCLE_AUNT'
+  | 'NIECE_NEPHEW'
+  | 'COUSIN'
+  | 'SPOUSE'
+  | 'STEP_PARENT'
+  | 'STEP_CHILD'
+  | 'GUARDIAN'
+  | 'WARD';
+
 export interface CharacterSummary {
   id: string;
   name: string;
@@ -59,6 +76,10 @@ export interface CharacterSummary {
 export interface CharacterRelationship {
   id: string;
   type: string;
+  label: string;
+  category: CharacterRelationshipCategory;
+  kinshipType: CharacterKinshipType | null;
+  relationshipGroupId: string | null;
   description: string | null;
   isMutual: boolean;
   createdAt: string;

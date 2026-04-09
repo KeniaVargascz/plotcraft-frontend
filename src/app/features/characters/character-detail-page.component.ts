@@ -1,15 +1,20 @@
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
 import { CharactersService } from '../../core/services/characters.service';
 import { KudosService } from '../../core/services/kudos.service';
 import { AuthService } from '../../core/services/auth.service';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { CharacterDetail, CharacterRelationship } from '../../core/models/character.model';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/linked-visual-boards-section.component';
+import { CharacterKinshipDialogComponent } from './components/character-kinship-dialog.component';
+
 @Component({
   selector: 'app-character-detail-page',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, LinkedVisualBoardsSectionComponent],
   template: `
     @if (loading()) {
       <p class="state">Cargando personaje...</p>
@@ -23,9 +28,9 @@ import { CharacterDetail, CharacterRelationship } from '../../core/models/charac
               <h1>{{ currentCharacter.name }}</h1>
               <p class="author">
                 por
-                <a [routerLink]="['/perfil', currentCharacter.author.username]"
-                  >@{{ currentCharacter.author.username }}</a
-                >
+                <a [routerLink]="['/perfil', currentCharacter.author.username]">
+                  @{{ currentCharacter.author.username }}
+                </a>
               </p>
               @if (currentCharacter.world) {
                 <a class="world-link" [routerLink]="['/mundos', currentCharacter.world.slug]">
@@ -34,7 +39,13 @@ import { CharacterDetail, CharacterRelationship } from '../../core/models/charac
               }
               <div class="kudo-row">
                 @if (!currentCharacter.viewerContext?.isOwner) {
-                  <button type="button" class="kudo-btn" [class.kudo-active]="currentCharacter.viewerContext?.hasKudo" [disabled]="kudoLoading()" (click)="toggleCharacterKudo()">
+                  <button
+                    type="button"
+                    class="kudo-btn"
+                    [class.kudo-active]="currentCharacter.viewerContext?.hasKudo"
+                    [disabled]="kudoLoading()"
+                    (click)="toggleCharacterKudo()"
+                  >
                     <span [class.kudo-beat]="kudoBeat()">&#9829;</span>
                     {{ currentCharacter.viewerContext?.hasKudo ? 'Kudo dado' : 'Dar kudo' }}
                   </button>
@@ -50,11 +61,24 @@ import { CharacterDetail, CharacterRelationship } from '../../core/models/charac
             </article>
 
             <aside class="card graph-card">
-              <h2>Relaciones</h2>
-              @if (!relationships().length) {
-                <p class="state">Sin relaciones registradas.</p>
+              <div class="section-header">
+                <div>
+                  <h2>Relaciones familiares</h2>
+                  <p class="section-copy">Parentescos registrados y personajes conectados.</p>
+                </div>
+                @if (currentCharacter.viewerContext?.isOwner) {
+                  <button type="button" class="primary" (click)="openKinshipDialog()">
+                    Agregar parentesco
+                  </button>
+                }
+              </div>
+
+              @if (relationshipLoading()) {
+                <p class="state">Cargando parentescos...</p>
+              } @else if (!relationships().length) {
+                <p class="state">Sin parentescos registrados.</p>
               } @else {
-                <svg viewBox="0 0 300 300" class="graph">
+                <svg viewBox="0 0 300 300" class="graph" aria-label="Diagrama de relaciones">
                   @for (node of graphNodes(); track node.id) {
                     <line
                       [attr.x1]="150"
@@ -63,28 +87,71 @@ import { CharacterDetail, CharacterRelationship } from '../../core/models/charac
                       [attr.y2]="node.y"
                     ></line>
                   }
-                  <circle cx="150" cy="150" r="32"></circle>
-                  <text x="150" y="155" text-anchor="middle">{{ currentCharacter.name }}</text>
+                  <circle cx="150" cy="150" r="32" class="graph-center"></circle>
+                  <text x="150" y="155" text-anchor="middle" class="graph-text-center">
+                    {{ currentCharacter.name }}
+                  </text>
+
                   @for (node of graphNodes(); track node.id) {
-                    <circle [attr.cx]="node.x" [attr.cy]="node.y" r="24"></circle>
-                    <text [attr.x]="node.x" [attr.y]="node.y + 4" text-anchor="middle">
-                      {{ node.label }}
+                    <g class="graph-node" (click)="goToRelationship(node.relationship)">
+                      <circle [attr.cx]="node.x" [attr.cy]="node.y" r="24"></circle>
+                      <text [attr.x]="node.x" [attr.y]="node.y + 4" text-anchor="middle">
+                        {{ node.label }}
+                      </text>
+                    </g>
+                    <text
+                      [attr.x]="node.x"
+                      [attr.y]="node.y + 36"
+                      text-anchor="middle"
+                      class="graph-relation-label"
+                    >
+                      {{ node.relationship.label }}
                     </text>
                   }
                 </svg>
 
                 <div class="relation-list">
                   @for (relationship of relationships(); track relationship.id) {
-                    <article>
-                      <strong>{{ relationship.target.name }}</strong>
-                      <small>{{ relationship.type }}</small>
-                      <p>{{ relationship.description }}</p>
+                    <article class="relation-card">
+                      <div class="relation-main">
+                        <small class="relation-type">{{ relationship.label }}</small>
+                        <a
+                          class="relation-target"
+                          [routerLink]="['/personajes', relationship.target.username, relationship.target.slug]"
+                        >
+                          {{ relationship.target.name }}
+                        </a>
+                        @if (relationship.target.world) {
+                          <a
+                            class="relation-world"
+                            [routerLink]="['/mundos', relationship.target.world.slug]"
+                          >
+                            {{ relationship.target.world.name }}
+                          </a>
+                        }
+                        @if (relationship.description) {
+                          <p>{{ relationship.description }}</p>
+                        }
+                      </div>
+                      @if (currentCharacter.viewerContext?.isOwner) {
+                        <button type="button" class="ghost danger" (click)="removeRelationship(relationship)">
+                          Eliminar
+                        </button>
+                      }
                     </article>
                   }
                 </div>
               }
             </aside>
           </section>
+
+          <app-linked-visual-boards-section
+            [linkedType]="'character'"
+            [linkedId]="currentCharacter.id"
+            [authorUsername]="currentCharacter.author.username"
+            [entityLabel]="'personaje'"
+            [isOwner]="currentCharacter.viewerContext?.isOwner ?? false"
+          />
         </section>
       } @else {
         <p class="state">No se pudo cargar el personaje.</p>
@@ -128,37 +195,158 @@ import { CharacterDetail, CharacterRelationship } from '../../core/models/charac
       .eyebrow,
       .author,
       .state,
-      .relation-list small,
-      .relation-list p {
+      .section-copy,
+      .relation-type,
+      .relation-world,
+      .relation-card p {
         color: var(--text-2);
       }
       .content-grid {
         grid-template-columns: 1.05fr 0.95fr;
       }
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: start;
+        margin-bottom: 1rem;
+      }
+      .section-header h2 {
+        margin: 0;
+      }
+      .section-copy {
+        margin: 0.35rem 0 0;
+      }
+      .primary,
+      .ghost,
+      .kudo-btn {
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-1);
+        cursor: pointer;
+      }
+      .primary {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        border-color: transparent;
+      }
+      .ghost.danger {
+        color: #d16e6e;
+      }
       .graph {
         width: 100%;
         max-width: 360px;
         justify-self: center;
+        overflow: visible;
       }
       line,
-      circle {
+      .graph-node circle,
+      .graph-center {
         stroke: var(--border);
         fill: color-mix(in srgb, var(--accent-glow) 72%, var(--bg-card));
+      }
+      .graph-node {
+        cursor: pointer;
+      }
+      .graph-node:hover circle {
+        fill: color-mix(in srgb, var(--accent-glow) 84%, white 16%);
       }
       text {
         fill: var(--text-1);
         font-size: 11px;
       }
-      .kudo-row { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
-      .kudo-btn { padding: 0.4rem 0.7rem; border-radius: 999px; background: var(--accent-glow); color: var(--text-2); border: 1px solid var(--border); cursor: pointer; font-size: 0.85rem; }
-      .kudo-active { color: #e05555; border-color: #e05555; background: rgba(224,85,85,0.1); }
-      .kudo-beat { display: inline-block; animation: beat 300ms ease-in-out; }
-      .kudo-count { font-size: 0.85rem; color: var(--text-2); }
-      @keyframes beat { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+      .graph-text-center {
+        font-weight: 700;
+      }
+      .graph-relation-label {
+        font-size: 10px;
+        fill: var(--text-2);
+      }
+      .relation-list {
+        margin-top: 0.5rem;
+      }
+      .relation-card {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: start;
+        padding: 0.95rem 1rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+      }
+      .relation-main {
+        display: grid;
+        gap: 0.25rem;
+      }
+      .relation-type {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .relation-target {
+        color: var(--text-1);
+        font-size: 1.05rem;
+        font-weight: 700;
+        text-decoration: none;
+      }
+      .relation-target:hover,
+      .relation-world:hover {
+        text-decoration: underline;
+      }
+      .relation-card p {
+        margin: 0.25rem 0 0;
+      }
+      .kudo-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      .kudo-btn {
+        background: var(--accent-glow);
+        color: var(--text-2);
+        font-size: 0.85rem;
+      }
+      .kudo-active {
+        color: #e05555;
+        border-color: #e05555;
+        background: rgba(224, 85, 85, 0.1);
+      }
+      .kudo-beat {
+        display: inline-block;
+        animation: beat 300ms ease-in-out;
+      }
+      .kudo-count {
+        font-size: 0.85rem;
+        color: var(--text-2);
+      }
+      @keyframes beat {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.3);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
       @media (max-width: 960px) {
         .hero,
-        .content-grid {
+        .content-grid,
+        .relation-card {
           grid-template-columns: 1fr;
+        }
+        .relation-card {
+          display: grid;
+        }
+      }
+      @media (max-width: 720px) {
+        .section-header {
+          flex-direction: column;
         }
       }
     `,
@@ -167,6 +355,7 @@ import { CharacterDetail, CharacterRelationship } from '../../core/models/charac
 export class CharacterDetailPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
   private readonly destroyRef = inject(DestroyRef);
   private readonly charactersService = inject(CharactersService);
   private readonly kudosService = inject(KudosService);
@@ -177,41 +366,34 @@ export class CharacterDetailPageComponent {
   readonly relationships = signal<CharacterRelationship[]>([]);
   readonly loading = signal(true);
   readonly kudoLoading = signal(false);
+  readonly relationshipLoading = signal(false);
   readonly kudoBeat = signal(false);
   readonly graphNodes = computed(() => {
     const items = this.relationships();
-    return items.map((item, index) => {
+    return items.map((relationship, index) => {
       const angle = (Math.PI * 2 * index) / Math.max(items.length, 1);
       return {
-        id: item.id,
-        label: item.target.name.slice(0, 8),
+        id: relationship.id,
+        relationship,
+        label: relationship.target.name.slice(0, 8),
         x: 150 + 98 * Math.cos(angle),
         y: 150 + 98 * Math.sin(angle),
       };
     });
   });
 
+  private currentUsername = '';
+  private currentSlug = '';
+
   constructor() {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const username = params.get('username');
       const slug = params.get('slug');
       if (!username || !slug) return;
-      this.loading.set(true);
-      this.charactersService.getBySlug(username, slug).subscribe({
-        next: (character) => {
-          this.character.set(character);
-          this.charactersService.listRelationships(username, slug).subscribe({
-            next: (relationships) => this.relationships.set(relationships),
-            error: () => this.relationships.set([]),
-          });
-          this.loading.set(false);
-        },
-        error: () => {
-          this.character.set(null);
-          this.relationships.set([]);
-          this.loading.set(false);
-        },
-      });
+
+      this.currentUsername = username;
+      this.currentSlug = slug;
+      this.loadCharacter(username, slug);
     });
   }
 
@@ -220,7 +402,7 @@ export class CharacterDetailPageComponent {
     if (!char) return;
 
     if (!this.authService.isAuthenticated()) {
-      this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+      void this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
       return;
     }
 
@@ -246,6 +428,64 @@ export class CharacterDetailPageComponent {
     });
   }
 
+  openKinshipDialog() {
+    const char = this.character();
+    if (!char || !char.viewerContext?.isOwner) return;
+
+    const ref = this.dialog.open(CharacterKinshipDialogComponent, {
+      data: {
+        currentCharacterId: char.id,
+        username: char.author.username,
+        slug: char.slug,
+      },
+      width: 'min(40rem, 96vw)',
+      maxWidth: '96vw',
+    });
+
+    ref
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((created: CharacterRelationship | null) => {
+        if (!created) return;
+        this.refreshRelationships();
+      });
+  }
+
+  removeRelationship(relationship: CharacterRelationship) {
+    const char = this.character();
+    if (!char?.viewerContext?.isOwner) return;
+
+    const ref = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Eliminar parentesco',
+        description: `¿Seguro que deseas eliminar la relación con "${relationship.target.name}"?`,
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar',
+      },
+    });
+
+    ref
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((confirmed) => {
+        if (confirmed !== true) return;
+        this.relationshipLoading.set(true);
+        this.charactersService
+          .removeRelationship(char.author.username, char.slug, relationship.id)
+          .subscribe({
+            next: () => {
+              this.relationshipLoading.set(false);
+              this.refreshRelationships();
+            },
+            error: () => this.relationshipLoading.set(false),
+          });
+      });
+  }
+
+  goToRelationship(relationship: CharacterRelationship) {
+    void this.router.navigate(['/personajes', relationship.target.username, relationship.target.slug]);
+  }
+
   detailMarkdown() {
     const current = this.character();
     if (!current) return '';
@@ -261,5 +501,37 @@ export class CharacterDetailPageComponent {
     ]
       .filter(Boolean)
       .join('\n\n');
+  }
+
+  private loadCharacter(username: string, slug: string) {
+    this.loading.set(true);
+    this.charactersService.getBySlug(username, slug).subscribe({
+      next: (character) => {
+        this.character.set(character);
+        this.refreshRelationships();
+        this.loading.set(false);
+      },
+      error: () => {
+        this.character.set(null);
+        this.relationships.set([]);
+        this.loading.set(false);
+      },
+    });
+  }
+
+  private refreshRelationships() {
+    if (!this.currentUsername || !this.currentSlug) return;
+
+    this.relationshipLoading.set(true);
+    this.charactersService.listRelationships(this.currentUsername, this.currentSlug).subscribe({
+      next: (relationships) => {
+        this.relationships.set(relationships);
+        this.relationshipLoading.set(false);
+      },
+      error: () => {
+        this.relationships.set([]);
+        this.relationshipLoading.set(false);
+      },
+    });
   }
 }

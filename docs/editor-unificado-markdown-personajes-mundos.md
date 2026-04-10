@@ -81,3 +81,19 @@ pnpm.cmd build
 ```
 
 La build del frontend compila correctamente. Los warnings observados son previos y no bloquean el build.
+
+## Navegacion y scroll
+
+Se agrego restauracion global de scroll en el router para que, al navegar desde el menu u otras rutas internas, la vista arranque desde el principio.
+
+Implementacion:
+
+- `src/app/app.config.ts`
+
+Configuracion aplicada:
+
+- `withInMemoryScrolling`
+- `scrollPositionRestoration: 'top'`
+- `anchorScrolling: 'enabled'`
+
+Con esto se evita tener que forzar `window.scrollTo` manualmente en cada pantalla.

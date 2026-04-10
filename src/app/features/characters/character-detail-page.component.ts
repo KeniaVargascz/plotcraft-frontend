@@ -490,7 +490,7 @@ export class CharacterDetailPageComponent {
     const current = this.character();
     if (!current) return '';
 
-    return [
+    const legacySections = [
       current.personality && `## Personalidad\n${current.personality}`,
       current.motivations && `## Motivaciones\n${current.motivations}`,
       current.fears && `## Miedos\n${current.fears}`,
@@ -499,8 +499,21 @@ export class CharacterDetailPageComponent {
       current.backstory && `## Backstory\n${current.backstory}`,
       current.arc && `## Arco\n${current.arc}`,
     ]
-      .filter(Boolean)
-      .join('\n\n');
+      .filter(Boolean);
+
+    const hasLegacyStructure =
+      Boolean(current.personality) ||
+      Boolean(current.motivations) ||
+      Boolean(current.fears) ||
+      Boolean(current.strengths) ||
+      Boolean(current.weaknesses) ||
+      Boolean(current.arc);
+
+    if (!hasLegacyStructure && current.backstory) {
+      return current.backstory;
+    }
+
+    return legacySections.join('\n\n');
   }
 
   private loadCharacter(username: string, slug: string) {

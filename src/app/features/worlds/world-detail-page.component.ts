@@ -1,5 +1,4 @@
-import { Component, inject, signal, computed } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { WorldsService } from '../../core/services/worlds.service';
@@ -13,11 +12,12 @@ import { CharacterCardComponent } from '../characters/components/character-card.
 import { CharactersService } from '../../core/services/characters.service';
 import { CharacterSummary } from '../../core/models/character.model';
 import { WbEntryCardComponent } from './worldbuilding/components/wb-entry-card.component';
+import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/linked-visual-boards-section.component';
 
 @Component({
   selector: 'app-world-detail-page',
   standalone: true,
-  imports: [RouterLink, FormsModule, CharacterCardComponent, WbEntryCardComponent],
+  imports: [RouterLink, CharacterCardComponent, WbEntryCardComponent, LinkedVisualBoardsSectionComponent],
   template: `
     @if (loading()) {
       <p class="state">Cargando mundo...</p>
@@ -55,67 +55,10 @@ import { WbEntryCardComponent } from './worldbuilding/components/wb-entry-card.c
 
           <section class="content-grid">
             <article class="card prose">
-              <h2>Descripcion</h2>
-              <div
-                [innerHTML]="
-                  markdownService.render(currentWorld.description || 'Sin descripcion todavia.')
-                "
-              ></div>
-              <h3>Ambientacion</h3>
-              <div
-                [innerHTML]="
-                  markdownService.render(currentWorld.setting || 'Sin ambientacion registrada.')
-                "
-              ></div>
-              <h3>Sistema y reglas</h3>
-              <div
-                [innerHTML]="
-                  markdownService.render(
-                    (currentWorld.magicSystem || '') +
-                      '
-
-' +
-                      (currentWorld.rules || '')
-                  )
-                "
-              ></div>
+              <div [innerHTML]="markdownService.render(worldMarkdown(currentWorld))"></div>
             </article>
 
             <aside class="side-column">
-              <section class="card">
-                <h3>Referencias visuales</h3>
-                @if (visualRefs().length) {
-                  <div class="visual-refs-grid">
-                    @for (ref of visualRefs(); track ref.title + ref.imageUrl) {
-                      <div class="visual-ref-card">
-                        <img [src]="ref.imageUrl" [alt]="ref.title" class="ref-img" />
-                        <span class="ref-title">{{ ref.title }}</span>
-                        @if (currentWorld.viewerContext?.isOwner) {
-                          <button type="button" class="ref-delete" (click)="removeVisualRef($index)">&times;</button>
-                        }
-                      </div>
-                    }
-                  </div>
-                } @else {
-                  <p class="ref-empty">Sin referencias visuales.</p>
-                }
-
-                @if (currentWorld.viewerContext?.isOwner) {
-                  @if (showAddRef()) {
-                    <div class="ref-form">
-                      <input type="text" [(ngModel)]="newRefTitle" placeholder="Titulo de la referencia" class="ref-input" />
-                      <input type="url" [(ngModel)]="newRefUrl" placeholder="URL de la imagen" class="ref-input" />
-                      <div class="ref-form-actions">
-                        <button type="button" class="ref-btn save" [disabled]="!newRefTitle.trim() || !newRefUrl.trim()" (click)="addVisualRef()">Guardar</button>
-                        <button type="button" class="ref-btn cancel" (click)="showAddRef.set(false)">Cancelar</button>
-                      </div>
-                    </div>
-                  } @else {
-                    <button type="button" class="ref-add-btn" (click)="showAddRef.set(true)">+ Agregar referencia</button>
-                  }
-                }
-              </section>
-
               @if (currentWorld.linkedNovels.length) {
                 <section class="card">
                   <h3>Novelas vinculadas</h3>
@@ -165,6 +108,14 @@ import { WbEntryCardComponent } from './worldbuilding/components/wb-entry-card.c
               </div>
             </section>
           }
+
+          <app-linked-visual-boards-section
+            [linkedType]="'world'"
+            [linkedId]="currentWorld.id"
+            [authorUsername]="currentWorld.author.username"
+            [entityLabel]="'mundo'"
+            [isOwner]="currentWorld.viewerContext?.isOwner ?? false"
+          />
         </section>
       } @else {
         <p class="state">No se pudo cargar el mundo.</p>
@@ -237,89 +188,6 @@ import { WbEntryCardComponent } from './worldbuilding/components/wb-entry-card.c
         color: var(--accent-text);
         white-space: nowrap;
       }
-      .visual-refs-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-        margin-bottom: 0.75rem;
-      }
-      .visual-ref-card {
-        position: relative;
-        border: 1px solid var(--border);
-        border-radius: 0.75rem;
-        overflow: hidden;
-        background: var(--bg-surface);
-      }
-      .ref-img {
-        width: 100%;
-        height: 100px;
-        object-fit: cover;
-        display: block;
-      }
-      .ref-title {
-        display: block;
-        padding: 0.35rem 0.5rem;
-        font-size: 0.75rem;
-        color: var(--text-1);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .ref-delete {
-        position: absolute;
-        top: 4px;
-        right: 4px;
-        width: 1.4rem;
-        height: 1.4rem;
-        border: none;
-        border-radius: 50%;
-        background: rgba(0,0,0,0.6);
-        color: #fff;
-        cursor: pointer;
-        font-size: 0.8rem;
-        display: grid;
-        place-items: center;
-      }
-      .ref-delete:hover { background: var(--danger); }
-      .ref-empty { color: var(--text-3); font-size: 0.82rem; margin: 0; }
-      .ref-form {
-        display: grid;
-        gap: 0.5rem;
-        margin-top: 0.75rem;
-      }
-      .ref-input {
-        padding: 0.5rem 0.65rem;
-        border: 1px solid var(--border);
-        border-radius: 0.5rem;
-        background: var(--bg-surface);
-        color: var(--text-1);
-        font-size: 0.82rem;
-      }
-      .ref-input:focus { outline: 1px solid var(--accent); }
-      .ref-form-actions { display: flex; gap: 0.5rem; }
-      .ref-btn {
-        padding: 0.4rem 0.85rem;
-        border-radius: 0.5rem;
-        border: 1px solid var(--border);
-        font-size: 0.78rem;
-        cursor: pointer;
-      }
-      .ref-btn.save { background: var(--accent); color: #fff; border-color: transparent; }
-      .ref-btn.save:disabled { opacity: 0.5; cursor: not-allowed; }
-      .ref-btn.cancel { background: var(--bg-surface); color: var(--text-2); }
-      .ref-add-btn {
-        display: block;
-        width: 100%;
-        padding: 0.5rem;
-        border: 1px dashed var(--border);
-        border-radius: 0.5rem;
-        background: transparent;
-        color: var(--text-3);
-        font-size: 0.8rem;
-        cursor: pointer;
-        margin-top: 0.5rem;
-      }
-      .ref-add-btn:hover { border-color: var(--accent); color: var(--accent-text); }
       .kudo-btn { padding: 0.4rem 0.7rem; border-radius: 999px; background: var(--accent-glow); color: var(--text-2); border: 1px solid var(--border); cursor: pointer; font-size: 0.85rem; }
       .kudo-active { color: #e05555; border-color: #e05555; background: rgba(224,85,85,0.1); }
       .kudo-beat { display: inline-block; animation: beat 300ms ease-in-out; }
@@ -379,14 +247,6 @@ export class WorldDetailPageComponent {
   readonly loreEntries = signal<Record<string, WbEntrySummary[]>>({});
   readonly loading = signal(true);
   readonly genreLabels = WORLD_GENRE_LABELS;
-  readonly showAddRef = signal(false);
-  newRefTitle = '';
-  newRefUrl = '';
-  readonly visualRefs = computed(() => {
-    const w = this.world();
-    const refs = (w?.metadata as any)?.visualRefs;
-    return Array.isArray(refs) ? refs as { title: string; imageUrl: string }[] : [];
-  });
 
   genreLabel(genre: string): string {
     return this.genreLabels[genre as keyof typeof WORLD_GENRE_LABELS] ?? genre;
@@ -463,31 +323,22 @@ export class WorldDetailPageComponent {
     });
   }
 
-  addVisualRef() {
-    if (!this.newRefTitle.trim() || !this.newRefUrl.trim()) return;
-    const w = this.world();
-    if (!w) return;
-    const current = this.visualRefs();
-    const updated = [...current, { title: this.newRefTitle.trim(), imageUrl: this.newRefUrl.trim() }];
-    const metadata = { ...(w.metadata as any || {}), visualRefs: updated };
-    this.worldsService.update(w.slug, { metadata }).subscribe({
-      next: (updatedWorld) => {
-        this.world.set(updatedWorld);
-        this.newRefTitle = '';
-        this.newRefUrl = '';
-        this.showAddRef.set(false);
-      },
-    });
+  worldMarkdown(world: WorldDetail) {
+    const hasLegacyStructure =
+      Boolean(world.setting) || Boolean(world.magicSystem) || Boolean(world.rules);
+
+    if (!hasLegacyStructure && world.description) {
+      return world.description;
+    }
+
+    return [
+      world.description && `## Descripcion\n${world.description}`,
+      world.setting && `## Ambientacion\n${world.setting}`,
+      world.magicSystem && `## Sistema de magia\n${world.magicSystem}`,
+      world.rules && `## Reglas\n${world.rules}`,
+    ]
+      .filter(Boolean)
+      .join('\n\n') || 'Sin descripcion todavia.';
   }
 
-  removeVisualRef(index: number) {
-    const w = this.world();
-    if (!w) return;
-    const current = [...this.visualRefs()];
-    current.splice(index, 1);
-    const metadata = { ...(w.metadata as any || {}), visualRefs: current };
-    this.worldsService.update(w.slug, { metadata }).subscribe({
-      next: (updatedWorld) => this.world.set(updatedWorld),
-    });
-  }
 }

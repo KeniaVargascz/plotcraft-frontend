@@ -93,16 +93,49 @@ import { WorldSummary } from '../../core/models/world.model';
           <label
             ><span>Tags</span><input [(ngModel)]="tagsRaw" name="tagsRaw" [disabled]="saving()"
           /></label>
-          <label
-            ><span>Apariencia</span
-            ><textarea
-              [(ngModel)]="appearance"
-              name="appearance"
-              rows="4"
+          <section class="editor-field">
+            <div class="editor-heading">
+              <div>
+                <span>Perfil del personaje</span>
+                <small>Un solo documento con Markdown para ficha, historia, relaciones y arco.</small>
+              </div>
+              <div class="toolbar">
+                <button type="button" (click)="applyBlock('h2')" [disabled]="saving()">H2</button>
+                <button type="button" (click)="applyBlock('h3')" [disabled]="saving()">H3</button>
+                <button type="button" (click)="applyWrap('**', '**', 'texto en negrita')" [disabled]="saving()">B</button>
+                <button type="button" (click)="applyWrap('*', '*', 'texto en cursiva')" [disabled]="saving()">I</button>
+                <button type="button" (click)="applyWrap('[', '](https://ejemplo.com)', 'enlace')" [disabled]="saving()">Link</button>
+                <button type="button" (click)="applyBlock('quote')" [disabled]="saving()">Cita</button>
+                <button type="button" (click)="applyBlock('list')" [disabled]="saving()">Lista</button>
+                <button type="button" (click)="applyBlock('table')" [disabled]="saving()">Tabla</button>
+                <button type="button" (click)="applyBlock('separator')" [disabled]="saving()">---</button>
+              </div>
+            </div>
+
+            <div class="template-row">
+              @for (template of editorTemplates; track template.label) {
+                <button
+                  type="button"
+                  class="template-chip"
+                  (click)="insertTemplate(template.content)"
+                  [disabled]="saving()"
+                >
+                  {{ template.label }}
+                </button>
+              }
+            </div>
+
+            <textarea
+              #profileEditor
+              id="character-profile-editor"
+              [(ngModel)]="profileContent"
+              name="profileContent"
+              rows="18"
               [disabled]="saving()"
               (ngModelChange)="refreshPreview()"
+              placeholder="# Nombre del personaje&#10;&#10;## Ficha rapida&#10;| Dato | Valor |&#10;| --- | --- |&#10;| Alias |  |"
             ></textarea>
-          </label>
+          </section>
           <fieldset class="novel-links">
             <legend>Novelas vinculadas</legend>
             @if (!novels().length) {
@@ -141,77 +174,6 @@ import { WorldSummary } from '../../core/models/world.model';
               }
             }
           </fieldset>
-          <label
-            ><span>Personalidad</span
-            ><textarea
-              [(ngModel)]="personality"
-              name="personality"
-              rows="5"
-              [disabled]="saving()"
-              (ngModelChange)="refreshPreview()"
-            ></textarea>
-          </label>
-          <label
-            ><span>Motivaciones</span
-            ><textarea
-              [(ngModel)]="motivations"
-              name="motivations"
-              rows="5"
-              [disabled]="saving()"
-              (ngModelChange)="refreshPreview()"
-            ></textarea>
-          </label>
-          <label
-            ><span>Miedos</span
-            ><textarea
-              [(ngModel)]="fears"
-              name="fears"
-              rows="5"
-              [disabled]="saving()"
-              (ngModelChange)="refreshPreview()"
-            ></textarea>
-          </label>
-          <label
-            ><span>Fortalezas</span
-            ><textarea
-              [(ngModel)]="strengths"
-              name="strengths"
-              rows="5"
-              [disabled]="saving()"
-              (ngModelChange)="refreshPreview()"
-            ></textarea>
-          </label>
-          <label
-            ><span>Debilidades</span
-            ><textarea
-              [(ngModel)]="weaknesses"
-              name="weaknesses"
-              rows="5"
-              [disabled]="saving()"
-              (ngModelChange)="refreshPreview()"
-            ></textarea>
-          </label>
-          <label
-            ><span>Backstory</span
-            ><textarea
-              [(ngModel)]="backstory"
-              name="backstory"
-              rows="7"
-              [disabled]="saving()"
-              (ngModelChange)="refreshPreview()"
-            ></textarea>
-          </label>
-          <label
-            ><span>Arco</span
-            ><textarea
-              [(ngModel)]="arc"
-              name="arc"
-              rows="6"
-              [disabled]="saving()"
-              (ngModelChange)="refreshPreview()"
-            ></textarea>
-          </label>
-
           <div class="actions">
             <button
               type="button"
@@ -280,6 +242,36 @@ import { WorldSummary } from '../../core/models/world.model';
       .selected-novels {
         display: grid;
         gap: 0.75rem;
+      }
+      .editor-field,
+      .editor-heading {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .editor-heading {
+        align-items: start;
+      }
+      .editor-heading small {
+        color: var(--text-2);
+      }
+      .toolbar,
+      .template-row {
+        display: flex;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+      }
+      .toolbar button,
+      .template-chip {
+        min-height: 2.25rem;
+        padding: 0.45rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: color-mix(in srgb, var(--bg-surface) 90%, white 10%);
+        color: var(--text-1);
+        cursor: pointer;
+      }
+      .template-chip {
+        background: color-mix(in srgb, var(--accent-glow) 26%, var(--bg-surface));
       }
       .selected-novels {
         display: flex;
@@ -381,6 +373,23 @@ export class CharacterFormPageComponent {
     'BACKGROUND',
   ];
   readonly statuses: CharacterStatus[] = ['ALIVE', 'DECEASED', 'UNKNOWN', 'UNDEAD', 'TRANSFORMED'];
+  readonly editorTemplates = [
+    {
+      label: 'Perfil wiki',
+      content:
+        '# Nombre del personaje\n\n## Ficha rapida\n| Dato | Valor |\n| --- | --- |\n| Alias |  |\n| Edad |  |\n| Afiliacion |  |\n\n## Resumen\n\nDescribe quien es y por que importa.\n\n## Historia\n\n### Origen\n\n### Desarrollo\n\n### Estado actual\n\n## Relaciones\n\n- **Aliado:** Nombre\n- **Rival:** Nombre\n\n## Curiosidades\n\n- Dato 1\n- Dato 2',
+    },
+    {
+      label: 'Ficha extensa',
+      content:
+        '## Identidad\n| Campo | Valor |\n| --- | --- |\n| Nombre original |  |\n| Alias |  |\n| Titulo |  |\n| Estado |  |\n\n## Descripcion general\n\n\n## Biografia\n\n### Antes de la historia\n\n### Punto de quiebre\n\n### Situacion actual\n\n## Poderes y capacidades\n\n- Habilidad 1\n- Habilidad 2',
+    },
+    {
+      label: 'Relaciones',
+      content:
+        '## Relaciones clave\n\n- **Familia:** Nombre\n- **Mentor/a:** Nombre\n- **Interes romantico:** Nombre\n- **Antagonista:** Nombre',
+    },
+  ];
 
   private currentSlug: string | null = null;
 
@@ -394,14 +403,7 @@ export class CharacterFormPageComponent {
   aliasesRaw = '';
   tagsRaw = '';
   pendingNovelSlug = '';
-  appearance = '';
-  personality = '';
-  motivations = '';
-  fears = '';
-  strengths = '';
-  weaknesses = '';
-  backstory = '';
-  arc = '';
+  profileContent = '';
 
   constructor() {
     this.worldsService.listMine({ limit: 50 }).subscribe({
@@ -434,14 +436,7 @@ export class CharacterFormPageComponent {
         this.avatarUrl = character.avatarUrl ?? '';
         this.aliasesRaw = character.alias.join(', ');
         this.tagsRaw = character.tags.join(', ');
-        this.appearance = character.appearance ?? '';
-        this.personality = character.personality ?? '';
-        this.motivations = character.motivations ?? '';
-        this.fears = character.fears ?? '';
-        this.strengths = character.strengths ?? '';
-        this.weaknesses = character.weaknesses ?? '';
-        this.backstory = character.backstory ?? '';
-        this.arc = character.arc ?? '';
+        this.profileContent = this.composeProfileContent(character);
         this.selectedNovelSlugs.set(character.linkedNovels.map((novel) => novel.slug));
         this.initialNovelSlugs.set(character.linkedNovels.map((novel) => novel.slug));
         this.refreshPreview();
@@ -485,14 +480,14 @@ export class CharacterFormPageComponent {
         .split(',')
         .map((item) => item.trim())
         .filter(Boolean),
-      appearance: this.appearance.trim() || null,
-      personality: this.personality.trim() || null,
-      motivations: this.motivations.trim() || null,
-      fears: this.fears.trim() || null,
-      strengths: this.strengths.trim() || null,
-      weaknesses: this.weaknesses.trim() || null,
-      backstory: this.backstory.trim() || null,
-      arc: this.arc.trim() || null,
+      appearance: null,
+      personality: null,
+      motivations: null,
+      fears: null,
+      strengths: null,
+      weaknesses: null,
+      backstory: this.profileContent.trim() || null,
+      arc: null,
     };
 
     const request =
@@ -519,24 +514,82 @@ export class CharacterFormPageComponent {
   }
 
   refreshPreview() {
-    this.previewHtml.set(
-      this.markdownService.render(
-        [
-          `## Ficha\n- Visibilidad: ${this.isPublic ? 'Publico' : 'Privado'}`,
-          this.age && `- Edad: ${this.age}`,
-          this.appearance && `## Apariencia\n${this.appearance}`,
-          this.personality && `## Personalidad\n${this.personality}`,
-          this.motivations && `## Motivaciones\n${this.motivations}`,
-          this.fears && `## Miedos\n${this.fears}`,
-          this.strengths && `## Fortalezas\n${this.strengths}`,
-          this.weaknesses && `## Debilidades\n${this.weaknesses}`,
-          this.backstory && `## Backstory\n${this.backstory}`,
-          this.arc && `## Arco\n${this.arc}`,
-        ]
-          .filter(Boolean)
-          .join('\n\n') || 'Sin contenido todavia.',
-      ),
-    );
+    const content = [
+      `## Ficha\n- Visibilidad: ${this.isPublic ? 'Publico' : 'Privado'}`,
+      this.age && `- Edad: ${this.age}`,
+      this.profileContent.trim(),
+    ]
+      .filter(Boolean)
+      .join('\n\n');
+    this.previewHtml.set(this.markdownService.render(content || 'Sin contenido todavia.'));
+  }
+
+  applyWrap(prefix: string, suffix: string, placeholder: string) {
+    this.insertAtSelection((selected) => `${prefix}${selected || placeholder}${suffix}`);
+  }
+
+  applyBlock(type: 'h2' | 'h3' | 'quote' | 'list' | 'table' | 'separator') {
+    const blocks: Record<typeof type, string> = {
+      h2: '## Nueva seccion',
+      h3: '### Subtitulo',
+      quote: '> Cita o frase memorable',
+      list: '- Punto 1\n- Punto 2\n- Punto 3',
+      table: '| Campo | Valor |\n| --- | --- |\n| Dato |  |',
+      separator: '---',
+    };
+    this.insertAtSelection((selected) => selected ? `${selected}\n\n${blocks[type]}` : blocks[type]);
+  }
+
+  insertTemplate(content: string) {
+    this.insertAtSelection((selected) => {
+      const next = selected ? `${selected}\n\n${content}` : content;
+      return next;
+    });
+  }
+
+  private insertAtSelection(transform: (selected: string) => string) {
+    const textarea = document.getElementById('character-profile-editor') as HTMLTextAreaElement | null;
+    if (!textarea) {
+      return;
+    }
+
+    const start = textarea.selectionStart ?? this.profileContent.length;
+    const end = textarea.selectionEnd ?? this.profileContent.length;
+    const selected = this.profileContent.slice(start, end);
+    const replacement = transform(selected);
+    this.profileContent =
+      this.profileContent.slice(0, start) + replacement + this.profileContent.slice(end);
+    this.refreshPreview();
+
+    queueMicrotask(() => {
+      textarea.focus();
+      const caret = start + replacement.length;
+      textarea.setSelectionRange(caret, caret);
+    });
+  }
+
+  private composeProfileContent(character: {
+    appearance: string | null;
+    personality: string | null;
+    motivations: string | null;
+    fears: string | null;
+    strengths: string | null;
+    weaknesses: string | null;
+    backstory: string | null;
+    arc: string | null;
+  }) {
+    const existingSections = [
+      character.appearance && `## Apariencia\n${character.appearance}`,
+      character.personality && `## Personalidad\n${character.personality}`,
+      character.motivations && `## Motivaciones\n${character.motivations}`,
+      character.fears && `## Miedos\n${character.fears}`,
+      character.strengths && `## Fortalezas\n${character.strengths}`,
+      character.weaknesses && `## Debilidades\n${character.weaknesses}`,
+      character.backstory && `## Backstory\n${character.backstory}`,
+      character.arc && `## Arco\n${character.arc}`,
+    ].filter(Boolean);
+
+    return existingSections.length ? existingSections.join('\n\n') : '';
   }
 
   private syncNovelLinks(username: string, characterSlug: string) {

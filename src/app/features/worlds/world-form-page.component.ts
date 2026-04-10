@@ -7,11 +7,12 @@ import { MarkdownService } from '../../core/services/markdown.service';
 import { NovelsService } from '../../core/services/novels.service';
 import { WorldsService } from '../../core/services/worlds.service';
 import { WorldGenre, WorldVisibility, WORLD_GENRE_LABELS } from '../../core/models/world.model';
+import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/tag-chips-input.component';
 
 @Component({
   selector: 'app-world-form-page',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, TagChipsInputComponent],
   template: `
     <section class="form-shell">
       <header class="hero card">
@@ -54,14 +55,15 @@ import { WorldGenre, WorldVisibility, WORLD_GENRE_LABELS } from '../../core/mode
               }
             </select>
           </label>
-          <label
-            ><span>Tags</span
-            ><input
-              [(ngModel)]="tagsRaw"
-              name="tagsRaw"
-              placeholder="fantasia, politica, magia"
-              [disabled]="saving()"
-          /></label>
+          <div class="field-group">
+            <span>Tags</span>
+            <app-tag-chips-input
+              [tags]="tags"
+              [maxTags]="20"
+              placeholder="Anadir tag y presionar Enter..."
+              (tagsChange)="onTagsChange($event)"
+            />
+          </div>
           <label
             ><span>Imagen del mundo (URL)</span
             ><input
@@ -76,51 +78,53 @@ import { WorldGenre, WorldVisibility, WORLD_GENRE_LABELS } from '../../core/mode
               <img [src]="coverUrl" alt="Vista previa" />
             </div>
           }
-          <label
-            ><span>Descripcion</span
-            ><textarea
-              [(ngModel)]="description"
-              name="description"
-              rows="7"
+          <section class="editor-field">
+            <div class="editor-heading">
+              <div>
+                <span>Documento del mundo</span>
+                <small>Un solo documento con Markdown para descripcion, ambientacion, sistema y reglas.</small>
+              </div>
+              <div class="toolbar">
+                <button type="button" (click)="applyBlock('h2')" [disabled]="saving()">H2</button>
+                <button type="button" (click)="applyBlock('h3')" [disabled]="saving()">H3</button>
+                <button type="button" (click)="applyWrap('**', '**', 'texto en negrita')" [disabled]="saving()">B</button>
+                <button type="button" (click)="applyWrap('*', '*', 'texto en cursiva')" [disabled]="saving()">I</button>
+                <button type="button" (click)="applyWrap('[', '](https://ejemplo.com)', 'enlace')" [disabled]="saving()">Link</button>
+                <button type="button" (click)="applyBlock('quote')" [disabled]="saving()">Cita</button>
+                <button type="button" (click)="applyBlock('list')" [disabled]="saving()">Lista</button>
+                <button type="button" (click)="applyBlock('table')" [disabled]="saving()">Tabla</button>
+                <button type="button" (click)="applyBlock('separator')" [disabled]="saving()">---</button>
+              </div>
+            </div>
+
+            <div class="template-row">
+              @for (template of editorTemplates; track template.label) {
+                <button
+                  type="button"
+                  class="template-chip"
+                  (click)="insertTemplate(template.content)"
+                  [disabled]="saving()"
+                >
+                  {{ template.label }}
+                </button>
+              }
+            </div>
+
+            <textarea
+              id="world-profile-editor"
+              [(ngModel)]="worldContent"
+              name="worldContent"
+              rows="18"
               [disabled]="saving()"
               (ngModelChange)="refreshPreview()"
+              placeholder="# Nombre del mundo&#10;&#10;## Descripcion general&#10;&#10;## Ambientacion&#10;&#10;## Sistema de magia&#10;&#10;## Reglas"
             ></textarea>
-          </label>
-          <label
-            ><span>Ambientacion</span
-            ><textarea
-              [(ngModel)]="setting"
-              name="setting"
-              rows="7"
-              [disabled]="saving()"
-              (ngModelChange)="refreshPreview()"
-            ></textarea>
-          </label>
-          <label
-            ><span>Sistema de magia</span
-            ><textarea
-              [(ngModel)]="magicSystem"
-              name="magicSystem"
-              rows="7"
-              [disabled]="saving()"
-              (ngModelChange)="refreshPreview()"
-            ></textarea>
-          </label>
-          <label
-            ><span>Reglas</span
-            ><textarea
-              [(ngModel)]="rules"
-              name="rules"
-              rows="7"
-              [disabled]="saving()"
-              (ngModelChange)="refreshPreview()"
-            ></textarea>
-          </label>
+          </section>
 
           <fieldset class="linked-block">
             <legend>Novelas vinculadas</legend>
-            @if (!novels().length) {
-              <p class="hint">Aun no tienes novelas creadas. Puedes gestionarlas en Mis novelas.</p>
+            @if (!eligibleNovels().length) {
+              <p class="hint">No tienes novelas compatibles disponibles. Puedes vincular originales y fanfics marcados como AU.</p>
             } @else {
               <div class="linked-selector">
                 <select
@@ -231,9 +235,38 @@ import { WorldGenre, WorldVisibility, WORLD_GENRE_LABELS } from '../../core/mode
         display: grid;
         gap: 0.45rem;
       }
-      .hint {
+      .field-group {
+        display: grid;
+        gap: 0.45rem;
+      }
+      .hint,
+      .editor-heading small {
         margin: 0;
         color: var(--text-2);
+      }
+      .editor-field,
+      .editor-heading {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .toolbar,
+      .template-row {
+        display: flex;
+        gap: 0.55rem;
+        flex-wrap: wrap;
+      }
+      .toolbar button,
+      .template-chip {
+        min-height: 2.25rem;
+        padding: 0.45rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: color-mix(in srgb, var(--bg-surface) 90%, white 10%);
+        color: var(--text-1);
+        cursor: pointer;
+      }
+      .template-chip {
+        background: color-mix(in srgb, var(--accent-glow) 26%, var(--bg-surface));
       }
       input,
       select,
@@ -314,10 +347,17 @@ export class WorldFormPageComponent {
   readonly message = signal<string | null>(null);
   readonly previewHtml = signal('');
   readonly novels = signal<NovelSummary[]>([]);
+  readonly eligibleNovels = computed(() =>
+    this.novels().filter(
+      (novel) =>
+        (novel.novelType ?? 'ORIGINAL') === 'ORIGINAL' ||
+        ((novel.novelType ?? 'ORIGINAL') === 'FANFIC' && Boolean(novel.isAlternateUniverse)),
+    ),
+  );
   readonly selectedNovelSlugs = signal<string[]>([]);
   readonly initialNovelSlugs = signal<string[]>([]);
   readonly availableNovels = computed(() =>
-    this.novels().filter((novel) => !this.selectedNovelSlugs().includes(novel.slug)),
+    this.eligibleNovels().filter((novel) => !this.selectedNovelSlugs().includes(novel.slug)),
   );
   readonly selectedNovels = computed(() => {
     const selected = new Set(this.selectedNovelSlugs());
@@ -330,14 +370,28 @@ export class WorldFormPageComponent {
     value,
     label,
   }));
+  readonly editorTemplates = [
+    {
+      label: 'Mundo wiki',
+      content:
+        '# Nombre del mundo\n\n## Descripcion general\n\nResume el tono, la identidad y el conflicto principal del mundo.\n\n## Ambientacion\n\n### Geografia\n\n### Cultura\n\n### Politica\n\n## Sistema de magia\n\n- Fuente\n- Limites\n- Costos\n\n## Reglas del mundo\n\n- Regla 1\n- Regla 2',
+    },
+    {
+      label: 'Reino o imperio',
+      content:
+        '## Identidad del reino\n| Campo | Valor |\n| --- | --- |\n| Nombre oficial |  |\n| Capital |  |\n| Gobierno |  |\n| Idioma |  |\n\n## Historia\n\n## Estructura social\n\n## Fuerza militar\n\n## Tensiones actuales',
+    },
+    {
+      label: 'Sistema magico',
+      content:
+        '## Sistema de magia\n\n### Origen\n\n### Quienes pueden usarlo\n\n### Costos\n\n### Limites\n\n### Riesgos\n\n### Variantes conocidas',
+    },
+  ];
 
   name = '';
   tagline = '';
-  description = '';
-  setting = '';
-  magicSystem = '';
-  rules = '';
-  tagsRaw = '';
+  worldContent = '';
+  tags: string[] = [];
   coverUrl = '';
   genre: WorldGenre | null = null;
   visibility: WorldVisibility = 'PRIVATE';
@@ -361,11 +415,8 @@ export class WorldFormPageComponent {
       this.worldsService.getBySlug(slug).subscribe((world) => {
         this.name = world.name;
         this.tagline = world.tagline ?? '';
-        this.description = world.description ?? '';
-        this.setting = world.setting ?? '';
-        this.magicSystem = world.magicSystem ?? '';
-        this.rules = world.rules ?? '';
-        this.tagsRaw = world.tags.join(', ');
+        this.worldContent = this.composeWorldContent(world);
+        this.tags = world.tags ?? [];
         this.coverUrl = world.coverUrl ?? '';
         this.genre = world.genre;
         this.visibility = world.visibility;
@@ -390,6 +441,10 @@ export class WorldFormPageComponent {
     this.selectedNovelSlugs.update((current) => current.filter((slug) => slug !== novelSlug));
   }
 
+  onTagsChange(tags: string[]) {
+    this.tags = tags;
+  }
+
   submit() {
     if (this.saving() || !this.name.trim()) return;
     this.saving.set(true);
@@ -399,17 +454,14 @@ export class WorldFormPageComponent {
     const payload = {
       name: this.name.trim(),
       tagline: this.tagline.trim() || null,
-      description: this.description.trim() || null,
-      setting: this.setting.trim() || null,
-      magicSystem: this.magicSystem.trim() || null,
-      rules: this.rules.trim() || null,
+      description: this.worldContent.trim() || null,
+      setting: null,
+      magicSystem: null,
+      rules: null,
       coverUrl: this.coverUrl.trim() || null,
       genre: this.genre,
       visibility: this.visibility,
-      tags: this.tagsRaw
-        .split(',')
-        .map((item) => item.trim())
-        .filter(Boolean),
+      tags: this.tags,
     };
 
     const request =
@@ -432,15 +484,31 @@ export class WorldFormPageComponent {
   }
 
   refreshPreview() {
-    const sections = [
-      this.description && `## Descripcion\n${this.description}`,
-      this.setting && `## Ambientacion\n${this.setting}`,
-      this.magicSystem && `## Sistema\n${this.magicSystem}`,
-      this.rules && `## Reglas\n${this.rules}`,
-    ]
-      .filter(Boolean)
-      .join('\n\n');
-    this.previewHtml.set(this.markdownService.render(sections || 'Sin contenido todavia.'));
+    this.previewHtml.set(
+      this.markdownService.render(this.worldContent.trim() || 'Sin contenido todavia.'),
+    );
+  }
+
+  applyWrap(prefix: string, suffix: string, placeholder: string) {
+    this.insertAtSelection((selected) => `${prefix}${selected || placeholder}${suffix}`);
+  }
+
+  applyBlock(type: 'h2' | 'h3' | 'quote' | 'list' | 'table' | 'separator') {
+    const blocks: Record<'h2' | 'h3' | 'quote' | 'list' | 'table' | 'separator', string> = {
+      h2: '## Nueva seccion',
+      h3: '### Subtitulo',
+      quote: '> Fragmento, regla o cita del mundo',
+      list: '- Punto 1\n- Punto 2\n- Punto 3',
+      table: '| Campo | Valor |\n| --- | --- |\n| Dato |  |',
+      separator: '---',
+    };
+    this.insertAtSelection((selected) =>
+      selected ? `${selected}\n\n${blocks[type]}` : blocks[type],
+    );
+  }
+
+  insertTemplate(content: string) {
+    this.insertAtSelection((selected) => (selected ? `${selected}\n\n${content}` : content));
   }
 
   private syncNovelLinks(worldSlug: string, world: { slug: string }) {
@@ -456,5 +524,47 @@ export class WorldFormPageComponent {
     ];
 
     return operations.length ? forkJoin(operations).pipe(switchMap(() => of(world))) : of(world);
+  }
+
+  private insertAtSelection(transform: (selected: string) => string) {
+    const textarea = document.getElementById('world-profile-editor') as HTMLTextAreaElement | null;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart ?? this.worldContent.length;
+    const end = textarea.selectionEnd ?? this.worldContent.length;
+    const selected = this.worldContent.slice(start, end);
+    const replacement = transform(selected);
+    this.worldContent =
+      this.worldContent.slice(0, start) + replacement + this.worldContent.slice(end);
+    this.refreshPreview();
+
+    queueMicrotask(() => {
+      textarea.focus();
+      const caret = start + replacement.length;
+      textarea.setSelectionRange(caret, caret);
+    });
+  }
+
+  private composeWorldContent(world: {
+    description: string | null;
+    setting: string | null;
+    magicSystem: string | null;
+    rules: string | null;
+  }) {
+    const hasLegacyStructure =
+      Boolean(world.setting) || Boolean(world.magicSystem) || Boolean(world.rules);
+
+    if (!hasLegacyStructure && world.description) {
+      return world.description;
+    }
+
+    return [
+      world.description && `## Descripcion\n${world.description}`,
+      world.setting && `## Ambientacion\n${world.setting}`,
+      world.magicSystem && `## Sistema de magia\n${world.magicSystem}`,
+      world.rules && `## Reglas\n${world.rules}`,
+    ]
+      .filter(Boolean)
+      .join('\n\n');
   }
 }

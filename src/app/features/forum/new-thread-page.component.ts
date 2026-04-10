@@ -573,7 +573,14 @@ export class NewThreadPageComponent implements OnInit {
     this.submitting.set(true);
     this.errorMsg.set('');
 
-    const payload: Record<string, unknown> = {
+    const payload: {
+      title: string;
+      content: string;
+      category: ForumCategory;
+      tags?: string[];
+      linkedCommunityIds?: string[];
+      poll?: { question: string; options: string[]; closesAt?: string };
+    } = {
       title: titleVal,
       content: contentVal,
       category: this.category,

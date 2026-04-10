@@ -176,11 +176,11 @@ export class CommunitiesPageComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  onSearchChange(): void {
+  onSearchChange(_value: string): void {
     this.search$.next(this.searchValue);
   }
 
-  onTypeChange(): void {
+  onTypeChange(_value: string): void {
     this.reload();
   }
 

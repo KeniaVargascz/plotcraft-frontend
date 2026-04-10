@@ -296,7 +296,7 @@ export class MapCanvasComponent implements OnDestroy {
     }
   }
 
-  onMouseUp(): void {
+  onMouseUp(_event?: MouseEvent): void {
     if (this.isDraggingMarker() && this.dragMarker) {
       this.isDraggingMarker.set(false);
       this.dragMarker = null;
@@ -343,7 +343,7 @@ export class MapCanvasComponent implements OnDestroy {
     }
   }
 
-  onDblClick(): void {
+  onDblClick(_event?: MouseEvent): void {
     // Double-click to close region drawing
     if (this.activeTool() === 'region' && this.drawingPoints().length >= 3) {
       this.regionCreated.emit({ points: [...this.drawingPoints()] });

@@ -606,7 +606,7 @@ export class WbWorkspacePageComponent {
       });
   }
 
-  onCategorySaved() {
+  onCategorySaved(_category: WbCategorySummary) {
     this.loadCategories();
     if (this.activeCategorySlug()) {
       this.loadEntries();

@@ -24,11 +24,11 @@ import { MARKER_CONFIG } from './marker-type-icon.component';
       [attr.viewBox]="viewBox()"
       (mousedown)="onMouseDown($event)"
       (mousemove)="onMouseMove($event)"
-      (mouseup)="onMouseUp($event)"
-      (mouseleave)="onMouseUp($event)"
+      (mouseup)="onMouseUp()"
+      (mouseleave)="onMouseUp()"
       (wheel)="onWheel($event)"
       (click)="onClick($event)"
-      (dblclick)="onDblClick($event)"
+      (dblclick)="onDblClick()"
     >
       <!-- Background image -->
       @if (mapData()?.baseImageUrl) {
@@ -296,7 +296,7 @@ export class MapCanvasComponent implements OnDestroy {
     }
   }
 
-  onMouseUp(_event?: MouseEvent): void {
+  onMouseUp(): void {
     if (this.isDraggingMarker() && this.dragMarker) {
       this.isDraggingMarker.set(false);
       this.dragMarker = null;
@@ -343,7 +343,7 @@ export class MapCanvasComponent implements OnDestroy {
     }
   }
 
-  onDblClick(_event?: MouseEvent): void {
+  onDblClick(): void {
     // Double-click to close region drawing
     if (this.activeTool() === 'region' && this.drawingPoints().length >= 3) {
       this.regionCreated.emit({ points: [...this.drawingPoints()] });

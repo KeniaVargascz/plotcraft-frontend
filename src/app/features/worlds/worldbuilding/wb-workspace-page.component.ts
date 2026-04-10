@@ -198,12 +198,12 @@ import { WbTemplatePickerDialogComponent } from './wb-template-picker-dialog.com
       #categoryDialog
       [worldSlug]="worldSlug()"
       [category]="editingCategory()"
-      (saved)="onCategorySaved($event)"
+      (saved)="onCategorySaved()"
     />
     <app-wb-template-picker-dialog
       #templateDialog
       [worldSlug]="worldSlug()"
-      (created)="onCategorySaved($event)"
+      (created)="onCategorySaved()"
     />
   `,
   styles: [
@@ -606,7 +606,7 @@ export class WbWorkspacePageComponent {
       });
   }
 
-  onCategorySaved(_category: WbCategorySummary) {
+  onCategorySaved() {
     this.loadCategories();
     if (this.activeCategorySlug()) {
       this.loadEntries();

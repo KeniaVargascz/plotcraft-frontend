@@ -28,9 +28,9 @@ import { CommunityService } from './services/community.service';
           type="text"
           placeholder="Buscar comunidades…"
           [(ngModel)]="searchValue"
-          (ngModelChange)="onSearchChange($event)"
+          (ngModelChange)="onSearchChange()"
         />
-        <select [(ngModel)]="typeValue" (ngModelChange)="onTypeChange($event)">
+        <select [(ngModel)]="typeValue" (ngModelChange)="onTypeChange()">
           <option value="">Todas</option>
           <option value="PUBLIC">Pública</option>
           <option value="PRIVATE">Privada</option>
@@ -176,11 +176,11 @@ export class CommunitiesPageComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  onSearchChange(_value: string): void {
+  onSearchChange(): void {
     this.search$.next(this.searchValue);
   }
 
-  onTypeChange(_value: string): void {
+  onTypeChange(): void {
     this.reload();
   }
 

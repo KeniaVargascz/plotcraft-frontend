@@ -96,7 +96,12 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
               }
 
               @if (!currentNovel.viewerContext?.isAuthor) {
-                <button type="button" [disabled]="kudoLoading()" (click)="toggleKudo()" [class.active]="currentNovel.viewerContext?.hasKudo">
+                <button
+                  type="button"
+                  [disabled]="kudoLoading()"
+                  (click)="toggleKudo()"
+                  [class.active]="currentNovel.viewerContext?.hasKudo"
+                >
                   <span [class.kudo-beat]="kudoBeat()">&#9829;</span>
                   {{ currentNovel.viewerContext?.hasKudo ? 'Kudo dado' : 'Dar kudo' }}
                 </button>
@@ -270,7 +275,9 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
 
             <div class="detail-row">
               <span class="detail-label">Idioma</span>
-              <span class="chip chip-meta">{{ currentNovel.language?.name || currentNovel.language?.code || 'es' }}</span>
+              <span class="chip chip-meta">{{
+                currentNovel.language?.name || currentNovel.language?.code || 'es'
+              }}</span>
             </div>
 
             <div class="detail-row">
@@ -334,7 +341,9 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
             }
 
             @if (currentNovel.characters.length) {
-              @if (currentNovel.novelType === 'FANFIC' && currentNovel.communityCharacters?.length) {
+              @if (
+                currentNovel.novelType === 'FANFIC' && currentNovel.communityCharacters?.length
+              ) {
                 <h3 class="char-group-title">Personajes originales</h3>
               }
               <div class="character-grid">
@@ -372,7 +381,11 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
                           <small>{{ evt.dateLabel }}</small>
                         }
                       </div>
-                      <span class="tl-relevance" [class]="'tl-relevance-' + evt.relevance.toLowerCase()">{{ evt.relevance }}</span>
+                      <span
+                        class="tl-relevance"
+                        [class]="'tl-relevance-' + evt.relevance.toLowerCase()"
+                        >{{ evt.relevance }}</span
+                      >
                     </div>
                   }
                 </div>
@@ -380,7 +393,11 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
             } @else {
               <div class="timeline-empty card">
                 <p>Organiza la cronologia de tu historia.</p>
-                <button type="button" class="tl-create-btn" (click)="createTimeline(currentNovel.slug)">
+                <button
+                  type="button"
+                  class="tl-create-btn"
+                  (click)="createTimeline(currentNovel.slug)"
+                >
                   Crear timeline
                 </button>
               </div>
@@ -666,8 +683,15 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         padding: 0.85rem 0;
         border-bottom: 1px solid var(--border);
       }
-      .timeline-summary, .timeline-empty { text-align: center; }
-      .tl-desc { color: var(--text-2); font-size: 0.85rem; margin: 0; }
+      .timeline-summary,
+      .timeline-empty {
+        text-align: center;
+      }
+      .tl-desc {
+        color: var(--text-2);
+        font-size: 0.85rem;
+        margin: 0;
+      }
       .tl-count {
         display: inline-block;
         padding: 0.3rem 0.7rem;
@@ -677,7 +701,10 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         font-size: 0.8rem;
         font-weight: 600;
       }
-      .timeline-empty p { color: var(--text-3); margin: 0; }
+      .timeline-empty p {
+        color: var(--text-3);
+        margin: 0;
+      }
       .tl-create-btn {
         padding: 0.6rem 1.2rem;
         border-radius: 1rem;
@@ -687,7 +714,9 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         cursor: pointer;
         font-size: 0.85rem;
       }
-      .tl-create-btn:hover { background: var(--accent-glow); }
+      .tl-create-btn:hover {
+        background: var(--accent-glow);
+      }
       .tl-events-list {
         display: grid;
         gap: 0;
@@ -703,11 +732,30 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         border-bottom: 1px solid var(--border);
         background: var(--bg-card);
       }
-      .tl-event-row:last-child { border-bottom: none; }
-      .tl-event-icon { font-size: 1.1rem; flex-shrink: 0; }
-      .tl-event-info { flex: 1; display: grid; gap: 0.15rem; min-width: 0; }
-      .tl-event-info strong { font-size: 0.85rem; color: var(--text-1); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-      .tl-event-info small { font-size: 0.75rem; color: var(--text-3); }
+      .tl-event-row:last-child {
+        border-bottom: none;
+      }
+      .tl-event-icon {
+        font-size: 1.1rem;
+        flex-shrink: 0;
+      }
+      .tl-event-info {
+        flex: 1;
+        display: grid;
+        gap: 0.15rem;
+        min-width: 0;
+      }
+      .tl-event-info strong {
+        font-size: 0.85rem;
+        color: var(--text-1);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .tl-event-info small {
+        font-size: 0.75rem;
+        color: var(--text-3);
+      }
       .tl-relevance {
         padding: 0.15rem 0.5rem;
         border-radius: 999px;
@@ -715,10 +763,22 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         font-weight: 600;
         flex-shrink: 0;
       }
-      .tl-relevance-critical { background: rgba(224,85,85,0.15); color: #e05555; }
-      .tl-relevance-major { background: rgba(245,158,11,0.15); color: #f59e0b; }
-      .tl-relevance-minor { background: rgba(201,168,76,0.15); color: var(--accent-text); }
-      .tl-relevance-background { background: var(--bg-surface); color: var(--text-3); }
+      .tl-relevance-critical {
+        background: rgba(224, 85, 85, 0.15);
+        color: #e05555;
+      }
+      .tl-relevance-major {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+      }
+      .tl-relevance-minor {
+        background: rgba(201, 168, 76, 0.15);
+        color: var(--accent-text);
+      }
+      .tl-relevance-background {
+        background: var(--bg-surface);
+        color: var(--text-3);
+      }
       .tl-see-all {
         display: block;
         text-align: center;
@@ -728,7 +788,9 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         font-size: 0.8rem;
         text-decoration: none;
       }
-      .tl-see-all:hover { background: var(--accent-glow); }
+      .tl-see-all:hover {
+        background: var(--accent-glow);
+      }
       .series-badge {
         display: inline-flex;
         align-items: center;
@@ -759,9 +821,15 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         animation: beat 300ms ease-in-out;
       }
       @keyframes beat {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.3); }
-        100% { transform: scale(1); }
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.3);
+        }
+        100% {
+          transform: scale(1);
+        }
       }
       @media (max-width: 900px) {
         .hero,
@@ -996,7 +1064,14 @@ export class NovelDetailPageComponent implements OnInit {
   }
 
   eventTypeIcon(type: string): string {
-    const icons: Record<string, string> = { WORLD_EVENT: '\u{1F30D}', STORY_EVENT: '\u{1F4D6}', CHARACTER_ARC: '\u{1F3AD}', CHAPTER_EVENT: '\u{1F4C4}', LORE_EVENT: '\u{1F4DC}', NOTE: '\u{1F4DD}' };
+    const icons: Record<string, string> = {
+      WORLD_EVENT: '\u{1F30D}',
+      STORY_EVENT: '\u{1F4D6}',
+      CHARACTER_ARC: '\u{1F3AD}',
+      CHAPTER_EVENT: '\u{1F4C4}',
+      LORE_EVENT: '\u{1F4DC}',
+      NOTE: '\u{1F4DD}',
+    };
     return icons[type] || '\u{1F4CC}';
   }
 

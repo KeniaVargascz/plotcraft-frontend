@@ -27,8 +27,14 @@ export { MARKER_CONFIG };
     </span>
   `,
   styles: `
-    :host { display: inline-flex; align-items: center; }
-    .marker-icon { font-size: 1.2em; line-height: 1; }
+    :host {
+      display: inline-flex;
+      align-items: center;
+    }
+    .marker-icon {
+      font-size: 1.2em;
+      line-height: 1;
+    }
   `,
 })
 export class MarkerTypeIconComponent {

@@ -26,10 +26,7 @@ export class SubscriptionsService {
 
   subscribe(slug: string): Observable<SubscriptionResponse> {
     return this.http
-      .post<ApiResponse<SubscriptionResponse>>(
-        `${environment.apiUrl}/novels/${slug}/subscribe`,
-        {},
-      )
+      .post<ApiResponse<SubscriptionResponse>>(`${environment.apiUrl}/novels/${slug}/subscribe`, {})
       .pipe(map((r) => r.data));
   }
 
@@ -46,10 +43,9 @@ export class SubscriptionsService {
     let params = new HttpParams().set('limit', limit);
     if (cursor) params = params.set('cursor', cursor);
     return this.http
-      .get<ApiResponse<PaginatedResponse<SubscribedNovel>>>(
-        `${environment.apiUrl}/novels/me/subscriptions`,
-        { params },
-      )
+      .get<
+        ApiResponse<PaginatedResponse<SubscribedNovel>>
+      >(`${environment.apiUrl}/novels/me/subscriptions`, { params })
       .pipe(map((r) => r.data));
   }
 }

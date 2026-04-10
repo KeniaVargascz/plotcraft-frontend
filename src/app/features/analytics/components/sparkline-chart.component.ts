@@ -16,7 +16,9 @@ import { Component, input, computed } from '@angular/core';
     </svg>
   `,
   styles: `
-    :host { display: block; }
+    :host {
+      display: block;
+    }
     .sparkline {
       width: 100%;
       height: 30px;
@@ -33,7 +35,7 @@ export class SparklineChartComponent {
   });
 
   protected readonly strokeColor = computed(() =>
-    this.trendPositive() ? 'var(--accent)' : 'var(--danger)'
+    this.trendPositive() ? 'var(--accent)' : 'var(--danger)',
   );
 
   protected readonly points = computed(() => {

@@ -87,11 +87,15 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
                 <button type="button" class="act-btn" (click)="startEditThread()">Editar</button>
               }
               @if (t.status === 'CLOSED') {
-                <button type="button" class="act-btn" (click)="toggleThreadStatus()">Reabrir</button>
+                <button type="button" class="act-btn" (click)="toggleThreadStatus()">
+                  Reabrir
+                </button>
               } @else {
                 <button type="button" class="act-btn" (click)="toggleThreadStatus()">Cerrar</button>
               }
-              <button type="button" class="act-btn danger" (click)="deleteThread()">Eliminar</button>
+              <button type="button" class="act-btn danger" (click)="deleteThread()">
+                Eliminar
+              </button>
             </div>
           }
         </header>
@@ -102,7 +106,9 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
             <textarea [(ngModel)]="editThreadContent" class="edit-textarea" rows="8"></textarea>
             <div class="edit-actions">
               <button type="button" class="save-btn" (click)="saveThreadEdit()">Guardar</button>
-              <button type="button" class="cancel-btn" (click)="editingThread.set(false)">Cancelar</button>
+              <button type="button" class="cancel-btn" (click)="editingThread.set(false)">
+                Cancelar
+              </button>
             </div>
           </div>
         } @else {
@@ -174,196 +180,228 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
       </section>
     }
   `,
-  styles: [`
-    .thread-page {
-      max-width: 820px;
-      margin: 0 auto;
-      padding: 1.5rem;
-      display: grid;
-      gap: 1.25rem;
-    }
-    .breadcrumb {
-      font-size: 0.85rem;
-      color: var(--text-3);
-    }
-    .breadcrumb a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-    .breadcrumb a:hover { text-decoration: underline; }
-    .sep { margin: 0 0.4rem; }
-    .thread-header {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.25rem;
-    }
-    .header-top {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;
-    }
-    .badge {
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 0.15rem 0.5rem;
-      border-radius: 9999px;
-    }
-    .badge.pin { background: var(--accent); color: #fff; }
-    .badge.closed { background: var(--danger); color: #fff; }
-    .thread-title {
-      font-size: 1.35rem;
-      color: var(--text-1);
-      margin: 0 0 0.65rem;
-      line-height: 1.4;
-    }
-    .thread-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      color: var(--text-2);
-    }
-    .author-info {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .avatar {
-      width: 1.75rem;
-      height: 1.75rem;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    .avatar.placeholder {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--accent);
-      color: #fff;
-      font-size: 0.75rem;
-      font-weight: 700;
-    }
-    .username { font-weight: 500; color: var(--text-1); }
-    .time { color: var(--text-3); }
-    .thread-stats {
-      display: flex;
-      gap: 0.75rem;
-    }
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-      margin-top: 0.65rem;
-    }
-    .tag {
-      font-size: 0.8rem;
-      color: var(--accent);
-      background: var(--bg-surface);
-      padding: 0.2rem 0.55rem;
-      border-radius: 0.5rem;
-    }
-    .author-actions {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.75rem;
-    }
-    .act-btn {
-      padding: 0.3rem 0.75rem;
-      border-radius: 0.55rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-2);
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-    .act-btn:hover { border-color: var(--accent); }
-    .act-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
-    .thread-content {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.25rem;
-      color: var(--text-1);
-      font-size: 0.95rem;
-      line-height: 1.7;
-    }
-    .thread-content :first-child { margin-top: 0; }
-    .thread-content :last-child { margin-bottom: 0; }
-    .edit-section {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1rem;
-    }
-    .edit-textarea {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 0.65rem;
-      background: var(--bg-surface);
-      color: var(--text-1);
-      padding: 0.75rem;
-      font-family: inherit;
-      font-size: 0.9rem;
-      resize: vertical;
-    }
-    .edit-actions {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .save-btn {
-      padding: 0.4rem 1rem;
-      border-radius: 0.65rem;
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .cancel-btn {
-      padding: 0.4rem 1rem;
-      border-radius: 0.65rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-2);
-      cursor: pointer;
-    }
-    .closed-banner {
-      background: var(--bg-surface);
-      border: 1px solid var(--danger);
-      border-radius: 0.75rem;
-      padding: 0.75rem 1rem;
-      color: var(--danger);
-      font-size: 0.9rem;
-      text-align: center;
-    }
-    .reply-locked {
-      margin: 0;
-      padding: 0.85rem 1rem;
-      border: 1px dashed var(--border);
-      border-radius: 0.75rem;
-      background: var(--bg-surface);
-      color: var(--text-2);
-      font-size: 0.88rem;
-      text-align: center;
-    }
-    .replies-section { display: grid; gap: 0.75rem; }
-    .replies-title {
-      font-size: 1.1rem;
-      color: var(--text-1);
-      margin: 0;
-    }
-    .replies-list { display: grid; gap: 0.65rem; }
-    .no-replies {
-      text-align: center;
-      color: var(--text-3);
-      padding: 1.5rem;
-    }
-  `],
+  styles: [
+    `
+      .thread-page {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 1.5rem;
+        display: grid;
+        gap: 1.25rem;
+      }
+      .breadcrumb {
+        font-size: 0.85rem;
+        color: var(--text-3);
+      }
+      .breadcrumb a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .breadcrumb a:hover {
+        text-decoration: underline;
+      }
+      .sep {
+        margin: 0 0.4rem;
+      }
+      .thread-header {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 1.25rem;
+      }
+      .header-top {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .badge {
+        font-size: 0.7rem;
+        font-weight: 600;
+        padding: 0.15rem 0.5rem;
+        border-radius: 9999px;
+      }
+      .badge.pin {
+        background: var(--accent);
+        color: #fff;
+      }
+      .badge.closed {
+        background: var(--danger);
+        color: #fff;
+      }
+      .thread-title {
+        font-size: 1.35rem;
+        color: var(--text-1);
+        margin: 0 0 0.65rem;
+        line-height: 1.4;
+      }
+      .thread-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--text-2);
+      }
+      .author-info {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .avatar {
+        width: 1.75rem;
+        height: 1.75rem;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .avatar.placeholder {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--accent);
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+      .username {
+        font-weight: 500;
+        color: var(--text-1);
+      }
+      .time {
+        color: var(--text-3);
+      }
+      .thread-stats {
+        display: flex;
+        gap: 0.75rem;
+      }
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        margin-top: 0.65rem;
+      }
+      .tag {
+        font-size: 0.8rem;
+        color: var(--accent);
+        background: var(--bg-surface);
+        padding: 0.2rem 0.55rem;
+        border-radius: 0.5rem;
+      }
+      .author-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+      }
+      .act-btn {
+        padding: 0.3rem 0.75rem;
+        border-radius: 0.55rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-2);
+        font-size: 0.8rem;
+        cursor: pointer;
+      }
+      .act-btn:hover {
+        border-color: var(--accent);
+      }
+      .act-btn.danger:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+      .thread-content {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 1.25rem;
+        color: var(--text-1);
+        font-size: 0.95rem;
+        line-height: 1.7;
+      }
+      .thread-content :first-child {
+        margin-top: 0;
+      }
+      .thread-content :last-child {
+        margin-bottom: 0;
+      }
+      .edit-section {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 1rem;
+      }
+      .edit-textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 0.65rem;
+        background: var(--bg-surface);
+        color: var(--text-1);
+        padding: 0.75rem;
+        font-family: inherit;
+        font-size: 0.9rem;
+        resize: vertical;
+      }
+      .edit-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      .save-btn {
+        padding: 0.4rem 1rem;
+        border-radius: 0.65rem;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .cancel-btn {
+        padding: 0.4rem 1rem;
+        border-radius: 0.65rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-2);
+        cursor: pointer;
+      }
+      .closed-banner {
+        background: var(--bg-surface);
+        border: 1px solid var(--danger);
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: var(--danger);
+        font-size: 0.9rem;
+        text-align: center;
+      }
+      .reply-locked {
+        margin: 0;
+        padding: 0.85rem 1rem;
+        border: 1px dashed var(--border);
+        border-radius: 0.75rem;
+        background: var(--bg-surface);
+        color: var(--text-2);
+        font-size: 0.88rem;
+        text-align: center;
+      }
+      .replies-section {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .replies-title {
+        font-size: 1.1rem;
+        color: var(--text-1);
+        margin: 0;
+      }
+      .replies-list {
+        display: grid;
+        gap: 0.65rem;
+      }
+      .no-replies {
+        text-align: center;
+        color: var(--text-3);
+        padding: 1.5rem;
+      }
+    `,
+  ],
 })
 export class ThreadDetailPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

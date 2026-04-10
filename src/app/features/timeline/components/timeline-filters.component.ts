@@ -40,7 +40,9 @@ const RELEVANCES: { value: TimelineEventRelevance | null; label: string }[] = [
             class="chip"
             [class.active]="selectedType() === t.value"
             (click)="selectType(t.value)"
-          >{{ t.icon }} {{ t.label }}</button>
+          >
+            {{ t.icon }} {{ t.label }}
+          </button>
         }
       </div>
 
@@ -52,7 +54,9 @@ const RELEVANCES: { value: TimelineEventRelevance | null; label: string }[] = [
             class="chip"
             [class.active]="selectedRelevance() === r.value"
             (click)="selectRelevance(r.value)"
-          >{{ r.label }}</button>
+          >
+            {{ r.label }}
+          </button>
         }
       </div>
 
@@ -66,53 +70,61 @@ const RELEVANCES: { value: TimelineEventRelevance | null; label: string }[] = [
       </div>
     </div>
   `,
-  styles: [`
-    .filter-bar {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      padding: 0.5rem 0;
-    }
-    .chip-group {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      flex-wrap: wrap;
-    }
-    .group-label {
-      font-size: 0.72rem;
-      color: var(--text-3);
-      font-weight: 600;
-    }
-    .chip {
-      padding: 0.25rem 0.6rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-2);
-      font-size: 0.72rem;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .chip:hover { border-color: var(--accent); }
-    .chip.active {
-      background: var(--accent-glow);
-      color: var(--accent-text);
-      border-color: var(--accent);
-    }
-    .search-box { margin-left: auto; }
-    .search-box input {
-      padding: 0.4rem 0.75rem;
-      border-radius: 0.75rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-1);
-      font-size: 0.8rem;
-      width: 200px;
-    }
-    .search-box input::placeholder { color: var(--text-3); }
-  `],
+  styles: [
+    `
+      .filter-bar {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding: 0.5rem 0;
+      }
+      .chip-group {
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        flex-wrap: wrap;
+      }
+      .group-label {
+        font-size: 0.72rem;
+        color: var(--text-3);
+        font-weight: 600;
+      }
+      .chip {
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-2);
+        font-size: 0.72rem;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .chip:hover {
+        border-color: var(--accent);
+      }
+      .chip.active {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        border-color: var(--accent);
+      }
+      .search-box {
+        margin-left: auto;
+      }
+      .search-box input {
+        padding: 0.4rem 0.75rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        font-size: 0.8rem;
+        width: 200px;
+      }
+      .search-box input::placeholder {
+        color: var(--text-3);
+      }
+    `,
+  ],
 })
 export class TimelineFiltersComponent {
   readonly filterChange = output<TimelineFilters>();

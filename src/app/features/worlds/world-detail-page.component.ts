@@ -17,7 +17,12 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
 @Component({
   selector: 'app-world-detail-page',
   standalone: true,
-  imports: [RouterLink, CharacterCardComponent, WbEntryCardComponent, LinkedVisualBoardsSectionComponent],
+  imports: [
+    RouterLink,
+    CharacterCardComponent,
+    WbEntryCardComponent,
+    LinkedVisualBoardsSectionComponent,
+  ],
   template: `
     @if (loading()) {
       <p class="state">Cargando mundo...</p>
@@ -45,7 +50,13 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
               <span>{{ currentWorld.stats.novelsCount }} novelas</span>
               <span class="kudo-count">{{ currentWorld.stats.kudosCount }} kudos</span>
               @if (!currentWorld.viewerContext?.isOwner) {
-                <button type="button" class="kudo-btn" [class.kudo-active]="currentWorld.viewerContext?.hasKudo" [disabled]="kudoLoading()" (click)="toggleWorldKudo()">
+                <button
+                  type="button"
+                  class="kudo-btn"
+                  [class.kudo-active]="currentWorld.viewerContext?.hasKudo"
+                  [disabled]="kudoLoading()"
+                  (click)="toggleWorldKudo()"
+                >
                   <span [class.kudo-beat]="kudoBeat()">&#9829;</span>
                   {{ currentWorld.viewerContext?.hasKudo ? 'Kudo dado' : 'Dar kudo' }}
                 </button>
@@ -84,7 +95,10 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
                     <h3 class="lore-cat-title">{{ loreCat.icon || '' }} {{ loreCat.name }}</h3>
                     <div class="lore-scroll">
                       @for (entry of loreEntries()[loreCat.slug]; track entry.id) {
-                        <a [routerLink]="['/mundos', currentWorld.slug, 'lore', entry.slug]" class="lore-entry-link">
+                        <a
+                          [routerLink]="['/mundos', currentWorld.slug, 'lore', entry.slug]"
+                          class="lore-entry-link"
+                        >
                           <app-wb-entry-card [entry]="entry" />
                         </a>
                       }
@@ -188,11 +202,39 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         color: var(--accent-text);
         white-space: nowrap;
       }
-      .kudo-btn { padding: 0.4rem 0.7rem; border-radius: 999px; background: var(--accent-glow); color: var(--text-2); border: 1px solid var(--border); cursor: pointer; font-size: 0.85rem; }
-      .kudo-active { color: #e05555; border-color: #e05555; background: rgba(224,85,85,0.1); }
-      .kudo-beat { display: inline-block; animation: beat 300ms ease-in-out; }
-      .kudo-count { font-size: 0.85rem; color: var(--text-2); }
-      @keyframes beat { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+      .kudo-btn {
+        padding: 0.4rem 0.7rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--text-2);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+      .kudo-active {
+        color: #e05555;
+        border-color: #e05555;
+        background: rgba(224, 85, 85, 0.1);
+      }
+      .kudo-beat {
+        display: inline-block;
+        animation: beat 300ms ease-in-out;
+      }
+      .kudo-count {
+        font-size: 0.85rem;
+        color: var(--text-2);
+      }
+      @keyframes beat {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.3);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
       .simple-link {
         display: block;
         padding: 0.6rem 0;
@@ -204,9 +246,18 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         gap: 1rem;
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .lore-section { gap: 0.75rem; }
-      .lore-cat-group { display: grid; gap: 0.5rem; }
-      .lore-cat-title { margin: 0; font-size: 0.95rem; color: var(--text-2); }
+      .lore-section {
+        gap: 0.75rem;
+      }
+      .lore-cat-group {
+        display: grid;
+        gap: 0.5rem;
+      }
+      .lore-cat-title {
+        margin: 0;
+        font-size: 0.95rem;
+        color: var(--text-2);
+      }
       .lore-scroll {
         display: flex;
         gap: 1rem;
@@ -269,14 +320,19 @@ export class WorldDetailPageComponent {
               this.loreCategories.set(cats);
               const isOwner = world.viewerContext?.isOwner;
               for (const cat of cats) {
-                this.wbService.listCategoryEntries(slug, cat.slug, { limit: 4, ...(!isOwner ? { isPublic: true } : {}) }).subscribe({
-                  next: (res) => {
-                    this.loreEntries.update((current) => ({ ...current, [cat.slug]: res.data }));
-                  },
-                  error: () => {
-                    this.loreEntries.update((current) => ({ ...current, [cat.slug]: [] }));
-                  },
-                });
+                this.wbService
+                  .listCategoryEntries(slug, cat.slug, {
+                    limit: 4,
+                    ...(!isOwner ? { isPublic: true } : {}),
+                  })
+                  .subscribe({
+                    next: (res) => {
+                      this.loreEntries.update((current) => ({ ...current, [cat.slug]: res.data }));
+                    },
+                    error: () => {
+                      this.loreEntries.update((current) => ({ ...current, [cat.slug]: [] }));
+                    },
+                  });
               }
             },
             error: () => this.loreCategories.set([]),
@@ -331,14 +387,15 @@ export class WorldDetailPageComponent {
       return world.description;
     }
 
-    return [
-      world.description && `## Descripcion\n${world.description}`,
-      world.setting && `## Ambientacion\n${world.setting}`,
-      world.magicSystem && `## Sistema de magia\n${world.magicSystem}`,
-      world.rules && `## Reglas\n${world.rules}`,
-    ]
-      .filter(Boolean)
-      .join('\n\n') || 'Sin descripcion todavia.';
+    return (
+      [
+        world.description && `## Descripcion\n${world.description}`,
+        world.setting && `## Ambientacion\n${world.setting}`,
+        world.magicSystem && `## Sistema de magia\n${world.magicSystem}`,
+        world.rules && `## Reglas\n${world.rules}`,
+      ]
+        .filter(Boolean)
+        .join('\n\n') || 'Sin descripcion todavia.'
+    );
   }
-
 }

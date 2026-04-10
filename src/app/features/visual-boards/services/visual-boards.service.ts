@@ -52,10 +52,9 @@ export class VisualBoardsService {
 
   updateBoard(id: string, payload: Partial<VisualBoardSavePayload>) {
     return this.http
-      .patch<ApiResponse<VisualBoardSummary>>(
-        `${this.baseUrl}/${id}`,
-        this.normalizeBoardPayload(payload),
-      )
+      .patch<
+        ApiResponse<VisualBoardSummary>
+      >(`${this.baseUrl}/${id}`, this.normalizeBoardPayload(payload))
       .pipe(map((response) => response.data));
   }
 
@@ -87,7 +86,11 @@ export class VisualBoardsService {
       .pipe(map((response) => response.data));
   }
 
-  addItem(boardId: string, sectionId: string, payload: { imageUrl: string; caption?: string | null }) {
+  addItem(
+    boardId: string,
+    sectionId: string,
+    payload: { imageUrl: string; caption?: string | null },
+  ) {
     return this.http
       .post<ApiResponse<unknown>>(`${this.baseUrl}/${boardId}/sections/${sectionId}/items`, payload)
       .pipe(map((response) => response.data));
@@ -95,10 +98,9 @@ export class VisualBoardsService {
 
   updateItem(boardId: string, sectionId: string, itemId: string, caption: string | null) {
     return this.http
-      .patch<ApiResponse<unknown>>(
-        `${this.baseUrl}/${boardId}/sections/${sectionId}/items/${itemId}`,
-        { caption },
-      )
+      .patch<
+        ApiResponse<unknown>
+      >(`${this.baseUrl}/${boardId}/sections/${sectionId}/items/${itemId}`, { caption })
       .pipe(map((response) => response.data));
   }
 
@@ -106,16 +108,11 @@ export class VisualBoardsService {
     return this.http.delete(`${this.baseUrl}/${boardId}/sections/${sectionId}/items/${itemId}`);
   }
 
-  reorderItems(
-    boardId: string,
-    sectionId: string,
-    items: VisualBoardReorderItemPayload[],
-  ) {
+  reorderItems(boardId: string, sectionId: string, items: VisualBoardReorderItemPayload[]) {
     return this.http
-      .patch<ApiResponse<VisualBoard>>(
-        `${this.baseUrl}/${boardId}/sections/${sectionId}/items/reorder`,
-        { items },
-      )
+      .patch<
+        ApiResponse<VisualBoard>
+      >(`${this.baseUrl}/${boardId}/sections/${sectionId}/items/reorder`, { items })
       .pipe(map((response) => response.data));
   }
 

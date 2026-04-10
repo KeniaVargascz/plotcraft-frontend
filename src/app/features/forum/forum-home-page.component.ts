@@ -31,18 +31,10 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
 
         @if (isAuthenticated()) {
           <div class="scope-tabs">
-            <button
-              type="button"
-              [class.active]="relevantOnly()"
-              (click)="setScope(true)"
-            >
+            <button type="button" [class.active]="relevantOnly()" (click)="setScope(true)">
               Para ti
             </button>
-            <button
-              type="button"
-              [class.active]="!relevantOnly()"
-              (click)="setScope(false)"
-            >
+            <button type="button" [class.active]="!relevantOnly()" (click)="setScope(false)">
               Todos los hilos
             </button>
           </div>

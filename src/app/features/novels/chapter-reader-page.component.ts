@@ -25,7 +25,10 @@ import { MarkdownService } from '../../core/services/markdown.service';
 import { ReaderService } from '../../core/services/reader.service';
 import { VotesService } from '../../core/services/votes.service';
 import { MatDialog } from '@angular/material/dialog';
-import { PromptDialogComponent, PromptDialogData } from '../../shared/components/prompt-dialog/prompt-dialog.component';
+import {
+  PromptDialogComponent,
+  PromptDialogData,
+} from '../../shared/components/prompt-dialog/prompt-dialog.component';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 
@@ -183,9 +186,13 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
                   [innerHTML]="pages()[currentPage()]"
                 ></div>
                 <div class="reader-nav">
-                  <button type="button" data-testid="prev-chapter" (click)="goToPreviousPage()">Anterior</button>
+                  <button type="button" data-testid="prev-chapter" (click)="goToPreviousPage()">
+                    Anterior
+                  </button>
                   <span>Pagina {{ currentPage() + 1 }} de {{ pages().length }}</span>
-                  <button type="button" data-testid="next-chapter" (click)="goToNextPage()">Siguiente</button>
+                  <button type="button" data-testid="next-chapter" (click)="goToNextPage()">
+                    Siguiente
+                  </button>
                 </div>
               </section>
             } @else {
@@ -216,20 +223,31 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
         </div>
 
         <div class="chapter-vote-section">
-          <button type="button" class="vote-action" [class.vote-active]="chapterHasVoted()" (click)="toggleChapterVote()">
+          <button
+            type="button"
+            class="vote-action"
+            [class.vote-active]="chapterHasVoted()"
+            (click)="toggleChapterVote()"
+          >
             &#9650; {{ chapterHasVoted() ? 'Votado' : 'Votar' }}
           </button>
-          <span class="vote-label">{{ chapterVotesCount() === 1 ? '1 voto' : chapterVotesCount() + ' votos' }}</span>
+          <span class="vote-label">{{
+            chapterVotesCount() === 1 ? '1 voto' : chapterVotesCount() + ' votos'
+          }}</span>
         </div>
 
         <footer class="reader-nav">
           @if (currentChapter.navigation?.previous; as previous) {
-            <a [routerLink]="['/novelas', currentChapter.novel.slug, previous.slug]" data-testid="prev-chapter"
+            <a
+              [routerLink]="['/novelas', currentChapter.novel.slug, previous.slug]"
+              data-testid="prev-chapter"
               >← {{ previous.title }}</a
             >
           }
           @if (currentChapter.navigation?.next; as next) {
-            <a [routerLink]="['/novelas', currentChapter.novel.slug, next.slug]" data-testid="next-chapter"
+            <a
+              [routerLink]="['/novelas', currentChapter.novel.slug, next.slug]"
+              data-testid="next-chapter"
               >{{ next.title }} →</a
             >
           }
@@ -577,20 +595,27 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.dialog.open(PromptDialogComponent, {
-      width: '360px',
-      data: { title: 'Nuevo marcador', label: 'Etiqueta del marcador', placeholder: 'Ej: escena importante' } as PromptDialogData,
-    }).afterClosed().subscribe((label: string | null) => {
-      if (label === null) return;
-      this.bookmarksService
-        .create({
-          novel_id: chapter.novel.id,
-          chapter_id: chapter.id,
-          anchor_id: paragraph.getAttribute('data-anchor-id'),
-          label,
-        })
-        .subscribe(() => this.loadChapterBookmarks(chapter.id));
-    });
+    this.dialog
+      .open(PromptDialogComponent, {
+        width: '360px',
+        data: {
+          title: 'Nuevo marcador',
+          label: 'Etiqueta del marcador',
+          placeholder: 'Ej: escena importante',
+        } as PromptDialogData,
+      })
+      .afterClosed()
+      .subscribe((label: string | null) => {
+        if (label === null) return;
+        this.bookmarksService
+          .create({
+            novel_id: chapter.novel.id,
+            chapter_id: chapter.id,
+            anchor_id: paragraph.getAttribute('data-anchor-id'),
+            label,
+          })
+          .subscribe(() => this.loadChapterBookmarks(chapter.id));
+      });
   }
 
   handleSelection() {
@@ -699,7 +724,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     this.loading.set(true);
     this.selectionAnchorId.set(null);
 
-    const onLoaded = (chapter: any) => {
+    const onLoaded = (chapter: ChapterDetail) => {
       this.chapter.set(chapter);
       this.chapterVotesCount.set(chapter.votesCount ?? 0);
       this.loadPreferences();

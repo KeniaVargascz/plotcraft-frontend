@@ -1,11 +1,6 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import {
-  FormBuilder,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NovelSummary } from '../../core/models/novel.model';
 import { NovelsService } from '../../core/services/novels.service';
@@ -24,13 +19,7 @@ import { SeriesService } from './services/series.service';
 @Component({
   selector: 'app-series-form-page',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    FormsModule,
-    RouterLink,
-    DragDropModule,
-    LoadingSpinnerComponent,
-  ],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink, DragDropModule, LoadingSpinnerComponent],
   template: `
     <section class="page">
       <header>
@@ -83,11 +72,7 @@ import { SeriesService } from './services/series.service';
             @if (!s.novels.length) {
               <p class="empty">Esta serie aún no tiene novelas.</p>
             } @else {
-              <ol
-                cdkDropList
-                class="novels-list"
-                (cdkDropListDropped)="onDrop($event)"
-              >
+              <ol cdkDropList class="novels-list" (cdkDropListDropped)="onDrop($event)">
                 @for (n of orderedNovels(); track n.id) {
                   <li cdkDrag class="novel-row">
                     <span class="drag-handle" cdkDragHandle>⋮⋮</span>
@@ -109,9 +94,7 @@ import { SeriesService } from './services/series.service';
                   }
                 </select>
               </label>
-              <button type="button" (click)="addNovel()" [disabled]="!novelToAdd">
-                Añadir
-              </button>
+              <button type="button" (click)="addNovel()" [disabled]="!novelToAdd">Añadir</button>
             </div>
           </section>
 

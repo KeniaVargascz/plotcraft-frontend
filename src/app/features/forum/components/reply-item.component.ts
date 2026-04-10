@@ -16,11 +16,7 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
         <p class="deleted-text">[Respuesta eliminada]</p>
       </div>
     } @else {
-      <div
-        class="reply"
-        [class.solution]="reply().isSolution"
-        [class.is-child]="!!parentAuthor()"
-      >
+      <div class="reply" [class.solution]="reply().isSolution" [class.is-child]="!!parentAuthor()">
         @if (parentAuthor()) {
           <div class="reply-to">
             ↳ Respondiendo a <strong>&#64;{{ parentAuthor() }}</strong>
@@ -33,11 +29,17 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
         <div class="reply-header">
           <div class="author">
             @if (reply().author.avatarUrl) {
-              <img [src]="reply().author.avatarUrl" [alt]="reply().author.username" class="avatar" />
+              <img
+                [src]="reply().author.avatarUrl"
+                [alt]="reply().author.username"
+                class="avatar"
+              />
             } @else {
               <span class="avatar placeholder">{{ reply().author.username[0].toUpperCase() }}</span>
             }
-            <span class="username">{{ reply().author.displayName || reply().author.username }}</span>
+            <span class="username">{{
+              reply().author.displayName || reply().author.username
+            }}</span>
             <span class="time">{{ relativeTime() }}</span>
           </div>
 
@@ -55,9 +57,13 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
             }
             @if (isThreadAuthor()) {
               @if (reply().isSolution) {
-                <button type="button" class="action-btn" (click)="toggleSolution()">Quitar solucion</button>
+                <button type="button" class="action-btn" (click)="toggleSolution()">
+                  Quitar solucion
+                </button>
               } @else {
-                <button type="button" class="action-btn accent" (click)="toggleSolution()">Marcar solucion</button>
+                <button type="button" class="action-btn accent" (click)="toggleSolution()">
+                  Marcar solucion
+                </button>
               }
             }
           </div>
@@ -65,11 +71,7 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
 
         @if (editing()) {
           <div class="edit-area">
-            <textarea
-              [(ngModel)]="editContent"
-              class="edit-textarea"
-              rows="4"
-            ></textarea>
+            <textarea [(ngModel)]="editContent" class="edit-textarea" rows="4"></textarea>
             <div class="edit-actions">
               <button type="button" class="save-btn" (click)="saveEdit()">Guardar</button>
               <button type="button" class="cancel-btn" (click)="cancelEdit()">Cancelar</button>
@@ -95,7 +97,12 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
               placeholder="Escribe tu respuesta..."
             ></textarea>
             <div class="edit-actions">
-              <button type="button" class="save-btn" (click)="submitReply()" [disabled]="submittingReply()">
+              <button
+                type="button"
+                class="save-btn"
+                (click)="submitReply()"
+                [disabled]="submittingReply()"
+              >
                 {{ submittingReply() ? 'Enviando...' : 'Responder' }}
               </button>
               <button type="button" class="cancel-btn" (click)="toggleReplyBox()">Cancelar</button>
@@ -124,142 +131,165 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
       </div>
     }
   `,
-  styles: [`
-    .reply {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 0.85rem;
-      padding: 1rem 1.25rem;
-    }
-    .reply.is-child {
-      background: var(--bg-surface);
-      border-style: dashed;
-      padding: 0.75rem 1rem;
-      font-size: 0.92em;
-    }
-    .reply-to {
-      font-size: 0.75rem;
-      color: var(--accent);
-      margin-bottom: 0.4rem;
-      font-weight: 600;
-    }
-    .reply.solution {
-      border-color: #16a34a;
-      border-left: 3px solid #16a34a;
-    }
-    .solution-label {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #16a34a;
-      margin-bottom: 0.5rem;
-    }
-    .deleted {
-      opacity: 0.5;
-      background: var(--bg-surface);
-    }
-    .deleted-text {
-      color: var(--text-3);
-      font-style: italic;
-      margin: 0;
-    }
-    .reply-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.65rem;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .author {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.85rem;
-    }
-    .avatar {
-      width: 1.6rem;
-      height: 1.6rem;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-    .avatar.placeholder {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--accent);
-      color: #fff;
-      font-size: 0.7rem;
-      font-weight: 700;
-    }
-    .username { font-weight: 500; color: var(--text-1); }
-    .time { color: var(--text-3); }
-    .actions {
-      display: flex;
-      gap: 0.4rem;
-    }
-    .action-btn {
-      padding: 0.25rem 0.6rem;
-      border-radius: 0.5rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-2);
-      font-size: 0.75rem;
-      cursor: pointer;
-    }
-    .action-btn:hover { border-color: var(--accent); }
-    .action-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
-    .action-btn.accent { color: var(--accent); border-color: var(--accent); }
-    .content {
-      color: var(--text-1);
-      font-size: 0.9rem;
-      line-height: 1.65;
-      margin-bottom: 0.75rem;
-    }
-    .content :first-child { margin-top: 0; }
-    .content :last-child { margin-bottom: 0; }
-    .edit-area { margin-bottom: 0.75rem; }
-    .edit-textarea {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 0.65rem;
-      background: var(--bg-surface);
-      color: var(--text-1);
-      padding: 0.65rem;
-      font-family: inherit;
-      font-size: 0.9rem;
-      resize: vertical;
-    }
-    .edit-actions {
-      display: flex;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .save-btn {
-      padding: 0.4rem 1rem;
-      border-radius: 0.65rem;
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .cancel-btn {
-      padding: 0.4rem 1rem;
-      border-radius: 0.65rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-2);
-      cursor: pointer;
-    }
-    .reply-box { margin-top: 0.5rem; }
-    .children {
-      margin-top: 0.85rem;
-      padding-left: 1rem;
-      border-left: 2px solid var(--border);
-      display: grid;
-      gap: 0.65rem;
-    }
-  `],
+  styles: [
+    `
+      .reply {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 0.85rem;
+        padding: 1rem 1.25rem;
+      }
+      .reply.is-child {
+        background: var(--bg-surface);
+        border-style: dashed;
+        padding: 0.75rem 1rem;
+        font-size: 0.92em;
+      }
+      .reply-to {
+        font-size: 0.75rem;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+        font-weight: 600;
+      }
+      .reply.solution {
+        border-color: #16a34a;
+        border-left: 3px solid #16a34a;
+      }
+      .solution-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #16a34a;
+        margin-bottom: 0.5rem;
+      }
+      .deleted {
+        opacity: 0.5;
+        background: var(--bg-surface);
+      }
+      .deleted-text {
+        color: var(--text-3);
+        font-style: italic;
+        margin: 0;
+      }
+      .reply-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.65rem;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .author {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.85rem;
+      }
+      .avatar {
+        width: 1.6rem;
+        height: 1.6rem;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      .avatar.placeholder {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--accent);
+        color: #fff;
+        font-size: 0.7rem;
+        font-weight: 700;
+      }
+      .username {
+        font-weight: 500;
+        color: var(--text-1);
+      }
+      .time {
+        color: var(--text-3);
+      }
+      .actions {
+        display: flex;
+        gap: 0.4rem;
+      }
+      .action-btn {
+        padding: 0.25rem 0.6rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-2);
+        font-size: 0.75rem;
+        cursor: pointer;
+      }
+      .action-btn:hover {
+        border-color: var(--accent);
+      }
+      .action-btn.danger:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+      .action-btn.accent {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .content {
+        color: var(--text-1);
+        font-size: 0.9rem;
+        line-height: 1.65;
+        margin-bottom: 0.75rem;
+      }
+      .content :first-child {
+        margin-top: 0;
+      }
+      .content :last-child {
+        margin-bottom: 0;
+      }
+      .edit-area {
+        margin-bottom: 0.75rem;
+      }
+      .edit-textarea {
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 0.65rem;
+        background: var(--bg-surface);
+        color: var(--text-1);
+        padding: 0.65rem;
+        font-family: inherit;
+        font-size: 0.9rem;
+        resize: vertical;
+      }
+      .edit-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+      .save-btn {
+        padding: 0.4rem 1rem;
+        border-radius: 0.65rem;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .cancel-btn {
+        padding: 0.4rem 1rem;
+        border-radius: 0.65rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-2);
+        cursor: pointer;
+      }
+      .reply-box {
+        margin-top: 0.5rem;
+      }
+      .children {
+        margin-top: 0.85rem;
+        padding-left: 1rem;
+        border-left: 2px solid var(--border);
+        display: grid;
+        gap: 0.65rem;
+      }
+    `,
+  ],
 })
 export class ReplyItemComponent {
   private readonly forumService = inject(ForumService);

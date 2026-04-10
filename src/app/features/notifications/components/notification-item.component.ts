@@ -23,7 +23,11 @@ const TYPE_ICONS: Record<NotificationType, string> = {
 
       <div class="notif-icon">
         @if (n.actor?.avatarUrl) {
-          <img [src]="n.actor!.avatarUrl" [alt]="n.actor!.displayName || n.actor!.username" class="avatar" />
+          <img
+            [src]="n.actor!.avatarUrl"
+            [alt]="n.actor!.displayName || n.actor!.username"
+            class="avatar"
+          />
         } @else {
           <span class="type-icon">{{ iconFor(n.type) }}</span>
         }

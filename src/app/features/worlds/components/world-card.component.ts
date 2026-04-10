@@ -8,7 +8,11 @@ import { WorldSummary, WORLD_GENRE_LABELS } from '../../../core/models/world.mod
   imports: [RouterLink],
   template: `
     <article class="world-card">
-      <a class="cover" [class]="world().coverUrl ? '' : coverClass()" [routerLink]="['/mundos', world().slug]">
+      <a
+        class="cover"
+        [class]="world().coverUrl ? '' : coverClass()"
+        [routerLink]="['/mundos', world().slug]"
+      >
         @if (world().coverUrl) {
           <img [src]="world().coverUrl" [alt]="world().name" class="cover-img" />
         } @else {

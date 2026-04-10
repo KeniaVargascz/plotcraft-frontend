@@ -55,7 +55,8 @@ const MARKDOWN_TOOLS: MarkdownTool[] = [
   {
     title: 'Imagen por URL',
     syntax: '![alt](https://url-de-imagen)',
-    example: '![Escudo](https://static.wikia.nocookie.net/gameofthrones/images/b/bd/House_Stark.svg)',
+    example:
+      '![Escudo](https://static.wikia.nocookie.net/gameofthrones/images/b/bd/House_Stark.svg)',
     note: 'Conviene usarlo con moderacion en campos descriptivos extensos.',
   },
   {
@@ -80,7 +81,8 @@ const MARKDOWN_TOOLS: MarkdownTool[] = [
   {
     title: 'Codigo inline y bloques',
     syntax: '`inline` / ```bloque```',
-    example: 'Usa el titulo `Hero Name` como variante corta.\n\n```txt\nQuirk: One For All\nEstado: En entrenamiento\n```',
+    example:
+      'Usa el titulo `Hero Name` como variante corta.\n\n```txt\nQuirk: One For All\nEstado: En entrenamiento\n```',
     note: 'Mas util para notas tecnicas, sistemas o plantillas reutilizables.',
   },
 ];
@@ -144,7 +146,8 @@ const TEMPLATE_CARDS: TemplateCard[] = [
     id: 'personaje-fandom',
     title: 'Perfil de personaje estilo fandom',
     category: 'Personajes',
-    summary: 'Plantilla compacta para perfiles tipo wiki con ficha, historia, relaciones y curiosidades.',
+    summary:
+      'Plantilla compacta para perfiles tipo wiki con ficha, historia, relaciones y curiosidades.',
     bestFor: 'Backstory, arco o fichas largas de personaje.',
     content: `# Nombre del personaje
 
@@ -605,10 +608,7 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
 
           <label class="filter-field">
             <span>Categoria</span>
-            <select
-              [ngModel]="categoryFilter()"
-              (ngModelChange)="updateCategory($event)"
-            >
+            <select [ngModel]="categoryFilter()" (ngModelChange)="updateCategory($event)">
               @for (category of categories; track category) {
                 <option [value]="category">{{ category }}</option>
               }
@@ -627,7 +627,11 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
               </div>
 
               <div class="template-actions">
-                <button type="button" class="copy-btn strong" (click)="copy(template.content, template.id)">
+                <button
+                  type="button"
+                  class="copy-btn strong"
+                  (click)="copy(template.content, template.id)"
+                >
                   {{ copyLabel(template.id) }}
                 </button>
                 <button
@@ -705,8 +709,11 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
       .card {
         border: 1px solid var(--border);
         border-radius: 1.4rem;
-        background:
-          linear-gradient(180deg, color-mix(in srgb, var(--bg-card) 92%, #f4e7d3 8%), var(--bg-card));
+        background: linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--bg-card) 92%, #f4e7d3 8%),
+          var(--bg-card)
+        );
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
       }
       .hero-copy,
@@ -721,7 +728,11 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
         background:
           radial-gradient(circle at top left, rgba(200, 129, 54, 0.18), transparent 42%),
           radial-gradient(circle at bottom right, rgba(50, 101, 160, 0.18), transparent 38%),
-          linear-gradient(145deg, var(--bg-card), color-mix(in srgb, var(--bg-surface) 80%, #f3e9d8 20%));
+          linear-gradient(
+            145deg,
+            var(--bg-card),
+            color-mix(in srgb, var(--bg-surface) 80%, #f3e9d8 20%)
+          );
       }
       .eyebrow,
       .mini-label,

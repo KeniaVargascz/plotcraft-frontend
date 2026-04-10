@@ -16,7 +16,9 @@ export interface AlertDialogData {
     <h2 mat-dialog-title>{{ data.title }}</h2>
     <mat-dialog-content>{{ data.message }}</mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-flat-button color="primary" mat-dialog-close>{{ data.buttonText || 'Aceptar' }}</button>
+      <button mat-flat-button color="primary" mat-dialog-close>
+        {{ data.buttonText || 'Aceptar' }}
+      </button>
     </mat-dialog-actions>
   `,
 })

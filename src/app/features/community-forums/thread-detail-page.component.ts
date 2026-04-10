@@ -5,11 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { CommunityForumsService } from './services/community-forums.service';
-import {
-  CommunityForum,
-  ForumReply,
-  ForumThread,
-} from './models/community-forum.model';
+import { CommunityForum, ForumReply, ForumThread } from './models/community-forum.model';
 
 @Component({
   selector: 'app-community-thread-detail-page',
@@ -52,7 +48,9 @@ import {
             }
             <div>
               <strong>{{ t.author.displayName }}</strong>
-              <span class="muted">&#64;{{ t.author.username }} · {{ relativeTime(t.createdAt) }}</span>
+              <span class="muted"
+                >&#64;{{ t.author.username }} · {{ relativeTime(t.createdAt) }}</span
+              >
             </div>
           </div>
           <div class="content md" [innerHTML]="contentHtml()"></div>
@@ -80,14 +78,21 @@ import {
                 }
                 <div>
                   <strong>{{ r.author.displayName }}</strong>
-                  <span class="muted">&#64;{{ r.author.username }} · {{ relativeTime(r.createdAt) }}</span>
+                  <span class="muted"
+                    >&#64;{{ r.author.username }} · {{ relativeTime(r.createdAt) }}</span
+                  >
                 </div>
               </div>
               <div class="content md" [innerHTML]="renderMd(r.content)"></div>
             </article>
           }
           @if (hasMore()) {
-            <button type="button" class="btn" (click)="loadMoreReplies()" [disabled]="loadingReplies()">
+            <button
+              type="button"
+              class="btn"
+              (click)="loadMoreReplies()"
+              [disabled]="loadingReplies()"
+            >
               {{ loadingReplies() ? 'Cargando...' : 'Cargar más' }}
             </button>
           }
@@ -109,7 +114,11 @@ import {
               maxlength="10000"
               placeholder="Escribe tu respuesta..."
             ></textarea>
-            <button type="submit" class="btn primary" [disabled]="!replyContent.trim() || posting()">
+            <button
+              type="submit"
+              class="btn primary"
+              [disabled]="!replyContent.trim() || posting()"
+            >
               {{ posting() ? 'Enviando...' : 'Responder' }}
             </button>
           </form>

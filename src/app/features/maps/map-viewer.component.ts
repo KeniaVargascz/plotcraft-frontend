@@ -13,16 +13,9 @@ import { MapLegendComponent } from './components/map-legend.component';
       <div class="loading"><p>Cargando mapa...</p></div>
     } @else if (mapData()) {
       <div class="viewer-shell">
-        <app-map-canvas
-          [mapData]="mapData()"
-          [editable]="false"
-          [activeTool]="'pan'"
-        />
+        <app-map-canvas [mapData]="mapData()" [editable]="false" [activeTool]="'pan'" />
         <div class="legend-overlay">
-          <app-map-legend
-            [markers]="mapData()!.markers"
-            [regions]="mapData()!.regions"
-          />
+          <app-map-legend [markers]="mapData()!.markers" [regions]="mapData()!.regions" />
         </div>
       </div>
     } @else {
@@ -30,12 +23,32 @@ import { MapLegendComponent } from './components/map-legend.component';
     }
   `,
   styles: `
-    :host { display: block; width: 100%; height: 100%; min-height: 400px; }
-    .loading, .empty { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-secondary, #aaa); }
-    .viewer-shell { position: relative; width: 100%; height: 100%; }
+    :host {
+      display: block;
+      width: 100%;
+      height: 100%;
+      min-height: 400px;
+    }
+    .loading,
+    .empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-secondary, #aaa);
+    }
+    .viewer-shell {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
     .legend-overlay {
-      position: absolute; bottom: 12px; right: 12px; z-index: 5;
-      max-width: 220px; opacity: 0.9;
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      z-index: 5;
+      max-width: 220px;
+      opacity: 0.9;
     }
   `,
 })

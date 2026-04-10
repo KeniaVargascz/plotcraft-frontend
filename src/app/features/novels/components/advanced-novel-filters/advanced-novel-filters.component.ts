@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, computed, inject, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { CharacterSummary } from '../../../../core/models/character.model';
@@ -42,7 +42,10 @@ export interface NovelFilters {
           <div class="grid">
             <label class="field">
               <span class="field-label">Tipo de novela</span>
-              <select [ngModel]="filters.novelType ?? ''" (ngModelChange)="onNovelTypeChange($event)">
+              <select
+                [ngModel]="filters.novelType ?? ''"
+                (ngModelChange)="onNovelTypeChange($event)"
+              >
                 <option [ngValue]="''">Todas</option>
                 <option [ngValue]="'ORIGINAL'">Solo originales</option>
                 <option [ngValue]="'FANFIC'">Solo fanfics</option>
@@ -52,7 +55,10 @@ export interface NovelFilters {
             @if (filters.novelType === 'FANFIC') {
               <label class="field">
                 <span class="field-label">Fandom / Comunidad</span>
-                <select [ngModel]="filters.fandomSlug ?? ''" (ngModelChange)="filters.fandomSlug = $event || null">
+                <select
+                  [ngModel]="filters.fandomSlug ?? ''"
+                  (ngModelChange)="filters.fandomSlug = $event || null"
+                >
                   <option [ngValue]="''">Todos</option>
                   @for (com of fandomOptions(); track com.id) {
                     <option [ngValue]="com.slug">{{ com.name }}</option>
@@ -116,71 +122,72 @@ export interface NovelFilters {
             </div>
 
             @if (pairingsAllowed) {
-            <div class="field span-full">
-              <span class="field-label">Parejas</span>
-              @if (pairingsList.length) {
-                <ul class="pairing-pills">
-                  @for (p of pairingsList; track $index) {
-                    <li>
-                      <span>{{ p.a }} / {{ p.b }}</span>
-                      <button type="button" (click)="removePairingEntry($index)">✕</button>
-                    </li>
-                  }
-                </ul>
-              }
-              <div class="pairing-inputs">
-                <div class="char-search">
-                  <input
-                    type="text"
-                    [ngModel]="pairingA"
-                    (ngModelChange)="onPairingAChange($event)"
-                    (focus)="pairingADropdownOpen.set(true)"
-                    placeholder="Personaje A"
-                  />
-                  @if (pairingADropdownOpen() && pairingASuggestions().length) {
-                    <ul class="dropdown">
-                      @for (c of pairingASuggestions(); track c.id) {
-                        <li>
-                          <button type="button" (click)="selectPairingA(c.name)">
-                            {{ c.name }}
-                            <small>@{{ c.author.username }}</small>
-                          </button>
-                        </li>
-                      }
-                    </ul>
-                  }
+              <div class="field span-full">
+                <span class="field-label">Parejas</span>
+                @if (pairingsList.length) {
+                  <ul class="pairing-pills">
+                    @for (p of pairingsList; track $index) {
+                      <li>
+                        <span>{{ p.a }} / {{ p.b }}</span>
+                        <button type="button" (click)="removePairingEntry($index)">✕</button>
+                      </li>
+                    }
+                  </ul>
+                }
+                <div class="pairing-inputs">
+                  <div class="char-search">
+                    <input
+                      type="text"
+                      [ngModel]="pairingA"
+                      (ngModelChange)="onPairingAChange($event)"
+                      (focus)="pairingADropdownOpen.set(true)"
+                      placeholder="Personaje A"
+                    />
+                    @if (pairingADropdownOpen() && pairingASuggestions().length) {
+                      <ul class="dropdown">
+                        @for (c of pairingASuggestions(); track c.id) {
+                          <li>
+                            <button type="button" (click)="selectPairingA(c.name)">
+                              {{ c.name }}
+                              <small>@{{ c.author.username }}</small>
+                            </button>
+                          </li>
+                        }
+                      </ul>
+                    }
+                  </div>
+                  <span class="pair-sep">/</span>
+                  <div class="char-search">
+                    <input
+                      type="text"
+                      [ngModel]="pairingB"
+                      (ngModelChange)="onPairingBChange($event)"
+                      (focus)="pairingBDropdownOpen.set(true)"
+                      placeholder="Personaje B"
+                    />
+                    @if (pairingBDropdownOpen() && pairingBSuggestions().length) {
+                      <ul class="dropdown">
+                        @for (c of pairingBSuggestions(); track c.id) {
+                          <li>
+                            <button type="button" (click)="selectPairingB(c.name)">
+                              {{ c.name }}
+                              <small>@{{ c.author.username }}</small>
+                            </button>
+                          </li>
+                        }
+                      </ul>
+                    }
+                  </div>
+                  <button type="button" (click)="addPairingEntry()">+ Añadir</button>
                 </div>
-                <span class="pair-sep">/</span>
-                <div class="char-search">
-                  <input
-                    type="text"
-                    [ngModel]="pairingB"
-                    (ngModelChange)="onPairingBChange($event)"
-                    (focus)="pairingBDropdownOpen.set(true)"
-                    placeholder="Personaje B"
-                  />
-                  @if (pairingBDropdownOpen() && pairingBSuggestions().length) {
-                    <ul class="dropdown">
-                      @for (c of pairingBSuggestions(); track c.id) {
-                        <li>
-                          <button type="button" (click)="selectPairingB(c.name)">
-                            {{ c.name }}
-                            <small>@{{ c.author.username }}</small>
-                          </button>
-                        </li>
-                      }
-                    </ul>
-                  }
-                </div>
-                <button type="button" (click)="addPairingEntry()">+ Añadir</button>
+                @if (pairingError) {
+                  <p class="pair-error">{{ pairingError }}</p>
+                }
               </div>
-              @if (pairingError) {
-                <p class="pair-error">{{ pairingError }}</p>
-              }
-            </div>
             } @else {
               <p class="hint span-full">
-                Para filtrar por parejas, agrega el género <strong>Fanfiction</strong> en los filtros generales.
+                Para filtrar por parejas, agrega el género <strong>Fanfiction</strong> en los
+                filtros generales.
               </p>
             }
 
@@ -580,10 +587,8 @@ export class AdvancedNovelFiltersComponent {
     // Avoid exact duplicates (in any order, case-insensitive)
     const exists = this.pairingsList.some(
       (p) =>
-        (p.a.toLowerCase() === a.toLowerCase() &&
-          p.b.toLowerCase() === b.toLowerCase()) ||
-        (p.a.toLowerCase() === b.toLowerCase() &&
-          p.b.toLowerCase() === a.toLowerCase()),
+        (p.a.toLowerCase() === a.toLowerCase() && p.b.toLowerCase() === b.toLowerCase()) ||
+        (p.a.toLowerCase() === b.toLowerCase() && p.b.toLowerCase() === a.toLowerCase()),
     );
     if (exists) {
       this.pairingError = 'Esta pareja ya está en el filtro.';
@@ -681,10 +686,13 @@ export class AdvancedNovelFiltersComponent {
       ...this.filters,
       tags: this.tags.length ? this.tags : undefined,
       status: this.onlyCompleted ? 'COMPLETED' : this.filters.status || undefined,
-      romanceGenres: this.selectedRomanceGenres.length ? [...this.selectedRomanceGenres] : undefined,
+      romanceGenres: this.selectedRomanceGenres.length
+        ? [...this.selectedRomanceGenres]
+        : undefined,
       pairings: pairings.length ? pairings : undefined,
       novelType: this.filters.novelType || undefined,
-      fandomSlug: this.filters.novelType === 'FANFIC' ? this.filters.fandomSlug || undefined : undefined,
+      fandomSlug:
+        this.filters.novelType === 'FANFIC' ? this.filters.fandomSlug || undefined : undefined,
     };
     this.filtersChange.emit(out);
   }

@@ -54,7 +54,12 @@ export interface AddImageToSectionResult {
 
     <mat-dialog-actions align="end">
       <button mat-button (click)="dialogRef.close(null)">Cancelar</button>
-      <button mat-flat-button color="primary" [disabled]="!imageUrl.trim() || uploading()" (click)="submit()">
+      <button
+        mat-flat-button
+        color="primary"
+        [disabled]="!imageUrl.trim() || uploading()"
+        (click)="submit()"
+      >
         Añadir imagen
       </button>
     </mat-dialog-actions>

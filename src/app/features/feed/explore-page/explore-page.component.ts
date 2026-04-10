@@ -120,19 +120,19 @@ export class ExplorePageComponent implements AfterViewInit, OnDestroy {
         });
 
     source$.subscribe({
-        next: (response) => {
-          this.posts.set(reset ? response.data : [...this.posts(), ...response.data]);
-          this.nextCursor.set(response.pagination.nextCursor);
-          this.hasMore.set(response.pagination.hasMore);
-          this.loading.set(false);
-          this.loadingMore.set(false);
-        },
-        error: () => {
-          this.error.set(true);
-          this.loading.set(false);
-          this.loadingMore.set(false);
-        },
-      });
+      next: (response) => {
+        this.posts.set(reset ? response.data : [...this.posts(), ...response.data]);
+        this.nextCursor.set(response.pagination.nextCursor);
+        this.hasMore.set(response.pagination.hasMore);
+        this.loading.set(false);
+        this.loadingMore.set(false);
+      },
+      error: () => {
+        this.error.set(true);
+        this.loading.set(false);
+        this.loadingMore.set(false);
+      },
+    });
   }
 
   private setupObserver() {

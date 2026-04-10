@@ -12,7 +12,11 @@ import {
   AddImageToSectionResult,
 } from './components/add-image-to-section-dialog.component';
 import { CreateBoardDialogComponent } from './components/create-board-dialog.component';
-import { VisualBoard, VisualBoardSavePayload, VisualBoardSection } from './models/visual-board.model';
+import {
+  VisualBoard,
+  VisualBoardSavePayload,
+  VisualBoardSection,
+} from './models/visual-board.model';
 import { VisualBoardsService } from './services/visual-boards.service';
 
 @Component({

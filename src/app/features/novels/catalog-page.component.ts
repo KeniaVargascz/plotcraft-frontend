@@ -1,4 +1,14 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild, computed, inject, signal, DestroyRef } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  OnInit,
+  ViewChild,
+  computed,
+  inject,
+  signal,
+  DestroyRef,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -50,7 +60,11 @@ import {
             </ul>
           }
 
-          @if (availableGenresFiltered().length === 0 && !genreSearch.trim() && selectedGenreSlugs().length === genres().length) {
+          @if (
+            availableGenresFiltered().length === 0 &&
+            !genreSearch.trim() &&
+            selectedGenreSlugs().length === genres().length
+          ) {
             <p class="hint">Has seleccionado todos los géneros disponibles.</p>
           } @else {
             <div class="char-search">
@@ -71,7 +85,9 @@ import {
                   }
                 </ul>
               }
-              @if (genreDropdownOpen() && availableGenresFiltered().length === 0 && genreSearch.trim()) {
+              @if (
+                genreDropdownOpen() && availableGenresFiltered().length === 0 && genreSearch.trim()
+              ) {
                 <p class="hint">Sin resultados.</p>
               }
             </div>
@@ -314,9 +330,7 @@ export class CatalogPageComponent implements OnInit {
       .filter((g) => !term || g.label.toLowerCase().includes(term));
   });
 
-  readonly hasFanfictionGenre = computed(() =>
-    this.selectedGenreSlugs().includes('fanfiction'),
-  );
+  readonly hasFanfictionGenre = computed(() => this.selectedGenreSlugs().includes('fanfiction'));
 
   addGenre(slug: string) {
     if (this.selectedGenreSlugs().includes(slug)) return;
@@ -330,13 +344,17 @@ export class CatalogPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.genresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((genres) => {
-      this.genres.set(genres);
-      this.syncGenreCopy();
-    });
+    this.genresService
+      .list()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((genres) => {
+        this.genres.set(genres);
+        this.syncGenreCopy();
+      });
 
-    combineLatest([this.route.paramMap, this.route.queryParamMap]).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(
-      ([params, queryParams]) => {
+    combineLatest([this.route.paramMap, this.route.queryParamMap])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([params, queryParams]) => {
         this.genre = params.get('genreSlug') ?? queryParams.get('genre') ?? '';
         this.search = queryParams.get('search') ?? '';
         const sort = queryParams.get('sort');
@@ -356,8 +374,7 @@ export class CatalogPageComponent implements OnInit {
         this.selectedGenreSlugs.set(queryParams.getAll('genres'));
         this.syncGenreCopy();
         this.load(true);
-      },
-    );
+      });
   }
 
   applyAllFilters() {
@@ -444,7 +461,8 @@ export class CatalogPageComponent implements OnInit {
         tags: adv.tags,
         status: (adv.status as 'COMPLETED' | null) || null,
         sortBy: adv.sortBy,
-        romanceGenres: (adv.romanceGenres as ('BL' | 'GL' | 'HETEROSEXUAL' | 'OTHER')[] | null) || null,
+        romanceGenres:
+          (adv.romanceGenres as ('BL' | 'GL' | 'HETEROSEXUAL' | 'OTHER')[] | null) || null,
         pairings: adv.pairings ?? null,
         novelType: (adv.novelType as 'ORIGINAL' | 'FANFIC') || null,
         fandomSlug: adv.fandomSlug || null,

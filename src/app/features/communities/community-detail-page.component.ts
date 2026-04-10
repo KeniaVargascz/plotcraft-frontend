@@ -26,7 +26,13 @@ import { RejectCharacterDialogComponent } from './components/reject-character-di
 @Component({
   selector: 'app-community-detail-page',
   standalone: true,
-  imports: [RouterLink, FormsModule, LoadingSpinnerComponent, ForumCardComponent, CommunityCharacterCardComponent],
+  imports: [
+    RouterLink,
+    FormsModule,
+    LoadingSpinnerComponent,
+    ForumCardComponent,
+    CommunityCharacterCardComponent,
+  ],
   template: `
     @if (loading()) {
       <app-loading-spinner />
@@ -58,9 +64,7 @@ import { RejectCharacterDialogComponent } from './components/reject-character-di
           <div class="alert danger">⚠ Esta comunidad está suspendida.</div>
         }
         @if (c.status === 'REJECTED' && c.isOwner && c.rejectionReason) {
-          <div class="alert danger">
-            <strong>Rechazada:</strong> {{ c.rejectionReason }}
-          </div>
+          <div class="alert danger"><strong>Rechazada:</strong> {{ c.rejectionReason }}</div>
         }
 
         <div class="grid">
@@ -124,7 +128,9 @@ import { RejectCharacterDialogComponent } from './components/reject-character-di
                           <span>{{ n.title }}</span>
                         </a>
                         @if (c.isOwner) {
-                          <button type="button" class="rl-remove" (click)="removeRelated(n.id)">✕</button>
+                          <button type="button" class="rl-remove" (click)="removeRelated(n.id)">
+                            ✕
+                          </button>
                         }
                       </li>
                     }
@@ -138,7 +144,12 @@ import { RejectCharacterDialogComponent } from './components/reject-character-di
                         <option [value]="n.id">{{ n.title }}</option>
                       }
                     </select>
-                    <button type="button" class="new-forum-btn" [disabled]="!selectedNovelId || addingRelated()" (click)="addRelated()">
+                    <button
+                      type="button"
+                      class="new-forum-btn"
+                      [disabled]="!selectedNovelId || addingRelated()"
+                      (click)="addRelated()"
+                    >
                       {{ addingRelated() ? 'Agregando…' : '+ Agregar' }}
                     </button>
                   </div>
@@ -242,7 +253,10 @@ import { RejectCharacterDialogComponent } from './components/reject-character-di
                         } @else {
                           <span>· Foro general</span>
                         }
-                        <span>· {{ t.repliesCount }} respuestas · {{ t.reactionsCount }} reacciones</span>
+                        <span
+                          >· {{ t.repliesCount }} respuestas ·
+                          {{ t.reactionsCount }} reacciones</span
+                        >
                       </div>
                     </li>
                   }
@@ -281,7 +295,11 @@ import { RejectCharacterDialogComponent } from './components/reject-character-di
                   }
                 </div>
               } @else {
-                <a class="primary" [routerLink]="['/login']" [queryParams]="{ returnUrl: '/comunidades/' + c.slug }">
+                <a
+                  class="primary"
+                  [routerLink]="['/login']"
+                  [queryParams]="{ returnUrl: '/comunidades/' + c.slug }"
+                >
                   Inicia sesión para unirte
                 </a>
               }
@@ -323,8 +341,14 @@ import { RejectCharacterDialogComponent } from './components/reject-character-di
             }
 
             <div class="card stats">
-              <div><strong>{{ c.membersCount }}</strong><span>Miembros</span></div>
-              <div><strong>{{ c.followersCount }}</strong><span>Seguidores</span></div>
+              <div>
+                <strong>{{ c.membersCount }}</strong
+                ><span>Miembros</span>
+              </div>
+              <div>
+                <strong>{{ c.followersCount }}</strong
+                ><span>Seguidores</span>
+              </div>
             </div>
           </aside>
         </div>
@@ -1038,9 +1062,7 @@ export class CommunityDetailPageComponent implements OnInit {
         if (!result) return;
         this.charactersService.update(c.slug, character.id, result).subscribe({
           next: (updated) => {
-            this.catalog.update((list) =>
-              list.map((cc) => (cc.id === updated.id ? updated : cc)),
-            );
+            this.catalog.update((list) => list.map((cc) => (cc.id === updated.id ? updated : cc)));
           },
         });
       });

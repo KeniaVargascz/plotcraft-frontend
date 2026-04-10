@@ -34,7 +34,9 @@ import { WorldCardComponent } from './components/world-card.component';
               <app-world-card [world]="world" [showVisibility]="true" />
               @if (world.wbSummary && world.wbSummary.entriesCount) {
                 <div class="wb-badge-row">
-                  <span class="wb-badge">&#128218; {{ world.wbSummary!.entriesCount }} entradas</span>
+                  <span class="wb-badge"
+                    >&#128218; {{ world.wbSummary!.entriesCount }} entradas</span
+                  >
                 </div>
               }
               <div class="actions">
@@ -95,7 +97,10 @@ import { WorldCardComponent } from './components/world-card.component';
       .empty p {
         color: var(--text-2);
       }
-      .wb-badge-row { display: flex; justify-content: center; }
+      .wb-badge-row {
+        display: flex;
+        justify-content: center;
+      }
       .wb-badge {
         display: inline-flex;
         align-items: center;

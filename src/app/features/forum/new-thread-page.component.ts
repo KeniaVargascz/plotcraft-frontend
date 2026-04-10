@@ -119,7 +119,9 @@ const CATEGORIES: CategoryOption[] = [
                 @for (c of selectedCommunities(); track c.id) {
                   <span class="link-chip selected">
                     {{ c.name }}
-                    <button type="button" class="chip-remove" (click)="toggleLinked(c.id)">×</button>
+                    <button type="button" class="chip-remove" (click)="toggleLinked(c.id)">
+                      ×
+                    </button>
                   </span>
                 }
               </div>
@@ -184,22 +186,22 @@ const CATEGORIES: CategoryOption[] = [
                       class="input"
                     />
                     @if (pollOptions().length > 2) {
-                      <button type="button" class="remove-opt" (click)="removeOption($index)">x</button>
+                      <button type="button" class="remove-opt" (click)="removeOption($index)">
+                        x
+                      </button>
                     }
                   </div>
                 }
                 @if (pollOptions().length < 8) {
-                  <button type="button" class="add-opt" (click)="addOption()">+ Agregar opcion</button>
+                  <button type="button" class="add-opt" (click)="addOption()">
+                    + Agregar opcion
+                  </button>
                 }
               </div>
 
               <label class="field">
                 <span class="label">Cierre de la encuesta (opcional)</span>
-                <input
-                  type="datetime-local"
-                  [(ngModel)]="pollClosesAt"
-                  class="input"
-                />
+                <input type="datetime-local" [(ngModel)]="pollClosesAt" class="input" />
               </label>
             </div>
           }
@@ -221,243 +223,257 @@ const CATEGORIES: CategoryOption[] = [
       </div>
     </section>
   `,
-  styles: [`
-    .new-thread-page {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 1.5rem;
-    }
-    .page-title {
-      font-size: 1.5rem;
-      color: var(--text-1);
-      margin: 0 0 1.25rem;
-    }
-    .form-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      display: grid;
-      gap: 1rem;
-    }
-    .field {
-      display: grid;
-      gap: 0.35rem;
-    }
-    .label {
-      font-size: 0.85rem;
-      color: var(--text-2);
-      font-weight: 500;
-    }
-    .input,
-    .textarea {
-      padding: 0.65rem 0.85rem;
-      border-radius: 0.65rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-1);
-      font-family: inherit;
-      font-size: 0.9rem;
-    }
-    .textarea {
-      resize: vertical;
-      min-height: 160px;
-    }
-    .counter {
-      font-size: 0.75rem;
-      color: var(--text-3);
-      text-align: right;
-    }
-    .tags-input {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-      padding: 0.4rem;
-      border: 1px solid var(--border);
-      border-radius: 0.65rem;
-      background: var(--bg-surface);
-    }
-    .tag-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      padding: 0.2rem 0.55rem;
-      border-radius: 9999px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 0.8rem;
-    }
-    .tag-remove {
-      background: none;
-      border: none;
-      color: var(--accent-text);
-      cursor: pointer;
-      font-size: 0.75rem;
-      padding: 0;
-      line-height: 1;
-    }
-    .tag-field {
-      flex: 1;
-      min-width: 100px;
-      border: none;
-      background: transparent;
-      color: var(--text-1);
-      font-size: 0.85rem;
-      outline: none;
-    }
-    .content-tabs {
-      display: flex;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 0.5rem;
-    }
-    .tab {
-      flex: 1;
-      padding: 0.5rem;
-      border: none;
-      background: transparent;
-      color: var(--text-2);
-      font-size: 0.85rem;
-      cursor: pointer;
-      font-weight: 500;
-    }
-    .tab.active {
-      color: var(--accent);
-      border-bottom: 2px solid var(--accent);
-    }
-    .preview {
-      min-height: 160px;
-      padding: 0.75rem;
-      color: var(--text-1);
-      font-size: 0.9rem;
-      line-height: 1.6;
-      border: 1px solid var(--border);
-      border-radius: 0.65rem;
-      background: var(--bg-surface);
-    }
-    .toggle-poll {
-      background: none;
-      border: 1px dashed var(--border);
-      border-radius: 0.65rem;
-      padding: 0.55rem;
-      color: var(--accent);
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-    .poll-section {
-      display: grid;
-      gap: 0.75rem;
-      margin-top: 0.65rem;
-      padding: 1rem;
-      border: 1px solid var(--border);
-      border-radius: 0.65rem;
-      background: var(--bg-surface);
-    }
-    .poll-options { display: grid; gap: 0.4rem; }
-    .option-row {
-      display: flex;
-      gap: 0.4rem;
-      align-items: center;
-    }
-    .option-row .input { flex: 1; }
-    .remove-opt {
-      padding: 0.35rem 0.55rem;
-      border-radius: 0.5rem;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      color: var(--danger);
-      cursor: pointer;
-      font-size: 0.8rem;
-    }
-    .add-opt {
-      padding: 0.4rem 0.75rem;
-      border-radius: 0.55rem;
-      border: 1px dashed var(--border);
-      background: transparent;
-      color: var(--accent);
-      cursor: pointer;
-      font-size: 0.85rem;
-      margin-top: 0.25rem;
-    }
-    .submit-btn {
-      padding: 0.65rem;
-      border-radius: 0.75rem;
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    .submit-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .submit-btn:hover:not(:disabled) {
-      box-shadow: 0 0 12px var(--accent-glow);
-    }
-    .error-msg {
-      color: var(--danger);
-      font-size: 0.85rem;
-      margin: 0;
-    }
-    .link-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-    .link-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.35rem 0.75rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      cursor: pointer;
-      font-size: 0.85rem;
-      color: var(--text-1);
-    }
-    .link-chip.selected {
-      background: var(--accent-glow);
-      color: var(--accent-text);
-      border-color: transparent;
-    }
-    .chip-remove {
-      background: none;
-      border: none;
-      color: inherit;
-      cursor: pointer;
-      font-size: 1rem;
-      line-height: 1;
-      padding: 0;
-    }
-    .community-suggestions {
-      margin-top: 0.35rem;
-      max-height: 220px;
-      overflow-y: auto;
-      border: 1px solid var(--border);
-      border-radius: 0.65rem;
-      background: var(--bg-card);
-      display: grid;
-    }
-    .suggestion {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.6rem 0.85rem;
-      background: transparent;
-      border: 0;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-1);
-      font-size: 0.88rem;
-      cursor: pointer;
-      text-align: left;
-    }
-    .suggestion:last-child { border-bottom: 0; }
-    .suggestion:hover { background: var(--bg-surface); }
-    .suggestion.linked .check { color: var(--accent); font-weight: 700; }
-  `],
+  styles: [
+    `
+      .new-thread-page {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 1.5rem;
+      }
+      .page-title {
+        font-size: 1.5rem;
+        color: var(--text-1);
+        margin: 0 0 1.25rem;
+      }
+      .form-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        display: grid;
+        gap: 1rem;
+      }
+      .field {
+        display: grid;
+        gap: 0.35rem;
+      }
+      .label {
+        font-size: 0.85rem;
+        color: var(--text-2);
+        font-weight: 500;
+      }
+      .input,
+      .textarea {
+        padding: 0.65rem 0.85rem;
+        border-radius: 0.65rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        font-family: inherit;
+        font-size: 0.9rem;
+      }
+      .textarea {
+        resize: vertical;
+        min-height: 160px;
+      }
+      .counter {
+        font-size: 0.75rem;
+        color: var(--text-3);
+        text-align: right;
+      }
+      .tags-input {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+        padding: 0.4rem;
+        border: 1px solid var(--border);
+        border-radius: 0.65rem;
+        background: var(--bg-surface);
+      }
+      .tag-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.2rem 0.55rem;
+        border-radius: 9999px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 0.8rem;
+      }
+      .tag-remove {
+        background: none;
+        border: none;
+        color: var(--accent-text);
+        cursor: pointer;
+        font-size: 0.75rem;
+        padding: 0;
+        line-height: 1;
+      }
+      .tag-field {
+        flex: 1;
+        min-width: 100px;
+        border: none;
+        background: transparent;
+        color: var(--text-1);
+        font-size: 0.85rem;
+        outline: none;
+      }
+      .content-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 0.5rem;
+      }
+      .tab {
+        flex: 1;
+        padding: 0.5rem;
+        border: none;
+        background: transparent;
+        color: var(--text-2);
+        font-size: 0.85rem;
+        cursor: pointer;
+        font-weight: 500;
+      }
+      .tab.active {
+        color: var(--accent);
+        border-bottom: 2px solid var(--accent);
+      }
+      .preview {
+        min-height: 160px;
+        padding: 0.75rem;
+        color: var(--text-1);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        border: 1px solid var(--border);
+        border-radius: 0.65rem;
+        background: var(--bg-surface);
+      }
+      .toggle-poll {
+        background: none;
+        border: 1px dashed var(--border);
+        border-radius: 0.65rem;
+        padding: 0.55rem;
+        color: var(--accent);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.9rem;
+      }
+      .poll-section {
+        display: grid;
+        gap: 0.75rem;
+        margin-top: 0.65rem;
+        padding: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 0.65rem;
+        background: var(--bg-surface);
+      }
+      .poll-options {
+        display: grid;
+        gap: 0.4rem;
+      }
+      .option-row {
+        display: flex;
+        gap: 0.4rem;
+        align-items: center;
+      }
+      .option-row .input {
+        flex: 1;
+      }
+      .remove-opt {
+        padding: 0.35rem 0.55rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--danger);
+        cursor: pointer;
+        font-size: 0.8rem;
+      }
+      .add-opt {
+        padding: 0.4rem 0.75rem;
+        border-radius: 0.55rem;
+        border: 1px dashed var(--border);
+        background: transparent;
+        color: var(--accent);
+        cursor: pointer;
+        font-size: 0.85rem;
+        margin-top: 0.25rem;
+      }
+      .submit-btn {
+        padding: 0.65rem;
+        border-radius: 0.75rem;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+      .submit-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .submit-btn:hover:not(:disabled) {
+        box-shadow: 0 0 12px var(--accent-glow);
+      }
+      .error-msg {
+        color: var(--danger);
+        font-size: 0.85rem;
+        margin: 0;
+      }
+      .link-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .link-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        cursor: pointer;
+        font-size: 0.85rem;
+        color: var(--text-1);
+      }
+      .link-chip.selected {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        border-color: transparent;
+      }
+      .chip-remove {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        font-size: 1rem;
+        line-height: 1;
+        padding: 0;
+      }
+      .community-suggestions {
+        margin-top: 0.35rem;
+        max-height: 220px;
+        overflow-y: auto;
+        border: 1px solid var(--border);
+        border-radius: 0.65rem;
+        background: var(--bg-card);
+        display: grid;
+      }
+      .suggestion {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 0.85rem;
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid var(--border);
+        color: var(--text-1);
+        font-size: 0.88rem;
+        cursor: pointer;
+        text-align: left;
+      }
+      .suggestion:last-child {
+        border-bottom: 0;
+      }
+      .suggestion:hover {
+        background: var(--bg-surface);
+      }
+      .suggestion.linked .check {
+        color: var(--accent);
+        font-weight: 700;
+      }
+    `,
+  ],
 })
 export class NewThreadPageComponent implements OnInit {
   private readonly forumService = inject(ForumService);
@@ -557,14 +573,12 @@ export class NewThreadPageComponent implements OnInit {
     this.submitting.set(true);
     this.errorMsg.set('');
 
-    const payload: any = {
+    const payload: Record<string, unknown> = {
       title: titleVal,
       content: contentVal,
       category: this.category,
       tags: this.tags().length ? this.tags() : undefined,
-      linkedCommunityIds: this.linkedCommunityIds().length
-        ? this.linkedCommunityIds()
-        : undefined,
+      linkedCommunityIds: this.linkedCommunityIds().length ? this.linkedCommunityIds() : undefined,
     };
 
     if (this.showPoll() && this.pollQuestion.trim()) {

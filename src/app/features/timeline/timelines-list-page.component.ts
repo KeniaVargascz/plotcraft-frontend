@@ -25,7 +25,11 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
         </label>
         <label class="field">
           <span class="label">Descripcion</span>
-          <textarea [(ngModel)]="description" rows="3" placeholder="Descripcion opcional..."></textarea>
+          <textarea
+            [(ngModel)]="description"
+            rows="3"
+            placeholder="Descripcion opcional..."
+          ></textarea>
         </label>
         <label class="field">
           <span class="label">Novela (opcional)</span>
@@ -40,35 +44,66 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button type="button" class="btn-cancel" mat-dialog-close>Cancelar</button>
-      <button type="button" class="btn-save" [disabled]="!name.trim()" (click)="confirm()">Crear</button>
+      <button type="button" class="btn-save" [disabled]="!name.trim()" (click)="confirm()">
+        Crear
+      </button>
     </mat-dialog-actions>
   `,
-  styles: [`
-    .form-grid { display: grid; gap: 0.75rem; min-width: 340px; }
-    .field { display: grid; gap: 0.25rem; }
-    .label { font-size: 0.75rem; font-weight: 600; color: var(--text-2); }
-    .req { color: var(--danger); }
-    input, textarea, select {
-      padding: 0.5rem 0.65rem;
-      border-radius: 0.6rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-1);
-      font-size: 0.82rem;
-      font-family: inherit;
-    }
-    textarea { resize: vertical; }
-    .btn-cancel, .btn-save {
-      padding: 0.55rem 1.1rem;
-      border-radius: 0.75rem;
-      border: 1px solid var(--border);
-      font-size: 0.82rem;
-      cursor: pointer;
-    }
-    .btn-cancel { background: var(--bg-surface); color: var(--text-2); }
-    .btn-save { background: var(--accent-glow); color: var(--accent-text); }
-    .btn-save:disabled { opacity: 0.5; cursor: default; }
-  `],
+  styles: [
+    `
+      .form-grid {
+        display: grid;
+        gap: 0.75rem;
+        min-width: 340px;
+      }
+      .field {
+        display: grid;
+        gap: 0.25rem;
+      }
+      .label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-2);
+      }
+      .req {
+        color: var(--danger);
+      }
+      input,
+      textarea,
+      select {
+        padding: 0.5rem 0.65rem;
+        border-radius: 0.6rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        font-size: 0.82rem;
+        font-family: inherit;
+      }
+      textarea {
+        resize: vertical;
+      }
+      .btn-cancel,
+      .btn-save {
+        padding: 0.55rem 1.1rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        font-size: 0.82rem;
+        cursor: pointer;
+      }
+      .btn-cancel {
+        background: var(--bg-surface);
+        color: var(--text-2);
+      }
+      .btn-save {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
+      .btn-save:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+    `,
+  ],
 })
 export class CreateTimelineDialogComponent {
   private readonly novelsService = inject(NovelsService);
@@ -135,7 +170,7 @@ export class CreateTimelineDialogComponent {
                     <span class="novel-link">{{ tl.novel.title }}</span>
                   }
                 </div>
-                <span class="tl-date">{{ tl.updatedAt | date:'dd/MM/yyyy' }}</span>
+                <span class="tl-date">{{ tl.updatedAt | date: 'dd/MM/yyyy' }}</span>
                 <div class="tl-actions">
                   <a [routerLink]="['/mis-timelines', tl.id]" class="act-link">Abrir en canvas</a>
                   <button
@@ -197,7 +232,9 @@ export class CreateTimelineDialogComponent {
                   </ul>
                 }
 
-                <a [routerLink]="['/mis-timelines', selectedDetail()!.id]" class="cta open-btn">Abrir en canvas</a>
+                <a [routerLink]="['/mis-timelines', selectedDetail()!.id]" class="cta open-btn"
+                  >Abrir en canvas</a
+                >
               </div>
             }
           </div>
@@ -205,148 +242,212 @@ export class CreateTimelineDialogComponent {
       }
     </section>
   `,
-  styles: [`
-    .page-shell { display: grid; gap: 1rem; }
-    .card {
-      padding: 1.25rem;
-      border-radius: 1.25rem;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-    }
-    .hero {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-    .eyebrow, .lede, .state, .empty p { color: var(--text-2); }
-    .cta {
-      padding: 0.8rem 1rem;
-      border-radius: 1rem;
-      border: 1px solid var(--border);
-      text-decoration: none;
-      background: var(--accent-glow);
-      color: var(--accent-text);
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
+  styles: [
+    `
+      .page-shell {
+        display: grid;
+        gap: 1rem;
+      }
+      .card {
+        padding: 1.25rem;
+        border-radius: 1.25rem;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+      }
+      .hero {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .eyebrow,
+      .lede,
+      .state,
+      .empty p {
+        color: var(--text-2);
+      }
+      .cta {
+        padding: 0.8rem 1rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        text-decoration: none;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
 
-    /* Two-column layout */
-    .two-col {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: 1rem;
-      min-height: 400px;
-    }
+      /* Two-column layout */
+      .two-col {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 1rem;
+        min-height: 400px;
+      }
 
-    /* Sidebar */
-    .sidebar {
-      display: grid;
-      gap: 0.5rem;
-      align-content: start;
-      max-height: calc(100vh - 14rem);
-      overflow-y: auto;
-    }
-    .tl-item {
-      padding: 0.65rem 0.75rem;
-      border-radius: 0.75rem;
-      border: 1px solid var(--border);
-      background: var(--bg-card);
-      cursor: pointer;
-      display: grid;
-      gap: 0.25rem;
-      transition: border-color 0.15s;
-    }
-    .tl-item:hover { border-color: var(--accent); }
-    .tl-item.active {
-      border-color: var(--accent);
-      background: var(--accent-glow);
-    }
-    .tl-name {
-      margin: 0;
-      font-size: 0.85rem;
-      color: var(--text-1);
-    }
-    .tl-meta {
-      display: flex;
-      gap: 0.5rem;
-      font-size: 0.7rem;
-      color: var(--text-3);
-    }
-    .novel-link {
-      color: var(--accent);
-      font-weight: 500;
-    }
-    .tl-date { font-size: 0.65rem; color: var(--text-3); }
-    .tl-actions {
-      display: flex;
-      gap: 0.4rem;
-      padding-top: 0.25rem;
-    }
-    .act-link, .act-del {
-      font-size: 0.7rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 0.5rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-2);
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .act-link:hover { background: var(--accent-glow); color: var(--accent-text); }
-    .act-del:hover { background: var(--danger); color: #fff; }
+      /* Sidebar */
+      .sidebar {
+        display: grid;
+        gap: 0.5rem;
+        align-content: start;
+        max-height: calc(100vh - 14rem);
+        overflow-y: auto;
+      }
+      .tl-item {
+        padding: 0.65rem 0.75rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        cursor: pointer;
+        display: grid;
+        gap: 0.25rem;
+        transition: border-color 0.15s;
+      }
+      .tl-item:hover {
+        border-color: var(--accent);
+      }
+      .tl-item.active {
+        border-color: var(--accent);
+        background: var(--accent-glow);
+      }
+      .tl-name {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--text-1);
+      }
+      .tl-meta {
+        display: flex;
+        gap: 0.5rem;
+        font-size: 0.7rem;
+        color: var(--text-3);
+      }
+      .novel-link {
+        color: var(--accent);
+        font-weight: 500;
+      }
+      .tl-date {
+        font-size: 0.65rem;
+        color: var(--text-3);
+      }
+      .tl-actions {
+        display: flex;
+        gap: 0.4rem;
+        padding-top: 0.25rem;
+      }
+      .act-link,
+      .act-del {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-2);
+        cursor: pointer;
+        text-decoration: none;
+      }
+      .act-link:hover {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
+      .act-del:hover {
+        background: var(--danger);
+        color: #fff;
+      }
 
-    /* Preview */
-    .preview { display: grid; align-content: start; gap: 1rem; }
-    .empty-preview { display: grid; place-items: center; min-height: 300px; }
-    .empty-preview p { color: var(--text-3); }
-    .preview-content { display: grid; gap: 0.75rem; }
-    .preview-content h2 { margin: 0; font-size: 1.2rem; color: var(--text-1); }
-    .desc { color: var(--text-2); font-size: 0.85rem; margin: 0; }
-    .stats-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .stat-card {
-      padding: 0.5rem 0.75rem;
-      border-radius: 0.75rem;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      display: grid;
-      text-align: center;
-      min-width: 80px;
-    }
-    .stat-num { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
-    .stat-label { font-size: 0.65rem; color: var(--text-3); }
-    .sub-title { margin: 0.5rem 0 0; font-size: 0.9rem; color: var(--text-1); }
-    .compact-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 0.35rem;
-    }
-    .compact-list li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.8rem;
-      padding: 0.3rem 0.5rem;
-      border-radius: 0.5rem;
-      background: var(--bg-surface);
-      color: var(--text-1);
-    }
-    .ev-date { font-size: 0.7rem; color: var(--text-3); }
-    .open-btn { text-align: center; margin-top: 0.5rem; }
+      /* Preview */
+      .preview {
+        display: grid;
+        align-content: start;
+        gap: 1rem;
+      }
+      .empty-preview {
+        display: grid;
+        place-items: center;
+        min-height: 300px;
+      }
+      .empty-preview p {
+        color: var(--text-3);
+      }
+      .preview-content {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .preview-content h2 {
+        margin: 0;
+        font-size: 1.2rem;
+        color: var(--text-1);
+      }
+      .desc {
+        color: var(--text-2);
+        font-size: 0.85rem;
+        margin: 0;
+      }
+      .stats-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .stat-card {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.75rem;
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        display: grid;
+        text-align: center;
+        min-width: 80px;
+      }
+      .stat-num {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--accent);
+      }
+      .stat-label {
+        font-size: 0.65rem;
+        color: var(--text-3);
+      }
+      .sub-title {
+        margin: 0.5rem 0 0;
+        font-size: 0.9rem;
+        color: var(--text-1);
+      }
+      .compact-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 0.35rem;
+      }
+      .compact-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        padding: 0.3rem 0.5rem;
+        border-radius: 0.5rem;
+        background: var(--bg-surface);
+        color: var(--text-1);
+      }
+      .ev-date {
+        font-size: 0.7rem;
+        color: var(--text-3);
+      }
+      .open-btn {
+        text-align: center;
+        margin-top: 0.5rem;
+      }
 
-    @media (max-width: 768px) {
-      .two-col { grid-template-columns: 1fr; }
-      .sidebar { max-height: 250px; }
-    }
-  `],
+      @media (max-width: 768px) {
+        .two-col {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          max-height: 250px;
+        }
+      }
+    `,
+  ],
 })
 export class TimelinesListPageComponent {
   private readonly timelineService = inject(TimelineService);

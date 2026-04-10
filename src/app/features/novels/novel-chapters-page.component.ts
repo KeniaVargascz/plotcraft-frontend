@@ -21,8 +21,12 @@ import { PlannerService } from '../../core/services/planner.service';
           </div>
 
           <div class="header-actions">
-            <button type="button" class="quick-btn" (click)="goToTimeline(currentNovel.slug)">Timeline</button>
-            <button type="button" class="quick-btn" (click)="goToPlanner(currentNovel.slug)">Planner</button>
+            <button type="button" class="quick-btn" (click)="goToTimeline(currentNovel.slug)">
+              Timeline
+            </button>
+            <button type="button" class="quick-btn" (click)="goToPlanner(currentNovel.slug)">
+              Planner
+            </button>
             <a [routerLink]="['/mis-novelas', currentNovel.slug, 'editar']">Editar novela</a>
             <a [routerLink]="['/mis-novelas', currentNovel.slug, 'capitulos', 'nuevo']">
               Nuevo capitulo

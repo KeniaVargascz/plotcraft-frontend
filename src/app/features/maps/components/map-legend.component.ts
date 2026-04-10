@@ -1,7 +1,7 @@
 import { Component, input, computed } from '@angular/core';
 import { MapMarkerResponse, MarkerType } from '../../../core/models/map-marker.model';
 import { MapRegionResponse } from '../../../core/models/map-region.model';
-import { MarkerTypeIconComponent, MARKER_CONFIG } from './marker-type-icon.component';
+import { MarkerTypeIconComponent } from './marker-type-icon.component';
 
 @Component({
   selector: 'app-map-legend',
@@ -56,11 +56,30 @@ import { MarkerTypeIconComponent, MARKER_CONFIG } from './marker-type-icon.compo
       color: var(--text-secondary, #aaa);
       margin-bottom: 4px;
     }
-    .legend-section { display: flex; flex-direction: column; gap: 4px; }
-    .legend-item { display: flex; align-items: center; gap: 6px; }
-    .legend-label { color: var(--text-primary, #ddd); }
-    .color-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-    .empty { color: var(--text-secondary, #888); font-size: 0.8rem; margin: 0; }
+    .legend-section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .legend-label {
+      color: var(--text-primary, #ddd);
+    }
+    .color-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .empty {
+      color: var(--text-secondary, #888);
+      font-size: 0.8rem;
+      margin: 0;
+    }
   `,
 })
 export class MapLegendComponent {

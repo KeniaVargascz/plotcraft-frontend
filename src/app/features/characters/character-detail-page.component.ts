@@ -117,7 +117,11 @@ import { CharacterKinshipDialogComponent } from './components/character-kinship-
                         <small class="relation-type">{{ relationship.label }}</small>
                         <a
                           class="relation-target"
-                          [routerLink]="['/personajes', relationship.target.username, relationship.target.slug]"
+                          [routerLink]="[
+                            '/personajes',
+                            relationship.target.username,
+                            relationship.target.slug,
+                          ]"
                         >
                           {{ relationship.target.name }}
                         </a>
@@ -134,7 +138,11 @@ import { CharacterKinshipDialogComponent } from './components/character-kinship-
                         }
                       </div>
                       @if (currentCharacter.viewerContext?.isOwner) {
-                        <button type="button" class="ghost danger" (click)="removeRelationship(relationship)">
+                        <button
+                          type="button"
+                          class="ghost danger"
+                          (click)="removeRelationship(relationship)"
+                        >
                           Eliminar
                         </button>
                       }
@@ -416,7 +424,9 @@ export class CharacterDetailPageComponent {
         this.character.set({
           ...char,
           stats: { ...char.stats, kudosCount: response.kudosCount },
-          viewerContext: char.viewerContext ? { ...char.viewerContext, hasKudo: response.hasKudo } : null,
+          viewerContext: char.viewerContext
+            ? { ...char.viewerContext, hasKudo: response.hasKudo }
+            : null,
         });
         if (response.hasKudo) {
           this.kudoBeat.set(true);
@@ -483,7 +493,11 @@ export class CharacterDetailPageComponent {
   }
 
   goToRelationship(relationship: CharacterRelationship) {
-    void this.router.navigate(['/personajes', relationship.target.username, relationship.target.slug]);
+    void this.router.navigate([
+      '/personajes',
+      relationship.target.username,
+      relationship.target.slug,
+    ]);
   }
 
   detailMarkdown() {
@@ -498,8 +512,7 @@ export class CharacterDetailPageComponent {
       current.weaknesses && `## Debilidades\n${current.weaknesses}`,
       current.backstory && `## Backstory\n${current.backstory}`,
       current.arc && `## Arco\n${current.arc}`,
-    ]
-      .filter(Boolean);
+    ].filter(Boolean);
 
     const hasLegacyStructure =
       Boolean(current.personality) ||

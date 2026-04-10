@@ -120,7 +120,8 @@ import { CommunityService } from './services/community.service';
         animation: pulse 1.4s ease-in-out infinite;
       }
       @keyframes pulse {
-        0%, 100% {
+        0%,
+        100% {
           opacity: 0.6;
         }
         50% {
@@ -175,11 +176,11 @@ export class CommunitiesPageComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
 
-  onSearchChange(_: string): void {
+  onSearchChange(): void {
     this.search$.next(this.searchValue);
   }
 
-  onTypeChange(_: string): void {
+  onTypeChange(): void {
     this.reload();
   }
 

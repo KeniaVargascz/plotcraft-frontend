@@ -32,8 +32,13 @@ import { Component, input, computed } from '@angular/core';
       color: var(--text-3);
       background: var(--bg-surface);
     }
-    .arrow { font-size: 0.75rem; }
-    .pct { opacity: 0.8; font-size: 0.75rem; }
+    .arrow {
+      font-size: 0.75rem;
+    }
+    .pct {
+      opacity: 0.8;
+      font-size: 0.75rem;
+    }
   `,
 })
 export class DeltaBadgeComponent {

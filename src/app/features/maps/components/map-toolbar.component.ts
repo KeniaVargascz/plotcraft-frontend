@@ -84,7 +84,8 @@ export class MapToolbarComponent {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent): void {
-    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) return;
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement)
+      return;
 
     const key = event.key.toUpperCase();
     const mapping: Record<string, string> = { P: 'pan', M: 'marker', R: 'region', S: 'select' };

@@ -4,14 +4,7 @@ import { NovelSummary } from './novel.model';
 import { PostType } from './post.model';
 import { WorldSummary } from './world.model';
 
-export type SearchTab =
-  | 'all'
-  | 'novels'
-  | 'worlds'
-  | 'characters'
-  | 'users'
-  | 'posts'
-  | 'mixed';
+export type SearchTab = 'all' | 'novels' | 'worlds' | 'characters' | 'users' | 'posts' | 'mixed';
 
 export type SearchSection =
   | 'novelas'
@@ -30,7 +23,7 @@ export interface SearchResult {
   excerpt: string;
   author: { username: string; displayName: string; avatarUrl: string | null } | null;
   url: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   createdAt: string;
 }
 

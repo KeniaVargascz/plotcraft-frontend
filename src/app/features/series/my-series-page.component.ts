@@ -12,12 +12,7 @@ import { SeriesService } from './services/series.service';
 @Component({
   selector: 'app-my-series-page',
   standalone: true,
-  imports: [
-    RouterLink,
-    ErrorMessageComponent,
-    LoadingSpinnerComponent,
-    SeriesCardComponent,
-  ],
+  imports: [RouterLink, ErrorMessageComponent, LoadingSpinnerComponent, SeriesCardComponent],
   template: `
     <section class="page">
       <header class="header">

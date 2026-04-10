@@ -1,7 +1,11 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TimelineEvent, TimelineEventType, TimelineEventRelevance } from '../../../core/models/timeline.model';
+import {
+  TimelineEvent,
+  TimelineEventType,
+  TimelineEventRelevance,
+} from '../../../core/models/timeline.model';
 import { ChaptersService } from '../../../core/services/chapters.service';
 import { CharactersService } from '../../../core/services/characters.service';
 import { WorldsService } from '../../../core/services/worlds.service';
@@ -29,7 +33,17 @@ const RELEVANCES: { value: TimelineEventRelevance; label: string; desc: string }
   { value: 'BACKGROUND', label: 'Fondo', desc: 'Contexto o ambientacion' },
 ];
 
-const COLOR_SWATCHES = ['#3db05a', '#3b82f6', '#8b5cf6', '#22c55e', '#c9a84c', '#ef4444', '#f59e0b', '#ec4899', '#6b7280'];
+const COLOR_SWATCHES = [
+  '#3db05a',
+  '#3b82f6',
+  '#8b5cf6',
+  '#22c55e',
+  '#c9a84c',
+  '#ef4444',
+  '#f59e0b',
+  '#ec4899',
+  '#6b7280',
+];
 
 @Component({
   selector: 'app-timeline-event-form-dialog',
@@ -56,7 +70,11 @@ const COLOR_SWATCHES = ['#3db05a', '#3b82f6', '#8b5cf6', '#22c55e', '#c9a84c', '
 
         <label class="field">
           <span class="label">Descripcion</span>
-          <textarea [(ngModel)]="description" rows="3" placeholder="Descripcion del evento..."></textarea>
+          <textarea
+            [(ngModel)]="description"
+            rows="3"
+            placeholder="Descripcion del evento..."
+          ></textarea>
         </label>
 
         <div class="field">
@@ -100,7 +118,7 @@ const COLOR_SWATCHES = ['#3db05a', '#3b82f6', '#8b5cf6', '#22c55e', '#c9a84c', '
 
         <!-- Section 3: References (collapsible) -->
         <button type="button" class="section-toggle" (click)="refsOpen = !refsOpen">
-          {{ refsOpen ? '\u25BC' : '\u25B6' }} Referencias
+          {{ refsOpen ? '▼' : '▶' }} Referencias
         </button>
 
         @if (refsOpen) {
@@ -129,7 +147,11 @@ const COLOR_SWATCHES = ['#3db05a', '#3b82f6', '#8b5cf6', '#22c55e', '#c9a84c', '
 
             <label class="field">
               <span class="label">Mundo</span>
-              <select [(ngModel)]="worldId" (focus)="loadWorlds()" (ngModelChange)="onWorldChange()">
+              <select
+                [(ngModel)]="worldId"
+                (focus)="loadWorlds()"
+                (ngModelChange)="onWorldChange()"
+              >
                 <option [ngValue]="null">-- Ninguno --</option>
                 @for (w of worlds(); track w.id) {
                   <option [value]="w.id">{{ w.name }}</option>
@@ -166,72 +188,118 @@ const COLOR_SWATCHES = ['#3db05a', '#3b82f6', '#8b5cf6', '#22c55e', '#c9a84c', '
       </button>
     </mat-dialog-actions>
   `,
-  styles: [`
-    mat-dialog-content { max-height: 70vh; }
-    .form-grid { display: grid; gap: 0.75rem; }
-    .section-title {
-      margin: 0.5rem 0 0;
-      font-size: 0.85rem;
-      color: var(--text-2);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 0.3rem;
-    }
-    .field {
-      display: grid;
-      gap: 0.25rem;
-    }
-    .label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-2);
-    }
-    .req { color: var(--danger); }
-    .hint { font-size: 0.68rem; color: var(--text-3); }
-    input, textarea, select {
-      padding: 0.5rem 0.65rem;
-      border-radius: 0.6rem;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-1);
-      font-size: 0.82rem;
-      font-family: inherit;
-    }
-    textarea { resize: vertical; }
-    .color-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-    .color-input { width: 90px; }
-    .swatches { display: flex; gap: 0.3rem; flex-wrap: wrap; }
-    .swatch {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      border: 2px solid transparent;
-      cursor: pointer;
-      transition: border-color 0.15s;
-    }
-    .swatch:hover, .swatch.active { border-color: var(--text-1); }
-    .section-toggle {
-      background: none;
-      border: none;
-      color: var(--text-2);
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: left;
-      padding: 0.4rem 0;
-    }
-    .section-toggle:hover { color: var(--accent); }
-    .refs-section { display: grid; gap: 0.75rem; padding-left: 0.5rem; }
-    .btn-cancel, .btn-save {
-      padding: 0.55rem 1.1rem;
-      border-radius: 0.75rem;
-      border: 1px solid var(--border);
-      font-size: 0.82rem;
-      cursor: pointer;
-    }
-    .btn-cancel { background: var(--bg-surface); color: var(--text-2); }
-    .btn-save { background: var(--accent-glow); color: var(--accent-text); }
-    .btn-save:disabled { opacity: 0.5; cursor: default; }
-  `],
+  styles: [
+    `
+      mat-dialog-content {
+        max-height: 70vh;
+      }
+      .form-grid {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .section-title {
+        margin: 0.5rem 0 0;
+        font-size: 0.85rem;
+        color: var(--text-2);
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.3rem;
+      }
+      .field {
+        display: grid;
+        gap: 0.25rem;
+      }
+      .label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-2);
+      }
+      .req {
+        color: var(--danger);
+      }
+      .hint {
+        font-size: 0.68rem;
+        color: var(--text-3);
+      }
+      input,
+      textarea,
+      select {
+        padding: 0.5rem 0.65rem;
+        border-radius: 0.6rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        font-size: 0.82rem;
+        font-family: inherit;
+      }
+      textarea {
+        resize: vertical;
+      }
+      .color-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .color-input {
+        width: 90px;
+      }
+      .swatches {
+        display: flex;
+        gap: 0.3rem;
+        flex-wrap: wrap;
+      }
+      .swatch {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        cursor: pointer;
+        transition: border-color 0.15s;
+      }
+      .swatch:hover,
+      .swatch.active {
+        border-color: var(--text-1);
+      }
+      .section-toggle {
+        background: none;
+        border: none;
+        color: var(--text-2);
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+        padding: 0.4rem 0;
+      }
+      .section-toggle:hover {
+        color: var(--accent);
+      }
+      .refs-section {
+        display: grid;
+        gap: 0.75rem;
+        padding-left: 0.5rem;
+      }
+      .btn-cancel,
+      .btn-save {
+        padding: 0.55rem 1.1rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        font-size: 0.82rem;
+        cursor: pointer;
+      }
+      .btn-cancel {
+        background: var(--bg-surface);
+        color: var(--text-2);
+      }
+      .btn-save {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
+      .btn-save:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+    `,
+  ],
 })
 export class TimelineEventFormDialogComponent implements OnInit {
   private readonly dialogRef = inject(MatDialogRef<TimelineEventFormDialogComponent>);
@@ -298,7 +366,8 @@ export class TimelineEventFormDialogComponent implements OnInit {
     if (this.chaptersLoaded || !this.data.novelSlug) return;
     this.chaptersLoaded = true;
     this.chaptersService.listDrafts(this.data.novelSlug, { limit: 100 }).subscribe({
-      next: (res) => this.chapters.set(res.data.map(c => ({ id: c.id, title: c.title, order: c.order }))),
+      next: (res) =>
+        this.chapters.set(res.data.map((c) => ({ id: c.id, title: c.title, order: c.order }))),
     });
   }
 
@@ -306,7 +375,7 @@ export class TimelineEventFormDialogComponent implements OnInit {
     if (this.charactersLoaded) return;
     this.charactersLoaded = true;
     this.charactersService.listMine({ limit: 100 }).subscribe({
-      next: (res) => this.characters.set(res.data.map(c => ({ id: c.id, name: c.name }))),
+      next: (res) => this.characters.set(res.data.map((c) => ({ id: c.id, name: c.name }))),
     });
   }
 
@@ -314,7 +383,8 @@ export class TimelineEventFormDialogComponent implements OnInit {
     if (this.worldsLoaded) return;
     this.worldsLoaded = true;
     this.worldsService.listMine({ limit: 50 }).subscribe({
-      next: (res) => this.worlds.set(res.data.map(w => ({ id: w.id, slug: w.slug, name: w.name }))),
+      next: (res) =>
+        this.worlds.set(res.data.map((w) => ({ id: w.id, slug: w.slug, name: w.name }))),
     });
   }
 
@@ -325,11 +395,11 @@ export class TimelineEventFormDialogComponent implements OnInit {
   }
 
   loadWbEntries() {
-    const selected = this.worlds().find(w => w.id === this.worldId);
+    const selected = this.worlds().find((w) => w.id === this.worldId);
     if (!selected || this.wbSlug === selected.slug) return;
     this.wbSlug = selected.slug;
     this.wbService.listEntries(selected.slug, { limit: 100 }).subscribe({
-      next: (res) => this.wbEntries.set(res.data.map(e => ({ id: e.id, name: e.name }))),
+      next: (res) => this.wbEntries.set(res.data.map((e) => ({ id: e.id, name: e.name }))),
     });
   }
 
@@ -337,10 +407,10 @@ export class TimelineEventFormDialogComponent implements OnInit {
     if (!this.title.trim()) return;
     const tags = this.tagsInput
       .split(',')
-      .map(t => t.trim())
+      .map((t) => t.trim())
       .filter(Boolean);
 
-    const payload: any = {
+    const payload: Record<string, unknown> = {
       title: this.title.trim(),
       dateLabel: this.dateLabel.trim() || null,
       description: this.description.trim() || null,

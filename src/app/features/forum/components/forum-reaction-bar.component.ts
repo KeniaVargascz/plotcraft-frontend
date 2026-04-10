@@ -28,37 +28,44 @@ const REACTION_MAP: { key: ReactionKey; emoji: string; label: string }[] = [
       }
     </div>
   `,
-  styles: [`
-    .reaction-bar {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-    .reaction-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding: 0.3rem 0.6rem;
-      border-radius: 9999px;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text-2);
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.15s;
-    }
-    .reaction-btn:hover {
-      border-color: var(--accent);
-      background: var(--bg-card);
-    }
-    .reaction-btn.active {
-      border-color: var(--accent);
-      background: var(--accent);
-      color: #fff;
-    }
-    .emoji { font-size: 1rem; }
-    .count { font-weight: 600; font-size: 0.8rem; }
-  `],
+  styles: [
+    `
+      .reaction-bar {
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+      }
+      .reaction-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 9999px;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-2);
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.15s;
+      }
+      .reaction-btn:hover {
+        border-color: var(--accent);
+        background: var(--bg-card);
+      }
+      .reaction-btn.active {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #fff;
+      }
+      .emoji {
+        font-size: 1rem;
+      }
+      .count {
+        font-weight: 600;
+        font-size: 0.8rem;
+      }
+    `,
+  ],
 })
 export class ForumReactionBarComponent {
   private readonly forumService = inject(ForumService);
@@ -109,9 +116,7 @@ export class ForumReactionBarComponent {
         .toggleReplyReaction(this.threadSlug(), rid, { reactionType: key })
         .subscribe();
     } else {
-      this.forumService
-        .toggleThreadReaction(this.threadSlug(), { reactionType: key })
-        .subscribe();
+      this.forumService.toggleThreadReaction(this.threadSlug(), { reactionType: key }).subscribe();
     }
   }
 }

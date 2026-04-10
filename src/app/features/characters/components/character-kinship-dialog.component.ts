@@ -87,7 +87,12 @@ type KinshipOption = {
 
     <div mat-dialog-actions align="end">
       <button type="button" (click)="dialogRef.close(null)">Cancelar</button>
-      <button type="button" class="primary" [disabled]="!selectedTarget() || saving()" (click)="submit()">
+      <button
+        type="button"
+        class="primary"
+        [disabled]="!selectedTarget() || saving()"
+        (click)="submit()"
+      >
         {{ saving() ? 'Guardando...' : 'Guardar parentesco' }}
       </button>
     </div>

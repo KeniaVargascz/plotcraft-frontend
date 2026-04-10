@@ -36,12 +36,14 @@ import { MARKER_CONFIG } from './marker-type-icon.component';
           [attr.href]="mapData()!.baseImageUrl"
           [attr.width]="mapData()!.canvasWidth"
           [attr.height]="mapData()!.canvasHeight"
-          x="0" y="0"
+          x="0"
+          y="0"
           preserveAspectRatio="xMidYMid meet"
         />
       } @else {
         <rect
-          x="0" y="0"
+          x="0"
+          y="0"
           [attr.width]="mapData()?.canvasWidth ?? 1920"
           [attr.height]="mapData()?.canvasHeight ?? 1080"
           fill="var(--surface-ground, #121220)"
@@ -66,7 +68,9 @@ import { MARKER_CONFIG } from './marker-type-icon.component';
             dominant-baseline="central"
             class="region-label"
             [attr.fill]="region.borderColor"
-          >{{ region.label }}</text>
+          >
+            {{ region.label }}
+          </text>
         }
       }
 
@@ -109,37 +113,79 @@ import { MARKER_CONFIG } from './marker-type-icon.component';
             dominant-baseline="central"
             font-size="14"
             class="marker-emoji"
-          >{{ markerEmoji(marker) }}</text>
+          >
+            {{ markerEmoji(marker) }}
+          </text>
           <text
             y="22"
             text-anchor="middle"
             font-size="10"
             fill="var(--text-primary, #eee)"
             class="marker-label"
-          >{{ marker.label }}</text>
+          >
+            {{ marker.label }}
+          </text>
         </g>
       }
     </svg>
   `,
   styles: `
-    :host { display: block; width: 100%; height: 100%; overflow: hidden; }
+    :host {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
     .map-svg {
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       cursor: grab;
       user-select: none;
       background: var(--surface-ground, #0c0c16);
     }
-    .map-svg:active { cursor: grabbing; }
-    .region-polygon { cursor: pointer; opacity: 0.7; transition: opacity 0.15s; }
-    .region-polygon:hover { opacity: 0.9; }
-    .region-polygon.selected { stroke-width: 3; opacity: 1; }
-    .region-label { font-size: 12px; font-weight: 600; pointer-events: none; }
-    .marker-group { cursor: pointer; }
-    .marker-group:hover .marker-bg { opacity: 1; r: 16; }
-    .marker-group.selected .marker-bg { stroke: #fff; stroke-width: 2; }
-    .marker-emoji { pointer-events: none; }
-    .marker-label { pointer-events: none; fill: var(--text-primary, #eee); }
-    .first-point { stroke: #fff; stroke-width: 2; cursor: pointer; }
+    .map-svg:active {
+      cursor: grabbing;
+    }
+    .region-polygon {
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.15s;
+    }
+    .region-polygon:hover {
+      opacity: 0.9;
+    }
+    .region-polygon.selected {
+      stroke-width: 3;
+      opacity: 1;
+    }
+    .region-label {
+      font-size: 12px;
+      font-weight: 600;
+      pointer-events: none;
+    }
+    .marker-group {
+      cursor: pointer;
+    }
+    .marker-group:hover .marker-bg {
+      opacity: 1;
+      r: 16;
+    }
+    .marker-group.selected .marker-bg {
+      stroke: #fff;
+      stroke-width: 2;
+    }
+    .marker-emoji {
+      pointer-events: none;
+    }
+    .marker-label {
+      pointer-events: none;
+      fill: var(--text-primary, #eee);
+    }
+    .first-point {
+      stroke: #fff;
+      stroke-width: 2;
+      cursor: pointer;
+    }
   `,
 })
 export class MapCanvasComponent implements OnDestroy {
@@ -250,7 +296,7 @@ export class MapCanvasComponent implements OnDestroy {
     }
   }
 
-  onMouseUp(_event: MouseEvent): void {
+  onMouseUp(): void {
     if (this.isDraggingMarker() && this.dragMarker) {
       this.isDraggingMarker.set(false);
       this.dragMarker = null;
@@ -297,7 +343,7 @@ export class MapCanvasComponent implements OnDestroy {
     }
   }
 
-  onDblClick(event: MouseEvent): void {
+  onDblClick(): void {
     // Double-click to close region drawing
     if (this.activeTool() === 'region' && this.drawingPoints().length >= 3) {
       this.regionCreated.emit({ points: [...this.drawingPoints()] });

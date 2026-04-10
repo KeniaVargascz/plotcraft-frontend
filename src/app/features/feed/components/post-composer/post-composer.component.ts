@@ -9,7 +9,13 @@ import { ErrorMessageComponent } from '../../../../shared/components/error-messa
 @Component({
   selector: 'app-post-composer',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, TranslatePipe, ErrorMessageComponent, TagChipsInputComponent],
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    TranslatePipe,
+    ErrorMessageComponent,
+    TagChipsInputComponent,
+  ],
   templateUrl: './post-composer.component.html',
   styleUrl: './post-composer.component.scss',
 })

@@ -56,77 +56,83 @@ import { MarkdownService } from '../../../core/services/markdown.service';
       </div>
     </div>
   `,
-  styles: [`
-    .composer {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 0.85rem;
-      overflow: hidden;
-    }
-    .tabs {
-      display: flex;
-      border-bottom: 1px solid var(--border);
-    }
-    .tab {
-      flex: 1;
-      padding: 0.55rem;
-      border: none;
-      background: transparent;
-      color: var(--text-2);
-      font-size: 0.85rem;
-      cursor: pointer;
-      font-weight: 500;
-    }
-    .tab.active {
-      color: var(--accent);
-      border-bottom: 2px solid var(--accent);
-    }
-    .textarea {
-      width: 100%;
-      border: none;
-      background: var(--bg-surface);
-      color: var(--text-1);
-      padding: 0.85rem;
-      font-family: inherit;
-      font-size: 0.9rem;
-      resize: vertical;
-      min-height: 100px;
-    }
-    .textarea:focus { outline: none; }
-    .preview {
-      padding: 0.85rem;
-      min-height: 100px;
-      color: var(--text-1);
-      font-size: 0.9rem;
-      line-height: 1.6;
-    }
-    .footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.6rem 0.85rem;
-      border-top: 1px solid var(--border);
-    }
-    .counter {
-      font-size: 0.75rem;
-      color: var(--text-3);
-    }
-    .counter.over { color: var(--danger); }
-    .submit-btn {
-      padding: 0.45rem 1.1rem;
-      border-radius: 0.65rem;
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-    .submit-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  `],
+  styles: [
+    `
+      .composer {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 0.85rem;
+        overflow: hidden;
+      }
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border);
+      }
+      .tab {
+        flex: 1;
+        padding: 0.55rem;
+        border: none;
+        background: transparent;
+        color: var(--text-2);
+        font-size: 0.85rem;
+        cursor: pointer;
+        font-weight: 500;
+      }
+      .tab.active {
+        color: var(--accent);
+        border-bottom: 2px solid var(--accent);
+      }
+      .textarea {
+        width: 100%;
+        border: none;
+        background: var(--bg-surface);
+        color: var(--text-1);
+        padding: 0.85rem;
+        font-family: inherit;
+        font-size: 0.9rem;
+        resize: vertical;
+        min-height: 100px;
+      }
+      .textarea:focus {
+        outline: none;
+      }
+      .preview {
+        padding: 0.85rem;
+        min-height: 100px;
+        color: var(--text-1);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem 0.85rem;
+        border-top: 1px solid var(--border);
+      }
+      .counter {
+        font-size: 0.75rem;
+        color: var(--text-3);
+      }
+      .counter.over {
+        color: var(--danger);
+      }
+      .submit-btn {
+        padding: 0.45rem 1.1rem;
+        border-radius: 0.65rem;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+      .submit-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    `,
+  ],
 })
 export class ReplyComposerComponent {
   private readonly md = inject(MarkdownService);

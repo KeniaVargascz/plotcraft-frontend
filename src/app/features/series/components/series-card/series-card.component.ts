@@ -1,10 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {
-  SERIES_STATUS_LABELS,
-  SERIES_TYPE_LABELS,
-  SeriesSummary,
-} from '../../models/series.model';
+import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../models/series.model';
 
 @Component({
   selector: 'app-series-card',
@@ -36,9 +32,7 @@ import {
           @if (series().author.avatarUrl) {
             <img class="avatar" [src]="series().author.avatarUrl" alt="" />
           } @else {
-            <span class="avatar avatar-fallback">{{
-              series().author.displayName.charAt(0)
-            }}</span>
+            <span class="avatar avatar-fallback">{{ series().author.displayName.charAt(0) }}</span>
           }
           <span>{{ series().author.displayName }}</span>
         </a>
@@ -83,7 +77,9 @@ import {
         place-items: center;
         background: linear-gradient(180deg, #1e2535, #121927);
         color: #89a0db;
-        font: italic 400 2.5rem 'Playfair Display', serif;
+        font:
+          italic 400 2.5rem 'Playfair Display',
+          serif;
       }
       .collage {
         width: 100%;
@@ -123,7 +119,9 @@ import {
       .title {
         color: var(--text-1);
         text-decoration: none;
-        font: 700 1.1rem/1.3 'Playfair Display', serif;
+        font:
+          700 1.1rem/1.3 'Playfair Display',
+          serif;
       }
       .author {
         display: inline-flex;

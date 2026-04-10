@@ -16,26 +16,21 @@ export class VotesService {
 
   castVote(chapterId: string): Observable<ChapterVoteResponse> {
     return this.http
-      .post<ApiResponse<ChapterVoteResponse>>(
-        `${environment.apiUrl}/votes/chapters/${chapterId}`,
-        {},
-      )
+      .post<
+        ApiResponse<ChapterVoteResponse>
+      >(`${environment.apiUrl}/votes/chapters/${chapterId}`, {})
       .pipe(map((r) => r.data));
   }
 
   removeVote(chapterId: string): Observable<ChapterVoteResponse> {
     return this.http
-      .delete<ApiResponse<ChapterVoteResponse>>(
-        `${environment.apiUrl}/votes/chapters/${chapterId}`,
-      )
+      .delete<ApiResponse<ChapterVoteResponse>>(`${environment.apiUrl}/votes/chapters/${chapterId}`)
       .pipe(map((r) => r.data));
   }
 
   getVoteStatus(chapterId: string): Observable<ChapterVoteResponse> {
     return this.http
-      .get<ApiResponse<ChapterVoteResponse>>(
-        `${environment.apiUrl}/votes/chapters/${chapterId}/me`,
-      )
+      .get<ApiResponse<ChapterVoteResponse>>(`${environment.apiUrl}/votes/chapters/${chapterId}/me`)
       .pipe(map((r) => r.data));
   }
 }

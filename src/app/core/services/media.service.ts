@@ -4,9 +4,7 @@ import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 
-type UploadResponse =
-  | { url?: string; fileUrl?: string; location?: string; path?: string }
-  | string;
+type UploadResponse = { url?: string; fileUrl?: string; location?: string; path?: string } | string;
 
 @Injectable({ providedIn: 'root' })
 export class MediaService {

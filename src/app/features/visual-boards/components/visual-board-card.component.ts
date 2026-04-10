@@ -39,7 +39,9 @@ import { VisualBoardSummary } from '../models/visual-board.model';
           <p class="description">{{ board.description }}</p>
         }
 
-        <p class="meta">{{ board.sectionsCount }} secciones · {{ board.totalImagesCount }} imagenes</p>
+        <p class="meta">
+          {{ board.sectionsCount }} secciones · {{ board.totalImagesCount }} imagenes
+        </p>
         <p class="meta">Actualizado {{ board.updatedAt | date: 'mediumDate' }}</p>
 
         @if (!mini && showActions) {

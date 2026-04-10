@@ -31,12 +31,7 @@ export interface SuggestCharacterDialogResult {
     <div mat-dialog-content class="form">
       <label>
         Nombre
-        <input
-          type="text"
-          [(ngModel)]="name"
-          maxlength="200"
-          placeholder="Nombre del personaje"
-        />
+        <input type="text" [(ngModel)]="name" maxlength="200" placeholder="Nombre del personaje" />
       </label>
       <label>
         Descripción
@@ -49,11 +44,7 @@ export interface SuggestCharacterDialogResult {
       </label>
       <label>
         URL del avatar
-        <input
-          type="text"
-          [(ngModel)]="avatarUrl"
-          placeholder="https://..."
-        />
+        <input type="text" [(ngModel)]="avatarUrl" placeholder="https://..." />
       </label>
       @if (error()) {
         <p class="error">{{ error() }}</p>

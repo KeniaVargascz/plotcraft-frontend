@@ -40,7 +40,7 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
         <!-- Metric Cards -->
         <div class="metrics-row">
           <app-metric-card
-            icon="\u{1F441}"
+            icon="👁"
             label="Vistas"
             [value]="(data()!.totals.views | number) || '0'"
             [delta]="getDelta('views')"
@@ -48,35 +48,35 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
             [sparkValues]="viewsSpark()"
           />
           <app-metric-card
-            icon="\u{2764}"
+            icon="❤"
             label="Likes"
             [value]="(data()!.totals.likes | number) || '0'"
             [delta]="getDelta('likes')"
             [pct]="getPct('likes')"
           />
           <app-metric-card
-            icon="\u{1F516}"
+            icon="🔖"
             label="Marcadores"
             [value]="(data()!.totals.bookmarks | number) || '0'"
             [delta]="getDelta('bookmarks')"
             [pct]="getPct('bookmarks')"
           />
           <app-metric-card
-            icon="\u{1F465}"
+            icon="👥"
             label="Lectores"
             [value]="(data()!.totals.totalReaders | number) || '0'"
             [delta]="getDelta('newReaders')"
             [pct]="getPct('newReaders')"
           />
           <app-metric-card
-            icon="\u2705"
+            icon="✅"
             label="Completado"
             [value]="data()!.totals.completionRate + '%'"
             [delta]="null"
             [pct]="null"
           />
           <app-metric-card
-            icon="\u23f1"
+            icon="⏱"
             label="Tiempo lectura"
             [value]="data()!.totals.avgReadTimeMin + ' min'"
             [delta]="null"
@@ -113,7 +113,7 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
         <!-- Chapter Funnel -->
         @if (data()!.chapters.length) {
           <section class="section">
-            <h2>Embudo de cap\u00edtulos</h2>
+            <h2>Embudo de capítulos</h2>
             <app-chapter-funnel [chapters]="data()!.chapters" />
 
             <div class="chapters-table-wrap">
@@ -121,9 +121,9 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Cap\u00edtulo</th>
+                    <th>Capítulo</th>
                     <th class="num">Lecturas</th>
-                    <th class="num">\u00danicas</th>
+                    <th class="num">Únicas</th>
                     <th class="num">Completado</th>
                     <th class="num">Palabras</th>
                   </tr>
@@ -149,15 +149,11 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
         <section class="section">
           <h2>Exportar novela</h2>
           <div class="export-row">
-            <button type="button" class="export-btn" (click)="exportNovel('txt')">
-              \ud83d\udcc4 TXT
-            </button>
+            <button type="button" class="export-btn" (click)="exportNovel('txt')">📄 TXT</button>
             <button type="button" class="export-btn" (click)="exportNovel('md')">
-              \ud83d\uddd2 Markdown
+              🗒 Markdown
             </button>
-            <button type="button" class="export-btn" (click)="exportNovel('json')">
-              \ud83d\udce6 JSON
-            </button>
+            <button type="button" class="export-btn" (click)="exportNovel('json')">📦 JSON</button>
           </div>
         </section>
       }
@@ -177,13 +173,19 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
       gap: 16px;
       margin-bottom: 28px;
     }
-    .title-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
     .back-link {
       font-size: 0.82rem;
       color: var(--accent);
       text-decoration: none;
     }
-    .back-link:hover { text-decoration: underline; }
+    .back-link:hover {
+      text-decoration: underline;
+    }
     .page-header h1 {
       font-size: 1.5rem;
       font-weight: 700;
@@ -218,7 +220,9 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
       gap: 12px;
       margin-bottom: 16px;
     }
-    .section-head h2 { margin: 0; }
+    .section-head h2 {
+      margin: 0;
+    }
     .metric-toggle {
       display: flex;
       gap: 6px;
@@ -233,7 +237,9 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
       cursor: pointer;
       transition: all 0.2s;
     }
-    .toggle-btn:hover { border-color: var(--accent); }
+    .toggle-btn:hover {
+      border-color: var(--accent);
+    }
     .toggle-btn.active {
       background: var(--accent);
       color: var(--accent-text);
@@ -268,10 +274,20 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
       color: var(--text-1);
       border-bottom: 1px solid var(--border);
     }
-    .chapters-table tr:last-child td { border-bottom: none; }
-    .chapters-table .num { text-align: right; font-variant-numeric: tabular-nums; }
-    .chapters-table th.num { text-align: right; }
-    .order { color: var(--text-3); font-weight: 500; }
+    .chapters-table tr:last-child td {
+      border-bottom: none;
+    }
+    .chapters-table .num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    .chapters-table th.num {
+      text-align: right;
+    }
+    .order {
+      color: var(--text-3);
+      font-weight: 500;
+    }
     .export-row {
       display: flex;
       gap: 12px;

@@ -12,7 +12,8 @@ import { SearchResult } from '../../../core/models/search.model';
         <div class="head">
           <span class="badge" [class]="'sec-' + result.section">{{ sectionLabel() }}</span>
           @if (result.section === 'foro' && result.metadata?.['forumName']) {
-            <small class="sub">[Foro] {{ result.metadata['forumName'] }}
+            <small class="sub"
+              >[Foro] {{ result.metadata['forumName'] }}
               @if (result.metadata?.['communitySlug']) {
                 · en {{ result.metadata['communitySlug'] }}
               }
@@ -116,13 +117,17 @@ export class SearchResultCardComponent {
 
   highlight(text: string): string {
     if (!this.query) return text;
-    const safe = text.replace(/[&<>"']/g, (c) => ({
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;',
-    }[c] as string));
+    const safe = text.replace(
+      /[&<>"']/g,
+      (c) =>
+        ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+        })[c] as string,
+    );
     const re = new RegExp(`(${this.query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     return safe.replace(re, '<mark>$1</mark>');
   }

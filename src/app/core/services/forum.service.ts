@@ -85,11 +85,7 @@ export class ForumService {
       .pipe(map((response) => response.data));
   }
 
-  updateReply(
-    slug: string,
-    replyId: string,
-    payload: { content: string },
-  ): Observable<ForumReply> {
+  updateReply(slug: string, replyId: string, payload: { content: string }): Observable<ForumReply> {
     return this.http
       .patch<ApiResponse<ForumReply>>(`${this.baseUrl}/${slug}/replies/${replyId}`, payload)
       .pipe(map((response) => response.data));
@@ -160,7 +156,7 @@ export class ForumService {
 
   archiveThread(slug: string) {
     return this.http
-      .post<ApiResponse<any>>(`${this.baseUrl}/${slug}/archive`, {})
+      .post<ApiResponse<ThreadDetail>>(`${this.baseUrl}/${slug}/archive`, {})
       .pipe(map((response) => response.data));
   }
 

@@ -79,12 +79,14 @@ export class SeriesService {
 
   removeNovel(slug: string, novelId: string): Observable<RemoveNovelResult> {
     return this.http
-      .delete<ApiResponse<any>>(`${this.baseUrl}/${slug}/novels/${novelId}`)
+      .delete<
+        ApiResponse<RemoveNovelResult | SeriesDetail>
+      >(`${this.baseUrl}/${slug}/novels/${novelId}`)
       .pipe(
         map((r) => {
           const data = r.data;
-          if (data && data.deleted === true) {
-            return { deleted: true, series: null, message: data.message };
+          if (data && 'deleted' in data && data.deleted === true) {
+            return { deleted: true, series: null, message: (data as RemoveNovelResult).message };
           }
           return { deleted: false, series: data as SeriesDetail };
         }),

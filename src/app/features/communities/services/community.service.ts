@@ -47,9 +47,7 @@ export class CommunityService {
   }
 
   create(payload: CreateCommunityPayload): Observable<Community> {
-    return this.http
-      .post<ApiResponse<Community>>(this.baseUrl, payload)
-      .pipe(map((r) => r.data));
+    return this.http.post<ApiResponse<Community>>(this.baseUrl, payload).pipe(map((r) => r.data));
   }
 
   update(slug: string, payload: UpdateCommunityPayload): Observable<Community> {
@@ -138,19 +136,15 @@ export class CommunityService {
 
   approveCommunity(slug: string): Observable<Community> {
     return this.http
-      .post<ApiResponse<Community>>(
-        `${environment.apiUrl}/admin/communities/${slug}/approve`,
-        {},
-      )
+      .post<ApiResponse<Community>>(`${environment.apiUrl}/admin/communities/${slug}/approve`, {})
       .pipe(map((r) => r.data));
   }
 
   rejectCommunity(slug: string, reason: string): Observable<Community> {
     return this.http
-      .post<ApiResponse<Community>>(
-        `${environment.apiUrl}/admin/communities/${slug}/reject`,
-        { reason },
-      )
+      .post<
+        ApiResponse<Community>
+      >(`${environment.apiUrl}/admin/communities/${slug}/reject`, { reason })
       .pipe(map((r) => r.data));
   }
 }

@@ -24,9 +24,7 @@ import { CommunityService } from './services/community.service';
       @if (loading()) {
         <p class="muted">Cargando comunidades…</p>
       } @else if (!isAuth()) {
-        <p class="empty">
-          Inicia sesión para ver tus comunidades.
-        </p>
+        <p class="empty">Inicia sesión para ver tus comunidades.</p>
       } @else if (!items().length) {
         <div class="empty-state">
           <p>Aún no perteneces ni sigues ninguna comunidad.</p>
@@ -43,27 +41,51 @@ import { CommunityService } from './services/community.service';
   `,
   styles: [
     `
-      .page { display: grid; gap: 1.25rem; }
-      .header {
-        display: flex; justify-content: space-between; align-items: center;
-        flex-wrap: wrap; gap: 1rem;
+      .page {
+        display: grid;
+        gap: 1.25rem;
       }
-      .header h1 { margin: 0 0 0.25rem; }
-      .header p { margin: 0; color: var(--text-2); }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .header h1 {
+        margin: 0 0 0.25rem;
+      }
+      .header p {
+        margin: 0;
+        color: var(--text-2);
+      }
       .primary {
-        padding: 0.7rem 1.2rem; border-radius: 999px;
-        background: var(--accent-glow); color: var(--accent-text);
-        text-decoration: none; font-weight: 600; border: 0; cursor: pointer;
+        padding: 0.7rem 1.2rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        text-decoration: none;
+        font-weight: 600;
+        border: 0;
+        cursor: pointer;
       }
       .grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 1rem;
       }
-      .empty, .muted { color: var(--text-2); text-align: center; }
+      .empty,
+      .muted {
+        color: var(--text-2);
+        text-align: center;
+      }
       .empty-state {
-        display: grid; gap: 1rem; justify-items: center;
-        padding: 2rem; border: 1px dashed var(--border); border-radius: 1rem;
+        display: grid;
+        gap: 1rem;
+        justify-items: center;
+        padding: 2rem;
+        border: 1px dashed var(--border);
+        border-radius: 1rem;
         color: var(--text-2);
       }
     `,

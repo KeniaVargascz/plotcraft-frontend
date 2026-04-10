@@ -10,8 +10,7 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import { SeriesNovelItem } from '../series/models/series.model';
-import { forkJoin, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { NovelsService } from '../../core/services/novels.service';
 import { NovelSummary } from '../../core/models/novel.model';
@@ -43,10 +42,7 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
             (ngModelChange)="newTitle.set($event)"
             placeholder="Título"
           />
-          <select
-            [ngModel]="newType()"
-            (ngModelChange)="newType.set($event)"
-          >
+          <select [ngModel]="newType()" (ngModelChange)="newType.set($event)">
             <option value="SAGA">Saga</option>
             <option value="TRILOGY">Trilogía</option>
             <option value="DILOGY">Bilogía</option>
@@ -81,7 +77,9 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
                     }
                   </ul>
                 }
-                @if (novelDropdownOpen() && !filteredAvailableNovels().length && novelSearch.trim()) {
+                @if (
+                  novelDropdownOpen() && !filteredAvailableNovels().length && novelSearch.trim()
+                ) {
                   <p class="hint">Sin resultados.</p>
                 }
               </div>
@@ -124,7 +122,9 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
                     }
                   </ul>
                 }
-                @if (childDropdownOpen() && !filteredAvailableChildren().length && childSearch.trim()) {
+                @if (
+                  childDropdownOpen() && !filteredAvailableChildren().length && childSearch.trim()
+                ) {
                   <p class="hint">Sin resultados.</p>
                 }
               </div>
@@ -162,10 +162,7 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
       @for (col of collections(); track col.id) {
         <article class="collection-card">
           <header>
-            <input
-              [(ngModel)]="col.title"
-              (blur)="renameCollection(col)"
-            />
+            <input [(ngModel)]="col.title" (blur)="renameCollection(col)" />
             <button type="button" class="danger" (click)="confirmDelete(col)">
               Eliminar colección
             </button>
@@ -545,9 +542,7 @@ export class OrganizeCollectionsPageComponent implements OnInit {
       .map((c) => ({ id: c.id, title: c.title, kind: 'collection' as const }));
 
     const all = [...novelOpts, ...childOpts];
-    const filtered = term
-      ? all.filter((o) => o.title.toLowerCase().includes(term))
-      : all;
+    const filtered = term ? all.filter((o) => o.title.toLowerCase().includes(term)) : all;
     return filtered.slice(0, 20);
   }
 
@@ -562,9 +557,7 @@ export class OrganizeCollectionsPageComponent implements OnInit {
       const nextOrder = (col.novels?.length ?? 0) + 1;
       this.seriesService.addNovel(col.slug, opt.id, nextOrder).subscribe({
         next: (updated) => {
-          this.collections.update((items) =>
-            items.map((c) => (c.id === col.id ? updated : c)),
-          );
+          this.collections.update((items) => items.map((c) => (c.id === col.id ? updated : c)));
         },
         error: (err) => this.showError(err, 'No se pudo añadir la novela.'),
       });
@@ -596,8 +589,7 @@ export class OrganizeCollectionsPageComponent implements OnInit {
         if (!child) return;
         this.seriesService.updateParent(child.slug, null).subscribe({
           next: () => this.loadCollections(),
-          error: (err) =>
-            this.showError(err, 'No se pudo desvincular la colección.'),
+          error: (err) => this.showError(err, 'No se pudo desvincular la colección.'),
         });
       });
   }
@@ -620,9 +612,7 @@ export class OrganizeCollectionsPageComponent implements OnInit {
       )
       .subscribe({
         next: (updated) => {
-          this.collections.update((items) =>
-            items.map((c) => (c.id === col.id ? updated : c)),
-          );
+          this.collections.update((items) => items.map((c) => (c.id === col.id ? updated : c)));
         },
         error: (err) => {
           // Revert on failure
@@ -653,9 +643,7 @@ export class OrganizeCollectionsPageComponent implements OnInit {
 
   readonly filteredAvailableNovels = computed(() => {
     const term = this.novelSearch.trim().toLowerCase();
-    const list = this.availableNovels().filter(
-      (n) => !this.selectedNovelIds().includes(n.id),
-    );
+    const list = this.availableNovels().filter((n) => !this.selectedNovelIds().includes(n.id));
     if (!term) return list.slice(0, 50);
     return list.filter((n) => n.title.toLowerCase().includes(term)).slice(0, 50);
   });
@@ -691,8 +679,7 @@ export class OrganizeCollectionsPageComponent implements OnInit {
 
   readonly canCreate = computed(() => {
     const titleOk = this.newTitle().trim().length > 0;
-    const hasContent =
-      this.selectedNovelIds().length > 0 || this.selectedChildIds().length > 0;
+    const hasContent = this.selectedNovelIds().length > 0 || this.selectedChildIds().length > 0;
     return titleOk && hasContent;
   });
 
@@ -828,9 +815,7 @@ export class OrganizeCollectionsPageComponent implements OnInit {
               this.loadCollections();
             } else if (result.series) {
               const updated = result.series;
-              this.collections.update((items) =>
-                items.map((c) => (c.id === col.id ? updated : c)),
-              );
+              this.collections.update((items) => items.map((c) => (c.id === col.id ? updated : c)));
             }
           },
           error: (err) => this.showError(err, 'No se pudo quitar la novela.'),
@@ -867,9 +852,11 @@ export class OrganizeCollectionsPageComponent implements OnInit {
   }
 
   private showError(err: unknown, fallback: string): void {
-    const e = err as { error?: { error?: { message?: string }; message?: string }; message?: string };
-    const message =
-      e?.error?.error?.message || e?.error?.message || e?.message || fallback;
+    const e = err as {
+      error?: { error?: { message?: string }; message?: string };
+      message?: string;
+    };
+    const message = e?.error?.error?.message || e?.error?.message || e?.message || fallback;
     this.dialog.open(AlertDialogComponent, {
       data: { title: 'Error', message },
     });

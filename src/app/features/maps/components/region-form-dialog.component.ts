@@ -15,8 +15,16 @@ export interface RegionFormResult {
 }
 
 const BORDER_SWATCHES = [
-  '#ffffff', '#c9a84c', '#8b5cf6', '#3db05a', '#e05555',
-  '#e09040', '#3080c0', '#ff70a0', '#70ffc0', '#f0f080',
+  '#ffffff',
+  '#c9a84c',
+  '#8b5cf6',
+  '#3db05a',
+  '#e05555',
+  '#e09040',
+  '#3080c0',
+  '#ff70a0',
+  '#70ffc0',
+  '#f0f080',
 ];
 
 @Component({
@@ -47,7 +55,9 @@ const BORDER_SWATCHES = [
           <label>Opacidad ({{ opacity() }}%)</label>
           <input
             type="range"
-            min="0" max="100" step="5"
+            min="0"
+            max="100"
+            step="5"
             [ngModel]="opacity()"
             (ngModelChange)="opacity.set($event)"
           />
@@ -73,7 +83,11 @@ const BORDER_SWATCHES = [
         <!-- Description -->
         <div class="field">
           <label>Descripcion</label>
-          <textarea [(ngModel)]="description" rows="3" placeholder="Descripcion opcional"></textarea>
+          <textarea
+            [(ngModel)]="description"
+            rows="3"
+            placeholder="Descripcion opcional"
+          ></textarea>
         </div>
       </div>
     </mat-dialog-content>
@@ -86,11 +100,28 @@ const BORDER_SWATCHES = [
     </mat-dialog-actions>
   `,
   styles: `
-    :host { display: block; width: 420px; }
-    .form-grid { display: flex; flex-direction: column; gap: 16px; }
-    .field { display: flex; flex-direction: column; gap: 4px; }
-    .field label { font-size: 0.8rem; color: var(--text-secondary, #aaa); text-transform: uppercase; letter-spacing: 0.04em; }
-    input, textarea {
+    :host {
+      display: block;
+      width: 420px;
+    }
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .field label {
+      font-size: 0.8rem;
+      color: var(--text-secondary, #aaa);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    input,
+    textarea {
       padding: 8px 10px;
       border: 1px solid var(--border-color, #333);
       border-radius: 6px;
@@ -98,21 +129,63 @@ const BORDER_SWATCHES = [
       color: var(--text-primary, #eee);
       font-size: 0.9rem;
     }
-    input[type="range"] { width: 100%; accent-color: var(--accent, #8b5cf6); }
-    .color-row { display: flex; gap: 8px; align-items: center; }
-    .color-input { width: 40px; height: 36px; border: none; padding: 0; cursor: pointer; border-radius: 4px; }
-    .hex-input { flex: 1; }
-    .swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+    input[type='range'] {
+      width: 100%;
+      accent-color: var(--accent, #8b5cf6);
+    }
+    .color-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .color-input {
+      width: 40px;
+      height: 36px;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .hex-input {
+      flex: 1;
+    }
+    .swatches {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
     .swatch {
-      width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
     }
-    .swatch.selected { border-color: #fff; box-shadow: 0 0 0 2px var(--accent, #8b5cf6); }
-    .btn-primary, .btn-secondary {
-      padding: 8px 18px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; border: none;
+    .swatch.selected {
+      border-color: #fff;
+      box-shadow: 0 0 0 2px var(--accent, #8b5cf6);
     }
-    .btn-primary { background: var(--accent, #8b5cf6); color: #fff; }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-secondary { background: transparent; color: var(--text-secondary, #aaa); border: 1px solid var(--border-color, #333); }
+    .btn-primary,
+    .btn-secondary {
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent, #8b5cf6);
+      color: #fff;
+    }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-secondary, #aaa);
+      border: 1px solid var(--border-color, #333);
+    }
   `,
 })
 export class RegionFormDialogComponent implements OnInit {

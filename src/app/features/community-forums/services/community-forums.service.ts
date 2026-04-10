@@ -54,10 +54,9 @@ export class CommunityForumsService {
     payload: UpdateForumPayload,
   ): Observable<CommunityForum> {
     return this.http
-      .patch<ApiResponse<CommunityForum>>(
-        `${this.baseUrl}/${communitySlug}/forums/${forumSlug}`,
-        payload,
-      )
+      .patch<
+        ApiResponse<CommunityForum>
+      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}`, payload)
       .pipe(map((r) => r.data));
   }
 
@@ -69,18 +68,17 @@ export class CommunityForumsService {
 
   joinForum(communitySlug: string, forumSlug: string): Observable<ForumMembershipResult> {
     return this.http
-      .post<ApiResponse<ForumMembershipResult>>(
-        `${this.baseUrl}/${communitySlug}/forums/${forumSlug}/join`,
-        {},
-      )
+      .post<
+        ApiResponse<ForumMembershipResult>
+      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/join`, {})
       .pipe(map((r) => r.data));
   }
 
   leaveForum(communitySlug: string, forumSlug: string): Observable<ForumMembershipResult> {
     return this.http
-      .delete<ApiResponse<ForumMembershipResult>>(
-        `${this.baseUrl}/${communitySlug}/forums/${forumSlug}/leave`,
-      )
+      .delete<
+        ApiResponse<ForumMembershipResult>
+      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/leave`)
       .pipe(map((r) => r.data));
   }
 
@@ -93,22 +91,17 @@ export class CommunityForumsService {
     if (options.sortBy) params = params.set('sortBy', options.sortBy);
     if (options.cursor) params = params.set('cursor', options.cursor);
     return this.http
-      .get<ApiResponse<ThreadListResponse>>(
-        `${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads`,
-        { params },
-      )
+      .get<
+        ApiResponse<ThreadListResponse>
+      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads`, { params })
       .pipe(map((r) => r.data));
   }
 
-  getThread(
-    communitySlug: string,
-    forumSlug: string,
-    threadSlug: string,
-  ): Observable<ForumThread> {
+  getThread(communitySlug: string, forumSlug: string, threadSlug: string): Observable<ForumThread> {
     return this.http
-      .get<ApiResponse<ForumThread>>(
-        `${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}`,
-      )
+      .get<
+        ApiResponse<ForumThread>
+      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}`)
       .pipe(map((r) => r.data));
   }
 
@@ -122,19 +115,17 @@ export class CommunityForumsService {
     if (options.cursor) params = params.set('cursor', options.cursor);
     if (options.limit) params = params.set('limit', options.limit);
     return this.http
-      .get<ApiResponse<ReplyListResponse>>(
-        `${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}/replies`,
-        { params },
-      )
+      .get<
+        ApiResponse<ReplyListResponse>
+      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}/replies`, { params })
       .pipe(map((r) => r.data));
   }
 
   listDiscussedThreads(communitySlug: string, limit = 5): Observable<DiscussedThread[]> {
     return this.http
-      .get<ApiResponse<DiscussedThread[]>>(
-        `${this.baseUrl}/${communitySlug}/discussed-threads`,
-        { params: { limit } },
-      )
+      .get<
+        ApiResponse<DiscussedThread[]>
+      >(`${this.baseUrl}/${communitySlug}/discussed-threads`, { params: { limit } })
       .pipe(map((r) => r.data));
   }
 
@@ -144,10 +135,9 @@ export class CommunityForumsService {
     payload: CreateThreadPayload,
   ): Observable<ForumThread> {
     return this.http
-      .post<ApiResponse<ForumThread>>(
-        `${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads`,
-        payload,
-      )
+      .post<
+        ApiResponse<ForumThread>
+      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads`, payload)
       .pipe(map((r) => r.data));
   }
 
@@ -158,10 +148,9 @@ export class CommunityForumsService {
     content: string,
   ): Observable<ForumReply> {
     return this.http
-      .post<ApiResponse<ForumReply>>(
-        `${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}/replies`,
-        { content },
-      )
+      .post<
+        ApiResponse<ForumReply>
+      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}/replies`, { content })
       .pipe(map((r) => r.data));
   }
 }

@@ -26,19 +26,21 @@ const CATEGORY_CONFIG: Record<ForumCategory, { label: string; color: string; bg:
       {{ config().label }}
     </span>
   `,
-  styles: [`
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.2rem 0.65rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      border: 1px solid;
-      white-space: nowrap;
-      line-height: 1.4;
-    }
-  `],
+  styles: [
+    `
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.2rem 0.65rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        border: 1px solid;
+        white-space: nowrap;
+        line-height: 1.4;
+      }
+    `,
+  ],
 })
 export class CategoryBadgeComponent {
   readonly category = input.required<ForumCategory>();

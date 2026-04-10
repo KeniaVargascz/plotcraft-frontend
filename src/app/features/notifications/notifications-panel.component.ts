@@ -152,9 +152,7 @@ export class NotificationsPanelComponent implements OnInit {
 
   markAllRead(): void {
     this.notificationsService.markAllAsRead().subscribe(() => {
-      this.notifications.update((list) =>
-        list.map((n) => ({ ...n, isRead: true })),
-      );
+      this.notifications.update((list) => list.map((n) => ({ ...n, isRead: true })));
       this.badgeReset.emit();
     });
   }

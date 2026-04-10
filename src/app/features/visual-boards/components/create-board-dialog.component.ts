@@ -46,7 +46,11 @@ export interface CreateBoardDialogData {
 
           <label>
             <span>Titulo</span>
-            <input [(ngModel)]="title" maxlength="200" placeholder="Ej. Vestuario del reino solar" />
+            <input
+              [(ngModel)]="title"
+              maxlength="200"
+              placeholder="Ej. Vestuario del reino solar"
+            />
           </label>
 
           <label>
@@ -226,8 +230,11 @@ export interface CreateBoardDialogData {
         padding: 1rem;
         border-radius: 1rem;
         border: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
-        background:
-          linear-gradient(180deg, color-mix(in srgb, var(--bg-card) 96%, white 4%), color-mix(in srgb, var(--bg-card) 92%, black 8%));
+        background: linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--bg-card) 96%, white 4%),
+          color-mix(in srgb, var(--bg-card) 92%, black 8%)
+        );
         box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
       }
       .panel-head {
@@ -266,7 +273,10 @@ export interface CreateBoardDialogData {
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+        transition:
+          border-color 120ms ease,
+          box-shadow 120ms ease,
+          background-color 120ms ease;
       }
       input:focus,
       textarea:focus,
@@ -325,7 +335,10 @@ export interface CreateBoardDialogData {
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        transition: border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+        transition:
+          border-color 120ms ease,
+          box-shadow 120ms ease,
+          background-color 120ms ease;
       }
       .search-select-input:focus {
         outline: none;
@@ -397,7 +410,11 @@ export interface CreateBoardDialogData {
         overflow: hidden;
         border: 1px solid var(--border);
         background:
-          radial-gradient(circle at top left, color-mix(in srgb, var(--accent-glow) 18%, transparent), transparent 42%),
+          radial-gradient(
+            circle at top left,
+            color-mix(in srgb, var(--accent-glow) 18%, transparent),
+            transparent 42%
+          ),
           color-mix(in srgb, var(--bg-surface) 92%, black 8%);
       }
       .preview img {

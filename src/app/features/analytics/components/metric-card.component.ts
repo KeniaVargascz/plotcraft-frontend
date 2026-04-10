@@ -43,7 +43,9 @@ import { SparklineChartComponent } from './sparkline-chart.component';
       color: var(--text-2);
       font-size: 0.85rem;
     }
-    .icon { font-size: 1.1rem; }
+    .icon {
+      font-size: 1.1rem;
+    }
     .value {
       font-size: 1.75rem;
       font-weight: 700;

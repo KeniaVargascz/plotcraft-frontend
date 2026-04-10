@@ -96,7 +96,8 @@ import { CommunityService } from './services/community.service';
                   </select>
                 </label>
                 <p class="help">
-                  La novela debe tener al menos 30 días desde su publicación, y necesitas ≥10 seguidores.
+                  La novela debe tener al menos 30 días desde su publicación, y necesitas ≥10
+                  seguidores.
                 </p>
               } @else {
                 <div class="info">
@@ -112,7 +113,13 @@ import { CommunityService } from './services/community.service';
               <div class="form-actions">
                 <button type="button" class="ghost" (click)="cancelCreate()">Cancelar</button>
                 <button type="submit" class="primary" [disabled]="form.invalid || saving()">
-                  {{ saving() ? 'Guardando…' : (type() === 'PRIVATE' ? 'Crear comunidad' : 'Enviar solicitud') }}
+                  {{
+                    saving()
+                      ? 'Guardando…'
+                      : type() === 'PRIVATE'
+                        ? 'Crear comunidad'
+                        : 'Enviar solicitud'
+                  }}
                 </button>
               </div>
             </form>
@@ -139,9 +146,7 @@ import { CommunityService } from './services/community.service';
                   <p class="desc">{{ c.description }}</p>
                 }
                 @if (c.status === 'REJECTED' && c.rejectionReason) {
-                  <div class="reject-box">
-                    <strong>Motivo:</strong> {{ c.rejectionReason }}
-                  </div>
+                  <div class="reject-box"><strong>Motivo:</strong> {{ c.rejectionReason }}</div>
                 }
               </div>
               <div class="actions">

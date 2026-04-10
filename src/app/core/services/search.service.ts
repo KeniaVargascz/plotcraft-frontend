@@ -33,9 +33,7 @@ export class SearchService {
       .pipe(map((response) => response.data));
   }
 
-  searchMixed(
-    query: BaseQuery & { types?: string[] },
-  ): Observable<MixedSearchResponse> {
+  searchMixed(query: BaseQuery & { types?: string[] }): Observable<MixedSearchResponse> {
     let params = this.buildParams({ q: query.q, cursor: query.cursor, limit: query.limit });
     const types = query.types ?? ['posts', 'threads', 'communities'];
     for (const t of types) {

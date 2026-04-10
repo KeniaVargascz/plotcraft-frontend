@@ -5,11 +5,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { CommunityForumsService } from './services/community-forums.service';
-import {
-  CommunityForum,
-  ForumThread,
-  ThreadSortBy,
-} from './models/community-forum.model';
+import { CommunityForum, ForumThread, ThreadSortBy } from './models/community-forum.model';
 
 @Component({
   selector: 'app-forum-page',
@@ -25,7 +21,9 @@ import {
         <nav class="breadcrumb">
           <a routerLink="/comunidades">Comunidades</a>
           <span>/</span>
-          <a [routerLink]="['/comunidades', communitySlug()]">{{ f.communityName ?? communitySlug() }}</a>
+          <a [routerLink]="['/comunidades', communitySlug()]">{{
+            f.communityName ?? communitySlug()
+          }}</a>
           <span>/</span>
           <span>{{ f.name }}</span>
         </nav>
@@ -42,8 +40,10 @@ import {
                 <button type="button" class="btn primary" (click)="join()">Unirse al foro</button>
               }
               @if (f.isMember) {
-                <a class="btn primary"
-                   [routerLink]="['/comunidades', communitySlug(), 'foros', f.slug, 'nuevo-hilo']">
+                <a
+                  class="btn primary"
+                  [routerLink]="['/comunidades', communitySlug(), 'foros', f.slug, 'nuevo-hilo']"
+                >
                   Nuevo hilo
                 </a>
               }
@@ -84,7 +84,16 @@ import {
                   }
                 </div>
                 <h3>
-                  <a [routerLink]="['/comunidades', communitySlug(), 'foros', f.slug, 'hilos', t.slug]">
+                  <a
+                    [routerLink]="[
+                      '/comunidades',
+                      communitySlug(),
+                      'foros',
+                      f.slug,
+                      'hilos',
+                      t.slug,
+                    ]"
+                  >
                     {{ t.title }}
                   </a>
                 </h3>
@@ -109,7 +118,12 @@ import {
             }
           </div>
           @if (hasMore()) {
-            <button type="button" class="btn load-more" (click)="loadMore()" [disabled]="threadsLoading()">
+            <button
+              type="button"
+              class="btn load-more"
+              (click)="loadMore()"
+              [disabled]="threadsLoading()"
+            >
               {{ threadsLoading() ? 'Cargando...' : 'Cargar más' }}
             </button>
           }

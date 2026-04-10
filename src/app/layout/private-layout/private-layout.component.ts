@@ -174,7 +174,8 @@ export class PrivateLayoutComponent {
   }
 
   openMobileMenu(trigger?: EventTarget | null): void {
-    this.lastMenuTrigger = trigger instanceof HTMLElement ? trigger : this.mobileMenuButton?.nativeElement ?? null;
+    this.lastMenuTrigger =
+      trigger instanceof HTMLElement ? trigger : (this.mobileMenuButton?.nativeElement ?? null);
     this.isMobileSearchOpen.set(false);
     this.isMobileMenuOpen.set(true);
     setTimeout(() => this.mobileDrawerCloseButton?.nativeElement.focus());

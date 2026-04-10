@@ -43,14 +43,9 @@ export class CommunityCharactersService {
       .pipe(map((r) => r.data));
   }
 
-  suggest(
-    slug: string,
-    payload: SuggestCommunityCharacterPayload,
-  ): Observable<CommunityCharacter> {
+  suggest(slug: string, payload: SuggestCommunityCharacterPayload): Observable<CommunityCharacter> {
     return this.http
-      .post<
-        ApiResponse<CommunityCharacter>
-      >(`${this.baseUrl}/${slug}/characters/suggest`, payload)
+      .post<ApiResponse<CommunityCharacter>>(`${this.baseUrl}/${slug}/characters/suggest`, payload)
       .pipe(map((r) => r.data));
   }
 

@@ -73,7 +73,9 @@ import { Community } from '../communities/models/community.model';
                 @for (c of selectedCommunities(); track c.id) {
                   <span class="chip selected">
                     {{ c.name }}
-                    <button type="button" class="chip-remove" (click)="toggleLinked(c.id)">×</button>
+                    <button type="button" class="chip-remove" (click)="toggleLinked(c.id)">
+                      ×
+                    </button>
                   </span>
                 }
               </div>
@@ -96,7 +98,9 @@ import { Community } from '../communities/models/community.model';
                     (mousedown)="toggleLinked(c.id); $event.preventDefault()"
                   >
                     <span>{{ c.name }}</span>
-                    @if (isLinked(c.id)) { <span class="check">✓</span> }
+                    @if (isLinked(c.id)) {
+                      <span class="check">✓</span>
+                    }
                   </button>
                 }
               </div>
@@ -265,8 +269,13 @@ import { Community } from '../communities/models/community.model';
         border-color: transparent;
       }
       .chip-remove {
-        background: none; border: 0; cursor: pointer; font-size: 1rem; color: inherit;
-        padding: 0; line-height: 1;
+        background: none;
+        border: 0;
+        cursor: pointer;
+        font-size: 1rem;
+        color: inherit;
+        padding: 0;
+        line-height: 1;
       }
       .community-suggestions {
         margin-top: 0.35rem;
@@ -278,14 +287,28 @@ import { Community } from '../communities/models/community.model';
         display: grid;
       }
       .suggestion {
-        display: flex; justify-content: space-between; align-items: center;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding: 0.6rem 0.85rem;
-        background: transparent; border: 0; border-bottom: 1px solid var(--border);
-        color: var(--text-1); font-size: 0.88rem; cursor: pointer; text-align: left;
+        background: transparent;
+        border: 0;
+        border-bottom: 1px solid var(--border);
+        color: var(--text-1);
+        font-size: 0.88rem;
+        cursor: pointer;
+        text-align: left;
       }
-      .suggestion:last-child { border-bottom: 0; }
-      .suggestion:hover { background: var(--bg-surface); }
-      .suggestion.linked .check { color: var(--accent); font-weight: 700; }
+      .suggestion:last-child {
+        border-bottom: 0;
+      }
+      .suggestion:hover {
+        background: var(--bg-surface);
+      }
+      .suggestion.linked .check {
+        color: var(--accent);
+        font-weight: 700;
+      }
     `,
   ],
 })

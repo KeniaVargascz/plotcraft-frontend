@@ -38,18 +38,15 @@ export class MapsService {
 
   updateMarker(worldSlug: string, markerId: string, payload: Partial<MapMarkerResponse>) {
     return this.http
-      .patch<ApiResponse<MapMarkerResponse>>(
-        `${this.base}/${worldSlug}/map/markers/${markerId}`,
-        payload,
-      )
+      .patch<
+        ApiResponse<MapMarkerResponse>
+      >(`${this.base}/${worldSlug}/map/markers/${markerId}`, payload)
       .pipe(map((r) => r.data));
   }
 
   deleteMarker(worldSlug: string, markerId: string) {
     return this.http
-      .delete<ApiResponse<{ message: string }>>(
-        `${this.base}/${worldSlug}/map/markers/${markerId}`,
-      )
+      .delete<ApiResponse<{ message: string }>>(`${this.base}/${worldSlug}/map/markers/${markerId}`)
       .pipe(map((r) => r.data));
   }
 
@@ -61,18 +58,15 @@ export class MapsService {
 
   updateRegion(worldSlug: string, regionId: string, payload: Partial<MapRegionResponse>) {
     return this.http
-      .patch<ApiResponse<MapRegionResponse>>(
-        `${this.base}/${worldSlug}/map/regions/${regionId}`,
-        payload,
-      )
+      .patch<
+        ApiResponse<MapRegionResponse>
+      >(`${this.base}/${worldSlug}/map/regions/${regionId}`, payload)
       .pipe(map((r) => r.data));
   }
 
   deleteRegion(worldSlug: string, regionId: string) {
     return this.http
-      .delete<ApiResponse<{ message: string }>>(
-        `${this.base}/${worldSlug}/map/regions/${regionId}`,
-      )
+      .delete<ApiResponse<{ message: string }>>(`${this.base}/${worldSlug}/map/regions/${regionId}`)
       .pipe(map((r) => r.data));
   }
 }

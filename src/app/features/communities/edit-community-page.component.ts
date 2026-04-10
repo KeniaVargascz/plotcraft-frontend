@@ -81,7 +81,12 @@ import { CommunityService } from './services/community.service';
                   <option [value]="n.id">{{ n.title }}</option>
                 }
               </select>
-              <button type="button" class="primary" [disabled]="!selectedNovelId || addingRelated()" (click)="addRelated()">
+              <button
+                type="button"
+                class="primary"
+                [disabled]="!selectedNovelId || addingRelated()"
+                (click)="addRelated()"
+              >
                 {{ addingRelated() ? 'Agregando…' : 'Agregar' }}
               </button>
             </div>

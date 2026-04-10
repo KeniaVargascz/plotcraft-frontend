@@ -95,7 +95,9 @@ export interface TopNovelRow {
       text-align: right;
       font-variant-numeric: tabular-nums;
     }
-    th.col-num { text-align: right; }
+    th.col-num {
+      text-align: right;
+    }
     .col-spark {
       width: 100px;
       min-width: 80px;

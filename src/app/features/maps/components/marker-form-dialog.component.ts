@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MarkerType, MapMarkerResponse } from '../../../core/models/map-marker.model';
 import { WorldLocation } from '../../../core/models/world.model';
 import { WbEntrySummary } from '../../../core/models/wb-entry.model';
-import { MarkerTypeIconComponent, MARKER_CONFIG } from './marker-type-icon.component';
+import { MarkerTypeIconComponent } from './marker-type-icon.component';
 
 export interface MarkerFormData {
   marker?: MapMarkerResponse;
@@ -23,13 +23,33 @@ export interface MarkerFormResult {
 }
 
 const MARKER_TYPES: MarkerType[] = [
-  'CITY', 'TOWN', 'VILLAGE', 'DUNGEON', 'LANDMARK', 'RUINS',
-  'TEMPLE', 'FORTRESS', 'PORT', 'MOUNTAIN', 'FOREST', 'CUSTOM',
+  'CITY',
+  'TOWN',
+  'VILLAGE',
+  'DUNGEON',
+  'LANDMARK',
+  'RUINS',
+  'TEMPLE',
+  'FORTRESS',
+  'PORT',
+  'MOUNTAIN',
+  'FOREST',
+  'CUSTOM',
 ];
 
 const COLOR_SWATCHES = [
-  '#c9a84c', '#8b5cf6', '#3db05a', '#e05555', '#9088a0', '#584030',
-  '#e09040', '#607090', '#3080c0', '#706050', '#206830', '#e0e0e0',
+  '#c9a84c',
+  '#8b5cf6',
+  '#3db05a',
+  '#e05555',
+  '#9088a0',
+  '#584030',
+  '#e09040',
+  '#607090',
+  '#3080c0',
+  '#706050',
+  '#206830',
+  '#e0e0e0',
 ];
 
 @Component({
@@ -68,7 +88,7 @@ const COLOR_SWATCHES = [
         <!-- Icon -->
         <div class="field">
           <label>Icono (emoji)</label>
-          <input type="text" [(ngModel)]="icon" placeholder="Ej: \u{1F3F0}" maxlength="4" />
+          <input type="text" [(ngModel)]="icon" placeholder="Ej: 🏰" maxlength="4" />
         </div>
 
         <!-- Color -->
@@ -90,7 +110,11 @@ const COLOR_SWATCHES = [
         <!-- Description -->
         <div class="field">
           <label>Descripcion</label>
-          <textarea [(ngModel)]="description" rows="3" placeholder="Descripcion opcional"></textarea>
+          <textarea
+            [(ngModel)]="description"
+            rows="3"
+            placeholder="Descripcion opcional"
+          ></textarea>
         </div>
 
         <!-- Location -->
@@ -125,11 +149,29 @@ const COLOR_SWATCHES = [
     </mat-dialog-actions>
   `,
   styles: `
-    :host { display: block; width: 480px; }
-    .form-grid { display: flex; flex-direction: column; gap: 16px; }
-    .field { display: flex; flex-direction: column; gap: 4px; }
-    .field label { font-size: 0.8rem; color: var(--text-secondary, #aaa); text-transform: uppercase; letter-spacing: 0.04em; }
-    input, textarea, select {
+    :host {
+      display: block;
+      width: 480px;
+    }
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .field label {
+      font-size: 0.8rem;
+      color: var(--text-secondary, #aaa);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    input,
+    textarea,
+    select {
       padding: 8px 10px;
       border: 1px solid var(--border-color, #333);
       border-radius: 6px;
@@ -137,25 +179,65 @@ const COLOR_SWATCHES = [
       color: var(--text-primary, #eee);
       font-size: 0.9rem;
     }
-    .type-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+    .type-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
     .type-chip {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 4px 8px; border-radius: 6px; font-size: 0.78rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.78rem;
       border: 1px solid var(--border-color, #333);
-      background: transparent; color: var(--text-secondary, #aaa); cursor: pointer;
+      background: transparent;
+      color: var(--text-secondary, #aaa);
+      cursor: pointer;
     }
-    .type-chip.selected { background: var(--accent, #8b5cf6); color: #fff; border-color: var(--accent, #8b5cf6); }
-    .swatches { display: flex; gap: 6px; flex-wrap: wrap; }
+    .type-chip.selected {
+      background: var(--accent, #8b5cf6);
+      color: #fff;
+      border-color: var(--accent, #8b5cf6);
+    }
+    .swatches {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
     .swatch {
-      width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
     }
-    .swatch.selected { border-color: #fff; box-shadow: 0 0 0 2px var(--accent, #8b5cf6); }
-    .btn-primary, .btn-secondary {
-      padding: 8px 18px; border-radius: 6px; font-size: 0.85rem; cursor: pointer; border: none;
+    .swatch.selected {
+      border-color: #fff;
+      box-shadow: 0 0 0 2px var(--accent, #8b5cf6);
     }
-    .btn-primary { background: var(--accent, #8b5cf6); color: #fff; }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-secondary { background: transparent; color: var(--text-secondary, #aaa); border: 1px solid var(--border-color, #333); }
+    .btn-primary,
+    .btn-secondary {
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent, #8b5cf6);
+      color: #fff;
+    }
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-secondary, #aaa);
+      border: 1px solid var(--border-color, #333);
+    }
   `,
 })
 export class MarkerFormDialogComponent implements OnInit {

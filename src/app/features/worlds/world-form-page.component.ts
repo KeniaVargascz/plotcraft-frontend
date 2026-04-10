@@ -23,8 +23,12 @@ import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/
         </div>
         <div class="header-actions">
           @if (isEdit()) {
-            <a class="back-link" [routerLink]="['/mis-mundos', currentSlug, 'mapa']">Edicion de mapas</a>
-            <a class="back-link" [routerLink]="['/mis-mundos', currentSlug, 'world-building']">Gestionar world-building</a>
+            <a class="back-link" [routerLink]="['/mis-mundos', currentSlug, 'mapa']"
+              >Edicion de mapas</a
+            >
+            <a class="back-link" [routerLink]="['/mis-mundos', currentSlug, 'world-building']"
+              >Gestionar world-building</a
+            >
           }
           <a class="back-link" routerLink="/mis-mundos">Volver</a>
         </div>
@@ -82,18 +86,47 @@ import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/
             <div class="editor-heading">
               <div>
                 <span>Documento del mundo</span>
-                <small>Un solo documento con Markdown para descripcion, ambientacion, sistema y reglas.</small>
+                <small
+                  >Un solo documento con Markdown para descripcion, ambientacion, sistema y
+                  reglas.</small
+                >
               </div>
               <div class="toolbar">
                 <button type="button" (click)="applyBlock('h2')" [disabled]="saving()">H2</button>
                 <button type="button" (click)="applyBlock('h3')" [disabled]="saving()">H3</button>
-                <button type="button" (click)="applyWrap('**', '**', 'texto en negrita')" [disabled]="saving()">B</button>
-                <button type="button" (click)="applyWrap('*', '*', 'texto en cursiva')" [disabled]="saving()">I</button>
-                <button type="button" (click)="applyWrap('[', '](https://ejemplo.com)', 'enlace')" [disabled]="saving()">Link</button>
-                <button type="button" (click)="applyBlock('quote')" [disabled]="saving()">Cita</button>
-                <button type="button" (click)="applyBlock('list')" [disabled]="saving()">Lista</button>
-                <button type="button" (click)="applyBlock('table')" [disabled]="saving()">Tabla</button>
-                <button type="button" (click)="applyBlock('separator')" [disabled]="saving()">---</button>
+                <button
+                  type="button"
+                  (click)="applyWrap('**', '**', 'texto en negrita')"
+                  [disabled]="saving()"
+                >
+                  B
+                </button>
+                <button
+                  type="button"
+                  (click)="applyWrap('*', '*', 'texto en cursiva')"
+                  [disabled]="saving()"
+                >
+                  I
+                </button>
+                <button
+                  type="button"
+                  (click)="applyWrap('[', '](https://ejemplo.com)', 'enlace')"
+                  [disabled]="saving()"
+                >
+                  Link
+                </button>
+                <button type="button" (click)="applyBlock('quote')" [disabled]="saving()">
+                  Cita
+                </button>
+                <button type="button" (click)="applyBlock('list')" [disabled]="saving()">
+                  Lista
+                </button>
+                <button type="button" (click)="applyBlock('table')" [disabled]="saving()">
+                  Tabla
+                </button>
+                <button type="button" (click)="applyBlock('separator')" [disabled]="saving()">
+                  ---
+                </button>
               </div>
             </div>
 
@@ -124,7 +157,10 @@ import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/
           <fieldset class="linked-block">
             <legend>Novelas vinculadas</legend>
             @if (!eligibleNovels().length) {
-              <p class="hint">No tienes novelas compatibles disponibles. Puedes vincular originales y fanfics marcados como AU.</p>
+              <p class="hint">
+                No tienes novelas compatibles disponibles. Puedes vincular originales y fanfics
+                marcados como AU.
+              </p>
             } @else {
               <div class="linked-selector">
                 <select

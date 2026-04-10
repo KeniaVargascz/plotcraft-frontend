@@ -39,50 +39,61 @@ import { ThreadCardComponent } from './components/thread-card.component';
       }
     </section>
   `,
-  styles: [`
-    .page-shell {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 1.5rem;
-    }
-    .page-header { margin-bottom: 1.5rem; }
-    .back-link {
-      font-size: 0.85rem;
-      color: var(--text-3);
-      text-decoration: none;
-    }
-    .back-link:hover { color: var(--accent-text); }
-    h1 {
-      font-size: 1.5rem;
-      color: var(--text-1);
-      margin: 0.5rem 0 0.25rem;
-    }
-    .subtitle {
-      font-size: 0.85rem;
-      color: var(--text-3);
-      margin: 0;
-    }
-    .thread-list {
-      display: grid;
-      gap: 0.75rem;
-    }
-    .empty {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-3);
-    }
-    .empty p { margin: 0 0 1rem; }
-    .back-btn {
-      display: inline-block;
-      padding: 0.5rem 1.25rem;
-      border-radius: 0.75rem;
-      background: var(--accent-glow);
-      color: var(--accent-text);
-      text-decoration: none;
-      font-size: 0.85rem;
-    }
-    .back-btn:hover { background: var(--accent); color: #fff; }
-  `],
+  styles: [
+    `
+      .page-shell {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 1.5rem;
+      }
+      .page-header {
+        margin-bottom: 1.5rem;
+      }
+      .back-link {
+        font-size: 0.85rem;
+        color: var(--text-3);
+        text-decoration: none;
+      }
+      .back-link:hover {
+        color: var(--accent-text);
+      }
+      h1 {
+        font-size: 1.5rem;
+        color: var(--text-1);
+        margin: 0.5rem 0 0.25rem;
+      }
+      .subtitle {
+        font-size: 0.85rem;
+        color: var(--text-3);
+        margin: 0;
+      }
+      .thread-list {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .empty {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--text-3);
+      }
+      .empty p {
+        margin: 0 0 1rem;
+      }
+      .back-btn {
+        display: inline-block;
+        padding: 0.5rem 1.25rem;
+        border-radius: 0.75rem;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        text-decoration: none;
+        font-size: 0.85rem;
+      }
+      .back-btn:hover {
+        background: var(--accent);
+        color: #fff;
+      }
+    `,
+  ],
 })
 export class ArchivedThreadsPageComponent implements OnInit {
   private readonly forumService = inject(ForumService);
@@ -93,7 +104,7 @@ export class ArchivedThreadsPageComponent implements OnInit {
   ngOnInit() {
     this.forumService.listMyThreads().subscribe({
       next: (threads) => {
-        this.archivedThreads.set(threads.filter(t => t.status === 'ARCHIVED'));
+        this.archivedThreads.set(threads.filter((t) => t.status === 'ARCHIVED'));
         this.loading.set(false);
       },
       error: () => this.loading.set(false),
@@ -103,7 +114,7 @@ export class ArchivedThreadsPageComponent implements OnInit {
   onRestore(thread: ThreadSummary) {
     this.forumService.openThread(thread.slug).subscribe({
       next: () => {
-        this.archivedThreads.update(list => list.filter(t => t.id !== thread.id));
+        this.archivedThreads.update((list) => list.filter((t) => t.id !== thread.id));
       },
     });
   }

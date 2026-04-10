@@ -35,42 +35,42 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
         <!-- Metric Cards -->
         <div class="metrics-row">
           <app-metric-card
-            icon="\u{1F441}"
+            icon="👁"
             label="Vistas totales"
             [value]="(data()!.totals.totalViews | number) || '0'"
             [delta]="null"
             [pct]="null"
           />
           <app-metric-card
-            icon="\u{2764}"
+            icon="❤"
             label="Likes totales"
             [value]="(data()!.totals.totalLikes | number) || '0'"
             [delta]="null"
             [pct]="null"
           />
           <app-metric-card
-            icon="\u{1F4DA}"
+            icon="📚"
             label="Novelas publicadas"
             [value]="data()!.totals.publishedNovels"
             [delta]="null"
             [pct]="null"
           />
           <app-metric-card
-            icon="\u{1F465}"
+            icon="👥"
             label="Lectores"
             [value]="(data()!.totals.totalReadersUnique | number) || '0'"
             [delta]="null"
             [pct]="null"
           />
           <app-metric-card
-            icon="\u{1F464}"
+            icon="👤"
             label="Seguidores"
             [value]="(data()!.totals.totalFollowers | number) || '0'"
             [delta]="null"
             [pct]="null"
           />
           <app-metric-card
-            icon="\u{270D}"
+            icon="✍"
             label="Palabras publicadas"
             [value]="(data()!.totals.totalWordsPublished | number) || '0'"
             [delta]="null"
@@ -131,9 +131,9 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
                 <span class="audience-sub">+{{ audience()!.followers.growth30d }} (30d)</span>
               </div>
               <div class="audience-card">
-                <span class="audience-label">Lectores \u00fanicos</span>
+                <span class="audience-label">Lectores únicos</span>
                 <span class="audience-value">{{ audience()!.readers.totalUnique | number }}</span>
-                <span class="audience-sub">{{ audience()!.readers.retentionRate }}% retenci\u00f3n</span>
+                <span class="audience-sub">{{ audience()!.readers.retentionRate }}% retención</span>
               </div>
               <div class="audience-card">
                 <span class="audience-label">Lectores recurrentes</span>
@@ -155,7 +155,7 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
 
             @if (audience()!.topGenres.length) {
               <div class="top-genres">
-                <h3>G\u00e9neros principales</h3>
+                <h3>Géneros principales</h3>
                 <div class="genre-chips">
                   @for (g of audience()!.topGenres; track g.genre.slug) {
                     <span class="genre-chip">{{ g.genre.label }}</span>
@@ -216,7 +216,9 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
       gap: 12px;
       margin-bottom: 16px;
     }
-    .section-head h2 { margin: 0; }
+    .section-head h2 {
+      margin: 0;
+    }
     .metric-toggle {
       display: flex;
       gap: 6px;
@@ -231,7 +233,9 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
       cursor: pointer;
       transition: all 0.2s;
     }
-    .toggle-btn:hover { border-color: var(--accent); }
+    .toggle-btn:hover {
+      border-color: var(--accent);
+    }
     .toggle-btn.active {
       background: var(--accent);
       color: var(--accent-text);
@@ -258,7 +262,9 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
       color: var(--text-3);
       transition: transform 0.2s;
     }
-    .chevron.open { transform: rotate(180deg); }
+    .chevron.open {
+      transform: rotate(180deg);
+    }
     .audience-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -287,7 +293,9 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
       font-size: 0.78rem;
       color: var(--text-2);
     }
-    .top-genres { margin-top: 12px; }
+    .top-genres {
+      margin-top: 12px;
+    }
     .top-genres h3 {
       font-size: 0.95rem;
       font-weight: 600;

@@ -4,11 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
-import {
-  SERIES_STATUS_LABELS,
-  SERIES_TYPE_LABELS,
-  SeriesDetail,
-} from './models/series.model';
+import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesDetail } from './models/series.model';
 import { SeriesService } from './services/series.service';
 
 @Component({
@@ -157,7 +153,9 @@ import { SeriesService } from './services/series.service';
       }
       h1 {
         margin: 0;
-        font: 700 2rem/1.2 'Playfair Display', serif;
+        font:
+          700 2rem/1.2 'Playfair Display',
+          serif;
       }
       .author {
         margin: 0;
@@ -257,9 +255,7 @@ export class SeriesDetailPageComponent implements OnInit {
     this.series() ? SERIES_STATUS_LABELS[this.series()!.status] : '',
   );
   readonly statusClass = computed(() =>
-    this.series()
-      ? `status-${this.series()!.status.toLowerCase().replace(/_/g, '-')}`
-      : '',
+    this.series() ? `status-${this.series()!.status.toLowerCase().replace(/_/g, '-')}` : '',
   );
   readonly isAuthor = computed(() => {
     const s = this.series();

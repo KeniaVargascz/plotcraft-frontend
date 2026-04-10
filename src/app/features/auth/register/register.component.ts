@@ -75,7 +75,9 @@ export class RegisterComponent {
   constructor() {
     this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       this.errorMessage.set('');
-      this.form.controls.email.setErrors(this.removeCustomError(this.form.controls.email.errors, 'taken'));
+      this.form.controls.email.setErrors(
+        this.removeCustomError(this.form.controls.email.errors, 'taken'),
+      );
       this.form.controls.username.setErrors(
         this.removeCustomError(this.form.controls.username.errors, 'taken'),
       );
@@ -164,7 +166,7 @@ export class RegisterComponent {
       return errors ?? null;
     }
 
-    const { [errorKey]: _discarded, ...rest } = errors;
+    const { [errorKey]: _discarded, ...rest } = errors; // eslint-disable-line @typescript-eslint/no-unused-vars
     return Object.keys(rest).length ? rest : null;
   }
 }

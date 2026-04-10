@@ -97,18 +97,46 @@ import { WorldSummary } from '../../core/models/world.model';
             <div class="editor-heading">
               <div>
                 <span>Perfil del personaje</span>
-                <small>Un solo documento con Markdown para ficha, historia, relaciones y arco.</small>
+                <small
+                  >Un solo documento con Markdown para ficha, historia, relaciones y arco.</small
+                >
               </div>
               <div class="toolbar">
                 <button type="button" (click)="applyBlock('h2')" [disabled]="saving()">H2</button>
                 <button type="button" (click)="applyBlock('h3')" [disabled]="saving()">H3</button>
-                <button type="button" (click)="applyWrap('**', '**', 'texto en negrita')" [disabled]="saving()">B</button>
-                <button type="button" (click)="applyWrap('*', '*', 'texto en cursiva')" [disabled]="saving()">I</button>
-                <button type="button" (click)="applyWrap('[', '](https://ejemplo.com)', 'enlace')" [disabled]="saving()">Link</button>
-                <button type="button" (click)="applyBlock('quote')" [disabled]="saving()">Cita</button>
-                <button type="button" (click)="applyBlock('list')" [disabled]="saving()">Lista</button>
-                <button type="button" (click)="applyBlock('table')" [disabled]="saving()">Tabla</button>
-                <button type="button" (click)="applyBlock('separator')" [disabled]="saving()">---</button>
+                <button
+                  type="button"
+                  (click)="applyWrap('**', '**', 'texto en negrita')"
+                  [disabled]="saving()"
+                >
+                  B
+                </button>
+                <button
+                  type="button"
+                  (click)="applyWrap('*', '*', 'texto en cursiva')"
+                  [disabled]="saving()"
+                >
+                  I
+                </button>
+                <button
+                  type="button"
+                  (click)="applyWrap('[', '](https://ejemplo.com)', 'enlace')"
+                  [disabled]="saving()"
+                >
+                  Link
+                </button>
+                <button type="button" (click)="applyBlock('quote')" [disabled]="saving()">
+                  Cita
+                </button>
+                <button type="button" (click)="applyBlock('list')" [disabled]="saving()">
+                  Lista
+                </button>
+                <button type="button" (click)="applyBlock('table')" [disabled]="saving()">
+                  Tabla
+                </button>
+                <button type="button" (click)="applyBlock('separator')" [disabled]="saving()">
+                  ---
+                </button>
               </div>
             </div>
 
@@ -537,7 +565,9 @@ export class CharacterFormPageComponent {
       table: '| Campo | Valor |\n| --- | --- |\n| Dato |  |',
       separator: '---',
     };
-    this.insertAtSelection((selected) => selected ? `${selected}\n\n${blocks[type]}` : blocks[type]);
+    this.insertAtSelection((selected) =>
+      selected ? `${selected}\n\n${blocks[type]}` : blocks[type],
+    );
   }
 
   insertTemplate(content: string) {
@@ -548,7 +578,9 @@ export class CharacterFormPageComponent {
   }
 
   private insertAtSelection(transform: (selected: string) => string) {
-    const textarea = document.getElementById('character-profile-editor') as HTMLTextAreaElement | null;
+    const textarea = document.getElementById(
+      'character-profile-editor',
+    ) as HTMLTextAreaElement | null;
     if (!textarea) {
       return;
     }

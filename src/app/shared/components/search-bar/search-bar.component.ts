@@ -135,11 +135,11 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         top: calc(100% + 0.6rem);
         left: 0;
         right: 0;
-        z-index: 40;
+        z-index: var(--z-dropdown);
         border-radius: 1.1rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
-        box-shadow: 0 24px 48px color-mix(in srgb, var(--bg) 78%, transparent);
+        box-shadow: var(--shadow-overlay);
         overflow: hidden;
       }
       .dropdown-head,

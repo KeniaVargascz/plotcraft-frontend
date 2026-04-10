@@ -699,27 +699,39 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     this.loading.set(true);
     this.selectionAnchorId.set(null);
 
+    const onLoaded = (chapter: any) => {
+      this.chapter.set(chapter);
+      this.chapterVotesCount.set(chapter.votesCount ?? 0);
+      this.loadPreferences();
+      this.refreshRenderedContent();
+      this.buildPages();
+      this.loading.set(false);
+      if (this.isAuthenticated()) {
+        this.readerService
+          .addHistory({ novel_id: chapter.novel.id, chapter_id: chapter.id })
+          .subscribe();
+        this.loadChapterBookmarks(chapter.id);
+        this.loadChapterHighlights(chapter.id);
+        this.restoreProgress(chapter.novel.id);
+        this.loadVoteStatus(chapter.id);
+      }
+    };
     this.chaptersService.getReaderChapter(this.slug, this.chapterSlug).subscribe({
-      next: (chapter) => {
-        this.chapter.set(chapter);
-        this.chapterVotesCount.set(chapter.votesCount ?? 0);
-        this.loadPreferences();
-        this.refreshRenderedContent();
-        this.buildPages();
-        this.loading.set(false);
-        if (this.isAuthenticated()) {
-          this.readerService
-            .addHistory({ novel_id: chapter.novel.id, chapter_id: chapter.id })
-            .subscribe();
-          this.loadChapterBookmarks(chapter.id);
-          this.loadChapterHighlights(chapter.id);
-          this.restoreProgress(chapter.novel.id);
-          this.loadVoteStatus(chapter.id);
-        }
-      },
+      next: onLoaded,
       error: () => {
-        this.error.set(true);
-        this.loading.set(false);
+        // Fallback: si es draft del autor, usar el endpoint del editor.
+        if (this.isAuthenticated()) {
+          this.chaptersService.getEditorChapter(this.slug, this.chapterSlug).subscribe({
+            next: onLoaded,
+            error: () => {
+              this.error.set(true);
+              this.loading.set(false);
+            },
+          });
+        } else {
+          this.error.set(true);
+          this.loading.set(false);
+        }
       },
     });
   }

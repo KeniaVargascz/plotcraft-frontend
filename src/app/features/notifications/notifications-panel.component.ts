@@ -44,24 +44,24 @@ import { NotificationItemComponent } from './components/notification-item.compon
       position: absolute;
       top: 100%;
       right: 0;
-      z-index: 1000;
+      z-index: var(--z-overlay);
     }
     .panel-backdrop {
       position: fixed;
       inset: 0;
-      z-index: 999;
+      z-index: calc(var(--z-overlay) - 1);
     }
     .panel {
       position: relative;
-      z-index: 1000;
-      width: 380px;
-      max-height: 480px;
+      z-index: var(--z-overlay);
+      width: min(380px, calc(100vw - 2rem));
+      max-height: min(480px, calc(100vh - 7rem));
       display: flex;
       flex-direction: column;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
+      background: var(--surface-overlay, var(--bg-card, #161524));
+      border: 1px solid var(--color-border, rgba(201, 168, 76, 0.12));
       border-radius: 1rem;
-      box-shadow: 0 12px 40px color-mix(in srgb, var(--bg) 70%, transparent);
+      box-shadow: var(--shadow-overlay);
       overflow: hidden;
       margin-top: 0.5rem;
     }
@@ -109,6 +109,16 @@ import { NotificationItemComponent } from './components/notification-item.compon
     }
     .panel-footer a:hover {
       text-decoration: underline;
+    }
+    @media (max-width: 767px) {
+      :host {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .panel {
+        margin-top: 0.75rem;
+      }
     }
   `,
 })

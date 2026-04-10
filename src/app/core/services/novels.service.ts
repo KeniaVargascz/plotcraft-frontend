@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 import { PaginatedResponse } from '../models/feed-pagination.model';
-import { NovelDetail, NovelRating, NovelStatus, NovelSummary, RomanceGenre } from '../models/novel.model';
+import { NovelDetail, NovelRating, NovelStatus, NovelSummary, NovelType, RomanceGenre } from '../models/novel.model';
 
 export type NovelQuery = {
   cursor?: string | null;
@@ -22,6 +22,8 @@ export type NovelQuery = {
   sortBy?: string | null;
   romanceGenres?: RomanceGenre[] | null;
   pairings?: string[] | null;
+  novelType?: NovelType | null;
+  fandomSlug?: string | null;
 };
 
 export type NovelPayload = {
@@ -37,6 +39,9 @@ export type NovelPayload = {
   languageId?: string;
   romanceGenres?: RomanceGenre[] | null;
   pairings?: { characterAId: string; characterBId: string; isMain?: boolean }[];
+  novelType?: NovelType;
+  isAlternateUniverse?: boolean;
+  linkedCommunityId?: string | null;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -103,6 +108,22 @@ export class NovelsService {
       .pipe(map((response) => response.data));
   }
 
+  linkCommunityCharacter(slug: string, communityCharacterId: string): Observable<unknown> {
+    return this.http
+      .post<
+        ApiResponse<unknown>
+      >(`${environment.apiUrl}/novels/${slug}/characters`, { communityCharacterId })
+      .pipe(map((response) => response.data));
+  }
+
+  unlinkCommunityCharacter(slug: string, communityCharacterId: string): Observable<unknown> {
+    return this.http
+      .delete<
+        ApiResponse<unknown>
+      >(`${environment.apiUrl}/novels/${slug}/characters/${communityCharacterId}`)
+      .pipe(map((response) => response.data));
+  }
+
   toggleBookmark(slug: string): Observable<{ hasBookmarked: boolean }> {
     return this.http
       .post<
@@ -166,6 +187,12 @@ export class NovelsService {
       for (const p of query.pairings) {
         params = params.append('pairings', p);
       }
+    }
+    if (query.novelType) {
+      params = params.set('novelType', query.novelType);
+    }
+    if (query.fandomSlug) {
+      params = params.set('fandomSlug', query.fandomSlug);
     }
 
     return params;

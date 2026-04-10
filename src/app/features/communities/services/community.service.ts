@@ -118,6 +118,18 @@ export class CommunityService {
       .pipe(map((r) => r.data));
   }
 
+  addRelatedNovel(slug: string, novelId: string): Observable<Community> {
+    return this.http
+      .post<ApiResponse<Community>>(`${this.baseUrl}/${slug}/related-novels`, { novelId })
+      .pipe(map((r) => r.data));
+  }
+
+  removeRelatedNovel(slug: string, novelId: string): Observable<Community> {
+    return this.http
+      .delete<ApiResponse<Community>>(`${this.baseUrl}/${slug}/related-novels/${novelId}`)
+      .pipe(map((r) => r.data));
+  }
+
   getPendingCommunities(): Observable<Community[]> {
     return this.http
       .get<ApiResponse<Community[]>>(`${environment.apiUrl}/admin/communities/pending`)

@@ -1,0 +1,161 @@
+.page,
+.hero-body,
+.sections {
+  display: grid;
+  gap: 1rem;
+}
+
+.hero,
+.section-card {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--bg-card);
+  overflow: hidden;
+}
+
+.cover {
+  min-height: 10rem;
+  background-position: center;
+  background-size: cover;
+}
+
+.hero-body {
+  padding: 1.25rem;
+}
+
+.hero-top,
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.badges,
+.hero-actions,
+.section-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.badge,
+.hero-actions button,
+.section-actions button,
+.ghost,
+.add-image {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.875rem;
+  line-height: 1.2;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-1);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.badge.linked {
+  color: #8a5a35;
+}
+
+.description,
+.author,
+.empty,
+.state {
+  color: var(--text-2);
+}
+
+.inline-add {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.inline-add input {
+  flex: 1 1 16rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-1);
+}
+
+.section-card {
+  padding: 1rem;
+}
+
+.title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.handle,
+.item-handle {
+  cursor: grab;
+  color: var(--text-3);
+}
+
+.items-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+}
+
+.item-card {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 0.9rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+
+.item-card img {
+  display: block;
+  width: 100%;
+  height: 12.5rem;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.6rem 0.75rem;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72));
+  color: #fff;
+  font-size: 0.82rem;
+}
+
+.item-delete,
+.item-edit,
+.item-handle {
+  position: absolute;
+  top: 0.55rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.62);
+  color: #fff;
+  padding: 0.3rem 0.55rem;
+}
+
+.item-handle {
+  left: 0.55rem;
+}
+
+.item-delete {
+  right: 0.55rem;
+}
+
+.item-edit {
+  right: 2.8rem;
+}
+
+.danger {
+  color: #9e2f2f;
+}

@@ -27,6 +27,13 @@ export interface CommunityLinkedNovel {
   authorUsername: string;
 }
 
+export interface CommunityRelatedNovel {
+  id: string;
+  title: string;
+  slug: string;
+  coverUrl: string | null;
+}
+
 export interface Community {
   id: string;
   name: string;
@@ -42,6 +49,7 @@ export interface Community {
   followersCount: number;
   owner: CommunityOwner | null;
   linkedNovel: CommunityLinkedNovel | null;
+  relatedNovels: CommunityRelatedNovel[];
   isMember: boolean;
   isFollowing: boolean;
   isOwner: boolean;

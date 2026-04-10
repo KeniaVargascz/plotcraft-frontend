@@ -1,5 +1,13 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -13,6 +21,15 @@ import { SettingsService } from '../../../core/services/settings.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { UserService } from '../../../core/services/user.service';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+
+function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+  const newPassword = control.get('newPassword')?.value;
+  const confirmNewPassword = control.get('confirmNewPassword')?.value;
+
+  return newPassword && confirmNewPassword && newPassword !== confirmNewPassword
+    ? { passwordMismatch: true }
+    : null;
+}
 
 @Component({
   selector: 'app-account-settings',
@@ -79,17 +96,20 @@ export class AccountSettingsComponent implements OnInit {
     currentPassword: ['', [Validators.required]],
   });
 
-  readonly passwordForm = this.fb.nonNullable.group({
-    currentPassword: ['', [Validators.required]],
-    newPassword: [
-      '',
-      [
-        Validators.required,
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/),
+  readonly passwordForm = this.fb.nonNullable.group(
+    {
+      currentPassword: ['', [Validators.required]],
+      newPassword: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/),
+        ],
       ],
-    ],
-    confirmNewPassword: ['', [Validators.required]],
-  });
+      confirmNewPassword: ['', [Validators.required]],
+    },
+    { validators: passwordMatchValidator },
+  );
 
   ngOnInit(): void {
     this.loadPrivacy();
@@ -154,6 +174,7 @@ export class AccountSettingsComponent implements OnInit {
 
   submitEmail(): void {
     if (this.emailForm.invalid || this.emailSaving()) {
+      this.emailForm.markAllAsTouched();
       return;
     }
 
@@ -177,6 +198,7 @@ export class AccountSettingsComponent implements OnInit {
 
   submitUsername(): void {
     if (this.usernameForm.invalid || this.usernameSaving()) {
+      this.usernameForm.markAllAsTouched();
       return;
     }
 
@@ -200,6 +222,7 @@ export class AccountSettingsComponent implements OnInit {
 
   submitPassword(): void {
     if (this.passwordForm.invalid || this.passwordSaving()) {
+      this.passwordForm.markAllAsTouched();
       return;
     }
 
@@ -211,13 +234,36 @@ export class AccountSettingsComponent implements OnInit {
     this.userService.updateAccount({ currentPassword, newPassword }).subscribe({
       next: () => {
         this.passwordSaving.set(false);
-        this.passwordStatus.set('Contrasena actualizada correctamente.');
+        this.passwordStatus.set('Contraseña actualizada correctamente.');
+        this.passwordForm.reset();
       },
-      error: () => {
+      error: (error: unknown) => {
         this.passwordSaving.set(false);
         this.passwordStatus.set('');
-        this.passwordError.set('No se pudo actualizar la contrasena. Intenta de nuevo.');
+        this.passwordError.set(this.extractErrorMessage(error));
       },
     });
+  }
+
+  private extractErrorMessage(error: unknown): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return 'No se pudo actualizar la contraseña. Intenta de nuevo.';
+    }
+
+    const message = error.error?.error?.message ?? error.error?.message;
+    if (typeof message === 'string' && message.trim()) {
+      return message;
+    }
+
+    if (Array.isArray(message)) {
+      const firstMessage = message.find(
+        (item): item is string => typeof item === 'string' && item.trim().length > 0,
+      );
+      if (firstMessage) {
+        return firstMessage;
+      }
+    }
+
+    return 'No se pudo actualizar la contraseña. Intenta de nuevo.';
   }
 }

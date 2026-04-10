@@ -5,6 +5,8 @@ import { CharacterSummary } from '../../../../core/models/character.model';
 import { CharactersService } from '../../../../core/services/characters.service';
 import { LanguageCatalogItem } from '../../../../core/models/language.model';
 import { LanguagesService } from '../../../../core/services/languages.service';
+import { CommunityService } from '../../../communities/services/community.service';
+import { Community } from '../../../communities/models/community.model';
 import { ROMANCE_GENRES } from '../../../../shared/constants/romance-genres';
 import { TagChipsInputComponent } from '../../../../shared/components/tag-chips-input/tag-chips-input.component';
 
@@ -17,6 +19,8 @@ export interface NovelFilters {
   sortBy?: string | null;
   romanceGenres?: string[] | null;
   pairings?: string[] | null;
+  novelType?: 'ORIGINAL' | 'FANFIC' | '' | null;
+  fandomSlug?: string | null;
 }
 
 @Component({
@@ -36,6 +40,27 @@ export interface NovelFilters {
       @if (expanded()) {
         <div class="panel">
           <div class="grid">
+            <label class="field">
+              <span class="field-label">Tipo de novela</span>
+              <select [ngModel]="filters.novelType ?? ''" (ngModelChange)="onNovelTypeChange($event)">
+                <option [ngValue]="''">Todas</option>
+                <option [ngValue]="'ORIGINAL'">Solo originales</option>
+                <option [ngValue]="'FANFIC'">Solo fanfics</option>
+              </select>
+            </label>
+
+            @if (filters.novelType === 'FANFIC') {
+              <label class="field">
+                <span class="field-label">Fandom / Comunidad</span>
+                <select [ngModel]="filters.fandomSlug ?? ''" (ngModelChange)="filters.fandomSlug = $event || null">
+                  <option [ngValue]="''">Todos</option>
+                  @for (com of fandomOptions(); track com.id) {
+                    <option [ngValue]="com.slug">{{ com.name }}</option>
+                  }
+                </select>
+              </label>
+            }
+
             <label class="field">
               <span class="field-label">Idioma</span>
               <select [(ngModel)]="filters.languageId">
@@ -449,6 +474,21 @@ export interface NovelFilters {
 export class AdvancedNovelFiltersComponent {
   private readonly languagesService = inject(LanguagesService);
   private readonly charactersService = inject(CharactersService);
+  private readonly communityService = inject(CommunityService);
+
+  readonly fandomOptions = signal<Community[]>([]);
+
+  onNovelTypeChange(value: string): void {
+    this.filters.novelType = (value as 'ORIGINAL' | 'FANFIC' | '') || '';
+    if (this.filters.novelType !== 'FANFIC') {
+      this.filters.fandomSlug = null;
+    } else if (this.fandomOptions().length === 0) {
+      this.communityService.getCommunities({ type: 'FANDOM', limit: 100 }).subscribe({
+        next: (res) => this.fandomOptions.set(res.data ?? []),
+        error: () => this.fandomOptions.set([]),
+      });
+    }
+  }
 
   readonly pairingASuggestions = signal<CharacterSummary[]>([]);
   readonly pairingBSuggestions = signal<CharacterSummary[]>([]);
@@ -473,6 +513,12 @@ export class AdvancedNovelFiltersComponent {
       })
       .filter((p) => p.a || p.b);
     this.selectedRomanceGenres = [...(value.romanceGenres ?? [])];
+    if (value.novelType === 'FANFIC' && this.fandomOptions().length === 0) {
+      this.communityService.getCommunities({ type: 'FANDOM', limit: 100 }).subscribe({
+        next: (res) => this.fandomOptions.set(res.data ?? []),
+        error: () => this.fandomOptions.set([]),
+      });
+    }
   }
   @Output() filtersChange = new EventEmitter<NovelFilters>();
 
@@ -614,6 +660,8 @@ export class AdvancedNovelFiltersComponent {
     if (this.selectedRomanceGenres.length) count++;
     if (this.pairingsList.length) count++;
     if (this.filters.sortBy && this.filters.sortBy !== 'newest') count++;
+    if (this.filters.novelType) count++;
+    if (this.filters.fandomSlug) count++;
     return count;
   }
 
@@ -635,6 +683,8 @@ export class AdvancedNovelFiltersComponent {
       status: this.onlyCompleted ? 'COMPLETED' : this.filters.status || undefined,
       romanceGenres: this.selectedRomanceGenres.length ? [...this.selectedRomanceGenres] : undefined,
       pairings: pairings.length ? pairings : undefined,
+      novelType: this.filters.novelType || undefined,
+      fandomSlug: this.filters.novelType === 'FANFIC' ? this.filters.fandomSlug || undefined : undefined,
     };
     this.filtersChange.emit(out);
   }

@@ -1,0 +1,128 @@
+$breakpoint-xs-max: 479px;
+$breakpoint-sm-min: 480px;
+$breakpoint-sm-max: 767px;
+$breakpoint-md-min: 768px;
+$breakpoint-md-max: 1023px;
+$breakpoint-lg-min: 1024px;
+$breakpoint-lg-max: 1279px;
+$breakpoint-xl-min: 1280px;
+
+@mixin respond-xs {
+  @media (max-width: $breakpoint-xs-max) {
+    @content;
+  }
+}
+
+@mixin respond-sm {
+  @media (min-width: $breakpoint-sm-min) and (max-width: $breakpoint-sm-max) {
+    @content;
+  }
+}
+
+@mixin respond-sm-down {
+  @media (max-width: $breakpoint-sm-max) {
+    @content;
+  }
+}
+
+@mixin respond-md {
+  @media (min-width: $breakpoint-md-min) and (max-width: $breakpoint-md-max) {
+    @content;
+  }
+}
+
+@mixin respond-md-down {
+  @media (max-width: $breakpoint-md-max) {
+    @content;
+  }
+}
+
+@mixin respond-lg {
+  @media (min-width: $breakpoint-lg-min) and (max-width: $breakpoint-lg-max) {
+    @content;
+  }
+}
+
+@mixin respond-lg-up {
+  @media (min-width: $breakpoint-lg-min) {
+    @content;
+  }
+}
+
+@mixin respond-xl-up {
+  @media (min-width: $breakpoint-xl-min) {
+    @content;
+  }
+}
+
+.u-stack {
+  display: grid;
+  gap: var(--stack-gap, 1rem);
+}
+
+.u-cluster {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--cluster-gap, 0.75rem);
+  min-width: 0;
+}
+
+.u-grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns, 2), minmax(0, 1fr));
+  gap: var(--grid-gap, 1rem);
+}
+
+.u-grid-responsive[data-grid='3'] {
+  --grid-columns: 3;
+}
+
+.u-grid-responsive[data-grid='4'] {
+  --grid-columns: 4;
+}
+
+@media (max-width: $breakpoint-md-max) {
+  .u-grid-responsive {
+    grid-template-columns: repeat(var(--grid-columns-md, 2), minmax(0, 1fr));
+  }
+}
+
+@media (max-width: $breakpoint-sm-max) {
+  .u-grid-responsive {
+    grid-template-columns: repeat(var(--grid-columns-sm, 1), minmax(0, 1fr));
+  }
+}
+
+.u-sidebar-layout {
+  display: grid;
+  grid-template-columns: minmax(16rem, 20rem) minmax(0, 1fr);
+  gap: var(--sidebar-layout-gap, 1.5rem);
+  min-width: 0;
+}
+
+@media (max-width: $breakpoint-md-max) {
+  .u-sidebar-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.u-scroll-x {
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.u-scroll-x-snap {
+  scroll-snap-type: x mandatory;
+}
+
+.u-scroll-x-snap > * {
+  scroll-snap-align: start;
+}
+
+.u-min-w-0 {
+  min-width: 0;
+}

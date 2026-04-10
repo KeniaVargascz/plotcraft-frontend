@@ -6,6 +6,25 @@ import { WorldSummary } from './world.model';
 export type NovelStatus = 'DRAFT' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
 export type NovelRating = 'G' | 'PG' | 'T' | 'R' | 'EXPLICIT';
 export type RomanceGenre = 'BL' | 'GL' | 'HETEROSEXUAL' | 'OTHER';
+export type NovelType = 'ORIGINAL' | 'FANFIC';
+
+export interface NovelLinkedCommunity {
+  id: string;
+  slug: string;
+  name: string;
+  type?: string;
+  coverUrl?: string | null;
+  description?: string | null;
+}
+
+export interface NovelCommunityCharacter {
+  id: string;
+  communityId: string;
+  name: string;
+  description: string | null;
+  avatarUrl: string | null;
+  roleInNovel?: string | null;
+}
 
 export interface NovelPairing {
   id: string;
@@ -34,6 +53,10 @@ export interface NovelSummary {
   pairings: NovelPairing[];
   totalWordsCount: number;
   chaptersCount?: number;
+  novelType?: NovelType;
+  isAlternateUniverse?: boolean;
+  linkedCommunityId?: string | null;
+  linkedCommunity?: NovelLinkedCommunity | null;
   createdAt: string;
   updatedAt: string;
   author: {
@@ -85,6 +108,7 @@ export interface NovelDetail extends NovelSummary {
   chapters: NovelChapterSummary[];
   worlds: WorldSummary[];
   characters: CharacterSummary[];
+  communityCharacters?: NovelCommunityCharacter[];
   series: {
     id: string;
     title: string;

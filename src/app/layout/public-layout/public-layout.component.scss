@@ -15,11 +15,12 @@ main {
   grid-template-columns: auto 1fr minmax(220px, 420px) auto;
   align-items: center;
   gap: 1rem;
-  padding: 1.2rem 5vw;
+  padding: calc(1rem + var(--safe-area-top)) calc(5vw + var(--safe-area-right)) 1rem
+    calc(5vw + var(--safe-area-left));
   backdrop-filter: blur(16px);
-  background: color-mix(in srgb, var(--bg-surface) 82%, transparent);
+  background: var(--surface-nav);
   border-bottom: 1px solid var(--border);
-  z-index: 10;
+  z-index: var(--z-topbar);
 }
 
 .brand {

@@ -16,6 +16,7 @@ import { ErrorMessageComponent } from '../../shared/components/error-message/err
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { CharacterCardComponent } from '../characters/components/character-card.component';
 import { WorldCardComponent } from '../worlds/components/world-card.component';
+import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/linked-visual-boards-section.component';
 
 @Component({
   selector: 'app-novel-detail-page',
@@ -27,6 +28,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
     LoadingSpinnerComponent,
     WorldCardComponent,
     CharacterCardComponent,
+    LinkedVisualBoardsSectionComponent,
   ],
   template: `
     @if (loading()) {
@@ -385,6 +387,14 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
             }
           </section>
         }
+
+        <app-linked-visual-boards-section
+          [linkedType]="'novel'"
+          [linkedId]="currentNovel.id"
+          [authorUsername]="currentNovel.author.username"
+          [entityLabel]="'novela'"
+          [isOwner]="currentNovel.viewerContext?.isAuthor ?? false"
+        />
       </section>
     }
   `,

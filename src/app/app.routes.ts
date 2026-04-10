@@ -259,6 +259,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'referencias-visuales',
+        loadComponent: () =>
+          import('./features/visual-boards/my-visual-boards-page.component').then(
+            (module) => module.MyVisualBoardsPageComponent,
+          ),
+      },
+      {
+        path: 'referencias-visuales/:id',
+        loadComponent: () =>
+          import('./features/visual-boards/visual-board-page.component').then(
+            (module) => module.VisualBoardPageComponent,
+          ),
+      },
+      {
         path: 'mis-personajes/nuevo',
         loadComponent: () =>
           import('./features/characters/character-form-page.component').then(
@@ -403,6 +417,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/planner/kanban-board-page.component').then(
             (module) => module.KanbanBoardPageComponent,
+          ),
+      },
+      {
+        path: 'herramientas/plantillas',
+        loadComponent: () =>
+          import('./features/tools/templates-page.component').then(
+            (module) => module.TemplatesPageComponent,
           ),
       },
       {
@@ -668,6 +689,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/communities/community-detail-page.component').then(
             (m) => m.CommunityDetailPageComponent,
+          ),
+      },
+      {
+        path: 'referencias-visuales/:id',
+        loadComponent: () =>
+          import('./features/visual-boards/visual-board-page.component').then(
+            (module) => module.VisualBoardPageComponent,
           ),
       },
     ],

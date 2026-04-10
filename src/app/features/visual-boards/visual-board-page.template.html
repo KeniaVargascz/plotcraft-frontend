@@ -1,0 +1,120 @@
+@if (loading()) {
+  <p class="state">Cargando tablero...</p>
+} @else if (!board()) {
+  <p class="state">No se pudo cargar el tablero.</p>
+} @else if (board(); as currentBoard) {
+  <section class="page">
+    <header class="hero">
+      @if (currentBoard.coverUrl) {
+        <div class="cover" [style.backgroundImage]="'url(' + currentBoard.coverUrl + ')'"></div>
+      }
+
+      <div class="hero-body">
+        <div class="hero-top">
+          <div>
+            <div class="badges">
+              @if (currentBoard.isPublic) {
+                <span class="badge">Publico</span>
+              }
+              @if (currentBoard.linkedType && linkedRoute(); as route) {
+                <a class="badge linked" [routerLink]="route">
+                  {{ linkedLabel(currentBoard.linkedType) }}: {{ currentBoard.linkedTitle }}
+                </a>
+              }
+            </div>
+            <h1>{{ currentBoard.title }}</h1>
+            @if (currentBoard.description) {
+              <p class="description">{{ currentBoard.description }}</p>
+            }
+            <p class="author">{{ currentBoard.author.displayName }} · @{{ currentBoard.author.username }}</p>
+          </div>
+
+          @if (isOwner()) {
+            <div class="hero-actions">
+              <button type="button" (click)="openEditBoardDialog()">Editar tablero</button>
+              <button type="button" (click)="promptAddSection()">Añadir seccion</button>
+            </div>
+          }
+        </div>
+      </div>
+    </header>
+
+    @if (isOwner()) {
+      <div class="inline-add">
+        @if (addingSectionInline()) {
+          <input
+            [(ngModel)]="newSectionTitle"
+            placeholder="Nombre de la seccion"
+            (keydown.enter)="createInlineSection()"
+          />
+          <button type="button" (click)="createInlineSection()" [disabled]="!newSectionTitle.trim()">
+            Añadir
+          </button>
+          <button type="button" class="ghost" (click)="cancelInlineSection()">Cancelar</button>
+        } @else {
+          <button type="button" class="ghost" (click)="addingSectionInline.set(true)">
+            Añadir seccion
+          </button>
+        }
+      </div>
+    }
+
+    <section class="sections" cdkDropList [cdkDropListDisabled]="!isOwner()" (cdkDropListDropped)="dropSection($event)">
+      @for (section of currentBoard.sections; track section.id) {
+        <article class="section-card" cdkDrag>
+          <header class="section-head">
+            <div class="title-wrap">
+              @if (isOwner()) {
+                <span class="handle" cdkDragHandle>⋮⋮</span>
+              }
+              <h2>{{ section.title }}</h2>
+            </div>
+
+            @if (isOwner()) {
+              <div class="section-actions">
+                <button type="button" (click)="renameSection(section)">Editar</button>
+                <button type="button" class="danger" (click)="deleteSection(section)">Eliminar</button>
+              </div>
+            }
+          </header>
+
+          @if (section.items.length) {
+            <div
+              class="items-grid"
+              cdkDropList
+              [cdkDropListData]="section.items"
+              [cdkDropListDisabled]="!isOwner()"
+              (cdkDropListDropped)="dropItem(section, $event)"
+            >
+              @for (item of section.items; track item.id) {
+                <figure class="item-card" cdkDrag>
+                  <img [src]="item.imageUrl" [alt]="item.caption || section.title" (click)="openLightbox(section, item.id)" />
+
+                  @if (isOwner()) {
+                    <button type="button" class="item-handle" cdkDragHandle>⋮⋮</button>
+                    <button type="button" class="item-delete" (click)="deleteItem(section.id, item.id)">×</button>
+                    <button type="button" class="item-edit" (click)="editCaption(section.id, item.id, item.caption)">Pie</button>
+                  }
+
+                  @if (item.caption) {
+                    <figcaption>{{ item.caption }}</figcaption>
+                  }
+                </figure>
+              }
+            </div>
+          } @else {
+            <p class="empty">Esta seccion no tiene imagenes todavia.</p>
+          }
+
+          @if (isOwner()) {
+            <button type="button" class="add-image" (click)="openAddImageDialog(section)">+ Añadir imagen</button>
+          }
+        </article>
+      }
+    </section>
+  </section>
+
+  @if (lightboxImages().length) {
+    <app-lightbox [images]="lightboxImages()" [initialIndex]="lightboxIndex()" (closed)="closeLightbox()" />
+  }
+}

@@ -224,36 +224,71 @@ mat-form-field {
   color: var(--text-2);
 }
 
-.toggle-row input[type='checkbox'] {
-  width: 40px;
-  height: 22px;
-  appearance: none;
-  background: var(--border);
-  border-radius: 999px;
+.toggle-control {
   position: relative;
-  cursor: pointer;
-  transition: background 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 28px;
   flex-shrink: 0;
 }
 
-.toggle-row input[type='checkbox']::after {
-  content: '';
+.toggle-input {
   position: absolute;
-  width: 18px;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.toggle-switch {
+  width: 34px;
   height: 18px;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--border) 92%, var(--bg-surface));
+  border: 1px solid color-mix(in srgb, var(--border-s) 70%, transparent);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.toggle-thumb {
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: white;
-  top: 2px;
-  left: 2px;
-  transition: transform 0.2s;
+  background: color-mix(in srgb, var(--text-1) 92%, white 8%);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--bg) 55%, transparent);
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
 }
 
-.toggle-row input[type='checkbox']:checked {
-  background: var(--accent);
+.toggle-input:focus-visible + .toggle-switch {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
-.toggle-row input[type='checkbox']:checked::after {
-  transform: translateX(18px);
+.toggle-input:checked + .toggle-switch {
+  background: color-mix(in srgb, var(--accent) 82%, var(--bg-surface));
+  border-color: color-mix(in srgb, var(--accent) 72%, transparent);
+}
+
+.toggle-input:checked + .toggle-switch .toggle-thumb {
+  transform: translateX(16px);
+  background: #fff;
+}
+
+.toggle-row:hover .toggle-switch {
+  border-color: var(--border-s);
+}
+
+.toggle-row:hover .toggle-input:checked + .toggle-switch {
+  border-color: color-mix(in srgb, var(--accent) 80%, transparent);
 }
 
 .channel-selector {
@@ -336,5 +371,13 @@ mat-form-field {
 
   .hero-actions {
     justify-content: stretch;
+  }
+
+  .toggle-row {
+    align-items: flex-start;
+  }
+
+  .toggle-control {
+    margin-top: 0.2rem;
   }
 }

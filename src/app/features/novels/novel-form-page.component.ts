@@ -121,6 +121,22 @@ interface PairingDraft {
               }
             }
           </fieldset>
+
+          <fieldset class="full">
+            <legend>Relacion con mundos</legend>
+            <label class="check-row">
+              <input
+                type="checkbox"
+                [checked]="isAlternateUniverse"
+                [disabled]="saving()"
+                (change)="isAlternateUniverse = !isAlternateUniverse"
+              />
+              Esta novela es un AU (Universo Alternativo)
+            </label>
+            <p class="hint">
+              Si activas esta opcion, podras vincular este fanfic a uno de tus mundos propios.
+            </p>
+          </fieldset>
         }
 
         <label>
@@ -431,7 +447,7 @@ interface PairingDraft {
         </fieldset>
         }
 
-        @if (novelType !== 'FANFIC') {
+        @if (canLinkWorlds()) {
         <fieldset class="full linked-block">
           <legend>Mundos vinculados</legend>
           @if (!worlds().length) {
@@ -594,8 +610,10 @@ interface PairingDraft {
                 [(ngModel)]="newCollDescription"
                 placeholder="Descripción (opcional)"
               ></textarea>
-              <button type="button" (click)="createCollectionAndAdd()">Crear y agregar</button>
-              <button type="button" (click)="showCreateColl.set(false)">Cancelar</button>
+              <div class="coll-actions">
+                <button type="button" (click)="createCollectionAndAdd()">Agregar</button>
+                <button type="button" (click)="showCreateColl.set(false)">Cancelar</button>
+              </div>
             </div>
           }
         </section>
@@ -786,6 +804,33 @@ interface PairingDraft {
       .pairing-form { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
       .pairing-form select { flex: 1; min-width: 120px; }
       .pairing-form span { color: var(--text-2); font-weight: bold; }
+      .create-coll-form { display: grid; gap: 0.6rem; margin-top: 0.5rem; }
+      .create-coll-form input,
+      .create-coll-form select,
+      .create-coll-form textarea {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.6rem 0.8rem;
+        border-radius: 0.6rem;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-1);
+        font: inherit;
+      }
+      .create-coll-form textarea { min-height: 80px; resize: vertical; }
+      .create-coll-form .coll-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+      .actions { display: flex; justify-content: flex-end; }
+      .create-coll-form button {
+        justify-self: start;
+        width: auto;
+        padding: 0.5rem 1rem;
+        border-radius: 0.6rem;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-1);
+        cursor: pointer;
+        font: inherit;
+      }
       .pairing-row, .pairings-list li { display: inline-flex; align-items: center; padding: 0.25rem 0.6rem; background: var(--accent-glow); color: var(--accent-text); border-radius: 999px; gap: 0.35rem; font-size: 0.8rem; width: auto; line-height: 1; }
       .pairing-row .icon, .pairings-list li .icon { background: transparent; border: none; color: inherit; cursor: pointer; padding: 0; width: 1rem; height: 1rem; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; line-height: 1; }
       .pairings-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
@@ -886,18 +931,19 @@ export class NovelFormPageComponent implements OnInit {
     return this.myFandoms().find((c) => c.id === id)?.name ?? '';
   }
 
+  canLinkWorlds(): boolean {
+    return this.novelType === 'ORIGINAL' || (this.novelType === 'FANFIC' && this.isAlternateUniverse);
+  }
+
   setNovelType(type: NovelType): void {
     this.novelType = type;
     this.fanficValidationError.set(null);
     if (type === 'ORIGINAL') {
+      this.isAlternateUniverse = false;
       this.linkedCommunityId = '';
       this.linkedCommunitySlug = null;
       this.catalogCharacters.set([]);
       this.selectedCommunityCharacterIds.set([]);
-      // Clear any selected worlds is unnecessary; just hide.
-    } else {
-      // Clear worlds for fanfic
-      this.selectedWorldIds.set([]);
     }
   }
 
@@ -1009,6 +1055,7 @@ export class NovelFormPageComponent implements OnInit {
   status: NovelStatus = 'DRAFT';
   rating: NovelRating = 'G';
   languageId = '';
+  isAlternateUniverse = false;
   readonly tagList = signal<string[]>([]);
   readonly warningList = signal<string[]>([]);
 
@@ -1224,6 +1271,7 @@ export class NovelFormPageComponent implements OnInit {
       this.novelsService.getBySlug(this.slug).subscribe((novel) => {
         this.novelId.set(novel.id);
         this.novelType = (novel.novelType as NovelType) ?? 'ORIGINAL';
+        this.isAlternateUniverse = Boolean(novel.isAlternateUniverse);
         this.linkedCommunityId = novel.linkedCommunityId ?? '';
         this.linkedCommunitySlug = novel.linkedCommunity?.slug ?? null;
         if (novel.linkedCommunity && this.linkedCommunityId) {
@@ -1400,6 +1448,7 @@ export class NovelFormPageComponent implements OnInit {
       isPublic: this.isEdit() ? this.isPublic : false,
       romanceGenres: this.selectedRomanceGenres(),
       pairings: this.pairings(),
+      isAlternateUniverse: this.isAlternateUniverse,
     };
 
     if (!this.isEdit()) {
@@ -1495,6 +1544,11 @@ export class NovelFormPageComponent implements OnInit {
   }
 
   private syncWorldLinks(novelSlug: string, novel: { slug: string }) {
+    if (!this.canLinkWorlds()) {
+      this.selectedWorldIds.set([]);
+      return of(novel);
+    }
+
     const selectedIds = new Set(this.selectedWorldIds());
     const currentIds = new Set(this.initialWorldIds());
     const byId = new Map(this.worlds().map((world) => [world.id, world]));

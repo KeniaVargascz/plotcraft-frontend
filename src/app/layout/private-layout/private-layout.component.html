@@ -1,99 +1,165 @@
 <div class="private-shell">
-  <aside class="sidebar">
-    <a class="brand" routerLink="/feed">{{ 'app.name' | translate }}</a>
+  @if (!isMobile()) {
+    <aside class="sidebar desktop-sidebar">
+      <a class="brand" routerLink="/feed">{{ 'app.name' | translate }}</a>
 
-    <div class="nav-group">
-      <span class="group-label">{{ 'nav.discovery' | translate }}</span>
-      <a routerLink="/feed" routerLinkActive="active">{{ 'nav.feed' | translate }}</a>
-      <a routerLink="/descubrir" routerLinkActive="active">{{ 'nav.discovery' | translate }}</a>
-      <a routerLink="/novelas" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{ 'nav.novels' | translate }}</a>
-      <a routerLink="/mundos" routerLinkActive="active">{{ 'nav.worlds' | translate }}</a>
-      <a routerLink="/personajes" routerLinkActive="active">{{ 'nav.characters' | translate }}</a>
-      <a routerLink="/foro" routerLinkActive="active">{{ 'nav.forum' | translate }}</a>
-      <a routerLink="/comunidades" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Comunidades</a>
-      <a routerLink="/novelas/generos" routerLinkActive="active">{{ 'nav.explore' | translate }}</a>
-    </div>
-
-    <div class="nav-group">
-      <span class="group-label">Comunidad</span>
-      <a routerLink="/mis-comunidades" routerLinkActive="active">Mis comunidades</a>
-      @if (authService.getCurrentUserSnapshot()?.isAdmin) {
-        <a routerLink="/admin/comunidades" routerLinkActive="active">Panel de revisión</a>
+      @for (group of navGroups; track group.label) {
+        <div class="nav-group">
+          <span class="group-label">{{ group.label }}</span>
+          @for (item of group.items; track item.route) {
+            <a
+              [routerLink]="item.route"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+            >
+              {{ item.label }}
+            </a>
+          }
+          @if (group.label === 'Comunidad' && authService.getCurrentUserSnapshot()?.isAdmin) {
+            <a routerLink="/admin/comunidades" routerLinkActive="active">Panel de revision</a>
+          }
+        </div>
       }
-    </div>
-
-    <div class="nav-group">
-      <span class="group-label">{{ 'nav.author' | translate }}</span>
-      <a routerLink="/mis-novelas" routerLinkActive="active">{{ 'nav.myNovels' | translate }}</a>
-      <a routerLink="/mis-mundos" routerLinkActive="active">{{ 'nav.myWorlds' | translate }}</a>
-      <a routerLink="/mis-personajes" routerLinkActive="active">{{
-        'nav.myCharacters' | translate
-      }}</a>
-      <a routerLink="/referencias-visuales" routerLinkActive="active">Tableros</a>
-      <a routerLink="/mis-timelines" routerLinkActive="active">{{ 'nav.timeline' | translate }}</a>
-      <a routerLink="/planner" routerLinkActive="active">{{ 'nav.planner' | translate }}</a>
-    </div>
-
-    <div class="nav-group">
-      <span class="group-label">{{ 'library.title' | translate }}</span>
-      <a routerLink="/biblioteca" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">{{ 'nav.myLibrary' | translate }}</a>
-      <a routerLink="/biblioteca/colecciones" routerLinkActive="active">Colecciones</a>
-      <a routerLink="/mis-suscripciones" routerLinkActive="active">Suscripciones</a>
-    </div>
-
-    <div class="nav-group">
-      <span class="group-label">{{ 'nav.tools' | translate }}</span>
-      <a routerLink="/analytics" routerLinkActive="active">{{ 'nav.analytics' | translate }}</a>
-    </div>
-
-    <div class="nav-group">
-      <span class="group-label">{{ 'nav.personal' | translate }}</span>
-      <a routerLink="/mi-perfil" routerLinkActive="active">{{ 'nav.myProfile' | translate }}</a>
-      <a routerLink="/cuenta" routerLinkActive="active">{{ 'nav.settings' | translate }}</a>
-    </div>
-  </aside>
+    </aside>
+  }
 
   <section class="content-shell">
-    <header class="topbar">
-      <div class="topbar-spacer"></div>
+    <header class="topbar" [class.mobile-topbar]="isMobile()">
+      @if (isMobile()) {
+        <div class="mobile-topbar-row">
+          <button
+            #mobileMenuButton
+            class="icon-button no-select"
+            type="button"
+            aria-controls="mobile-drawer"
+            [attr.aria-expanded]="isMobileMenuOpen()"
+            aria-label="Abrir menu de navegacion"
+            (click)="openMobileMenu($event.currentTarget)"
+          >
+            <span aria-hidden="true">Menu</span>
+          </button>
 
-      <div class="search-slot">
-        <app-search-bar [compact]="false" />
-      </div>
+          <a class="brand brand-mobile" routerLink="/feed">{{ 'app.name' | translate }}</a>
 
-      <div class="notification-slot">
-        <button class="notification-button" (click)="toggleNotifications()">
-          🔔
-          @if (unreadCount() > 0) {
-            <span class="notif-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
-          }
-        </button>
-        @if (showNotifications()) {
-          <app-notifications-panel
-            [visible]="showNotifications()"
-            (close)="showNotifications.set(false)"
-            (badgeReset)="unreadCount.set(0)"
-          />
-        }
-      </div>
+          <div class="mobile-actions">
+            <button
+              class="icon-button no-select"
+              type="button"
+              aria-label="Abrir buscador"
+              [attr.aria-expanded]="isMobileSearchOpen()"
+              (click)="toggleMobileSearch()"
+            >
+              <span aria-hidden="true">Buscar</span>
+            </button>
 
-      <div class="user-actions">
-        @if (authService.currentUser$ | async; as currentUser) {
-          <a routerLink="/mi-perfil" class="user-link">
-            <span class="user-avatar">
-              @if (currentUser.profile?.avatarUrl) {
-                <img [src]="currentUser.profile?.avatarUrl" [alt]="currentUser.username" />
-              } @else {
-                {{ (currentUser.profile?.displayName || currentUser.username).charAt(0).toUpperCase() }}
+            <div class="notification-slot">
+              <button
+                class="icon-button no-select notification-button"
+                type="button"
+                aria-label="Abrir notificaciones"
+                [attr.aria-expanded]="showNotifications()"
+                (click)="toggleNotifications()"
+              >
+                <svg
+                  class="notification-icon"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  focusable="false"
+                >
+                  <path
+                    d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 1 0-14 0v5l-2 2v1h18v-1l-2-2Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                @if (unreadCount() > 0) {
+                  <span class="notif-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
+                }
+              </button>
+              @if (showNotifications()) {
+                <app-notifications-panel
+                  [visible]="showNotifications()"
+                  (close)="closeNotifications()"
+                  (badgeReset)="unreadCount.set(0)"
+                />
               }
-            </span>
-            <span class="user-name">@{{ currentUser.username }}</span>
-          </a>
+            </div>
+
+            @if (authService.currentUser$ | async; as currentUser) {
+              <a routerLink="/mi-perfil" class="user-link user-link-compact" aria-label="Abrir perfil">
+                <span class="user-avatar">
+                  @if (currentUser.profile?.avatarUrl) {
+                    <img [src]="currentUser.profile?.avatarUrl" [alt]="currentUser.username" />
+                  } @else {
+                    {{ (currentUser.profile?.displayName || currentUser.username).charAt(0).toUpperCase() }}
+                  }
+                </span>
+              </a>
+            }
+          </div>
+        </div>
+
+        @if (isMobileSearchOpen()) {
+          <div class="mobile-search-panel">
+            <app-search-bar [compact]="true" />
+          </div>
         }
-        <button mat-stroked-button type="button" (click)="logout()">
-          {{ 'nav.logout' | translate }}
-        </button>
-      </div>
+      } @else {
+        <div class="topbar-spacer"></div>
+
+        <div class="search-slot">
+          <app-search-bar [compact]="false" />
+        </div>
+
+        <div class="notification-slot">
+          <button
+            class="icon-button notification-button no-select"
+            type="button"
+            aria-label="Abrir notificaciones"
+            [attr.aria-expanded]="showNotifications()"
+            (click)="toggleNotifications()"
+          >
+            <svg
+              class="notification-icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path
+                d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 1 0-14 0v5l-2 2v1h18v-1l-2-2Z"
+                fill="currentColor"
+              />
+            </svg>
+            @if (unreadCount() > 0) {
+              <span class="notif-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
+            }
+          </button>
+          @if (showNotifications()) {
+            <app-notifications-panel
+              [visible]="showNotifications()"
+              (close)="closeNotifications()"
+              (badgeReset)="unreadCount.set(0)"
+            />
+          }
+        </div>
+
+        <div class="user-actions">
+          @if (authService.currentUser$ | async; as currentUser) {
+            <a routerLink="/mi-perfil" class="user-link">
+              <span class="user-avatar">
+                @if (currentUser.profile?.avatarUrl) {
+                  <img [src]="currentUser.profile?.avatarUrl" [alt]="currentUser.username" />
+                } @else {
+                  {{ (currentUser.profile?.displayName || currentUser.username).charAt(0).toUpperCase() }}
+                }
+              </span>
+              <span class="user-name">@{{ currentUser.username }}</span>
+            </a>
+          }
+          <button mat-stroked-button type="button" (click)="logout()">
+            {{ 'nav.logout' | translate }}
+          </button>
+        </div>
+      }
     </header>
 
     <main class="content">
@@ -101,3 +167,92 @@
     </main>
   </section>
 </div>
+
+@if (isMobile() && isMobileMenuOpen()) {
+  <div class="drawer-backdrop" (click)="closeMobileMenu()"></div>
+  <aside
+    id="mobile-drawer"
+    class="mobile-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Menu de navegacion"
+    cdkTrapFocus
+  >
+    <div class="mobile-drawer-header">
+      <a class="brand brand-mobile" routerLink="/feed" (click)="closeMobileMenu(false)">
+        {{ 'app.name' | translate }}
+      </a>
+      <button
+        #mobileDrawerCloseButton
+        class="icon-button no-select"
+        type="button"
+        aria-label="Cerrar menu"
+        (click)="closeMobileMenu()"
+      >
+        <span aria-hidden="true">Cerrar</span>
+      </button>
+    </div>
+
+    <nav class="drawer-primary-nav" aria-label="Navegacion principal">
+      @for (item of primaryNavItems; track item.route) {
+        <a
+          [routerLink]="item.route"
+          [attr.aria-current]="isActive(item.route, item.exact ?? false) ? 'page' : null"
+          (click)="closeMobileMenu(false)"
+        >
+          {{ item.label }}
+        </a>
+      }
+    </nav>
+
+    <div class="mobile-drawer-groups">
+      @for (group of navGroups; track group.label) {
+        <section class="nav-group">
+          <span class="group-label">{{ group.label }}</span>
+          @for (item of group.items; track item.route) {
+            <a
+              [routerLink]="item.route"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+              (click)="closeMobileMenu(false)"
+            >
+              {{ item.label }}
+            </a>
+          }
+          @if (group.label === 'Comunidad' && authService.getCurrentUserSnapshot()?.isAdmin) {
+            <a routerLink="/admin/comunidades" routerLinkActive="active" (click)="closeMobileMenu(false)">
+              Panel de revision
+            </a>
+          }
+        </section>
+      }
+    </div>
+
+    <div class="mobile-drawer-footer">
+      <a routerLink="/cuenta" class="secondary-link" (click)="closeMobileMenu(false)">Configuracion</a>
+      <button class="drawer-logout" type="button" (click)="logout()">Cerrar sesion</button>
+    </div>
+  </aside>
+
+  <nav class="bottom-nav" aria-label="Navegacion principal" role="navigation">
+    @for (item of primaryNavItems; track item.route) {
+      <a
+        [routerLink]="item.route"
+        [attr.aria-current]="isActive(item.route, item.exact ?? false) ? 'page' : null"
+      >
+        {{ item.label }}
+      </a>
+    }
+  </nav>
+} @else if (isMobile()) {
+  <nav class="bottom-nav" aria-label="Navegacion principal" role="navigation">
+    @for (item of primaryNavItems; track item.route) {
+      <a
+        [routerLink]="item.route"
+        [attr.aria-current]="isActive(item.route, item.exact ?? false) ? 'page' : null"
+      >
+        {{ item.label }}
+      </a>
+    }
+  </nav>
+}

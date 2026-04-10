@@ -69,11 +69,20 @@
             <mat-form-field appearance="outline">
               <mat-label>{{ 'auth.fields.email' | translate }}</mat-label>
               <input matInput formControlName="email" />
+              @if (emailForm.controls.email.touched && emailForm.controls.email.hasError('required')) {
+                <mat-error>{{ 'validation.required' | translate }}</mat-error>
+              }
+              @if (emailForm.controls.email.touched && emailForm.controls.email.hasError('email')) {
+                <mat-error>{{ 'validation.email' | translate }}</mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
               <mat-label>{{ 'account.fields.currentPassword' | translate }}</mat-label>
               <input matInput type="password" formControlName="currentPassword" />
+              @if (emailForm.controls.currentPassword.touched && emailForm.controls.currentPassword.hasError('required')) {
+                <mat-error>{{ 'validation.required' | translate }}</mat-error>
+              }
             </mat-form-field>
           </div>
 
@@ -93,7 +102,7 @@
           }
 
           <div class="actions">
-            <button mat-flat-button type="submit" [disabled]="emailForm.invalid || emailSaving()">
+            <button mat-flat-button type="submit" [disabled]="emailSaving()">
               {{ emailSaving() ? ('account.common.saving' | translate) : ('account.email.submit' | translate) }}
             </button>
           </div>
@@ -114,11 +123,17 @@
             <mat-form-field appearance="outline">
               <mat-label>{{ 'auth.fields.username' | translate }}</mat-label>
               <input matInput formControlName="username" />
+              @if (usernameForm.controls.username.touched && usernameForm.controls.username.invalid) {
+                <mat-error>{{ 'validation.usernameFormat' | translate }}</mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
               <mat-label>{{ 'account.fields.currentPassword' | translate }}</mat-label>
               <input matInput type="password" formControlName="currentPassword" />
+              @if (usernameForm.controls.currentPassword.touched && usernameForm.controls.currentPassword.hasError('required')) {
+                <mat-error>{{ 'validation.required' | translate }}</mat-error>
+              }
             </mat-form-field>
           </div>
 
@@ -141,7 +156,7 @@
             <button
               mat-flat-button
               type="submit"
-              [disabled]="usernameForm.invalid || usernameSaving()"
+              [disabled]="usernameSaving()"
             >
               {{ usernameSaving() ? ('account.common.saving' | translate) : ('account.username.submit' | translate) }}
             </button>
@@ -153,7 +168,7 @@
         <div class="card-head">
           <div>
             <p class="card-kicker">Seguridad</p>
-            <h2>Cambiar contrasena</h2>
+            <h2>Cambiar contraseña</h2>
           </div>
           <span class="card-badge">Proteccion</span>
         </div>
@@ -163,16 +178,28 @@
             <mat-form-field appearance="outline">
               <mat-label>{{ 'account.fields.currentPassword' | translate }}</mat-label>
               <input matInput type="password" formControlName="currentPassword" />
+              @if (passwordForm.controls.currentPassword.touched && passwordForm.controls.currentPassword.hasError('required')) {
+                <mat-error>{{ 'validation.required' | translate }}</mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
               <mat-label>{{ 'account.fields.newPassword' | translate }}</mat-label>
               <input matInput type="password" formControlName="newPassword" />
+              @if (passwordForm.controls.newPassword.touched && passwordForm.controls.newPassword.invalid) {
+                <mat-error>{{ 'validation.passwordFormat' | translate }}</mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-span">
               <mat-label>{{ 'account.fields.confirmNewPassword' | translate }}</mat-label>
               <input matInput type="password" formControlName="confirmNewPassword" />
+              @if (passwordForm.controls.confirmNewPassword.touched && passwordForm.controls.confirmNewPassword.hasError('required')) {
+                <mat-error>{{ 'validation.required' | translate }}</mat-error>
+              }
+              @if (passwordForm.controls.confirmNewPassword.touched && passwordForm.hasError('passwordMismatch')) {
+                <mat-error>{{ 'validation.passwordMismatch' | translate }}</mat-error>
+              }
             </mat-form-field>
           </div>
 
@@ -195,7 +222,7 @@
             <button
               mat-flat-button
               type="submit"
-              [disabled]="passwordForm.invalid || passwordSaving()"
+              [disabled]="passwordSaving()"
             >
               {{ passwordSaving() ? ('account.common.saving' | translate) : ('account.password.submit' | translate) }}
             </button>
@@ -225,11 +252,17 @@
                 <strong>Actividad de lectura</strong>
                 <span>Otros usuarios pueden ver lo que estas leyendo.</span>
               </div>
-              <input
-                type="checkbox"
-                [checked]="privacy().showReadingActivity"
-                (change)="updatePrivacyField('showReadingActivity', $any($event.target).checked)"
-              />
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="privacy().showReadingActivity"
+                  (change)="updatePrivacyField('showReadingActivity', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
             </label>
 
             <label class="toggle-row">
@@ -237,11 +270,17 @@
                 <strong>Listas de lectura</strong>
                 <span>Tus listas de lectura son visibles en tu perfil.</span>
               </div>
-              <input
-                type="checkbox"
-                [checked]="privacy().showReadingLists"
-                (change)="updatePrivacyField('showReadingLists', $any($event.target).checked)"
-              />
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="privacy().showReadingLists"
+                  (change)="updatePrivacyField('showReadingLists', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
             </label>
 
             <label class="toggle-row">
@@ -249,11 +288,17 @@
                 <strong>Seguidores y seguidos</strong>
                 <span>Mostrar tus seguidores y a quienes sigues.</span>
               </div>
-              <input
-                type="checkbox"
-                [checked]="privacy().showFollows"
-                (change)="updatePrivacyField('showFollows', $any($event.target).checked)"
-              />
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="privacy().showFollows"
+                  (change)="updatePrivacyField('showFollows', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
             </label>
 
             <label class="toggle-row">
@@ -261,11 +306,17 @@
                 <strong>Estadisticas</strong>
                 <span>Tus estadisticas de lectura y escritura son publicas.</span>
               </div>
-              <input
-                type="checkbox"
-                [checked]="privacy().showStats"
-                (change)="updatePrivacyField('showStats', $any($event.target).checked)"
-              />
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="privacy().showStats"
+                  (change)="updatePrivacyField('showStats', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
             </label>
 
             <label class="toggle-row">
@@ -273,11 +324,17 @@
                 <strong>Aparecer en busquedas</strong>
                 <span>Tu perfil puede ser encontrado por otros usuarios.</span>
               </div>
-              <input
-                type="checkbox"
-                [checked]="privacy().searchable"
-                (change)="updatePrivacyField('searchable', $any($event.target).checked)"
-              />
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="privacy().searchable"
+                  (change)="updatePrivacyField('searchable', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
             </label>
           </div>
         }
@@ -305,11 +362,17 @@
                 <strong>Nuevo seguidor</strong>
                 <span>Cuando alguien comienza a seguirte.</span>
               </div>
-              <input
-                type="checkbox"
-                [checked]="notifPrefs().newFollower"
-                (change)="updateNotifField('newFollower', $any($event.target).checked)"
-              />
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="notifPrefs().newFollower"
+                  (change)="updateNotifField('newFollower', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
             </label>
 
             <label class="toggle-row">
@@ -317,11 +380,17 @@
                 <strong>Nuevo comentario</strong>
                 <span>Cuando comentan en tu publicacion.</span>
               </div>
-              <input
-                type="checkbox"
-                [checked]="notifPrefs().newCommentOnPost"
-                (change)="updateNotifField('newCommentOnPost', $any($event.target).checked)"
-              />
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="notifPrefs().newCommentOnPost"
+                  (change)="updateNotifField('newCommentOnPost', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
             </label>
 
             <label class="toggle-row">
@@ -329,11 +398,17 @@
                 <strong>Nueva reaccion</strong>
                 <span>Cuando reaccionan a tu publicacion.</span>
               </div>
-              <input
-                type="checkbox"
-                [checked]="notifPrefs().newReactionOnPost"
-                (change)="updateNotifField('newReactionOnPost', $any($event.target).checked)"
-              />
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="notifPrefs().newReactionOnPost"
+                  (change)="updateNotifField('newReactionOnPost', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
             </label>
 
             <label class="toggle-row">
@@ -341,11 +416,17 @@
                 <strong>Nueva respuesta</strong>
                 <span>Cuando responden en un hilo donde participas.</span>
               </div>
-              <input
-                type="checkbox"
-                [checked]="notifPrefs().newReplyInThread"
-                (change)="updateNotifField('newReplyInThread', $any($event.target).checked)"
-              />
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="notifPrefs().newReplyInThread"
+                  (change)="updateNotifField('newReplyInThread', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
             </label>
 
             <label class="toggle-row">
@@ -353,11 +434,17 @@
                 <strong>Nuevo capitulo</strong>
                 <span>Cuando una novela que sigues publica un nuevo capitulo.</span>
               </div>
-              <input
-                type="checkbox"
-                [checked]="notifPrefs().newChapterFromFollowed"
-                (change)="updateNotifField('newChapterFromFollowed', $any($event.target).checked)"
-              />
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="notifPrefs().newChapterFromFollowed"
+                  (change)="updateNotifField('newChapterFromFollowed', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
             </label>
 
             <label class="toggle-row">
@@ -365,11 +452,17 @@
                 <strong>Hito de novela</strong>
                 <span>Cuando tu novela alcanza un hito importante.</span>
               </div>
-              <input
-                type="checkbox"
-                [checked]="notifPrefs().novelMilestone"
-                (change)="updateNotifField('novelMilestone', $any($event.target).checked)"
-              />
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="notifPrefs().novelMilestone"
+                  (change)="updateNotifField('novelMilestone', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
             </label>
           </div>
 

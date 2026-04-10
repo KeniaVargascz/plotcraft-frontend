@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
@@ -389,6 +389,7 @@ export class MyCommunitiesPageComponent implements OnInit {
   private readonly novelsService = inject(NovelsService);
   private readonly dialog = inject(MatDialog);
   private readonly fb = inject(FormBuilder);
+  private readonly route = inject(ActivatedRoute);
 
   readonly items = signal<Community[]>([]);
   readonly loading = signal(true);
@@ -411,6 +412,9 @@ export class MyCommunitiesPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCommunities();
+    if (this.route.snapshot.queryParamMap.get('nueva') === '1') {
+      this.openCreate();
+    }
   }
 
   private loadCommunities(): void {

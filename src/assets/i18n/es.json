@@ -984,6 +984,28 @@
     "emptyHint": "Usa las herramientas para colocar marcadores y regiones en el mapa."
   },
   "novels": {
+    "types": {
+      "ORIGINAL": "Original",
+      "FANFIC": "Fanfic",
+      "originalDesc": "Una historia creada completamente por ti.",
+      "fanficDesc": "Una historia basada en un universo o fandom existente."
+    },
+    "fanfic": {
+      "badge": "Fanfic de {{fandomName}}",
+      "selectFandom": "Selecciona una comunidad Fandom",
+      "noWorldsNote": "Los fanfics no tienen mundos propios.",
+      "noFandomSelected": "Selecciona un fandom para ver su catálogo de personajes.",
+      "fandomCharacters": "Personajes del fandom: {{name}}",
+      "originalCharacters": "Personajes originales",
+      "typeImmutable": "El tipo no se puede cambiar tras la creación."
+    },
+    "filters": {
+      "novelType": "Tipo de novela",
+      "allTypes": "Todas",
+      "onlyOriginals": "Solo originales",
+      "onlyFanfics": "Solo fanfics",
+      "fandom": "Fandom / Comunidad"
+    },
     "kudos": {
       "give": "Dar kudo",
       "given": "Kudo dado",
@@ -1109,6 +1131,59 @@
       "description": "Descripción",
       "privateToggle": "Foro privado (solo miembros de la comunidad)",
       "save": "Crear foro"
+    },
+    "catalog": {
+      "title": "Catálogo de personajes",
+      "empty": "Este fandom aún no tiene personajes en su catálogo.",
+      "suggest": "Sugerir personaje",
+      "suggestions": "Sugerencias pendientes",
+      "noSuggestions": "No hay sugerencias pendientes.",
+      "suggestedBy": "Sugerido por @{{username}}",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "rejectionNote": "Motivo del rechazo",
+      "suggestSuccess": "Tu sugerencia fue enviada y está pendiente de revisión.",
+      "approvedNotice": "Personaje aprobado y añadido al catálogo.",
+      "rejectedNotice": "Sugerencia rechazada."
+    }
+  },
+  "visualBoards": {
+    "title": "Referencias visuales",
+    "newBoard": "Nuevo tablero",
+    "empty": "Aún no tienes tableros de referencias visuales.",
+    "create": "Crear tablero",
+    "edit": "Editar tablero",
+    "delete": "Eliminar tablero",
+    "public": "Público",
+    "private": "Privado",
+    "linked": {
+      "none": "Sin vinculación",
+      "novel": "Novela",
+      "world": "Mundo",
+      "character": "Personaje",
+      "series": "Serie"
+    },
+    "sections": {
+      "add": "Añadir sección",
+      "name": "Nombre de la sección",
+      "edit": "Editar nombre",
+      "delete": "Eliminar sección",
+      "empty": "Esta sección no tiene imágenes todavía."
+    },
+    "items": {
+      "add": "Añadir imagen",
+      "caption": "Pie de foto",
+      "delete": "Eliminar imagen",
+      "uploading": "Subiendo imagen..."
+    },
+    "detail": {
+      "createForThis": "Crear tablero para esta {{type}}",
+      "noBoards": "No hay tableros de referencias visuales para este elemento."
+    },
+    "filter": {
+      "all": "Todos",
+      "free": "Libre (sin vinculación)",
+      "visibility": "Visibilidad"
     }
   }
 }

@@ -1,0 +1,108 @@
+.auth-card {
+  padding: 2rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.subtitle {
+  color: var(--text-2);
+  margin-bottom: 0.5rem;
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-1);
+}
+
+.field input[type='text'],
+.field input[type='email'],
+.field input[type='password'],
+.field input[type='date'] {
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  background: var(--bg-card);
+  color: var(--text-1);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.field input:focus {
+  border-color: var(--primary);
+}
+
+.field input.input--invalid {
+  border-color: var(--danger);
+}
+
+.field-error {
+  font-size: 0.8rem;
+  color: var(--danger);
+}
+
+.field-success {
+  font-size: 0.8rem;
+  color: var(--success);
+}
+
+.field-checking {
+  font-size: 0.8rem;
+  color: var(--text-2);
+  font-style: italic;
+}
+
+.field--checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.field--checkbox input[type='checkbox'] {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.feedback {
+  margin: 0;
+  padding: 0.8rem 0.9rem;
+  border-radius: 0.5rem;
+}
+
+.feedback.error {
+  color: var(--danger);
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+}
+
+.btn-primary {
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--primary);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

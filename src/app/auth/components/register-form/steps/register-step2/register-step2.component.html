@@ -1,0 +1,42 @@
+<div class="auth-card">
+  <h1>{{ 'auth.verify.title' | translate }}</h1>
+  <p class="subtitle">
+    {{ 'auth.verify.subtitle' | translate }}
+    <strong>{{ maskedEmail }}</strong>
+  </p>
+
+  <div class="otp-section" [class.disabled]="formDisabled()">
+    <pc-otp-input
+      (completed)="onOtpCompleted($event)"
+      (cleared)="onOtpCleared()"
+    />
+  </div>
+
+  @if (errorMessage()) {
+    <p class="feedback error">{{ errorMessage() | translate }}</p>
+  }
+
+  <div class="actions">
+    <button
+      type="button"
+      class="btn-primary"
+      [disabled]="otpCode().length !== 6 || isVerifying() || formDisabled()"
+      (click)="verify()"
+    >
+      {{ isVerifying() ? ('auth.verify.verifying' | translate) : ('auth.verify.action' | translate) }}
+    </button>
+
+    <button
+      type="button"
+      class="btn-link"
+      [disabled]="resendCooldown() > 0 && !formDisabled()"
+      (click)="resend()"
+    >
+      @if (resendCooldown() > 0) {
+        {{ 'auth.verify.resend.cooldown' | translate: { seconds: resendCooldown() } }}
+      } @else {
+        {{ 'auth.verify.resend.action' | translate }}
+      }
+    </button>
+  </div>
+</div>

@@ -35,16 +35,16 @@
     "@angular/build": "^21.2.6",
     "@angular/cli": "^21.2.6",
     "@angular/compiler-cli": "^21.2.0",
-    "@playwright/test": "^1.54.2",
     "@eslint/js": "^9.18.0",
+    "@playwright/test": "^1.54.2",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
     "globals": "^17.0.0",
-    "jsdom": "^28.0.0",
+    "happy-dom": "^20.8.9",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.20.0",
-    "vitest": "^4.0.8"
+    "vitest": "^4.1.4"
   }
 }

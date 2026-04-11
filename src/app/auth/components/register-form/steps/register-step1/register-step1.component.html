@@ -1,0 +1,127 @@
+<div class="auth-card">
+  <h1>{{ 'auth.register.title' | translate }}</h1>
+  <p class="subtitle">{{ 'auth.register.subtitle' | translate }}</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <!-- Nickname -->
+    <div class="field">
+      <label for="nickname">{{ 'auth.register.fields.nickname' | translate }}</label>
+      <input
+        id="nickname"
+        type="text"
+        formControlName="nickname"
+        [class.input--invalid]="form.controls.nickname.touched && form.controls.nickname.invalid"
+        [attr.aria-describedby]="form.controls.nickname.touched && form.controls.nickname.invalid ? 'nickname-error' : null"
+      />
+      @if (getFirstError(form.controls.nickname, nicknameErrors); as err) {
+        <span id="nickname-error" class="field-error">{{ err.key | translate }}</span>
+      }
+    </div>
+
+    <!-- Username -->
+    <div class="field">
+      <label for="username">{{ 'auth.register.fields.username' | translate }}</label>
+      <input
+        id="username"
+        type="text"
+        formControlName="username"
+        [class.input--invalid]="form.controls.username.touched && form.controls.username.invalid"
+        [attr.aria-describedby]="form.controls.username.touched && form.controls.username.invalid ? 'username-error' : null"
+      />
+      @if (form.controls.username.pending) {
+        <span class="field-checking">{{ 'auth.register.error.username.checking' | translate }}</span>
+      }
+      @if (getFirstError(form.controls.username, usernameErrors); as err) {
+        <span id="username-error" class="field-error">{{ err.key | translate }}</span>
+      }
+    </div>
+
+    <!-- Email -->
+    <div class="field">
+      <label for="email">{{ 'auth.register.fields.email' | translate }}</label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        [class.input--invalid]="form.controls.email.touched && form.controls.email.invalid"
+        [attr.aria-describedby]="form.controls.email.touched && form.controls.email.invalid ? 'email-error' : null"
+      />
+      @if (form.controls.email.pending) {
+        <span class="field-checking">{{ 'auth.register.error.email.checking' | translate }}</span>
+      }
+      @if (getFirstError(form.controls.email, emailErrors); as err) {
+        <span id="email-error" class="field-error">{{ err.key | translate }}</span>
+      }
+    </div>
+
+    <!-- Password -->
+    <div class="field">
+      <label for="password">{{ 'auth.register.fields.password' | translate }}</label>
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        [class.input--invalid]="form.controls.password.touched && form.controls.password.invalid"
+        [attr.aria-describedby]="form.controls.password.touched && form.controls.password.invalid ? 'password-error' : null"
+      />
+      <pc-password-strength-indicator [password]="form.controls.password.value" />
+      @if (getFirstError(form.controls.password, passwordErrors); as err) {
+        <span id="password-error" class="field-error">{{ err.key | translate }}</span>
+      }
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="field">
+      <label for="confirmPassword">{{ 'auth.register.fields.confirmPassword' | translate }}</label>
+      <input
+        id="confirmPassword"
+        type="password"
+        formControlName="confirmPassword"
+        [class.input--invalid]="(form.controls.confirmPassword.touched && form.controls.confirmPassword.invalid) || (form.touched && form.hasError('passwordMismatch'))"
+        [attr.aria-describedby]="(form.controls.confirmPassword.touched && form.controls.confirmPassword.invalid) || (form.touched && form.hasError('passwordMismatch')) ? 'confirm-error' : null"
+      />
+      @if (getFirstError(form.controls.confirmPassword, confirmPasswordErrors); as err) {
+        <span id="confirm-error" class="field-error">{{ err.key | translate }}</span>
+      } @else if (form.touched && form.hasError('passwordMismatch')) {
+        <span id="confirm-error" class="field-error">{{ 'auth.register.error.confirmPassword.mismatch' | translate }}</span>
+      }
+    </div>
+
+    <!-- Birthdate -->
+    <div class="field">
+      <label for="birthdate">{{ 'auth.register.fields.birthdate' | translate }}</label>
+      <input
+        id="birthdate"
+        type="date"
+        formControlName="birthdate"
+        [attr.aria-describedby]="form.hasError('underage') ? 'birthdate-error' : null"
+      />
+      @if (form.hasError('underage')) {
+        <span id="birthdate-error" class="field-error">{{ 'auth.register.error.birthdate.underage' | translate }}</span>
+      }
+    </div>
+
+    <!-- Accept Terms -->
+    <div class="field field--checkbox">
+      <label>
+        <input type="checkbox" formControlName="acceptTerms" />
+        {{ 'auth.register.fields.acceptTerms' | translate }}
+      </label>
+      @if (form.controls.acceptTerms.touched && form.controls.acceptTerms.invalid) {
+        <span class="field-error">{{ 'auth.register.error.acceptTerms.required' | translate }}</span>
+      }
+    </div>
+
+    @if (serverError()) {
+      <p class="feedback error">{{ serverError() | translate }}</p>
+    }
+
+    <button
+      type="submit"
+      class="btn-primary"
+      [disabled]="form.invalid || form.pending || isSubmitting()"
+    >
+      {{ isSubmitting() ? ('auth.register.loading' | translate) : ('auth.register.next' | translate) }}
+    </button>
+  </form>
+</div>

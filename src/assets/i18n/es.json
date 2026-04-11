@@ -66,13 +66,100 @@
       "title": "Iniciar sesion",
       "subtitle": "Accede a tu espacio de escritura y gestion de perfil.",
       "loading": "Ingresando...",
-      "registerPrompt": "Aun no tienes cuenta? Registrate"
+      "registerPrompt": "Aun no tienes cuenta? Registrate",
+      "fields": {
+        "identifier": "Usuario o correo electronico",
+        "rememberMe": "Recordarme"
+      },
+      "error": {
+        "identifier": {
+          "required": "Ingresa tu usuario o correo electronico.",
+          "minlength": "Minimo 3 caracteres."
+        },
+        "password": {
+          "required": "Ingresa tu contrasena."
+        },
+        "credentials": {
+          "invalid": "Usuario o contrasena incorrectos."
+        },
+        "rateLimit": "Demasiados intentos. Intenta de nuevo mas tarde.",
+        "rateLimit.withTimer": "Intenta de nuevo en {{seconds}}s"
+      }
     },
     "register": {
       "title": "Crear cuenta",
       "subtitle": "Empieza tu espacio de autor con validacion en tiempo real.",
       "loading": "Registrando...",
-      "reviewFields": "Revisa los campos requeridos antes de continuar."
+      "next": "Continuar",
+      "reviewFields": "Revisa los campos requeridos antes de continuar.",
+      "fields": {
+        "nickname": "Nombre visible",
+        "username": "Nombre de usuario",
+        "email": "Correo electronico",
+        "password": "Contrasena",
+        "confirmPassword": "Confirmar contrasena",
+        "birthdate": "Fecha de nacimiento (opcional)",
+        "acceptTerms": "Acepto los terminos y condiciones"
+      },
+      "error": {
+        "nickname": {
+          "required": "El nombre visible es obligatorio.",
+          "maxlength": "Maximo 50 caracteres.",
+          "format": "Solo se permiten letras, numeros y espacios."
+        },
+        "username": {
+          "required": "El nombre de usuario es obligatorio.",
+          "minlength": "Minimo 3 caracteres.",
+          "maxlength": "Maximo 30 caracteres.",
+          "format": "Solo letras, numeros, guiones y guiones bajos. No puede empezar ni terminar con guion o guion bajo.",
+          "taken": "Este nombre de usuario ya esta en uso.",
+          "checking": "Verificando disponibilidad..."
+        },
+        "email": {
+          "required": "El correo electronico es obligatorio.",
+          "invalid": "Ingresa un correo electronico valido.",
+          "taken": "Este correo electronico ya esta registrado.",
+          "checking": "Verificando disponibilidad..."
+        },
+        "password": {
+          "required": "La contrasena es obligatoria.",
+          "minlength": "Minimo 8 caracteres.",
+          "strength": "Debe incluir: mayuscula, minuscula, numero y caracter especial (!@#$%^&*)."
+        },
+        "confirmPassword": {
+          "required": "Confirma tu contrasena.",
+          "mismatch": "Las contrasenas no coinciden."
+        },
+        "birthdate": {
+          "underage": "Debes tener al menos 13 anos."
+        },
+        "acceptTerms": {
+          "required": "Debes aceptar los terminos y condiciones."
+        }
+      },
+      "strength": {
+        "weak": "Debil",
+        "medium": "Media",
+        "strong": "Fuerte"
+      }
+    },
+    "verify": {
+      "title": "Verifica tu correo",
+      "subtitle": "Ingresa el codigo de 6 digitos enviado a",
+      "action": "Verificar",
+      "verifying": "Verificando...",
+      "resend": {
+        "cooldown": "Reenviar en {{seconds}}s",
+        "action": "Reenviar codigo"
+      },
+      "error": {
+        "code": {
+          "required": "Ingresa el codigo de verificacion.",
+          "invalid": "Codigo incorrecto. Intenta de nuevo.",
+          "expired": "El codigo ha expirado. Solicita uno nuevo."
+        },
+        "tooManyAttempts": "Demasiados intentos. Solicita un nuevo codigo."
+      }
     },
     "errors": {
       "invalidCredentials": "Credenciales incorrectas",

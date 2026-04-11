@@ -1,0 +1,64 @@
+<div class="auth-card">
+  <h1>{{ 'auth.login.title' | translate }}</h1>
+  <p class="subtitle">{{ 'auth.login.subtitle' | translate }}</p>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <!-- Identifier -->
+    <div class="field">
+      <label for="identifier">{{ 'auth.login.fields.identifier' | translate }}</label>
+      <input
+        id="identifier"
+        type="text"
+        formControlName="identifier"
+        [class.input--invalid]="form.controls.identifier.touched && form.controls.identifier.invalid"
+        [attr.aria-describedby]="form.controls.identifier.touched && form.controls.identifier.invalid ? 'identifier-error' : null"
+      />
+      @if (getFirstError(form.controls.identifier, identifierErrors); as err) {
+        <span id="identifier-error" class="field-error">{{ err.key | translate }}</span>
+      }
+    </div>
+
+    <!-- Password -->
+    <div class="field">
+      <label for="password">{{ 'auth.login.fields.password' | translate }}</label>
+      <input
+        id="password"
+        type="password"
+        formControlName="password"
+        [class.input--invalid]="form.controls.password.touched && form.controls.password.invalid"
+        [attr.aria-describedby]="form.controls.password.touched && form.controls.password.invalid ? 'password-error' : null"
+      />
+      @if (getFirstError(form.controls.password, passwordErrors); as err) {
+        <span id="password-error" class="field-error">{{ err.key | translate }}</span>
+      }
+    </div>
+
+    <!-- Remember Me -->
+    <div class="field field--checkbox">
+      <label>
+        <input type="checkbox" formControlName="rememberMe" />
+        {{ 'auth.login.fields.rememberMe' | translate }}
+      </label>
+    </div>
+
+    @if (formError()) {
+      <p class="feedback error">
+        @if (rateLimitCountdown() > 0) {
+          {{ formError() | translate: { seconds: rateLimitCountdown() } }}
+        } @else {
+          {{ formError() | translate }}
+        }
+      </p>
+    }
+
+    <button
+      type="submit"
+      class="btn-primary"
+      [disabled]="isSubmitting()"
+    >
+      {{ isSubmitting() ? ('auth.login.loading' | translate) : ('nav.login' | translate) }}
+    </button>
+  </form>
+
+  <a class="register-link" href="/register">{{ 'auth.login.registerPrompt' | translate }}</a>
+</div>

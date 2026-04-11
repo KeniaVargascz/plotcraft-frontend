@@ -32,6 +32,8 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
 
       @if (loading()) {
         <p>Cargando colecciones...</p>
+      } @else if (!collections().length && !showCreate()) {
+        <p>No hay datos para mostrar.</p>
       }
 
       @if (showCreate()) {

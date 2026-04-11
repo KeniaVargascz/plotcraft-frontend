@@ -31,6 +31,8 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
 
       @if (loading()) {
         <div class="loading">Cargando...</div>
+      } @else if (!data()) {
+        <div class="loading">No hay datos para mostrar.</div>
       } @else if (data()) {
         <!-- Metric Cards -->
         <div class="metrics-row">

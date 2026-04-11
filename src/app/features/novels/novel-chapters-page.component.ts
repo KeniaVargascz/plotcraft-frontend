@@ -37,6 +37,8 @@ import { PlannerService } from '../../core/services/planner.service';
         <div class="chapter-list">
           @if (loading()) {
             <p class="status">Cargando capitulos...</p>
+          } @else if (!chapters().length) {
+            <p class="status">No hay datos para mostrar.</p>
           }
           @if (actionMessage()) {
             <p class="status">{{ actionMessage() }}</p>

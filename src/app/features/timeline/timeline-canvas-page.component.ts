@@ -28,6 +28,8 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
   template: `
     @if (loading()) {
       <div class="loading-shell"><p>Cargando timeline...</p></div>
+    } @else if (!timeline()) {
+      <div class="loading-shell"><p>No hay datos para mostrar.</p></div>
     } @else if (timeline()) {
       <section class="canvas-shell">
         <!-- Topbar -->

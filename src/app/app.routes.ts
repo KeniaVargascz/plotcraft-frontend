@@ -738,14 +738,16 @@ export const routes: Routes = [
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () =>
-      import('./features/auth/login/login.component').then((module) => module.LoginComponent),
+      import('./auth/components/login-form/login-form.component').then(
+        (module) => module.LoginFormComponent,
+      ),
   },
   {
     path: 'register',
     canActivate: [guestGuard],
     loadComponent: () =>
-      import('./features/auth/register/register.component').then(
-        (module) => module.RegisterComponent,
+      import('./auth/components/register-form/register-form.component').then(
+        (module) => module.RegisterFormComponent,
       ),
   },
   {

@@ -25,6 +25,7 @@ export class LoginFormComponent implements OnDestroy {
   readonly formError = signal('');
   readonly rateLimitCountdown = signal(0);
   readonly getFirstError = getFirstError;
+  showPassword = false;
 
   private rateLimitTimer?: ReturnType<typeof setInterval>;
 

@@ -55,6 +55,12 @@ export class AccountSettingsComponent implements OnInit {
 
   private readonly privacyDebounce$ = new Subject<Partial<PrivacySettings>>();
 
+  showEmailCurrentPw = false;
+  showUsernameCurrentPw = false;
+  showPwCurrent = false;
+  showPwNew = false;
+  showPwConfirm = false;
+
   readonly emailSaving = signal(false);
   readonly usernameSaving = signal(false);
   readonly passwordSaving = signal(false);

@@ -3,15 +3,13 @@ import { Component, DestroyRef, EventEmitter, Output, inject, signal } from '@an
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '../../../../../shared/pipes/translate.pipe';
-import { PasswordStrengthIndicatorComponent } from '../../../../auth/shared/password-strength-indicator/password-strength-indicator.component';
-import { confirmPasswordValidator } from '../../../../auth/validators/confirm-password.validator';
-import { emailAvailableValidator } from '../../../../auth/validators/email-available.validator';
-import { minimumAgeValidator } from '../../../../auth/validators/minimum-age.validator';
-import { nicknameFormatValidator } from '../../../../auth/validators/nickname-format.validator';
-import { passwordStrengthValidator } from '../../../../auth/validators/password-strength.validator';
-import { usernameAvailableValidator } from '../../../../auth/validators/username-available.validator';
-import { usernameFormatValidator } from '../../../../auth/validators/username-format.validator';
-import { getFirstError } from '../../../../auth/utils/form-errors.util';
+import { PasswordStrengthIndicatorComponent } from '../../../../shared/password-strength-indicator/password-strength-indicator.component';
+import { confirmPasswordValidator } from '../../../../validators/confirm-password.validator';
+import { minimumAgeValidator } from '../../../../validators/minimum-age.validator';
+import { nicknameFormatValidator } from '../../../../validators/nickname-format.validator';
+import { passwordStrengthValidator } from '../../../../validators/password-strength.validator';
+import { usernameFormatValidator } from '../../../../validators/username-format.validator';
+import { getFirstError } from '../../../../utils/form-errors.util';
 import { environment } from '../../../../../../environments/environment';
 import { RegisterStep1Payload } from '../../register-form.component';
 
@@ -32,20 +30,14 @@ export class RegisterStep1Component {
   readonly isSubmitting = signal(false);
   readonly serverError = signal('');
   readonly getFirstError = getFirstError;
+  showPassword = false;
+  showConfirmPassword = false;
 
   readonly form = this.fb.nonNullable.group(
     {
       nickname: ['', [Validators.required, Validators.maxLength(50), nicknameFormatValidator()]],
-      username: ['', {
-        validators: [Validators.required, Validators.minLength(3), Validators.maxLength(30), usernameFormatValidator()],
-        asyncValidators: [usernameAvailableValidator(this.http)],
-        updateOn: 'blur' as const,
-      }],
-      email: ['', {
-        validators: [Validators.required, Validators.email, Validators.maxLength(254)],
-        asyncValidators: [emailAvailableValidator(this.http)],
-        updateOn: 'blur' as const,
-      }],
+      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), usernameFormatValidator()]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
       password: ['', [Validators.required, Validators.minLength(8), passwordStrengthValidator()]],
       confirmPassword: ['', Validators.required],
       birthdate: [''],
@@ -101,8 +93,8 @@ export class RegisterStep1Component {
     this.isSubmitting.set(true);
     this.serverError.set('');
 
-    const { nickname, username, email, password, birthdate } = this.form.getRawValue();
-    const payload = { nickname, username, email, password, birthdate: birthdate || null };
+    const { nickname, username, email, password, birthdate, acceptTerms } = this.form.getRawValue();
+    const payload = { nickname, username, email, password, birthdate: birthdate || null, acceptTerms };
 
     this.http
       .post(`${environment.apiUrl}/auth/register/initiate`, payload)

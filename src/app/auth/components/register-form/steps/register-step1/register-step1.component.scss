@@ -55,6 +55,35 @@ form {
   color: var(--danger);
 }
 
+.input-with-eye {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-eye input {
+  flex: 1;
+  padding-right: 2.5rem;
+}
+
+.eye-btn {
+  position: absolute;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.25rem;
+  color: var(--text-2);
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.eye-btn:hover {
+  opacity: 1;
+}
+
 .field-success {
   font-size: 0.8rem;
   color: var(--success);

@@ -59,7 +59,7 @@
     "fields": {
       "email": "Correo electronico",
       "username": "Nombre de usuario",
-      "password": "Contrasena",
+      "password": "Contraseña",
       "confirmPassword": "Confirmar contrasena"
     },
     "login": {
@@ -69,6 +69,7 @@
       "registerPrompt": "Aun no tienes cuenta? Registrate",
       "fields": {
         "identifier": "Usuario o correo electronico",
+        "password": "Contraseña",
         "rememberMe": "Recordarme"
       },
       "error": {
@@ -96,7 +97,7 @@
         "nickname": "Nombre visible",
         "username": "Nombre de usuario",
         "email": "Correo electronico",
-        "password": "Contrasena",
+        "password": "Contraseña",
         "confirmPassword": "Confirmar contrasena",
         "birthdate": "Fecha de nacimiento (opcional)",
         "acceptTerms": "Acepto los terminos y condiciones"
@@ -357,11 +358,11 @@
       "emailBody": "Se usa para acceso, recuperacion y notificaciones clave.",
       "usernameTitle": "Username",
       "usernameBody": "Impacta tu URL publica y como te encuentra la comunidad.",
-      "passwordTitle": "Contrasena",
+      "passwordTitle": "Contraseña",
       "passwordBody": "Debe combinar mayusculas, minusculas, numeros y caracteres especiales."
     },
     "fields": {
-      "currentPassword": "Contrasena actual",
+      "currentPassword": "Contraseña actual",
       "newPassword": "Nueva contrasena",
       "confirmNewPassword": "Confirmar nueva contrasena"
     },

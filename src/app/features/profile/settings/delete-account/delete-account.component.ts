@@ -30,6 +30,7 @@ export class DeleteAccountComponent {
   private readonly router = inject(Router);
 
   readonly loading = signal(false);
+  showPassword = false;
 
   readonly form = this.fb.nonNullable.group({
     password: ['', [Validators.required]],

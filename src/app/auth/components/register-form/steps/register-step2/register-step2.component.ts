@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, Input, OnInit, OnDestroy, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { OtpInputComponent } from '../../../../auth/shared/otp-input/otp-input.component';
+import { OtpInputComponent } from '../../../../shared/otp-input/otp-input.component';
 import { TranslatePipe } from '../../../../../shared/pipes/translate.pipe';
 import { environment } from '../../../../../../environments/environment';
 

@@ -173,6 +173,32 @@ textarea {
   overscroll-behavior: contain;
 }
 
+h1 {
+  font-size: 1.875rem;
+  font-weight: 500;
+}
+
+input[type='search'],
+input[type='search']:focus {
+  outline: none;
+  box-shadow: none;
+  border: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+@media (max-width: 767px) {
+  *,
+  *::before,
+  *::after {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
 .no-select {
   -webkit-user-select: none;
   user-select: none;

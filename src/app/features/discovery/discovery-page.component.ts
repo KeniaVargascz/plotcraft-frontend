@@ -36,7 +36,12 @@ import { Community } from '../communities/models/community.model';
           <p class="eyebrow">{{ 'discovery.title' | translate }}</p>
           <h1>{{ 'discovery.subtitle' | translate }}</h1>
         </div>
-        <button type="button" class="refresh-button" (click)="load(true)">Recargar</button>
+        <button type="button" class="refresh-button" aria-label="Recargar" (click)="load(true)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          </svg>
+        </button>
       </header>
 
       @if (loading()) {
@@ -65,21 +70,28 @@ import { Community } from '../communities/models/community.model';
 
         <section class="section">
           <div class="section-head">
-            <h2>{{ 'discovery.trending.novels' | translate }}</h2>
+            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>{{ 'discovery.trending.novels' | translate }}</h2>
+            <a routerLink="/novelas">Ver mas en novelas</a>
           </div>
-          <div class="rail" data-testid="trending-novels">
-            @for (novel of snapshot()!.trending.novels; track novel.id) {
-              <div class="rail-item">
-                <app-novel-card [novel]="novel" />
-              </div>
-            }
-          </div>
+          @if (snapshot()!.trending.novels.length) {
+            <div class="rail" data-testid="trending-novels">
+              @for (novel of snapshot()!.trending.novels; track novel.id) {
+                <div class="rail-item">
+                  <app-novel-card [novel]="novel" />
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="empty-section">No hay novelas destacadas disponibles.</p>
+          }
         </section>
 
         <section class="section">
           <div class="section-head">
-            <h2>{{ 'discovery.newReleases.title' | translate }}</h2>
+            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>{{ 'discovery.newReleases.title' | translate }}</h2>
+            <a routerLink="/novelas">Ver mas en novelas</a>
           </div>
+          @if (snapshot()!.new_releases.length) {
           <div class="release-grid" data-testid="new-releases">
             @for (release of snapshot()!.new_releases; track release.novel.id; let index = $index) {
               <article class="release-card">
@@ -126,23 +138,31 @@ import { Community } from '../communities/models/community.model';
               </article>
             }
           </div>
+          } @else {
+            <p class="empty-section">No hay lanzamientos recientes disponibles.</p>
+          }
         </section>
 
         <section class="section">
           <div class="section-head">
-            <h2>{{ 'discovery.trending.authors' | translate }}</h2>
+            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>{{ 'discovery.trending.authors' | translate }}</h2>
+            <a routerLink="/descubrir">Ver mas autores</a>
           </div>
-          <div class="rail">
-            @for (author of snapshot()!.trending.authors; track author.id) {
-              <app-author-card [author]="author" />
-            }
-          </div>
+          @if (snapshot()!.trending.authors.length) {
+            <div class="rail">
+              @for (author of snapshot()!.trending.authors; track author.id) {
+                <app-author-card [author]="author" />
+              }
+            </div>
+          } @else {
+            <p class="empty-section">No hay autores destacados disponibles.</p>
+          }
         </section>
 
         <section class="section">
           <div class="section-head">
-            <h2>{{ 'discovery.genres.title' | translate }}</h2>
-            <a [routerLink]="['/novelas/generos']">Explorar todos los generos</a>
+            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="13" y2="10"/></svg>{{ 'discovery.genres.title' | translate }}</h2>
+            <a [routerLink]="['/novelas/generos']">Ver mas generos</a>
           </div>
           <div class="genre-grid">
             @for (genre of visibleGenres(); track genre.id; let index = $index) {
@@ -164,42 +184,49 @@ import { Community } from '../communities/models/community.model';
             }
 
             @if (!genres().length) {
-              <article class="genre-card">
-                <strong>No hay generos disponibles</strong>
-                <p>Aun no hay generos cargados para explorar.</p>
-              </article>
+              <p class="empty-section">No hay generos disponibles.</p>
             }
           </div>
         </section>
 
         <section class="section">
           <div class="section-head">
-            <h2>{{ 'discovery.trending.worlds' | translate }}</h2>
+            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>{{ 'discovery.trending.worlds' | translate }}</h2>
+            <a routerLink="/mundos">Ver mas en mundos</a>
           </div>
-          <div class="rail">
-            @for (world of snapshot()!.trending.worlds; track world.id) {
-              <app-world-card [world]="world" />
-            }
-          </div>
-        </section>
-
-        <section class="section">
-          <div class="section-head">
-            <h2>{{ 'discovery.trending.characters' | translate }}</h2>
-          </div>
-          <div class="rail">
-            @for (character of snapshot()!.trending.characters; track character.id) {
-              <app-character-card [character]="character" />
-            }
-          </div>
-        </section>
-
-        @if (popularCommunities().length) {
-          <section class="section">
-            <div class="section-head">
-              <h2>Comunidades populares</h2>
-              <a routerLink="/comunidades/explorar">Explorar todas las comunidades</a>
+          @if (snapshot()!.trending.worlds.length) {
+            <div class="rail">
+              @for (world of snapshot()!.trending.worlds; track world.id) {
+                <app-world-card [world]="world" />
+              }
             </div>
+          } @else {
+            <p class="empty-section">No hay mundos destacados disponibles.</p>
+          }
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>{{ 'discovery.trending.characters' | translate }}</h2>
+            <a routerLink="/personajes">Ver mas en personajes</a>
+          </div>
+          @if (snapshot()!.trending.characters.length) {
+            <div class="rail">
+              @for (character of snapshot()!.trending.characters; track character.id) {
+                <app-character-card [character]="character" />
+              }
+            </div>
+          } @else {
+            <p class="empty-section">No hay personajes destacados disponibles.</p>
+          }
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Comunidades populares</h2>
+            <a routerLink="/comunidades/explorar">Ver mas en comunidades</a>
+          </div>
+          @if (popularCommunities().length) {
             <div class="rail">
               @for (c of popularCommunities(); track c.id) {
                 <div class="rail-item">
@@ -207,24 +234,30 @@ import { Community } from '../communities/models/community.model';
                 </div>
               }
             </div>
-          </section>
-        }
+          } @else {
+            <p class="empty-section">No hay comunidades disponibles.</p>
+          }
+        </section>
 
         <section class="section">
           <div class="section-head">
-            <h2>{{ 'discovery.community.title' | translate }}</h2>
-            <a routerLink="/feed">{{ 'discovery.community.viewFeed' | translate }}</a>
+            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>{{ 'discovery.community.title' | translate }}</h2>
+            <a routerLink="/feed">Ver mas en feed</a>
           </div>
-          <div class="community-list">
-            @for (post of snapshot()!.community_posts; track post.id) {
-              <article class="community-card" [routerLink]="['/feed']">
-                <p [innerHTML]="post.content_excerpt | highlight: ''"></p>
-                <span>
-                  {{ post.author.display_name }} · {{ post.stats.reactions_count }} reacciones
-                </span>
-              </article>
-            }
-          </div>
+          @if (snapshot()!.community_posts.length) {
+            <div class="community-list">
+              @for (post of snapshot()!.community_posts; track post.id) {
+                <article class="community-card" [routerLink]="['/feed']">
+                  <p [innerHTML]="post.content_excerpt | highlight: ''"></p>
+                  <span>
+                    {{ post.author.display_name }} · {{ post.stats.reactions_count }} reacciones
+                  </span>
+                </article>
+              }
+            </div>
+          } @else {
+            <p class="empty-section">No hay publicaciones recientes disponibles.</p>
+          }
         </section>
       }
     </section>
@@ -270,6 +303,15 @@ import { Community } from '../communities/models/community.model';
         );
       }
 
+      @media (max-width: 767px) {
+        .discovery-page {
+          scrollbar-width: none;
+        }
+        .discovery-page::-webkit-scrollbar {
+          display: none;
+        }
+      }
+
       .hero,
       .stats-banner,
       .genre-card,
@@ -299,10 +341,9 @@ import { Community } from '../communities/models/community.model';
         gap: 0.35rem;
       }
 
-      .hero h1,
-      .section-head h2 {
-        margin: 0;
-      }
+      .hero h1, .section-head h2 { margin: 0; }
+      .section-head h2 { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 500; }
+      .section-icon { width: 22px; height: 22px; flex-shrink: 0; color: var(--accent-text); }
 
       .eyebrow {
         margin: 0;
@@ -379,6 +420,15 @@ import { Community } from '../communities/models/community.model';
           color-mix(in srgb, var(--accent) 66%, #f5ddb7),
           color-mix(in srgb, var(--accent) 42%, var(--border-s))
         );
+      }
+
+      @media (max-width: 767px) {
+        .rail {
+          scrollbar-width: none;
+        }
+        .rail::-webkit-scrollbar {
+          display: none;
+        }
       }
 
       .rail-item {
@@ -658,6 +708,9 @@ import { Community } from '../communities/models/community.model';
       .section-head a {
         color: var(--accent-text);
         font-weight: 600;
+        white-space: nowrap;
+        margin-left: auto;
+        flex-shrink: 0;
       }
 
       .community-card {
@@ -684,6 +737,8 @@ import { Community } from '../communities/models/community.model';
       .loading-shell {
         text-align: center;
       }
+
+      .empty-section { text-align: center; color: var(--text-3); padding: 2rem 1rem; margin: 0; border: 1px solid var(--border); border-radius: 1.25rem; background: var(--bg-card); }
 
       @media (max-width: 840px) {
         .hero,

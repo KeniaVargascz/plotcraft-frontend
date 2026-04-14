@@ -64,7 +64,10 @@
 
 .brand-mobile {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
+  line-height: 1;
+  position: relative;
+  top: 9px;
 }
 
 .content-shell {
@@ -83,7 +86,8 @@
   gap: 1rem;
   padding: calc(1rem + var(--safe-area-top)) calc(2rem + var(--safe-area-right)) 1rem
     calc(2rem + var(--safe-area-left));
-  border-bottom: 1px solid var(--color-border);
+  border: none;
+  box-shadow: none;
   background: var(--surface-nav);
   backdrop-filter: blur(18px);
 }
@@ -162,6 +166,22 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.logout-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.logout-btn:hover {
+  border-color: var(--color-border-strong);
+  color: var(--color-text-primary);
 }
 
 .user-avatar {
@@ -336,12 +356,25 @@
 
 .bottom-nav a {
   min-height: 48px;
-  display: grid;
-  place-items: center;
-  padding: 0.5rem 0.35rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.4rem 0.35rem;
   border-radius: 0.9rem;
-  font-size: 0.76rem;
   text-align: center;
+}
+
+.bottom-nav a svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.bottom-nav a span {
+  font-size: 0.65rem;
+  line-height: 1;
 }
 
 @include responsive.respond-sm-down {

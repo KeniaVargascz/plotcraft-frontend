@@ -595,24 +595,24 @@
     "title": "Descubrir",
     "subtitle": "Explora lo mejor de la comunidad PlotCraft",
     "trending": {
-      "novels": "📈 Novelas en tendencia",
-      "worlds": "🌍 Mundos en tendencia",
-      "characters": "🎭 Personajes destacados",
-      "authors": "⭐ Autores destacados",
+      "novels": "Novelas en tendencia",
+      "worlds": "Mundos en tendencia",
+      "characters": "Personajes destacados",
+      "authors": "Autores destacados",
       "badge": "↑ Tendencia",
       "period": "Ultimas 72 horas"
     },
     "newReleases": {
-      "title": "🆕 Lanzamientos recientes",
+      "title": "Lanzamientos recientes",
       "newChapters": "{{n}} cap. nuevos",
       "latestChapter": "Ultimo: {{title}}"
     },
     "genres": {
-      "title": "🎭 Explora por genero",
+      "title": "Explora por genero",
       "viewAll": "Ver todas en {{genre}}"
     },
     "community": {
-      "title": "💬 Actividad reciente",
+      "title": "Actividad reciente",
       "viewFeed": "Ver mas en el feed"
     },
     "stats": {

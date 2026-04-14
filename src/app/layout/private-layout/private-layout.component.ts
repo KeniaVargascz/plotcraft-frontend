@@ -1,4 +1,4 @@
-import { AsyncPipe, DOCUMENT } from '@angular/common';
+import { AsyncPipe, DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import {
   Component,
   DestroyRef,
@@ -42,6 +42,7 @@ type NavGroup = {
     CdkTrapFocus,
     MatButtonModule,
     MatIconModule,
+    NgTemplateOutlet,
     NotificationsPanelComponent,
     RouterLink,
     RouterLinkActive,

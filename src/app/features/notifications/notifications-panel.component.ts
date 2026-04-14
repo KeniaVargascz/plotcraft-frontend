@@ -22,7 +22,7 @@ import { NotificationItemComponent } from './components/notification-item.compon
         @if (loading()) {
           <p class="empty">Cargando...</p>
         } @else if (notifications().length === 0) {
-          <p class="empty">No tienes notificaciones aun.</p>
+          <p class="empty">No hay notificaciones para mostrar.</p>
         } @else {
           @for (n of notifications(); track n.id) {
             <app-notification-item
@@ -112,12 +112,22 @@ import { NotificationItemComponent } from './components/notification-item.compon
     }
     @media (max-width: 767px) {
       :host {
-        right: auto;
-        left: 50%;
-        transform: translateX(-50%);
+        position: fixed;
+        top: auto;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        transform: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
       }
       .panel {
-        margin-top: 0.75rem;
+        width: 100%;
+        max-height: 70vh;
+        margin-top: 0;
+        border-radius: 1rem 1rem 0 0;
+        border-bottom: none;
       }
     }
   `,

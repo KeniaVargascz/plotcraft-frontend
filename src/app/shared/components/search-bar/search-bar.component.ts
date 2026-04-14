@@ -36,9 +36,6 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
           (focus)="handleFocus()"
           (keydown.enter)="submit()"
         />
-        @if (!compact()) {
-          <span class="shortcut">{{ 'search.shortcut' | translate }}</span>
-        }
       </label>
 
       @if (open()) {
@@ -107,7 +104,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         grid-template-columns: auto 1fr auto;
         align-items: center;
         gap: 0.8rem;
-        min-height: 3.25rem;
+        min-height: calc(3.25rem - 1px);
         border-radius: 999px;
         border: 1px solid var(--border);
         background: color-mix(in srgb, var(--bg-card) 82%, transparent);
@@ -118,8 +115,20 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         background: transparent;
         color: var(--text-1);
         outline: none;
+        box-shadow: none;
         font: inherit;
         width: 100%;
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      .search-input input:focus {
+        outline: none;
+        box-shadow: none;
+        border: none;
+      }
+      .search-input:focus-within {
+        outline: none;
+        box-shadow: none;
       }
       .icon,
       .shortcut,

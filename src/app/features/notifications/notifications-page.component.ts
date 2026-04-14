@@ -38,10 +38,10 @@ type FilterChip = 'all' | 'unread' | 'read';
       </div>
 
       <div class="notif-list">
-        @if (loading() && notifications().length === 0) {
+        @if (loading()) {
           <p class="empty">Cargando notificaciones...</p>
         } @else if (notifications().length === 0) {
-          <p class="empty">No tienes notificaciones aun.</p>
+          <p class="empty">No hay notificaciones para mostrar.</p>
         } @else {
           @for (n of notifications(); track n.id) {
             <app-notification-item
@@ -220,11 +220,16 @@ export class NotificationsPageComponent implements OnInit {
           } else {
             this.notifications.update((prev) => [...prev, ...res.data]);
           }
-          this.cursor = res.pagination.nextCursor;
-          this.hasMore.set(res.pagination.hasMore);
+          this.cursor = res.pagination?.nextCursor ?? null;
+          this.hasMore.set(res.pagination?.hasMore ?? false);
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loading.set(false);
+          if (reset) {
+            this.notifications.set([]);
+          }
+        },
       });
   }
 }

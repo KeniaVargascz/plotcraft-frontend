@@ -12,7 +12,7 @@ import {
   CharacterStatus,
   CharacterSummary,
 } from '../models/character.model';
-import { PaginatedResponse } from '../models/feed-pagination.model';
+import { PagedResponse, PaginatedResponse } from '../models/feed-pagination.model';
 
 export type CharacterQuery = {
   cursor?: string | null;
@@ -22,6 +22,7 @@ export type CharacterQuery = {
   status?: CharacterStatus | null;
   worldSlug?: string | null;
   sort?: 'recent' | 'updated' | 'name' | null;
+  page?: number;
 };
 
 export type CharacterPayload = {
@@ -50,7 +51,7 @@ export class CharactersService {
 
   listPublic(query: CharacterQuery = {}) {
     return this.http
-      .get<ApiResponse<PaginatedResponse<CharacterSummary>>>(`${environment.apiUrl}/characters`, {
+      .get<ApiResponse<PagedResponse<CharacterSummary>>>(`${environment.apiUrl}/characters`, {
         params: this.buildParams(query),
       })
       .pipe(map((response) => response.data));
@@ -58,7 +59,7 @@ export class CharactersService {
 
   listMine(query: CharacterQuery = {}) {
     return this.http
-      .get<ApiResponse<PaginatedResponse<CharacterSummary>>>(
+      .get<ApiResponse<PagedResponse<CharacterSummary>>>(
         `${environment.apiUrl}/characters/me`,
         {
           params: this.buildParams(query),
@@ -69,7 +70,7 @@ export class CharactersService {
 
   listByUser(username: string, query: CharacterQuery = {}) {
     return this.http
-      .get<ApiResponse<PaginatedResponse<CharacterSummary>>>(
+      .get<ApiResponse<PagedResponse<CharacterSummary>>>(
         `${environment.apiUrl}/characters/user/${username}`,
         {
           params: this.buildParams(query),
@@ -80,7 +81,7 @@ export class CharactersService {
 
   listByWorld(worldSlug: string, query: CharacterQuery = {}) {
     return this.http
-      .get<ApiResponse<PaginatedResponse<CharacterSummary>>>(
+      .get<ApiResponse<PagedResponse<CharacterSummary>>>(
         `${environment.apiUrl}/characters/world/${worldSlug}`,
         {
           params: this.buildParams(query),
@@ -95,17 +96,21 @@ export class CharactersService {
       .pipe(map((response) => response.data));
   }
 
-  listRelationships(username: string, slug: string) {
+  listRelationships(username: string, slug: string, query: CharacterQuery = {}) {
     return this.http
       .get<
-        ApiResponse<CharacterRelationship[]>
-      >(`${environment.apiUrl}/characters/${username}/${slug}/relationships`)
+        ApiResponse<PaginatedResponse<CharacterRelationship>>
+      >(`${environment.apiUrl}/characters/${username}/${slug}/relationships`, {
+        params: this.buildParams(query),
+      })
       .pipe(map((response) => response.data));
   }
 
-  listNovels(username: string, slug: string) {
+  listNovels(username: string, slug: string, query: CharacterQuery = {}) {
     return this.http
-      .get<ApiResponse<unknown[]>>(`${environment.apiUrl}/characters/${username}/${slug}/novels`)
+      .get<ApiResponse<PaginatedResponse<unknown>>>(`${environment.apiUrl}/characters/${username}/${slug}/novels`, {
+        params: this.buildParams(query),
+      })
       .pipe(map((response) => response.data));
   }
 
@@ -183,6 +188,7 @@ export class CharactersService {
     if (query.status) params = params.set('status', query.status);
     if (query.worldSlug) params = params.set('worldSlug', query.worldSlug);
     if (query.sort) params = params.set('sort', query.sort);
+    if (query.page) params = params.set('page', query.page);
     return params;
   }
 }

@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
-import { PaginatedResponse } from '../models/feed-pagination.model';
+import { PagedResponse } from '../models/feed-pagination.model';
 import {
   NovelDetail,
   NovelRating,
@@ -15,6 +15,7 @@ import {
 
 export type NovelQuery = {
   cursor?: string | null;
+  page?: number;
   limit?: number;
   genre?: string | null;
   genres?: string[] | null;
@@ -55,17 +56,17 @@ export type NovelPayload = {
 export class NovelsService {
   private readonly http = inject(HttpClient);
 
-  listPublic(query: NovelQuery = {}): Observable<PaginatedResponse<NovelSummary>> {
+  listPublic(query: NovelQuery = {}): Observable<PagedResponse<NovelSummary>> {
     return this.http
-      .get<ApiResponse<PaginatedResponse<NovelSummary>>>(`${environment.apiUrl}/novels`, {
+      .get<ApiResponse<PagedResponse<NovelSummary>>>(`${environment.apiUrl}/novels`, {
         params: this.buildParams(query),
       })
       .pipe(map((response) => response.data));
   }
 
-  listMine(query: NovelQuery = {}): Observable<PaginatedResponse<NovelSummary>> {
+  listMine(query: NovelQuery = {}): Observable<PagedResponse<NovelSummary>> {
     return this.http
-      .get<ApiResponse<PaginatedResponse<NovelSummary>>>(`${environment.apiUrl}/novels/me`, {
+      .get<ApiResponse<PagedResponse<NovelSummary>>>(`${environment.apiUrl}/novels/me`, {
         params: this.buildParams(query),
       })
       .pipe(map((response) => response.data));
@@ -74,9 +75,9 @@ export class NovelsService {
   listByUser(
     username: string,
     query: NovelQuery = {},
-  ): Observable<PaginatedResponse<NovelSummary>> {
+  ): Observable<PagedResponse<NovelSummary>> {
     return this.http
-      .get<ApiResponse<PaginatedResponse<NovelSummary>>>(
+      .get<ApiResponse<PagedResponse<NovelSummary>>>(
         `${environment.apiUrl}/novels/user/${username}`,
         {
           params: this.buildParams(query),
@@ -201,6 +202,7 @@ export class NovelsService {
     if (query.fandomSlug) {
       params = params.set('fandomSlug', query.fandomSlug);
     }
+    if (query.page) params = params.set('page', query.page);
 
     return params;
   }

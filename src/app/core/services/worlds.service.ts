@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
-import { PaginatedResponse } from '../models/feed-pagination.model';
+import { PagedResponse } from '../models/feed-pagination.model';
 import { WorldDetail, WorldGenre, WorldSummary, WorldVisibility } from '../models/world.model';
 
 export type WorldQuery = {
@@ -12,6 +12,7 @@ export type WorldQuery = {
   search?: string | null;
   visibility?: WorldVisibility | null;
   sort?: 'recent' | 'updated' | 'name' | null;
+  page?: number;
 };
 
 export type WorldPayload = {
@@ -35,7 +36,7 @@ export class WorldsService {
 
   listPublic(query: WorldQuery = {}) {
     return this.http
-      .get<ApiResponse<PaginatedResponse<WorldSummary>>>(`${environment.apiUrl}/worlds`, {
+      .get<ApiResponse<PagedResponse<WorldSummary>>>(`${environment.apiUrl}/worlds`, {
         params: this.buildParams(query),
       })
       .pipe(map((response) => response.data));
@@ -43,7 +44,7 @@ export class WorldsService {
 
   listMine(query: WorldQuery = {}) {
     return this.http
-      .get<ApiResponse<PaginatedResponse<WorldSummary>>>(`${environment.apiUrl}/worlds/me`, {
+      .get<ApiResponse<PagedResponse<WorldSummary>>>(`${environment.apiUrl}/worlds/me`, {
         params: this.buildParams(query),
       })
       .pipe(map((response) => response.data));
@@ -51,7 +52,7 @@ export class WorldsService {
 
   listByUser(username: string, query: WorldQuery = {}) {
     return this.http
-      .get<ApiResponse<PaginatedResponse<WorldSummary>>>(
+      .get<ApiResponse<PagedResponse<WorldSummary>>>(
         `${environment.apiUrl}/worlds/user/${username}`,
         {
           params: this.buildParams(query),
@@ -147,6 +148,7 @@ export class WorldsService {
     if (query.search) params = params.set('search', query.search);
     if (query.visibility) params = params.set('visibility', query.visibility);
     if (query.sort) params = params.set('sort', query.sort);
+    if (query.page) params = params.set('page', query.page);
     return params;
   }
 }

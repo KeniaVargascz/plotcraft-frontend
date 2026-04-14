@@ -102,9 +102,9 @@ export class ArchivedThreadsPageComponent implements OnInit {
   readonly archivedThreads = signal<ThreadSummary[]>([]);
 
   ngOnInit() {
-    this.forumService.listMyThreads().subscribe({
-      next: (threads) => {
-        this.archivedThreads.set(threads.filter((t) => t.status === 'ARCHIVED'));
+    this.forumService.listMyThreads({ limit: 50 }).subscribe({
+      next: (res) => {
+        this.archivedThreads.set(res.data.filter((t) => t.status === 'ARCHIVED'));
         this.loading.set(false);
       },
       error: () => this.loading.set(false),

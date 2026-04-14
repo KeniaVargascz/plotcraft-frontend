@@ -1,10 +1,6 @@
 import {
-  AfterViewInit,
   Component,
   DestroyRef,
-  ElementRef,
-  OnDestroy,
-  ViewChild,
   inject,
   signal,
 } from '@angular/core';
@@ -26,6 +22,7 @@ import { SearchResultCardComponent } from '../../shared/components/search-result
 import { Genre } from '../../core/models/genre.model';
 import { GenresService } from '../../core/services/genres.service';
 import { SearchService } from '../../core/services/search.service';
+import { PaginatorComponent } from '../../shared/components/paginator/paginator.component';
 import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
 import { HighlightPipe } from '../../shared/pipes/highlight.pipe';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
@@ -46,6 +43,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
     WorldCardComponent,
     CharacterCardComponent,
     SearchResultCardComponent,
+    PaginatorComponent,
   ],
   template: `
     <section class="search-page">
@@ -304,9 +302,12 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
             </div>
           }
 
-          @if (hasMore()) {
-            <div #sentinel class="sentinel"></div>
-            <button class="load-more" type="button" (click)="loadMore()">Cargar mas</button>
+          @if (totalPages() > 1) {
+            <app-paginator
+              [currentPage]="currentPage()"
+              [totalPages]="totalPages()"
+              (pageChange)="goToPage($event)"
+            />
           }
         </div>
       }
@@ -353,16 +354,14 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
         flex-wrap: wrap;
         gap: 0.75rem;
       }
-      .tab-row button,
-      .load-more {
+      .tab-row button {
         border-radius: 999px;
         border: 1px solid var(--border);
         padding: 0.8rem 1rem;
         background: var(--bg-card);
         color: var(--text-2);
       }
-      .tab-row button.active,
-      .load-more {
+      .tab-row button.active {
         background: var(--accent-glow);
         color: var(--accent-text);
       }
@@ -436,15 +435,12 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
     `,
   ],
 })
-export class SearchPageComponent implements AfterViewInit, OnDestroy {
+export class SearchPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly searchService = inject(SearchService);
   private readonly genresService = inject(GenresService);
   private readonly destroyRef = inject(DestroyRef);
-  private observer?: IntersectionObserver;
-
-  @ViewChild('sentinel') sentinel?: ElementRef<HTMLDivElement>;
 
   readonly query = signal('');
   readonly activeTab = signal<SearchTab>('all');
@@ -455,8 +451,8 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
   readonly characters = signal<SearchCharactersResponse['data']>([]);
   readonly users = signal<SearchUsersResponse['data']>([]);
   readonly posts = signal<SearchPostsResponse['data']>([]);
-  readonly nextCursor = signal<string | null>(null);
-  readonly hasMore = signal(false);
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
   readonly genres = signal<Genre[]>([]);
 
   genre = '';
@@ -489,14 +485,6 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
       this.postSort = (params.get('sort') as typeof this.postSort | null) ?? 'relevance';
       this.load(true);
     });
-  }
-
-  ngAfterViewInit() {
-    this.setupObserver();
-  }
-
-  ngOnDestroy() {
-    this.observer?.disconnect();
   }
 
   resultCount() {
@@ -532,7 +520,6 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
       queryParams: {
         q: this.query(),
         type: tab === 'all' ? null : tab,
-        cursor: null,
       },
       queryParamsHandling: 'merge',
     });
@@ -546,13 +533,13 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
         type: this.activeTab() === 'all' ? null : this.activeTab(),
         genre: this.activeTab() === 'novels' ? this.genre || null : null,
         sort: this.resolveSort(),
-        cursor: null,
       },
       queryParamsHandling: 'merge',
     });
   }
 
-  loadMore() {
+  goToPage(page: number) {
+    this.currentPage.set(page);
     this.load(false);
   }
 
@@ -575,12 +562,10 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
       this.searchService.searchAll({ q: this.query().trim(), limit: 5 }).subscribe({
         next: (response) => {
           this.grouped.set(response);
-          this.hasMore.set(false);
           this.loading.set(false);
         },
         error: () => {
           this.grouped.set(null);
-          this.hasMore.set(false);
           this.loading.set(false);
         },
       });
@@ -593,19 +578,19 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const cursor = reset ? null : this.nextCursor();
+    if (reset) this.currentPage.set(1);
 
     if (this.activeTab() === 'novels') {
       this.searchService
         .searchNovels({
           q: this.query().trim(),
-          cursor,
+          page: this.currentPage(),
           genre: this.genre || null,
           sort: this.novelSort,
         })
         .subscribe({
-          next: (response) => this.consumeNovels(response, reset),
-          error: () => this.finishSpecificLoad(null, false),
+          next: (response) => this.consumeNovels(response),
+          error: () => this.finishSpecificLoad(1),
         });
       return;
     }
@@ -614,12 +599,12 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
       this.searchService
         .searchWorlds({
           q: this.query().trim(),
-          cursor,
+          page: this.currentPage(),
           sort: this.worldSort,
         })
         .subscribe({
-          next: (response) => this.consumeWorlds(response, reset),
-          error: () => this.finishSpecificLoad(null, false),
+          next: (response) => this.consumeWorlds(response),
+          error: () => this.finishSpecificLoad(1),
         });
       return;
     }
@@ -628,11 +613,11 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
       this.searchService
         .searchCharacters({
           q: this.query().trim(),
-          cursor,
+          page: this.currentPage(),
         })
         .subscribe({
-          next: (response) => this.consumeCharacters(response, reset),
-          error: () => this.finishSpecificLoad(null, false),
+          next: (response) => this.consumeCharacters(response),
+          error: () => this.finishSpecificLoad(1),
         });
       return;
     }
@@ -641,12 +626,12 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
       this.searchService
         .searchUsers({
           q: this.query().trim(),
-          cursor,
+          page: this.currentPage(),
           sort: this.userSort,
         })
         .subscribe({
-          next: (response) => this.consumeUsers(response, reset),
-          error: () => this.finishSpecificLoad(null, false),
+          next: (response) => this.consumeUsers(response),
+          error: () => this.finishSpecificLoad(1),
         });
       return;
     }
@@ -655,12 +640,12 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
       this.searchService
         .searchMixed({
           q: this.query().trim(),
-          cursor,
+          page: this.currentPage(),
           types: ['posts', 'threads', 'communities'],
         })
         .subscribe({
-          next: (response) => this.consumeMixed(response, reset),
-          error: () => this.finishSpecificLoad(null, false),
+          next: (response) => this.consumeMixed(response),
+          error: () => this.finishSpecificLoad(1),
         });
       return;
     }
@@ -668,57 +653,53 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
     this.searchService
       .searchPosts({
         q: this.query().trim(),
-        cursor,
+        page: this.currentPage(),
         sort: this.postSort,
       })
       .subscribe({
-        next: (response) => this.consumePosts(response, reset),
-        error: () => this.finishSpecificLoad(null, false),
+        next: (response) => this.consumePosts(response),
+        error: () => this.finishSpecificLoad(1),
       });
   }
 
-  private consumeMixed(response: MixedSearchResponse, reset: boolean) {
+  private consumeMixed(response: MixedSearchResponse) {
     this.grouped.set(null);
-    this.mixed.set(reset ? response.results : [...this.mixed(), ...response.results]);
-    this.finishSpecificLoad(
-      response.pagination?.nextCursor ?? null,
-      !!response.pagination?.hasMore,
-    );
+    this.mixed.set(response.results);
+    this.finishSpecificLoad(1);
   }
 
-  private consumeNovels(response: SearchNovelsResponse, reset: boolean) {
+  private consumeNovels(response: SearchNovelsResponse) {
     this.grouped.set(null);
-    this.novels.set(reset ? response.data : [...this.novels(), ...response.data]);
-    this.finishSpecificLoad(response.pagination.nextCursor, response.pagination.hasMore);
+    this.novels.set(response.data);
+    this.finishSpecificLoad(response.pagination.totalPages);
   }
 
-  private consumeWorlds(response: SearchWorldsResponse, reset: boolean) {
+  private consumeWorlds(response: SearchWorldsResponse) {
     this.grouped.set(null);
-    this.worlds.set(reset ? response.data : [...this.worlds(), ...response.data]);
-    this.finishSpecificLoad(response.pagination.nextCursor, response.pagination.hasMore);
+    this.worlds.set(response.data);
+    this.finishSpecificLoad(response.pagination.totalPages);
   }
 
-  private consumeCharacters(response: SearchCharactersResponse, reset: boolean) {
+  private consumeCharacters(response: SearchCharactersResponse) {
     this.grouped.set(null);
-    this.characters.set(reset ? response.data : [...this.characters(), ...response.data]);
-    this.finishSpecificLoad(response.pagination.nextCursor, response.pagination.hasMore);
+    this.characters.set(response.data);
+    this.finishSpecificLoad(response.pagination.totalPages);
   }
 
-  private consumeUsers(response: SearchUsersResponse, reset: boolean) {
+  private consumeUsers(response: SearchUsersResponse) {
     this.grouped.set(null);
-    this.users.set(reset ? response.data : [...this.users(), ...response.data]);
-    this.finishSpecificLoad(response.pagination.nextCursor, response.pagination.hasMore);
+    this.users.set(response.data);
+    this.finishSpecificLoad(response.pagination.totalPages);
   }
 
-  private consumePosts(response: SearchPostsResponse, reset: boolean) {
+  private consumePosts(response: SearchPostsResponse) {
     this.grouped.set(null);
-    this.posts.set(reset ? response.data : [...this.posts(), ...response.data]);
-    this.finishSpecificLoad(response.pagination.nextCursor, response.pagination.hasMore);
+    this.posts.set(response.data);
+    this.finishSpecificLoad(response.pagination.totalPages);
   }
 
-  private finishSpecificLoad(nextCursor: string | null, hasMore: boolean) {
-    this.nextCursor.set(nextCursor);
-    this.hasMore.set(hasMore);
+  private finishSpecificLoad(totalPages: number) {
+    this.totalPages.set(totalPages);
     this.loading.set(false);
   }
 
@@ -737,17 +718,4 @@ export class SearchPageComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private setupObserver() {
-    if (!this.sentinel) {
-      return;
-    }
-
-    this.observer = new IntersectionObserver((entries) => {
-      if (entries[0]?.isIntersecting && this.hasMore() && !this.loading()) {
-        this.load(false);
-      }
-    });
-
-    this.observer.observe(this.sentinel.nativeElement);
-  }
 }

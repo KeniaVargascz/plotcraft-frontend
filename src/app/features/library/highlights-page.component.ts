@@ -19,11 +19,11 @@ import { HighlightsService } from '../../core/services/highlights.service';
         </div>
         <div class="hero-stat">
           <strong>{{ items().length }}</strong>
-          <span>fragmentos guardados</span>
+          <span>fragmentos cargados</span>
         </div>
       </header>
 
-      @if (!items().length) {
+      @if (!items().length && !loading()) {
         <section class="empty-state card">
           <h2>Aun no has subrayado ningun fragmento</h2>
           <p>Usa el lector para destacar pasajes y construir tu archivo de referencias.</p>
@@ -57,6 +57,17 @@ import { HighlightsService } from '../../core/services/highlights.service';
             </article>
           }
         </section>
+
+        @if (hasMore()) {
+          <button
+            type="button"
+            class="load-more"
+            [disabled]="loading()"
+            (click)="loadMore()"
+          >
+            {{ loading() ? 'Cargando...' : 'Cargar mas' }}
+          </button>
+        }
       }
     </section>
   `,
@@ -142,22 +153,60 @@ import { HighlightsService } from '../../core/services/highlights.service';
         background: color-mix(in srgb, #b42318 16%, var(--bg-card));
         color: #b42318;
       }
+      .load-more {
+        justify-self: center;
+        padding: 0.75rem 2rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-1);
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .load-more:hover:not(:disabled) {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
+      .load-more:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
     `,
   ],
 })
 export class HighlightsPageComponent {
   private readonly highlightsService = inject(HighlightsService);
   readonly items = signal<Highlight[]>([]);
+  readonly loading = signal(false);
+  readonly hasMore = signal(false);
+  private cursor: string | null = null;
 
   constructor() {
-    this.load();
+    this.fetch(true);
   }
 
   remove(id: string) {
-    this.highlightsService.remove(id).subscribe(() => this.load());
+    this.highlightsService.remove(id).subscribe(() => {
+      this.items.update((list) => list.filter((h) => h.id !== id));
+    });
   }
 
-  private load() {
-    this.highlightsService.listAll().subscribe((items) => this.items.set(items));
+  loadMore() {
+    this.fetch(false);
+  }
+
+  private fetch(reset: boolean) {
+    this.loading.set(true);
+    this.highlightsService
+      .listAll({ cursor: reset ? null : this.cursor, limit: 20 })
+      .subscribe({
+        next: (res) => {
+          this.items.update((list) => (reset ? res.data : [...list, ...res.data]));
+          this.cursor = res.pagination.nextCursor;
+          this.hasMore.set(res.pagination.hasMore);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
   }
 }

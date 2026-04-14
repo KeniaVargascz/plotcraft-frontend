@@ -1,5 +1,5 @@
 import { CharacterSummary } from './character.model';
-import { PaginatedResponse } from './feed-pagination.model';
+import { PagedResponse } from './feed-pagination.model';
 import { NovelSummary } from './novel.model';
 import { PostType } from './post.model';
 import { WorldSummary } from './world.model';
@@ -106,8 +106,8 @@ export interface SearchHistoryResponse {
   history: SearchHistoryItem[];
 }
 
-export type SearchNovelsResponse = PaginatedResponse<NovelSummary>;
-export type SearchWorldsResponse = PaginatedResponse<WorldSummary>;
-export type SearchCharactersResponse = PaginatedResponse<CharacterSummary>;
-export type SearchUsersResponse = PaginatedResponse<UserSearchResult>;
-export type SearchPostsResponse = PaginatedResponse<PostSearchResult>;
+export type SearchNovelsResponse = PagedResponse<NovelSummary>;
+export type SearchWorldsResponse = PagedResponse<WorldSummary>;
+export type SearchCharactersResponse = PagedResponse<CharacterSummary>;
+export type SearchUsersResponse = PagedResponse<UserSearchResult>;
+export type SearchPostsResponse = PagedResponse<PostSearchResult>;

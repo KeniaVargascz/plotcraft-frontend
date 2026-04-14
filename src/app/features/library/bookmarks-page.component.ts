@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
-import { NovelBookmarksGroup } from '../../core/models/bookmark.model';
+import { ReaderBookmark } from '../../core/models/bookmark.model';
 import { BookmarksService } from '../../core/services/bookmarks.service';
 import { LibraryNovelCard } from '../../core/models/library.model';
 import { LibraryService } from '../../core/services/library.service';
@@ -51,57 +50,136 @@ import { LibraryService } from '../../core/services/library.service';
       <section class="section">
         <div class="section-head">
           <h2>Marcadores de lectura</h2>
-          <small>{{ groups().length }} novelas</small>
+          <small>{{ bookmarks().length }} marcadores</small>
         </div>
 
-        @if (!groups().length) {
+        @if (!bookmarks().length && !loadingBookmarks()) {
           <p>Aun no tienes marcadores de lectura guardados.</p>
         } @else {
-          @for (group of groups(); track group.novel.id) {
+          @for (bookmark of bookmarks(); track bookmark.id) {
             <article class="card">
-              <h3>{{ group.novel.title }}</h3>
-              @for (bookmark of group.bookmarks; track bookmark.id) {
+              <div class="row">
+                <div class="stack">
+                  <strong>{{ bookmark.novel.title }}</strong>
+                  <span>{{ bookmark.chapter.title }}</span>
+                </div>
                 <div class="row">
                   <a
                     [routerLink]="['/novelas', bookmark.novel.slug, bookmark.chapter.slug]"
                     [fragment]="bookmark.anchor_id ?? undefined"
                   >
-                    {{ bookmark.chapter.title }} {{ bookmark.label ? '- ' + bookmark.label : '' }}
+                    {{ bookmark.label || 'Ir al marcador' }}
                   </a>
                   <button type="button" (click)="remove(bookmark.id)">Eliminar</button>
                 </div>
-              }
+              </div>
             </article>
           }
+        }
+
+        @if (hasMoreBookmarks()) {
+          <button
+            type="button"
+            class="load-more"
+            [disabled]="loadingBookmarks()"
+            (click)="loadMoreBookmarks()"
+          >
+            {{ loadingBookmarks() ? 'Cargando...' : 'Cargar mas' }}
+          </button>
         }
       </section>
     </section>
   `,
   styles: [
-    '.page-shell,.section,.card,.stack{display:grid;gap:1rem}.card{padding:1rem;border:1px solid var(--border);border-radius:1rem;background:var(--bg-card)}.row,.section-head{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}.lede{color:var(--text-2)}.stack span,.section-head small{color:var(--text-2)}',
+    `
+      .page-shell,
+      .section,
+      .card,
+      .stack {
+        display: grid;
+        gap: 1rem;
+      }
+      .card {
+        padding: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        background: var(--bg-card);
+      }
+      .row,
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .lede {
+        color: var(--text-2);
+      }
+      .stack span,
+      .section-head small {
+        color: var(--text-2);
+      }
+      .load-more {
+        justify-self: center;
+        padding: 0.75rem 2rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-1);
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .load-more:hover:not(:disabled) {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
+      .load-more:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
+    `,
   ],
 })
 export class BookmarksPageComponent {
   private readonly libraryService = inject(LibraryService);
   private readonly bookmarksService = inject(BookmarksService);
   readonly bookmarkedNovels = signal<LibraryNovelCard[]>([]);
-  readonly groups = signal<NovelBookmarksGroup[]>([]);
+  readonly bookmarks = signal<ReaderBookmark[]>([]);
+  readonly loadingBookmarks = signal(false);
+  readonly hasMoreBookmarks = signal(false);
+  private bookmarksCursor: string | null = null;
 
   constructor() {
     this.load();
   }
 
   remove(id: string) {
-    this.bookmarksService.remove(id).subscribe(() => this.load());
+    this.bookmarksService.remove(id).subscribe(() => {
+      this.bookmarks.update((list) => list.filter((b) => b.id !== id));
+    });
+  }
+
+  loadMoreBookmarks() {
+    this.fetchBookmarks(false);
   }
 
   private load() {
-    forkJoin({
-      bookmarked: this.libraryService.listBookmarked(),
-      groups: this.bookmarksService.listAll(),
-    }).subscribe(({ bookmarked, groups }) => {
-      this.bookmarkedNovels.set(bookmarked.data);
-      this.groups.set(groups);
+    this.libraryService.listBookmarked().subscribe((res) => {
+      this.bookmarkedNovels.set(res.data);
+    });
+    this.fetchBookmarks(true);
+  }
+
+  private fetchBookmarks(reset: boolean) {
+    this.loadingBookmarks.set(true);
+    this.bookmarksService.listAll(reset ? null : this.bookmarksCursor, 20).subscribe({
+      next: (res) => {
+        this.bookmarks.update((list) => (reset ? res.data : [...list, ...res.data]));
+        this.bookmarksCursor = res.pagination.nextCursor;
+        this.hasMoreBookmarks.set(res.pagination.hasMore);
+        this.loadingBookmarks.set(false);
+      },
+      error: () => this.loadingBookmarks.set(false),
     });
   }
 }

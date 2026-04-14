@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { PaginatorComponent } from '../../shared/components/paginator/paginator.component';
 import { SeriesCardComponent } from './components/series-card/series-card.component';
 import {
   SERIES_STATUS_LABELS,
@@ -17,7 +18,7 @@ import { SeriesService } from './services/series.service';
 @Component({
   selector: 'app-series-catalog-page',
   standalone: true,
-  imports: [FormsModule, ErrorMessageComponent, LoadingSpinnerComponent, SeriesCardComponent],
+  imports: [FormsModule, ErrorMessageComponent, LoadingSpinnerComponent, SeriesCardComponent, PaginatorComponent],
   template: `
     <section class="page">
       <header class="header">
@@ -59,8 +60,12 @@ import { SeriesService } from './services/series.service';
               <app-series-card [series]="s" />
             }
           </div>
-          @if (hasMore()) {
-            <button type="button" class="load-more" (click)="loadMore()">Cargar más</button>
+          @if (totalPages() > 1) {
+            <app-paginator
+              [currentPage]="currentPage()"
+              [totalPages]="totalPages()"
+              (pageChange)="goToPage($event)"
+            />
           }
         }
       }
@@ -97,15 +102,6 @@ import { SeriesService } from './services/series.service';
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1rem;
       }
-      .load-more {
-        margin: 1rem auto 0;
-        padding: 0.75rem 1.5rem;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--bg-card);
-        color: var(--text-1);
-        cursor: pointer;
-      }
       .empty {
         text-align: center;
         color: var(--text-2);
@@ -129,8 +125,8 @@ export class SeriesCatalogPageComponent implements OnInit {
   readonly loading = signal(true);
   readonly error = signal(false);
   readonly items = signal<SeriesSummary[]>([]);
-  readonly nextCursor = signal<string | null>(null);
-  readonly hasMore = signal(false);
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
 
   readonly typeLabels = SERIES_TYPE_LABELS;
   readonly statusLabels = SERIES_STATUS_LABELS;
@@ -154,28 +150,30 @@ export class SeriesCatalogPageComponent implements OnInit {
   }
 
   reload(): void {
-    this.load(true);
+    this.currentPage.set(1);
+    this.fetchPage();
   }
 
-  loadMore(): void {
-    this.load(false);
+  goToPage(page: number): void {
+    this.currentPage.set(page);
+    this.fetchPage();
   }
 
-  private load(reset: boolean): void {
-    this.loading.set(reset);
+  private fetchPage(): void {
+    this.loading.set(true);
     this.error.set(false);
     this.seriesService
       .list({
-        cursor: reset ? null : this.nextCursor(),
+        page: this.currentPage(),
+        limit: 12,
         search: this.search || null,
         type: this.type,
         status: this.status,
       })
       .subscribe({
         next: (res) => {
-          this.items.set(reset ? res.data : [...this.items(), ...res.data]);
-          this.nextCursor.set(res.pagination.nextCursor);
-          this.hasMore.set(res.pagination.hasMore);
+          this.items.set(res.data);
+          this.totalPages.set(res.pagination.totalPages);
           this.loading.set(false);
         },
         error: () => {

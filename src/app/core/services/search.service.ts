@@ -19,6 +19,7 @@ type BaseQuery = {
   q: string;
   cursor?: string | null;
   limit?: number | null;
+  page?: number;
 };
 
 @Injectable({ providedIn: 'root' })

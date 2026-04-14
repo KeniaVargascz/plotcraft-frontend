@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ApiResponse } from '../../../core/models/api-response.model';
-import { PaginatedResponse } from '../../../core/models/feed-pagination.model';
+import { PagedResponse } from '../../../core/models/feed-pagination.model';
 import {
   Community,
   CommunityMemberProfile,
@@ -17,6 +17,7 @@ export interface CommunityQuery {
   limit?: number;
   type?: CommunityType | null;
   search?: string | null;
+  page?: number;
 }
 
 export interface MembershipResult {
@@ -29,14 +30,15 @@ export class CommunityService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/communities`;
 
-  getCommunities(query: CommunityQuery = {}): Observable<PaginatedResponse<Community>> {
+  getCommunities(query: CommunityQuery = {}): Observable<PagedResponse<Community>> {
     let params = new HttpParams();
     if (query.cursor) params = params.set('cursor', query.cursor);
     if (query.limit) params = params.set('limit', query.limit);
     if (query.type) params = params.set('type', query.type);
     if (query.search) params = params.set('search', query.search);
+    if (query.page) params = params.set('page', query.page);
     return this.http
-      .get<ApiResponse<PaginatedResponse<Community>>>(this.baseUrl, { params })
+      .get<ApiResponse<PagedResponse<Community>>>(this.baseUrl, { params })
       .pipe(map((r) => r.data));
   }
 

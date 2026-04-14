@@ -24,6 +24,7 @@ import {
   AdvancedNovelFiltersComponent,
   NovelFilters,
 } from './components/advanced-novel-filters/advanced-novel-filters.component';
+import { PaginatorComponent } from '../../shared/components/paginator/paginator.component';
 
 @Component({
   selector: 'app-catalog-page',
@@ -34,6 +35,7 @@ import {
     LoadingSpinnerComponent,
     NovelCardComponent,
     AdvancedNovelFiltersComponent,
+    PaginatorComponent,
   ],
   template: `
     <section class="catalog-shell">
@@ -135,8 +137,12 @@ import {
             <div class="empty">No se encontraron novelas con los filtros aplicados.</div>
           }
 
-          @if (hasMore()) {
-            <button class="load-more" type="button" (click)="loadMore()">Cargar mas</button>
+          @if (totalPages() > 1) {
+            <app-paginator
+              [currentPage]="currentPage()"
+              [totalPages]="totalPages()"
+              (pageChange)="goToPage($event)"
+            />
           }
         }
       </div>
@@ -271,8 +277,7 @@ import {
         font-size: 0.78rem;
         color: var(--text-3);
       }
-      .empty,
-      .load-more {
+      .empty {
         margin-top: 1rem;
       }
       .apply-row {
@@ -308,8 +313,8 @@ export class CatalogPageComponent implements OnInit {
   readonly error = signal(false);
   readonly genres = signal<Genre[]>([]);
   readonly novels = signal<NovelSummary[]>([]);
-  readonly nextCursor = signal<string | null>(null);
-  readonly hasMore = signal(false);
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
   readonly title = signal('Novelas');
   readonly subtitle = signal('Explora historias publicadas por la comunidad.');
 
@@ -389,7 +394,8 @@ export class CatalogPageComponent implements OnInit {
         });
         this.selectedGenreSlugs.set(queryParams.getAll('genres'));
         this.syncGenreCopy();
-        this.load(true);
+        this.currentPage.set(1);
+        this.load();
       });
   }
 
@@ -434,8 +440,9 @@ export class CatalogPageComponent implements OnInit {
     void this.router.navigate(['/novelas'], { queryParams });
   }
 
-  loadMore() {
-    this.load(false);
+  goToPage(page: number) {
+    this.currentPage.set(page);
+    this.load();
   }
 
   onAdvancedFiltersChange(filters: NovelFilters) {
@@ -460,14 +467,15 @@ export class CatalogPageComponent implements OnInit {
     void this.router.navigate(target, { queryParams });
   }
 
-  private load(reset: boolean) {
-    this.loading.set(reset);
+  private load() {
+    this.loading.set(true);
     this.error.set(false);
 
     const adv = this.advancedFilters();
     this.novelsService
       .listPublic({
-        cursor: reset ? null : this.nextCursor(),
+        page: this.currentPage(),
+        limit: 12,
         search: this.search || null,
         genre: this.genre || null,
         sort: this.sort,
@@ -486,9 +494,8 @@ export class CatalogPageComponent implements OnInit {
       })
       .subscribe({
         next: (response) => {
-          this.novels.set(reset ? response.data : [...this.novels(), ...response.data]);
-          this.nextCursor.set(response.pagination.nextCursor);
-          this.hasMore.set(response.pagination.hasMore);
+          this.novels.set(response.data);
+          this.totalPages.set(response.pagination.totalPages);
           this.loading.set(false);
         },
         error: () => {

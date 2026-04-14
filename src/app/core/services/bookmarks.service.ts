@@ -1,17 +1,21 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
-import { NovelBookmarksGroup, ReaderBookmark } from '../models/bookmark.model';
+import { ReaderBookmark } from '../models/bookmark.model';
+import { PaginatedResponse } from '../models/feed-pagination.model';
 
 @Injectable({ providedIn: 'root' })
 export class BookmarksService {
   private readonly http = inject(HttpClient);
 
-  listAll() {
+  listAll(cursor?: string | null, limit?: number) {
+    let params = new HttpParams();
+    if (cursor) params = params.set('cursor', cursor);
+    if (limit) params = params.set('limit', limit);
     return this.http
-      .get<ApiResponse<NovelBookmarksGroup[]>>(`${environment.apiUrl}/bookmarks`)
+      .get<ApiResponse<PaginatedResponse<ReaderBookmark>>>(`${environment.apiUrl}/bookmarks`, { params })
       .pipe(map((response) => response.data));
   }
 

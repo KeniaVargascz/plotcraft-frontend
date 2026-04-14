@@ -149,6 +149,16 @@ import { CharacterKinshipDialogComponent } from './components/character-kinship-
                     </article>
                   }
                 </div>
+                  @if (hasMoreRelationships()) {
+                    <button
+                      type="button"
+                      class="load-more"
+                      [disabled]="relationshipLoading()"
+                      (click)="loadMoreRelationships()"
+                    >
+                      {{ relationshipLoading() ? 'Cargando...' : 'Cargar mas' }}
+                    </button>
+                  }
               }
             </aside>
           </section>
@@ -357,6 +367,23 @@ import { CharacterKinshipDialogComponent } from './components/character-kinship-
           flex-direction: column;
         }
       }
+      .load-more {
+        margin-top: 0.5rem;
+        justify-self: center;
+        padding: 0.65rem 1.5rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-1);
+        cursor: pointer;
+      }
+      .load-more:hover:not(:disabled) {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
+      .load-more:disabled {
+        opacity: 0.6;
+      }
     `,
   ],
 })
@@ -375,6 +402,7 @@ export class CharacterDetailPageComponent {
   readonly loading = signal(true);
   readonly kudoLoading = signal(false);
   readonly relationshipLoading = signal(false);
+  readonly hasMoreRelationships = signal(false);
   readonly kudoBeat = signal(false);
   readonly graphNodes = computed(() => {
     const items = this.relationships();
@@ -392,6 +420,7 @@ export class CharacterDetailPageComponent {
 
   private currentUsername = '';
   private currentSlug = '';
+  private relationshipsCursor: string | null = null;
 
   constructor() {
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
@@ -545,19 +574,35 @@ export class CharacterDetailPageComponent {
     });
   }
 
+  loadMoreRelationships() {
+    this.fetchRelationships(false);
+  }
+
   private refreshRelationships() {
+    this.relationshipsCursor = null;
+    this.fetchRelationships(true);
+  }
+
+  private fetchRelationships(reset: boolean) {
     if (!this.currentUsername || !this.currentSlug) return;
 
     this.relationshipLoading.set(true);
-    this.charactersService.listRelationships(this.currentUsername, this.currentSlug).subscribe({
-      next: (relationships) => {
-        this.relationships.set(relationships);
-        this.relationshipLoading.set(false);
-      },
-      error: () => {
-        this.relationships.set([]);
-        this.relationshipLoading.set(false);
-      },
-    });
+    this.charactersService
+      .listRelationships(this.currentUsername, this.currentSlug, {
+        cursor: reset ? null : this.relationshipsCursor,
+        limit: 20,
+      })
+      .subscribe({
+        next: (res) => {
+          this.relationships.update((list) => (reset ? res.data : [...list, ...res.data]));
+          this.relationshipsCursor = res.pagination.nextCursor;
+          this.hasMoreRelationships.set(res.pagination.hasMore);
+          this.relationshipLoading.set(false);
+        },
+        error: () => {
+          if (reset) this.relationships.set([]);
+          this.relationshipLoading.set(false);
+        },
+      });
   }
 }

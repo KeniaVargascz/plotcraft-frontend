@@ -43,9 +43,11 @@ export class ForumService {
       .pipe(map((response) => response.data));
   }
 
-  listUserThreads(username: string): Observable<ThreadSummary[]> {
+  listUserThreads(username: string, query: ThreadQuery = {}): Observable<PaginatedResponse<ThreadSummary>> {
     return this.http
-      .get<ApiResponse<ThreadSummary[]>>(`${this.baseUrl}/user/${username}`)
+      .get<ApiResponse<PaginatedResponse<ThreadSummary>>>(`${this.baseUrl}/user/${username}`, {
+        params: this.buildParams(query),
+      })
       .pipe(map((response) => response.data));
   }
 
@@ -160,9 +162,11 @@ export class ForumService {
       .pipe(map((response) => response.data));
   }
 
-  listMyThreads() {
+  listMyThreads(query: ThreadQuery = {}): Observable<PaginatedResponse<ThreadSummary>> {
     return this.http
-      .get<ApiResponse<ThreadSummary[]>>(`${this.baseUrl}/mine`)
+      .get<ApiResponse<PaginatedResponse<ThreadSummary>>>(`${this.baseUrl}/mine`, {
+        params: this.buildParams(query),
+      })
       .pipe(map((response) => response.data));
   }
 

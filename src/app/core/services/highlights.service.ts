@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
+import { PaginatedResponse } from '../models/feed-pagination.model';
 import { Highlight, HighlightColor } from '../models/highlight.model';
 
 @Injectable({ providedIn: 'root' })
@@ -15,11 +16,13 @@ export class HighlightsService {
       .pipe(map((response) => response.data));
   }
 
-  listAll(novelId?: string) {
+  listAll(query: { cursor?: string | null; limit?: number; novel_id?: string } = {}) {
+    let params = new HttpParams();
+    if (query.cursor) params = params.set('cursor', query.cursor);
+    if (query.limit) params = params.set('limit', query.limit);
+    if (query.novel_id) params = params.set('novel_id', query.novel_id);
     return this.http
-      .get<ApiResponse<Highlight[]>>(`${environment.apiUrl}/highlights`, {
-        params: novelId ? { novel_id: novelId } : {},
-      })
+      .get<ApiResponse<PaginatedResponse<Highlight>>>(`${environment.apiUrl}/highlights`, { params })
       .pipe(map((response) => response.data));
   }
 

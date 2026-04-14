@@ -297,8 +297,8 @@ export class ForumHomePageComponent implements OnInit {
   ngOnInit() {
     this.load(true);
     if (this.authService.isAuthenticated()) {
-      this.forumService.listMyThreads().subscribe({
-        next: (threads) => this.myThreads.set(threads),
+      this.forumService.listMyThreads({ limit: 50 }).subscribe({
+        next: (res) => this.myThreads.set(res.data),
       });
     }
   }

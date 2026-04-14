@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Subject, Subscription, debounceTime } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
+import { PaginatorComponent } from '../../shared/components/paginator/paginator.component';
 import { CommunityCardComponent } from './components/community-card/community-card.component';
 import { Community, CommunityType } from './models/community.model';
 import { CommunityService } from './services/community.service';
@@ -10,7 +11,7 @@ import { CommunityService } from './services/community.service';
 @Component({
   selector: 'app-communities-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, CommunityCardComponent],
+  imports: [FormsModule, RouterLink, CommunityCardComponent, PaginatorComponent],
   template: `
     <section class="page">
       <header class="header">
@@ -52,12 +53,12 @@ import { CommunityService } from './services/community.service';
             <app-community-card [community]="c" />
           }
         </div>
-        @if (hasMore()) {
-          <div class="more">
-            <button type="button" (click)="loadMore()" [disabled]="loading()">
-              {{ loading() ? 'Cargando…' : 'Cargar más' }}
-            </button>
-          </div>
+        @if (totalPages() > 1) {
+          <app-paginator
+            [currentPage]="currentPage()"
+            [totalPages]="totalPages()"
+            (pageChange)="goToPage($event)"
+          />
         }
       }
     </section>
@@ -132,18 +133,6 @@ import { CommunityService } from './services/community.service';
         color: var(--text-2);
         text-align: center;
       }
-      .more {
-        display: flex;
-        justify-content: center;
-      }
-      .more button {
-        padding: 0.65rem 1.2rem;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--bg-card);
-        color: var(--text-1);
-        cursor: pointer;
-      }
     `,
   ],
 })
@@ -153,8 +142,8 @@ export class CommunitiesPageComponent implements OnInit, OnDestroy {
 
   readonly items = signal<Community[]>([]);
   readonly loading = signal(false);
-  readonly hasMore = signal(false);
-  private cursor: string | null = null;
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
 
   searchValue = '';
   typeValue: '' | CommunityType = '';
@@ -185,12 +174,12 @@ export class CommunitiesPageComponent implements OnInit, OnDestroy {
   }
 
   private reload(): void {
-    this.cursor = null;
-    this.items.set([]);
+    this.currentPage.set(1);
     this.fetch();
   }
 
-  loadMore(): void {
+  goToPage(page: number): void {
+    this.currentPage.set(page);
     this.fetch();
   }
 
@@ -198,16 +187,15 @@ export class CommunitiesPageComponent implements OnInit, OnDestroy {
     this.loading.set(true);
     this.service
       .getCommunities({
-        cursor: this.cursor,
+        page: this.currentPage(),
         limit: 12,
         type: this.typeValue || null,
         search: this.searchValue || null,
       })
       .subscribe({
         next: (res) => {
-          this.items.update((list) => [...list, ...res.data]);
-          this.cursor = res.pagination.nextCursor;
-          this.hasMore.set(res.pagination.hasMore);
+          this.items.set(res.data);
+          this.totalPages.set(res.pagination.totalPages);
           this.loading.set(false);
         },
         error: () => this.loading.set(false),

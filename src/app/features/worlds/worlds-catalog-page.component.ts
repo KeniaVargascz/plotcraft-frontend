@@ -1,14 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { finalize } from 'rxjs';
 import { WorldSummary } from '../../core/models/world.model';
 import { WorldsService } from '../../core/services/worlds.service';
 import { WorldCardComponent } from './components/world-card.component';
+import { PaginatorComponent } from '../../shared/components/paginator/paginator.component';
 
 @Component({
   selector: 'app-worlds-catalog-page',
   standalone: true,
-  imports: [FormsModule, WorldCardComponent],
+  imports: [FormsModule, WorldCardComponent, PaginatorComponent],
   template: `
     <section class="catalog-shell">
       <header class="hero card">
@@ -39,6 +39,14 @@ import { WorldCardComponent } from './components/world-card.component';
             <app-world-card [world]="world" />
           }
         </section>
+
+        @if (totalPages() > 1) {
+          <app-paginator
+            [currentPage]="currentPage()"
+            [totalPages]="totalPages()"
+            (pageChange)="goToPage($event)"
+          />
+        }
       }
     </section>
   `,
@@ -95,6 +103,8 @@ export class WorldsCatalogPageComponent {
 
   readonly worlds = signal<WorldSummary[]>([]);
   readonly loading = signal(true);
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
   search = '';
 
   constructor() {
@@ -102,13 +112,29 @@ export class WorldsCatalogPageComponent {
   }
 
   load() {
+    this.currentPage.set(1);
+    this.fetchPage();
+  }
+
+  goToPage(page: number) {
+    this.currentPage.set(page);
+    this.fetchPage();
+  }
+
+  private fetchPage() {
     this.loading.set(true);
     this.worldsService
-      .listPublic({ limit: 24, search: this.search || null, sort: 'updated' })
-      .pipe(finalize(() => this.loading.set(false)))
+      .listPublic({ page: this.currentPage(), limit: 12, search: this.search || null, sort: 'updated' })
       .subscribe({
-        next: (response) => this.worlds.set(response.data),
-        error: () => this.worlds.set([]),
+        next: (response) => {
+          this.worlds.set(response.data);
+          this.totalPages.set(response.pagination.totalPages);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.worlds.set([]);
+          this.loading.set(false);
+        },
       });
   }
 }

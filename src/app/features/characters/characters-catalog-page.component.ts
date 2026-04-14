@@ -3,11 +3,12 @@ import { FormsModule } from '@angular/forms';
 import { CharactersService } from '../../core/services/characters.service';
 import { CharacterSummary } from '../../core/models/character.model';
 import { CharacterCardComponent } from './components/character-card.component';
+import { PaginatorComponent } from '../../shared/components/paginator/paginator.component';
 
 @Component({
   selector: 'app-characters-catalog-page',
   standalone: true,
-  imports: [FormsModule, CharacterCardComponent],
+  imports: [FormsModule, CharacterCardComponent, PaginatorComponent],
   template: `
     <section class="catalog-shell">
       <header class="hero card">
@@ -38,6 +39,14 @@ import { CharacterCardComponent } from './components/character-card.component';
             <app-character-card [character]="character" />
           }
         </section>
+
+        @if (totalPages() > 1) {
+          <app-paginator
+            [currentPage]="currentPage()"
+            [totalPages]="totalPages()"
+            (pageChange)="goToPage($event)"
+          />
+        }
       }
     </section>
   `,
@@ -94,6 +103,8 @@ export class CharactersCatalogPageComponent {
 
   readonly characters = signal<CharacterSummary[]>([]);
   readonly loading = signal(true);
+  readonly currentPage = signal(1);
+  readonly totalPages = signal(1);
   search = '';
 
   constructor() {
@@ -101,12 +112,23 @@ export class CharactersCatalogPageComponent {
   }
 
   load() {
+    this.currentPage.set(1);
+    this.fetchPage();
+  }
+
+  goToPage(page: number) {
+    this.currentPage.set(page);
+    this.fetchPage();
+  }
+
+  private fetchPage() {
     this.loading.set(true);
     this.charactersService
-      .listPublic({ limit: 24, search: this.search || null, sort: 'updated' })
+      .listPublic({ page: this.currentPage(), limit: 12, search: this.search || null, sort: 'updated' })
       .subscribe({
         next: (response) => {
           this.characters.set(response.data);
+          this.totalPages.set(response.pagination.totalPages);
           this.loading.set(false);
         },
         error: () => {

@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { ApiResponse } from '../../../core/models/api-response.model';
-import { PaginatedResponse } from '../../../core/models/feed-pagination.model';
+import { PagedResponse } from '../../../core/models/feed-pagination.model';
 import {
   CreateSeriesPayload,
   SeriesDetail,
@@ -21,6 +21,7 @@ export interface RemoveNovelResult {
 
 export interface SeriesQuery {
   cursor?: string | null;
+  page?: number;
   limit?: number;
   authorUsername?: string;
   type?: SeriesType | null;
@@ -33,9 +34,10 @@ export class SeriesService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/series`;
 
-  list(query: SeriesQuery = {}): Observable<PaginatedResponse<SeriesSummary>> {
+  list(query: SeriesQuery = {}): Observable<PagedResponse<SeriesSummary>> {
     let params = new HttpParams();
     if (query.cursor) params = params.set('cursor', query.cursor);
+    if (query.page) params = params.set('page', query.page);
     if (query.limit) params = params.set('limit', query.limit);
     if (query.authorUsername) params = params.set('authorUsername', query.authorUsername);
     if (query.type) params = params.set('type', query.type);
@@ -43,7 +45,7 @@ export class SeriesService {
     if (query.search) params = params.set('search', query.search);
 
     return this.http
-      .get<ApiResponse<PaginatedResponse<SeriesSummary>>>(this.baseUrl, { params })
+      .get<ApiResponse<PagedResponse<SeriesSummary>>>(this.baseUrl, { params })
       .pipe(map((r) => r.data));
   }
 
@@ -96,7 +98,7 @@ export class SeriesService {
   listByAuthor(
     username: string,
     query: SeriesQuery = {},
-  ): Observable<PaginatedResponse<SeriesSummary>> {
+  ): Observable<PagedResponse<SeriesSummary>> {
     return this.list({ ...query, authorUsername: username });
   }
 

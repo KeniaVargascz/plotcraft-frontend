@@ -175,7 +175,6 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
                 <span class="genre-accent"></span>
                 <div class="genre-copy">
                   <strong>{{ genre.label }}</strong>
-                  <span class="genre-hint">Ver todas las novelas de este genero</span>
                 </div>
                 <span class="genre-action">
                   Explorar
@@ -318,8 +317,8 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
       .genre-card,
       .community-card,
       .loading-shell {
-        padding: 1.2rem;
-        border-radius: 1.25rem;
+        padding: 0.5rem 0.85rem;
+        border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
@@ -451,7 +450,7 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
 
       .release-grid,
       .genre-grid {
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       }
 
       .release-card {
@@ -629,8 +628,9 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
       }
 
       .genre-card {
-        display: grid;
-        gap: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
       }
 
       .genre-link {
@@ -638,7 +638,6 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
         overflow: hidden;
         text-decoration: none;
         color: inherit;
-        min-height: 9.5rem;
         align-content: space-between;
         transition:
           transform 160ms ease,
@@ -671,18 +670,19 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
       .genre-accent {
         position: absolute;
         inset: 0 auto 0 0;
-        width: 0.35rem;
-        border-radius: 1.25rem 0 0 1.25rem;
+        width: 0.25rem;
+        border-radius: 1rem 0 0 1rem;
       }
 
       .genre-copy {
-        display: grid;
-        gap: 0.45rem;
-        padding-left: 0.2rem;
+        display: flex;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
       }
 
       .genre-card strong {
-        font-size: 1.05rem;
+        font-size: 0.84rem;
         color: var(--text-1);
       }
 
@@ -696,9 +696,10 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
       .genre-action {
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
+        gap: 0.2rem;
         color: var(--accent-text);
-        font-weight: 600;
+        font-size: 0.75rem;
+        flex-shrink: 0;
       }
 
       .genre-card a,

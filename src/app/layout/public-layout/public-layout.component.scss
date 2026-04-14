@@ -40,10 +40,22 @@ nav {
 nav a {
   color: var(--text-2);
   text-decoration: none;
+  position: relative;
+  top: 2px;
 }
 
 nav a.active {
   color: var(--accent-text);
+}
+
+.auth-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.88rem;
 }
 
 @media (max-width: 960px) {

@@ -50,6 +50,10 @@ export class AuthService {
       .pipe(map((response) => this.handleAuthResponse(response.data)));
   }
 
+  resendOtp(email: string): Observable<unknown> {
+    return this.http.post(`${environment.apiUrl}/auth/register/resend`, { email });
+  }
+
   login(payload: LoginPayload): Observable<User> {
     return this.http
       .post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/login`, payload)

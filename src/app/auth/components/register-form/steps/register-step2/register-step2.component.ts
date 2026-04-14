@@ -1,9 +1,8 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, Input, OnInit, OnDestroy, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { OtpInputComponent } from '../../../../shared/otp-input/otp-input.component';
 import { TranslatePipe } from '../../../../../shared/pipes/translate.pipe';
-import { environment } from '../../../../../../environments/environment';
 import { AuthService } from '../../../../../core/services/auth.service';
 
 @Component({
@@ -17,7 +16,6 @@ export class RegisterStep2Component implements OnInit, OnDestroy {
   @Input({ required: true }) email = '';
   @ViewChild(OtpInputComponent) otpInput!: OtpInputComponent;
 
-  private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
 
@@ -73,8 +71,8 @@ export class RegisterStep2Component implements OnInit, OnDestroy {
   resend(): void {
     if (this.resendCooldown() > 0) return;
 
-    this.http
-      .post(`${environment.apiUrl}/auth/register/resend`, { email: this.email })
+    this.authService
+      .resendOtp(this.email)
       .subscribe({
         next: () => this.startResendCooldown(),
         error: () => this.errorMessage.set('auth.errors.generic'),

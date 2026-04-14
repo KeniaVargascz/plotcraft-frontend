@@ -341,7 +341,8 @@ import { Community } from '../communities/models/community.model';
         gap: 0.35rem;
       }
 
-      .hero h1, .section-head h2 { margin: 0; }
+      .hero h1 { margin: 0; font-size: 1.5rem; }
+      .section-head h2 { margin: 0; }
       .section-head h2 { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 500; }
       .section-icon { width: 22px; height: 22px; flex-shrink: 0; color: var(--accent-text); }
 

@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { PostType } from '../../../../core/models/post.model';
+import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-post-type-filter',
   standalone: true,
-  imports: [TranslatePipe],
+  imports: [FormsModule, TranslatePipe],
   templateUrl: './post-type-filter.component.html',
   styleUrl: './post-type-filter.component.scss',
 })

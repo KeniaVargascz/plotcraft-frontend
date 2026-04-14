@@ -61,6 +61,7 @@ import {
           }
 
           @if (
+            genres().length > 0 &&
             availableGenresFiltered().length === 0 &&
             !genreSearch.trim() &&
             selectedGenreSlugs().length === genres().length
@@ -233,7 +234,13 @@ import {
         overflow-y: auto;
         z-index: 10;
         box-shadow: 0 12px 28px -16px var(--shadow);
+        scrollbar-width: thin;
+        scrollbar-color: color-mix(in srgb, var(--accent) 38%, var(--border)) transparent;
       }
+      .char-search .dropdown::-webkit-scrollbar { width: 6px; }
+      .char-search .dropdown::-webkit-scrollbar-track { background: transparent; }
+      .char-search .dropdown::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--accent) 38%, var(--border)); border-radius: 999px; }
+      .char-search .dropdown::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--accent) 55%, var(--border)); }
       .char-search .dropdown li {
         padding: 0;
       }

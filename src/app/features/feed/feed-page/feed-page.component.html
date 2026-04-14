@@ -1,23 +1,5 @@
 <section class="feed-layout">
   <div class="feed-column">
-    <div class="search-bar">
-      <input
-        [ngModel]="searchQuery()"
-        (ngModelChange)="searchQuery.set($event)"
-        (keydown.enter)="onSearch()"
-        placeholder="Buscar en tu feed..."
-        class="search-input"
-      />
-      <button type="button" class="search-btn" (click)="onSearch()">Buscar</button>
-    </div>
-
-    @if (isSearching()) {
-      <div class="search-indicator">
-        <span>Mostrando resultados para: "{{ searchQuery() }}"</span>
-        <button type="button" (click)="clearSearch()">&times; Limpiar</button>
-      </div>
-    }
-
     <app-post-composer (postCreated)="addPost($event)" />
 
     <app-post-type-filter

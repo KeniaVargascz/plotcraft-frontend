@@ -14,6 +14,7 @@ import { AuthorCardComponent } from './components/author-card.component';
 import { CommunityCardComponent } from '../communities/components/community-card/community-card.component';
 import { CommunityService } from '../communities/services/community.service';
 import { Community } from '../communities/models/community.model';
+import { AuthGateService } from '../../core/services/auth-gate.service';
 
 @Component({
   selector: 'app-discovery-page',
@@ -100,7 +101,7 @@ import { Community } from '../communities/models/community.model';
                 <div class="release-head">
                   <div class="release-copy">
                     <div class="release-title-row">
-                      <a class="release-title" [routerLink]="['/novelas', release.novel.slug]">
+                      <a class="release-title" (click)="onNovelClick(release.novel.slug)">
                         {{ release.novel.title }}
                       </a>
                       <span class="release-badge"> +{{ release.new_chapters_count }} </span>
@@ -130,7 +131,7 @@ import { Community } from '../communities/models/community.model';
                       release.novel.stats.publishedChaptersCount === 1 ? 'capitulo' : 'capitulos'
                     }}
                   </span>
-                  <a class="release-link" [routerLink]="['/novelas', release.novel.slug]">
+                  <a class="release-link" (click)="onNovelClick(release.novel.slug)">
                     Ver novela
                     <span aria-hidden="true">↗</span>
                   </a>
@@ -514,6 +515,7 @@ import { Community } from '../communities/models/community.model';
           serif;
         color: var(--text-1);
         text-decoration: none;
+        cursor: pointer;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -618,6 +620,7 @@ import { Community } from '../communities/models/community.model';
       .release-link {
         color: var(--accent-text);
         text-decoration: none;
+        cursor: pointer;
         display: inline-flex;
         align-items: center;
         gap: 0.28rem;
@@ -780,6 +783,7 @@ export class DiscoveryPageComponent {
   private readonly discoveryService = inject(DiscoveryService);
   private readonly genresService = inject(GenresService);
   private readonly communitiesService = inject(CommunityService);
+  private readonly authGate = inject(AuthGateService);
 
   readonly snapshot = signal<DiscoverySnapshot | null>(null);
   readonly loading = signal(true);
@@ -811,6 +815,10 @@ export class DiscoveryPageComponent {
         this.loading.set(false);
       },
     });
+  }
+
+  onNovelClick(slug: string): void {
+    this.authGate.navigate(['/novelas', slug]);
   }
 
   releaseToneClass(index: number) {

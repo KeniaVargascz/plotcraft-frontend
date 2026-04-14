@@ -1,7 +1,8 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NovelSummary } from '../../../core/models/novel.model';
+import { AuthGateService } from '../../../core/services/auth-gate.service';
 
 @Component({
   selector: 'app-novel-card',
@@ -10,7 +11,7 @@ import { NovelSummary } from '../../../core/models/novel.model';
   template: `
     <article class="novel-card">
       <div class="card-top">
-        <a class="cover" [class]="coverClass()" [routerLink]="['/novelas', novel().slug]">
+        <a class="cover" [class]="coverClass()" (click)="onDetailClick()">
           <span class="cover-texture"></span>
           <span class="cover-letter">{{ novel().title.charAt(0) }}</span>
           @if (novel().language?.code && novel().language?.code !== 'es') {
@@ -26,7 +27,7 @@ import { NovelSummary } from '../../../core/models/novel.model';
             <span class="badge badge-rating">{{ ratingLabel() }}</span>
           </div>
 
-          <a class="title" [routerLink]="['/novelas', novel().slug]">{{ novel().title }}</a>
+          <a class="title" (click)="onDetailClick()">{{ novel().title }}</a>
           <p class="author">
             <a [routerLink]="['/perfil', novel().author.username]">
               @{{ novel().author.username }}
@@ -136,6 +137,7 @@ import { NovelSummary } from '../../../core/models/novel.model';
         text-decoration: none;
         overflow: hidden;
         isolation: isolate;
+        cursor: pointer;
       }
 
       .cover-tone-0 {
@@ -261,6 +263,7 @@ import { NovelSummary } from '../../../core/models/novel.model';
       .title {
         color: var(--text-1);
         text-decoration: none;
+        cursor: pointer;
         font:
           700 1.08rem/1.25 'Playfair Display',
           serif;
@@ -499,6 +502,7 @@ import { NovelSummary } from '../../../core/models/novel.model';
   ],
 })
 export class NovelCardComponent {
+  private readonly authGate = inject(AuthGateService);
   readonly novel = input.required<NovelSummary>();
   readonly tagsOpen = signal(false);
 
@@ -526,6 +530,10 @@ export class NovelCardComponent {
   readonly coverClass = computed(
     () => `cover cover-tone-${this.coverToneIndex(this.novel().slug)}`,
   );
+
+  onDetailClick(): void {
+    this.authGate.navigate(['/novelas', this.novel().slug]);
+  }
 
   toggleTags(): void {
     this.tagsOpen.update((value) => !value);

@@ -3,6 +3,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { adminMatchGuard } from './core/guards/admin-match.guard';
 import { anonymousMatchGuard, authenticatedMatchGuard } from './core/guards/session-match.guard';
+import { authGateGuard } from './core/guards/auth-gate.guard';
 import { MinimalLayoutComponent } from './layout/minimal-layout/minimal-layout.component';
 import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
 import { PrivateLayoutComponent } from './layout/private-layout/private-layout.component';
@@ -609,6 +610,7 @@ export const routes: Routes = [
       },
       {
         path: 'mundos/:slug/lore',
+        canActivate: [authGateGuard],
         loadComponent: () =>
           import('./features/worlds/world-lore-page.component').then(
             (module) => module.WorldLorePageComponent,
@@ -616,6 +618,7 @@ export const routes: Routes = [
       },
       {
         path: 'mundos/:slug/lore/:entrySlug',
+        canActivate: [authGateGuard],
         loadComponent: () =>
           import('./features/worlds/worldbuilding/wb-entry-detail-page.component').then(
             (module) => module.WbEntryDetailPageComponent,
@@ -623,6 +626,7 @@ export const routes: Routes = [
       },
       {
         path: 'mundos/:slug',
+        canActivate: [authGateGuard],
         loadComponent: () =>
           import('./features/worlds/world-detail-page.component').then(
             (module) => module.WorldDetailPageComponent,
@@ -637,6 +641,7 @@ export const routes: Routes = [
       },
       {
         path: 'personajes/:username/:slug',
+        canActivate: [authGateGuard],
         loadComponent: () =>
           import('./features/characters/character-detail-page.component').then(
             (module) => module.CharacterDetailPageComponent,
@@ -644,6 +649,7 @@ export const routes: Routes = [
       },
       {
         path: 'novelas/:slug',
+        canActivate: [authGateGuard],
         loadComponent: () =>
           import('./features/novels/novel-detail-page.component').then(
             (module) => module.NovelDetailPageComponent,
@@ -658,6 +664,7 @@ export const routes: Routes = [
       },
       {
         path: 'sagas/:slug',
+        canActivate: [authGateGuard],
         loadComponent: () =>
           import('./features/series/series-detail-page.component').then(
             (m) => m.SeriesDetailPageComponent,
@@ -672,6 +679,7 @@ export const routes: Routes = [
       },
       {
         path: 'foro/:slug',
+        canActivate: [authGateGuard],
         loadComponent: () =>
           import('./features/forum/thread-detail-page.component').then(
             (module) => module.ThreadDetailPageComponent,
@@ -686,6 +694,7 @@ export const routes: Routes = [
       },
       {
         path: 'comunidades/:slug',
+        canActivate: [authGateGuard],
         loadComponent: () =>
           import('./features/communities/community-detail-page.component').then(
             (m) => m.CommunityDetailPageComponent,
@@ -693,6 +702,7 @@ export const routes: Routes = [
       },
       {
         path: 'referencias-visuales/:id',
+        canActivate: [authGateGuard],
         loadComponent: () =>
           import('./features/visual-boards/visual-board-page.component').then(
             (module) => module.VisualBoardPageComponent,

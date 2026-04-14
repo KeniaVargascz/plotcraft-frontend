@@ -1,6 +1,7 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { WorldSummary, WORLD_GENRE_LABELS } from '../../../core/models/world.model';
+import { AuthGateService } from '../../../core/services/auth-gate.service';
 
 @Component({
   selector: 'app-world-card',
@@ -11,7 +12,7 @@ import { WorldSummary, WORLD_GENRE_LABELS } from '../../../core/models/world.mod
       <a
         class="cover"
         [class]="world().coverUrl ? '' : coverClass()"
-        [routerLink]="['/mundos', world().slug]"
+        (click)="onDetailClick()"
       >
         @if (world().coverUrl) {
           <img [src]="world().coverUrl" [alt]="world().name" class="cover-img" />
@@ -38,7 +39,7 @@ import { WorldSummary, WORLD_GENRE_LABELS } from '../../../core/models/world.mod
         @if (genreLabel()) {
           <span class="genre-badge">{{ genreLabel() }}</span>
         }
-        <a class="title" [routerLink]="['/mundos', world().slug]">{{ world().name }}</a>
+        <a class="title" (click)="onDetailClick()">{{ world().name }}</a>
         <p class="description">
           {{ world().tagline || world().description || 'Sin descripcion todavia.' }}
         </p>
@@ -98,6 +99,7 @@ import { WorldSummary, WORLD_GENRE_LABELS } from '../../../core/models/world.mod
         display: grid;
         place-items: center;
         text-decoration: none;
+        cursor: pointer;
       }
 
       .cover-img {
@@ -249,6 +251,7 @@ import { WorldSummary, WORLD_GENRE_LABELS } from '../../../core/models/world.mod
 
       .title {
         color: var(--text-1);
+        cursor: pointer;
         font:
           400 1.1rem/1.25 'Playfair Display',
           serif;
@@ -348,6 +351,7 @@ import { WorldSummary, WORLD_GENRE_LABELS } from '../../../core/models/world.mod
   ],
 })
 export class WorldCardComponent {
+  private readonly authGate = inject(AuthGateService);
   readonly world = input.required<WorldSummary>();
   readonly showVisibility = input(false);
 
@@ -360,6 +364,10 @@ export class WorldCardComponent {
     const slug = this.world().slug;
     return [...slug].reduce((acc, char) => acc + char.charCodeAt(0), 0) % 4;
   });
+
+  onDetailClick(): void {
+    this.authGate.navigate(['/mundos', this.world().slug]);
+  }
 
   coverClass() {
     return `cover-tone-${this.toneIndex()}`;

@@ -1,6 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CharacterRole, CharacterSummary } from '../../../core/models/character.model';
+import { AuthGateService } from '../../../core/services/auth-gate.service';
 
 @Component({
   selector: 'app-character-card',
@@ -9,7 +10,7 @@ import { CharacterRole, CharacterSummary } from '../../../core/models/character.
   template: `
     <article class="character-card">
       <div class="avatar-strip">
-        <a class="avatar" [class]="avatarClass()" [routerLink]="characterLink()">
+        <a class="avatar" [class]="avatarClass()" (click)="onDetailClick()">
           <span class="avatar-texture"></span>
           <span class="avatar-letter">{{ character.name.charAt(0) }}</span>
         </a>
@@ -23,13 +24,13 @@ import { CharacterRole, CharacterSummary } from '../../../core/models/character.
       </div>
 
       <div class="card-body">
-        <a class="title" [routerLink]="characterLink()">{{ character.name }}</a>
+        <a class="title" (click)="onDetailClick()">{{ character.name }}</a>
         <p class="excerpt">
           {{ character.personality || character.backstory || 'Sin descripcion breve.' }}
         </p>
 
         @if (character.world) {
-          <a class="world-link" [routerLink]="['/mundos', character.world.slug]">
+          <a class="world-link" (click)="onWorldClick()">
             <span class="world-icon">[]</span>
             <span>{{ character.world.name }}</span>
           </a>
@@ -86,6 +87,7 @@ import { CharacterRole, CharacterSummary } from '../../../core/models/character.
         place-items: center;
         overflow: hidden;
         text-decoration: none;
+        cursor: pointer;
       }
 
       .avatar-tone-0 {
@@ -194,6 +196,7 @@ import { CharacterRole, CharacterSummary } from '../../../core/models/character.
       .title,
       .world-link {
         text-decoration: none;
+        cursor: pointer;
       }
 
       .author-link {
@@ -298,7 +301,16 @@ import { CharacterRole, CharacterSummary } from '../../../core/models/character.
   ],
 })
 export class CharacterCardComponent {
+  private readonly authGate = inject(AuthGateService);
   @Input({ required: true }) character!: CharacterSummary;
+
+  onDetailClick(): void {
+    this.authGate.navigate(this.characterLink());
+  }
+
+  onWorldClick(): void {
+    this.authGate.navigate(['/mundos', this.character.world!.slug]);
+  }
 
   characterLink() {
     return ['/personajes', this.character.author.username, this.character.slug];

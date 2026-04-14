@@ -36,7 +36,15 @@ export class RegisterStep1Component {
   readonly form = this.fb.nonNullable.group(
     {
       nickname: ['', [Validators.required, Validators.maxLength(50), nicknameFormatValidator()]],
-      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(30), usernameFormatValidator()]],
+      username: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(3),
+          Validators.maxLength(30),
+          usernameFormatValidator(),
+        ],
+      ],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
       password: ['', [Validators.required, Validators.minLength(8), passwordStrengthValidator()]],
       confirmPassword: ['', Validators.required],
@@ -79,8 +87,9 @@ export class RegisterStep1Component {
   };
 
   constructor() {
-    this.form.get('password')!.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.form
+      .get('password')!
+      .valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.form.get('confirmPassword')!.updateValueAndValidity();
       });
@@ -94,29 +103,34 @@ export class RegisterStep1Component {
     this.serverError.set('');
 
     const { nickname, username, email, password, birthdate, acceptTerms } = this.form.getRawValue();
-    const payload = { nickname, username, email, password, birthdate: birthdate || null, acceptTerms };
+    const payload = {
+      nickname,
+      username,
+      email,
+      password,
+      birthdate: birthdate || null,
+      acceptTerms,
+    };
 
-    this.http
-      .post(`${environment.apiUrl}/auth/register/initiate`, payload)
-      .subscribe({
-        next: () => {
-          this.isSubmitting.set(false);
-          this.submitted.emit(payload);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.isSubmitting.set(false);
-          if (err.status === 409) {
-            const msg = (err.error?.message ?? '').toLowerCase();
-            if (msg.includes('username')) {
-              this.form.get('username')!.setErrors({ usernameTaken: true });
-            }
-            if (msg.includes('email')) {
-              this.form.get('email')!.setErrors({ emailTaken: true });
-            }
-            return;
+    this.http.post(`${environment.apiUrl}/auth/register/initiate`, payload).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        this.submitted.emit(payload);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.isSubmitting.set(false);
+        if (err.status === 409) {
+          const msg = (err.error?.message ?? '').toLowerCase();
+          if (msg.includes('username')) {
+            this.form.get('username')!.setErrors({ usernameTaken: true });
           }
-          this.serverError.set('auth.errors.generic');
-        },
-      });
+          if (msg.includes('email')) {
+            this.form.get('email')!.setErrors({ emailTaken: true });
+          }
+          return;
+        }
+        this.serverError.set('auth.errors.generic');
+      },
+    });
   }
 }

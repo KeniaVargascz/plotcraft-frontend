@@ -2,7 +2,10 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 export function getFirstError(
   control: AbstractControl,
-  errorKeyMap: Record<string, string | ((errors: ValidationErrors) => { key: string; params?: object })>,
+  errorKeyMap: Record<
+    string,
+    string | ((errors: ValidationErrors) => { key: string; params?: object })
+  >,
 ): { key: string; params?: object } | null {
   if (!control.errors || !control.touched) return null;
 

@@ -54,29 +54,25 @@ export class RegisterStep2Component implements OnInit, OnDestroy {
     this.isVerifying.set(true);
     this.errorMessage.set('');
 
-    this.authService
-      .verifyRegistration({ email: this.email, code })
-      .subscribe({
-        next: () => {
-          this.isVerifying.set(false);
-          void this.router.navigateByUrl('/feed');
-        },
-        error: (err: HttpErrorResponse) => {
-          this.isVerifying.set(false);
-          this.handleVerifyError(err);
-        },
-      });
+    this.authService.verifyRegistration({ email: this.email, code }).subscribe({
+      next: () => {
+        this.isVerifying.set(false);
+        void this.router.navigateByUrl('/feed');
+      },
+      error: (err: HttpErrorResponse) => {
+        this.isVerifying.set(false);
+        this.handleVerifyError(err);
+      },
+    });
   }
 
   resend(): void {
     if (this.resendCooldown() > 0) return;
 
-    this.authService
-      .resendOtp(this.email)
-      .subscribe({
-        next: () => this.startResendCooldown(),
-        error: () => this.errorMessage.set('auth.errors.generic'),
-      });
+    this.authService.resendOtp(this.email).subscribe({
+      next: () => this.startResendCooldown(),
+      error: () => this.errorMessage.set('auth.errors.generic'),
+    });
   }
 
   private handleVerifyError(err: HttpErrorResponse): void {

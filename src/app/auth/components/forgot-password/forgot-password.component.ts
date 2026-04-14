@@ -12,7 +12,13 @@ import { passwordStrengthValidator } from '../../validators/password-strength.va
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe, OtpInputComponent, RouterLink, PasswordStrengthIndicatorComponent],
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    OtpInputComponent,
+    RouterLink,
+    PasswordStrengthIndicatorComponent,
+  ],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss',
 })
@@ -85,20 +91,18 @@ export class ForgotPasswordComponent {
     this.formError.set('');
     this.emailForm.disable();
 
-    this.authService
-      .forgotPassword(this.submittedEmail)
-      .subscribe({
-        next: () => {
-          this.isSubmitting.set(false);
-          this.emailForm.enable();
-          this.step.set(2);
-        },
-        error: () => {
-          this.isSubmitting.set(false);
-          this.emailForm.enable();
-          this.formError.set('auth.errors.generic');
-        },
-      });
+    this.authService.forgotPassword(this.submittedEmail).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        this.emailForm.enable();
+        this.step.set(2);
+      },
+      error: () => {
+        this.isSubmitting.set(false);
+        this.emailForm.enable();
+        this.formError.set('auth.errors.generic');
+      },
+    });
   }
 
   submitReset(): void {
@@ -117,20 +121,18 @@ export class ForgotPasswordComponent {
     this.formError.set('');
     this.resetForm.disable();
 
-    this.authService
-      .resetPassword({ email: this.submittedEmail, code, newPassword })
-      .subscribe({
-        next: () => {
-          this.isSubmitting.set(false);
-          this.resetForm.enable();
-          void this.router.navigateByUrl('/login');
-        },
-        error: (err: unknown) => {
-          this.isSubmitting.set(false);
-          this.resetForm.enable();
-          this.handleResetError(err);
-        },
-      });
+    this.authService.resetPassword({ email: this.submittedEmail, code, newPassword }).subscribe({
+      next: () => {
+        this.isSubmitting.set(false);
+        this.resetForm.enable();
+        void this.router.navigateByUrl('/login');
+      },
+      error: (err: unknown) => {
+        this.isSubmitting.set(false);
+        this.resetForm.enable();
+        this.handleResetError(err);
+      },
+    });
   }
 
   private handleResetError(err: unknown): void {

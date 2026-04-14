@@ -14,9 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
     </div>
     <mat-dialog-actions align="center">
       <button mat-button [mat-dialog-close]="'register'">Crear cuenta</button>
-      <button mat-flat-button color="primary" [mat-dialog-close]="'login'">
-        Iniciar sesion
-      </button>
+      <button mat-flat-button color="primary" [mat-dialog-close]="'login'">Iniciar sesion</button>
     </mat-dialog-actions>
   `,
   styles: [

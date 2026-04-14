@@ -237,10 +237,19 @@ import {
         scrollbar-width: thin;
         scrollbar-color: color-mix(in srgb, var(--accent) 38%, var(--border)) transparent;
       }
-      .char-search .dropdown::-webkit-scrollbar { width: 6px; }
-      .char-search .dropdown::-webkit-scrollbar-track { background: transparent; }
-      .char-search .dropdown::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--accent) 38%, var(--border)); border-radius: 999px; }
-      .char-search .dropdown::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--accent) 55%, var(--border)); }
+      .char-search .dropdown::-webkit-scrollbar {
+        width: 6px;
+      }
+      .char-search .dropdown::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .char-search .dropdown::-webkit-scrollbar-thumb {
+        background: color-mix(in srgb, var(--accent) 38%, var(--border));
+        border-radius: 999px;
+      }
+      .char-search .dropdown::-webkit-scrollbar-thumb:hover {
+        background: color-mix(in srgb, var(--accent) 55%, var(--border));
+      }
       .char-search .dropdown li {
         padding: 0;
       }

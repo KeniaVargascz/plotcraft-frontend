@@ -15,30 +15,50 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
       </span>
     }
   `,
-  styles: [`
-    :host { display: block; margin-top: -0.5rem; margin-bottom: 0.25rem; }
-    .strength-bar {
-      height: 4px;
-      border-radius: 2px;
-      background: var(--border, #e0e0e0);
-      overflow: hidden;
-    }
-    .strength-fill {
-      height: 100%;
-      border-radius: 2px;
-      transition: width 0.3s, background 0.3s;
-    }
-    .strength-fill.weak   { background: var(--danger, #ef4444); }
-    .strength-fill.medium { background: var(--warning, #f59e0b); }
-    .strength-fill.strong { background: var(--success, #22c55e); }
-    .strength-label {
-      font-size: 0.75rem;
-      font-weight: 500;
-    }
-    .strength-label.weak   { color: var(--danger, #ef4444); }
-    .strength-label.medium { color: var(--warning, #f59e0b); }
-    .strength-label.strong { color: var(--success, #22c55e); }
-  `],
+  styles: [
+    `
+      :host {
+        display: block;
+        margin-top: -0.5rem;
+        margin-bottom: 0.25rem;
+      }
+      .strength-bar {
+        height: 4px;
+        border-radius: 2px;
+        background: var(--border, #e0e0e0);
+        overflow: hidden;
+      }
+      .strength-fill {
+        height: 100%;
+        border-radius: 2px;
+        transition:
+          width 0.3s,
+          background 0.3s;
+      }
+      .strength-fill.weak {
+        background: var(--danger, #ef4444);
+      }
+      .strength-fill.medium {
+        background: var(--warning, #f59e0b);
+      }
+      .strength-fill.strong {
+        background: var(--success, #22c55e);
+      }
+      .strength-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+      }
+      .strength-label.weak {
+        color: var(--danger, #ef4444);
+      }
+      .strength-label.medium {
+        color: var(--warning, #f59e0b);
+      }
+      .strength-label.strong {
+        color: var(--success, #22c55e);
+      }
+    `,
+  ],
 })
 export class PasswordStrengthIndicatorComponent {
   @Input() password = '';
@@ -46,10 +66,10 @@ export class PasswordStrengthIndicatorComponent {
   get level(): 'empty' | 'weak' | 'medium' | 'strong' {
     if (!this.password) return 'empty';
     const checks = {
-      length:  this.password.length >= 8,
-      upper:   /[A-Z]/.test(this.password),
-      lower:   /[a-z]/.test(this.password),
-      number:  /\d/.test(this.password),
+      length: this.password.length >= 8,
+      upper: /[A-Z]/.test(this.password),
+      lower: /[a-z]/.test(this.password),
+      number: /\d/.test(this.password),
       special: /[!@#$%^&*]/.test(this.password),
     };
     const passed = Object.values(checks).filter(Boolean).length;

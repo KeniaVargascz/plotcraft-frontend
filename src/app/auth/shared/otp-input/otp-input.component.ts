@@ -29,30 +29,32 @@ import {
       }
     </div>
   `,
-  styles: [`
-    .otp-wrapper {
-      display: flex;
-      gap: 0.5rem;
-      justify-content: center;
-    }
-    .otp-digit {
-      width: 3rem;
-      height: 3.5rem;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: 600;
-      border: 1px solid var(--border, #ccc);
-      border-radius: 0.5rem;
-      background: var(--bg-card, #fff);
-      color: var(--text-1, #333);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .otp-digit:focus {
-      border-color: var(--primary, #6366f1);
-      box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary, #6366f1) 25%, transparent);
-    }
-  `],
+  styles: [
+    `
+      .otp-wrapper {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+      }
+      .otp-digit {
+        width: 3rem;
+        height: 3.5rem;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 600;
+        border: 1px solid var(--border, #ccc);
+        border-radius: 0.5rem;
+        background: var(--bg-card, #fff);
+        color: var(--text-1, #333);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .otp-digit:focus {
+        border-color: var(--primary, #6366f1);
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary, #6366f1) 25%, transparent);
+      }
+    `,
+  ],
 })
 export class OtpInputComponent {
   @Input() length = 6;

@@ -38,9 +38,18 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
           <h1>{{ 'discovery.subtitle' | translate }}</h1>
         </div>
         <button type="button" class="refresh-button" aria-label="Recargar" (click)="load(true)">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <polyline points="23 4 23 10 17 10"/>
-            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="23 4 23 10 17 10" />
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
           </svg>
         </button>
       </header>
@@ -71,7 +80,20 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
 
         <section class="section">
           <div class="section-head">
-            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>{{ 'discovery.trending.novels' | translate }}</h2>
+            <h2>
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" /></svg
+              >{{ 'discovery.trending.novels' | translate }}
+            </h2>
             <a routerLink="/novelas">Ver mas en novelas</a>
           </div>
           @if (snapshot()!.trending.novels.length) {
@@ -89,56 +111,74 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
 
         <section class="section">
           <div class="section-head">
-            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>{{ 'discovery.newReleases.title' | translate }}</h2>
+            <h2>
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="16" />
+                <line x1="8" y1="12" x2="16" y2="12" /></svg
+              >{{ 'discovery.newReleases.title' | translate }}
+            </h2>
             <a routerLink="/novelas">Ver mas en novelas</a>
           </div>
           @if (snapshot()!.new_releases.length) {
-          <div class="release-grid" data-testid="new-releases">
-            @for (release of snapshot()!.new_releases; track release.novel.id; let index = $index) {
-              <article class="release-card">
-                <div class="release-strip" [class]="releaseToneClass(index)"></div>
+            <div class="release-grid" data-testid="new-releases">
+              @for (
+                release of snapshot()!.new_releases;
+                track release.novel.id;
+                let index = $index
+              ) {
+                <article class="release-card">
+                  <div class="release-strip" [class]="releaseToneClass(index)"></div>
 
-                <div class="release-head">
-                  <div class="release-copy">
-                    <div class="release-title-row">
-                      <a class="release-title" (click)="onNovelClick(release.novel.slug)">
-                        {{ release.novel.title }}
-                      </a>
-                      <span class="release-badge"> +{{ release.new_chapters_count }} </span>
+                  <div class="release-head">
+                    <div class="release-copy">
+                      <div class="release-title-row">
+                        <a class="release-title" (click)="onNovelClick(release.novel.slug)">
+                          {{ release.novel.title }}
+                        </a>
+                        <span class="release-badge"> +{{ release.new_chapters_count }} </span>
+                      </div>
+                      <p class="release-author">@{{ release.novel.author.username }}</p>
                     </div>
-                    <p class="release-author">@{{ release.novel.author.username }}</p>
                   </div>
-                </div>
 
-                @if (release.latest_chapter) {
-                  <div class="release-body">
-                    <span class="release-label">Capitulo mas reciente</span>
-                    <p class="release-chapter">
-                      {{ release.latest_chapter.title }}
-                    </p>
-                    <span class="release-published-at">
-                      {{ release.latest_chapter.publishedAt | date: 'shortDate' }}
+                  @if (release.latest_chapter) {
+                    <div class="release-body">
+                      <span class="release-label">Capitulo mas reciente</span>
+                      <p class="release-chapter">
+                        {{ release.latest_chapter.title }}
+                      </p>
+                      <span class="release-published-at">
+                        {{ release.latest_chapter.publishedAt | date: 'shortDate' }}
+                      </span>
+                    </div>
+                  }
+
+                  <div class="release-footer">
+                    <span class="release-meta">
+                      <span class="release-meta-value">
+                        {{ release.novel.stats.publishedChaptersCount }}
+                      </span>
+                      {{
+                        release.novel.stats.publishedChaptersCount === 1 ? 'capitulo' : 'capitulos'
+                      }}
                     </span>
+                    <a class="release-link" (click)="onNovelClick(release.novel.slug)">
+                      Ver novela
+                      <span aria-hidden="true">↗</span>
+                    </a>
                   </div>
-                }
-
-                <div class="release-footer">
-                  <span class="release-meta">
-                    <span class="release-meta-value">
-                      {{ release.novel.stats.publishedChaptersCount }}
-                    </span>
-                    {{
-                      release.novel.stats.publishedChaptersCount === 1 ? 'capitulo' : 'capitulos'
-                    }}
-                  </span>
-                  <a class="release-link" (click)="onNovelClick(release.novel.slug)">
-                    Ver novela
-                    <span aria-hidden="true">↗</span>
-                  </a>
-                </div>
-              </article>
-            }
-          </div>
+                </article>
+              }
+            </div>
           } @else {
             <p class="empty-section">No hay lanzamientos recientes disponibles.</p>
           }
@@ -146,7 +186,21 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
 
         <section class="section">
           <div class="section-head">
-            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>{{ 'discovery.trending.authors' | translate }}</h2>
+            <h2>
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                /></svg
+              >{{ 'discovery.trending.authors' | translate }}
+            </h2>
             <a routerLink="/descubrir">Ver mas autores</a>
           </div>
           @if (snapshot()!.trending.authors.length) {
@@ -162,7 +216,22 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
 
         <section class="section">
           <div class="section-head">
-            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="13" y2="10"/></svg>{{ 'discovery.genres.title' | translate }}</h2>
+            <h2>
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                <line x1="8" y1="6" x2="16" y2="6" />
+                <line x1="8" y1="10" x2="13" y2="10" /></svg
+              >{{ 'discovery.genres.title' | translate }}
+            </h2>
             <a [routerLink]="['/novelas/generos']">Ver mas generos</a>
           </div>
           <div class="genre-grid">
@@ -191,7 +260,23 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
 
         <section class="section">
           <div class="section-head">
-            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>{{ 'discovery.trending.worlds' | translate }}</h2>
+            <h2>
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <line x1="2" y1="12" x2="22" y2="12" />
+                <path
+                  d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+                /></svg
+              >{{ 'discovery.trending.worlds' | translate }}
+            </h2>
             <a routerLink="/mundos">Ver mas en mundos</a>
           </div>
           @if (snapshot()!.trending.worlds.length) {
@@ -207,7 +292,22 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
 
         <section class="section">
           <div class="section-head">
-            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>{{ 'discovery.trending.characters' | translate }}</h2>
+            <h2>
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg
+              >{{ 'discovery.trending.characters' | translate }}
+            </h2>
             <a routerLink="/personajes">Ver mas en personajes</a>
           </div>
           @if (snapshot()!.trending.characters.length) {
@@ -223,7 +323,22 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
 
         <section class="section">
           <div class="section-head">
-            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Comunidades populares</h2>
+            <h2>
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg
+              >Comunidades populares
+            </h2>
             <a routerLink="/comunidades/explorar">Ver mas en comunidades</a>
           </div>
           @if (popularCommunities().length) {
@@ -241,7 +356,19 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
 
         <section class="section">
           <div class="section-head">
-            <h2><svg class="section-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>{{ 'discovery.community.title' | translate }}</h2>
+            <h2>
+              <svg
+                class="section-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg
+              >{{ 'discovery.community.title' | translate }}
+            </h2>
             <a routerLink="/feed">Ver mas en feed</a>
           </div>
           @if (snapshot()!.community_posts.length) {
@@ -341,10 +468,26 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
         gap: 0.35rem;
       }
 
-      .hero h1 { margin: 0; font-size: 1.5rem; }
-      .section-head h2 { margin: 0; }
-      .section-head h2 { display: flex; align-items: center; gap: 0.5rem; font-size: 1.25rem; font-weight: 500; }
-      .section-icon { width: 22px; height: 22px; flex-shrink: 0; color: var(--accent-text); }
+      .hero h1 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+      .section-head h2 {
+        margin: 0;
+      }
+      .section-head h2 {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 500;
+      }
+      .section-icon {
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+        color: var(--accent-text);
+      }
 
       .eyebrow {
         margin: 0;
@@ -743,7 +886,15 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
         text-align: center;
       }
 
-      .empty-section { text-align: center; color: var(--text-3); padding: 2rem 1rem; margin: 0; border: 1px solid var(--border); border-radius: 1.25rem; background: var(--bg-card); }
+      .empty-section {
+        text-align: center;
+        color: var(--text-3);
+        padding: 2rem 1rem;
+        margin: 0;
+        border: 1px solid var(--border);
+        border-radius: 1.25rem;
+        background: var(--bg-card);
+      }
 
       @media (max-width: 840px) {
         .hero,

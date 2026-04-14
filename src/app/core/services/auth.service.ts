@@ -44,6 +44,12 @@ export class AuthService {
       .pipe(map((response) => this.handleAuthResponse(response.data)));
   }
 
+  verifyRegistration(payload: { email: string; code: string }): Observable<User> {
+    return this.http
+      .post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/register/verify`, payload)
+      .pipe(map((response) => this.handleAuthResponse(response.data)));
+  }
+
   login(payload: LoginPayload): Observable<User> {
     return this.http
       .post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/login`, payload)

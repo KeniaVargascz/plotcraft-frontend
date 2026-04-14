@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { OtpInputComponent } from '../../../../shared/otp-input/otp-input.component';
 import { TranslatePipe } from '../../../../../shared/pipes/translate.pipe';
 import { environment } from '../../../../../../environments/environment';
+import { AuthService } from '../../../../../core/services/auth.service';
 
 @Component({
   selector: 'app-register-step2',
@@ -18,6 +19,7 @@ export class RegisterStep2Component implements OnInit, OnDestroy {
 
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
   readonly isVerifying = signal(false);
   readonly errorMessage = signal('');
@@ -54,8 +56,8 @@ export class RegisterStep2Component implements OnInit, OnDestroy {
     this.isVerifying.set(true);
     this.errorMessage.set('');
 
-    this.http
-      .post(`${environment.apiUrl}/auth/register/verify`, { email: this.email, code })
+    this.authService
+      .verifyRegistration({ email: this.email, code })
       .subscribe({
         next: () => {
           this.isVerifying.set(false);
@@ -72,7 +74,7 @@ export class RegisterStep2Component implements OnInit, OnDestroy {
     if (this.resendCooldown() > 0) return;
 
     this.http
-      .post(`${environment.apiUrl}/auth/register/initiate`, { email: this.email })
+      .post(`${environment.apiUrl}/auth/register/resend`, { email: this.email })
       .subscribe({
         next: () => this.startResendCooldown(),
         error: () => this.errorMessage.set('auth.errors.generic'),

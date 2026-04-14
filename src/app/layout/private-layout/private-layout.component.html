@@ -27,19 +27,24 @@
     <header class="topbar" [class.mobile-topbar]="isMobile()">
       @if (isMobile()) {
         <div class="mobile-topbar-row">
-          <button
-            #mobileMenuButton
-            class="icon-button no-select"
-            type="button"
-            aria-controls="mobile-drawer"
-            [attr.aria-expanded]="isMobileMenuOpen()"
-            aria-label="Abrir menu de navegacion"
-            (click)="openMobileMenu($event.currentTarget)"
-          >
-            <span aria-hidden="true">Menu</span>
-          </button>
-
-          <a class="brand brand-mobile" routerLink="/feed">{{ 'app.name' | translate }}</a>
+          <div class="mobile-left">
+            <button
+              #mobileMenuButton
+              class="icon-button no-select"
+              type="button"
+              aria-controls="mobile-drawer"
+              [attr.aria-expanded]="isMobileMenuOpen()"
+              aria-label="Abrir menu de navegacion"
+              (click)="openMobileMenu($event.currentTarget)"
+            >
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+            <a class="brand brand-mobile" routerLink="/feed">{{ 'app.name' | translate }}</a>
+          </div>
 
           <div class="mobile-actions">
             <button
@@ -49,7 +54,10 @@
               [attr.aria-expanded]="isMobileSearchOpen()"
               (click)="toggleMobileSearch()"
             >
-              <span aria-hidden="true">Buscar</span>
+              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
             </button>
 
             <div class="notification-slot">
@@ -189,21 +197,12 @@
         aria-label="Cerrar menu"
         (click)="closeMobileMenu()"
       >
-        <span aria-hidden="true">Cerrar</span>
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
       </button>
     </div>
-
-    <nav class="drawer-primary-nav" aria-label="Navegacion principal">
-      @for (item of primaryNavItems; track item.route) {
-        <a
-          [routerLink]="item.route"
-          [attr.aria-current]="isActive(item.route, item.exact ?? false) ? 'page' : null"
-          (click)="closeMobileMenu(false)"
-        >
-          {{ item.label }}
-        </a>
-      }
-    </nav>
 
     <div class="mobile-drawer-groups">
       @for (group of navGroups; track group.label) {
@@ -229,7 +228,6 @@
     </div>
 
     <div class="mobile-drawer-footer">
-      <a routerLink="/cuenta" class="secondary-link" (click)="closeMobileMenu(false)">Configuracion</a>
       <button class="drawer-logout" type="button" (click)="logout()">Cerrar sesion</button>
     </div>
   </aside>

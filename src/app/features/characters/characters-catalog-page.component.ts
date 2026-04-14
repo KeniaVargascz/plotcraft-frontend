@@ -124,7 +124,12 @@ export class CharactersCatalogPageComponent {
   private fetchPage() {
     this.loading.set(true);
     this.charactersService
-      .listPublic({ page: this.currentPage(), limit: 12, search: this.search || null, sort: 'updated' })
+      .listPublic({
+        page: this.currentPage(),
+        limit: 12,
+        search: this.search || null,
+        sort: 'updated',
+      })
       .subscribe({
         next: (response) => {
           this.characters.set(response.data);

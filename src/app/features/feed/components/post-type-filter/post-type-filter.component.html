@@ -1,8 +1,4 @@
-<select
-  class="type-select"
-  [ngModel]="selected"
-  (ngModelChange)="choose($event)"
->
+<select class="type-select" [ngModel]="selected" (ngModelChange)="choose($event)">
   @for (option of options; track option) {
     <option [value]="option">
       {{ option === 'ALL' ? ('feed.all' | translate) : ('post.types.' + option | translate) }}

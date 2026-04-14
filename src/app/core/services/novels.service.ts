@@ -72,10 +72,7 @@ export class NovelsService {
       .pipe(map((response) => response.data));
   }
 
-  listByUser(
-    username: string,
-    query: NovelQuery = {},
-  ): Observable<PagedResponse<NovelSummary>> {
+  listByUser(username: string, query: NovelQuery = {}): Observable<PagedResponse<NovelSummary>> {
     return this.http
       .get<ApiResponse<PagedResponse<NovelSummary>>>(
         `${environment.apiUrl}/novels/user/${username}`,

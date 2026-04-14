@@ -10,7 +10,11 @@
       <button class="lightbox-nav lightbox-prev" (click)="prev()">&larr;</button>
     }
 
-    <img [src]="images[currentIndex]" [alt]="'Imagen ' + (currentIndex + 1)" class="lightbox-image" />
+    <img
+      [src]="images[currentIndex]"
+      [alt]="'Imagen ' + (currentIndex + 1)"
+      class="lightbox-image"
+    />
 
     @if (images.length > 1 && currentIndex < images.length - 1) {
       <button class="lightbox-nav lightbox-next" (click)="next()">&rarr;</button>

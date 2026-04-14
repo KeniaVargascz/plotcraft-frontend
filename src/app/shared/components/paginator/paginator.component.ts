@@ -61,7 +61,9 @@ import { Component, computed, input, output } from '@angular/core';
         color: var(--text-1);
         font-size: 0.9rem;
         cursor: pointer;
-        transition: background 0.15s, color 0.15s;
+        transition:
+          background 0.15s,
+          color 0.15s;
         padding: 0 0.5rem;
       }
       .page-btn:hover:not(:disabled):not(.active) {

@@ -37,10 +37,20 @@
               aria-label="Abrir menu de navegacion"
               (click)="openMobileMenu($event.currentTarget)"
             >
-              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="3" y1="6" x2="21" y2="6"/>
-                <line x1="3" y1="12" x2="21" y2="12"/>
-                <line x1="3" y1="18" x2="21" y2="18"/>
+              <svg
+                aria-hidden="true"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             </button>
             <a class="brand brand-mobile" routerLink="/feed">{{ 'app.name' | translate }}</a>
@@ -54,9 +64,19 @@
               [attr.aria-expanded]="isMobileSearchOpen()"
               (click)="toggleMobileSearch()"
             >
-              <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="11" cy="11" r="8"/>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              <svg
+                aria-hidden="true"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
             </button>
 
@@ -84,12 +104,20 @@
             </div>
 
             @if (authService.currentUser$ | async; as currentUser) {
-              <a routerLink="/mi-perfil" class="user-link user-link-compact" aria-label="Abrir perfil">
+              <a
+                routerLink="/mi-perfil"
+                class="user-link user-link-compact"
+                aria-label="Abrir perfil"
+              >
                 <span class="user-avatar">
                   @if (currentUser.profile?.avatarUrl) {
                     <img [src]="currentUser.profile?.avatarUrl" [alt]="currentUser.username" />
                   } @else {
-                    {{ (currentUser.profile?.displayName || currentUser.username).charAt(0).toUpperCase() }}
+                    {{
+                      (currentUser.profile?.displayName || currentUser.username)
+                        .charAt(0)
+                        .toUpperCase()
+                    }}
                   }
                 </span>
               </a>
@@ -117,12 +145,7 @@
             [attr.aria-expanded]="showNotifications()"
             (click)="toggleNotifications()"
           >
-            <svg
-              class="notification-icon"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              focusable="false"
-            >
+            <svg class="notification-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path
                 d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 1 0-14 0v5l-2 2v1h18v-1l-2-2Z"
                 fill="currentColor"
@@ -148,7 +171,11 @@
                 @if (currentUser.profile?.avatarUrl) {
                   <img [src]="currentUser.profile?.avatarUrl" [alt]="currentUser.username" />
                 } @else {
-                  {{ (currentUser.profile?.displayName || currentUser.username).charAt(0).toUpperCase() }}
+                  {{
+                    (currentUser.profile?.displayName || currentUser.username)
+                      .charAt(0)
+                      .toUpperCase()
+                  }}
                 }
               </span>
               <span class="user-name">@{{ currentUser.username }}</span>
@@ -188,10 +215,20 @@
         aria-label="Cerrar menu"
         (click)="closeMobileMenu()"
       >
-        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"/>
-              <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
+        <svg
+          aria-hidden="true"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
       </button>
     </div>
 
@@ -210,7 +247,11 @@
             </a>
           }
           @if (group.label === 'Comunidad' && authService.getCurrentUserSnapshot()?.isAdmin) {
-            <a routerLink="/admin/comunidades" routerLinkActive="active" (click)="closeMobileMenu(false)">
+            <a
+              routerLink="/admin/comunidades"
+              routerLinkActive="active"
+              (click)="closeMobileMenu(false)"
+            >
               Panel de revision
             </a>
           }
@@ -231,38 +272,75 @@
 <ng-template #bottomNavTpl>
   <nav class="bottom-nav" aria-label="Navegacion principal" role="navigation">
     <a routerLink="/feed" [attr.aria-current]="isActive('/feed', true) ? 'page' : null">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-        <polyline points="9 22 9 12 15 12 15 22"/>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
       </svg>
       <span>Feed</span>
     </a>
     <a routerLink="/descubrir" [attr.aria-current]="isActive('/descubrir', false) ? 'page' : null">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
       </svg>
       <span>Descubrir</span>
     </a>
     <a routerLink="/novelas" [attr.aria-current]="isActive('/novelas', false) ? 'page' : null">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
       </svg>
       <span>Novelas</span>
     </a>
     <a routerLink="/mundos" [attr.aria-current]="isActive('/mundos', false) ? 'page' : null">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="2" y1="12" x2="22" y2="12"/>
-        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10" />
+        <line x1="2" y1="12" x2="22" y2="12" />
+        <path
+          d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"
+        />
       </svg>
       <span>Mundos</span>
     </a>
     <a routerLink="/mi-perfil" [attr.aria-current]="isActive('/mi-perfil', false) ? 'page' : null">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-        <circle cx="12" cy="7" r="4"/>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
       </svg>
       <span>Perfil</span>
     </a>

@@ -22,7 +22,9 @@ export class HighlightsService {
     if (query.limit) params = params.set('limit', query.limit);
     if (query.novel_id) params = params.set('novel_id', query.novel_id);
     return this.http
-      .get<ApiResponse<PaginatedResponse<Highlight>>>(`${environment.apiUrl}/highlights`, { params })
+      .get<
+        ApiResponse<PaginatedResponse<Highlight>>
+      >(`${environment.apiUrl}/highlights`, { params })
       .pipe(map((response) => response.data));
   }
 

@@ -13,7 +13,10 @@
 
   <div class="reaction-chips">
     @for (option of reactionOptions; track option.type) {
-      @if (post.stats.reactionsSummary[option.type] > 0 || post.viewerContext?.reactionType === option.type) {
+      @if (
+        post.stats.reactionsSummary[option.type] > 0 ||
+        post.viewerContext?.reactionType === option.type
+      ) {
         <button
           type="button"
           class="chip"

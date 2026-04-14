@@ -15,7 +15,9 @@
             <span>{{ profile()!.bio }}</span>
           }
           @if (profile()!.website) {
-            <a [href]="profile()!.website" target="_blank" rel="noreferrer">{{ profile()!.website }}</a>
+            <a [href]="profile()!.website" target="_blank" rel="noreferrer">{{
+              profile()!.website
+            }}</a>
           }
         </div>
         <div class="profile-actions">
@@ -43,10 +45,12 @@
           <strong>{{ profile()!.postsCount }}</strong> {{ 'profile.posts' | translate }}
         </a>
         <a [routerLink]="['/perfil', profile()!.username, 'seguidores']">
-          <strong data-testid="followers-count">{{ profile()!.followersCount }}</strong> {{ 'profile.followers' | translate }}
+          <strong data-testid="followers-count">{{ profile()!.followersCount }}</strong>
+          {{ 'profile.followers' | translate }}
         </a>
         <a [routerLink]="['/perfil', profile()!.username, 'siguiendo']">
-          <strong data-testid="following-count">{{ profile()!.followingCount }}</strong> {{ 'profile.following' | translate }}
+          <strong data-testid="following-count">{{ profile()!.followingCount }}</strong>
+          {{ 'profile.following' | translate }}
         </a>
       </div>
     </header>
@@ -76,10 +80,7 @@
     </div>
 
     @if (activeTab() === 'posts' || activeTab() === 'saved') {
-      <app-post-type-filter
-        [selected]="selectedType()"
-        (selectedChange)="onTypeChange($event)"
-      />
+      <app-post-type-filter [selected]="selectedType()" (selectedChange)="onTypeChange($event)" />
     }
 
     @if (activeTab() === 'novels') {

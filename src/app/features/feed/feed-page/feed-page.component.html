@@ -2,10 +2,7 @@
   <div class="feed-column">
     <app-post-composer (postCreated)="addPost($event)" />
 
-    <app-post-type-filter
-      [selected]="selectedType()"
-      (selectedChange)="onTypeChange($event)"
-    />
+    <app-post-type-filter [selected]="selectedType()" (selectedChange)="onTypeChange($event)" />
 
     @if (loading()) {
       <div class="state-card">{{ 'feed.loading' | translate }}</div>

@@ -43,7 +43,10 @@ export class ForumService {
       .pipe(map((response) => response.data));
   }
 
-  listUserThreads(username: string, query: ThreadQuery = {}): Observable<PaginatedResponse<ThreadSummary>> {
+  listUserThreads(
+    username: string,
+    query: ThreadQuery = {},
+  ): Observable<PaginatedResponse<ThreadSummary>> {
     return this.http
       .get<ApiResponse<PaginatedResponse<ThreadSummary>>>(`${this.baseUrl}/user/${username}`, {
         params: this.buildParams(query),

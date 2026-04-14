@@ -7,8 +7,12 @@
     </div>
 
     <div class="hero-actions">
-      <a mat-stroked-button routerLink="/mi-perfil">{{ 'account.actions.backToProfile' | translate }}</a>
-      <a mat-flat-button routerLink="/mi-perfil/editar">{{ 'account.actions.editPublicProfile' | translate }}</a>
+      <a mat-stroked-button routerLink="/mi-perfil">{{
+        'account.actions.backToProfile' | translate
+      }}</a>
+      <a mat-flat-button routerLink="/mi-perfil/editar">{{
+        'account.actions.editPublicProfile' | translate
+      }}</a>
     </div>
   </header>
 
@@ -69,7 +73,9 @@
             <mat-form-field appearance="outline">
               <mat-label>{{ 'auth.fields.email' | translate }}</mat-label>
               <input matInput formControlName="email" />
-              @if (emailForm.controls.email.touched && emailForm.controls.email.hasError('required')) {
+              @if (
+                emailForm.controls.email.touched && emailForm.controls.email.hasError('required')
+              ) {
                 <mat-error>{{ 'validation.required' | translate }}</mat-error>
               }
               @if (emailForm.controls.email.touched && emailForm.controls.email.hasError('email')) {
@@ -79,17 +85,48 @@
 
             <mat-form-field appearance="outline">
               <mat-label>{{ 'account.fields.currentPassword' | translate }}</mat-label>
-              <input matInput [type]="showEmailCurrentPw ? 'text' : 'password'" formControlName="currentPassword" />
-              <button type="button" matSuffix mat-icon-button (click)="showEmailCurrentPw = !showEmailCurrentPw" [attr.aria-label]="showEmailCurrentPw ? 'Ocultar' : 'Mostrar'" class="eye-toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <input
+                matInput
+                [type]="showEmailCurrentPw ? 'text' : 'password'"
+                formControlName="currentPassword"
+              />
+              <button
+                type="button"
+                matSuffix
+                mat-icon-button
+                (click)="showEmailCurrentPw = !showEmailCurrentPw"
+                [attr.aria-label]="showEmailCurrentPw ? 'Ocultar' : 'Mostrar'"
+                class="eye-toggle"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
                   @if (showEmailCurrentPw) {
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>
+                    <path
+                      d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                    />
+                    <path
+                      d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
+                    />
+                    <line x1="1" y1="1" x2="23" y2="23" />
                   } @else {
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
                   }
                 </svg>
               </button>
-              @if (emailForm.controls.currentPassword.touched && emailForm.controls.currentPassword.hasError('required')) {
+              @if (
+                emailForm.controls.currentPassword.touched &&
+                emailForm.controls.currentPassword.hasError('required')
+              ) {
                 <mat-error>{{ 'validation.required' | translate }}</mat-error>
               }
             </mat-form-field>
@@ -112,7 +149,11 @@
 
           <div class="actions">
             <button mat-flat-button type="submit" [disabled]="emailSaving()">
-              {{ emailSaving() ? ('account.common.saving' | translate) : ('account.email.submit' | translate) }}
+              {{
+                emailSaving()
+                  ? ('account.common.saving' | translate)
+                  : ('account.email.submit' | translate)
+              }}
             </button>
           </div>
         </form>
@@ -132,24 +173,57 @@
             <mat-form-field appearance="outline">
               <mat-label>{{ 'auth.fields.username' | translate }}</mat-label>
               <input matInput formControlName="username" />
-              @if (usernameForm.controls.username.touched && usernameForm.controls.username.invalid) {
+              @if (
+                usernameForm.controls.username.touched && usernameForm.controls.username.invalid
+              ) {
                 <mat-error>{{ 'validation.usernameFormat' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
               <mat-label>{{ 'account.fields.currentPassword' | translate }}</mat-label>
-              <input matInput [type]="showUsernameCurrentPw ? 'text' : 'password'" formControlName="currentPassword" />
-              <button type="button" matSuffix mat-icon-button (click)="showUsernameCurrentPw = !showUsernameCurrentPw" [attr.aria-label]="showUsernameCurrentPw ? 'Ocultar' : 'Mostrar'" class="eye-toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <input
+                matInput
+                [type]="showUsernameCurrentPw ? 'text' : 'password'"
+                formControlName="currentPassword"
+              />
+              <button
+                type="button"
+                matSuffix
+                mat-icon-button
+                (click)="showUsernameCurrentPw = !showUsernameCurrentPw"
+                [attr.aria-label]="showUsernameCurrentPw ? 'Ocultar' : 'Mostrar'"
+                class="eye-toggle"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
                   @if (showUsernameCurrentPw) {
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>
+                    <path
+                      d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                    />
+                    <path
+                      d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
+                    />
+                    <line x1="1" y1="1" x2="23" y2="23" />
                   } @else {
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
                   }
                 </svg>
               </button>
-              @if (usernameForm.controls.currentPassword.touched && usernameForm.controls.currentPassword.hasError('required')) {
+              @if (
+                usernameForm.controls.currentPassword.touched &&
+                usernameForm.controls.currentPassword.hasError('required')
+              ) {
                 <mat-error>{{ 'validation.required' | translate }}</mat-error>
               }
             </mat-form-field>
@@ -171,12 +245,12 @@
           }
 
           <div class="actions">
-            <button
-              mat-flat-button
-              type="submit"
-              [disabled]="usernameSaving()"
-            >
-              {{ usernameSaving() ? ('account.common.saving' | translate) : ('account.username.submit' | translate) }}
+            <button mat-flat-button type="submit" [disabled]="usernameSaving()">
+              {{
+                usernameSaving()
+                  ? ('account.common.saving' | translate)
+                  : ('account.username.submit' | translate)
+              }}
             </button>
           </div>
         </form>
@@ -195,42 +269,150 @@
           <div class="field-grid password-grid">
             <mat-form-field appearance="outline">
               <mat-label>{{ 'account.fields.currentPassword' | translate }}</mat-label>
-              <input matInput [type]="showPwCurrent ? 'text' : 'password'" formControlName="currentPassword" />
-              <button type="button" matSuffix mat-icon-button (click)="showPwCurrent = !showPwCurrent" [attr.aria-label]="showPwCurrent ? 'Ocultar' : 'Mostrar'" class="eye-toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  @if (showPwCurrent) { <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/> } @else { <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/> }
+              <input
+                matInput
+                [type]="showPwCurrent ? 'text' : 'password'"
+                formControlName="currentPassword"
+              />
+              <button
+                type="button"
+                matSuffix
+                mat-icon-button
+                (click)="showPwCurrent = !showPwCurrent"
+                [attr.aria-label]="showPwCurrent ? 'Ocultar' : 'Mostrar'"
+                class="eye-toggle"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  @if (showPwCurrent) {
+                    <path
+                      d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                    />
+                    <path
+                      d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
+                    />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  } @else {
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  }
                 </svg>
               </button>
-              @if (passwordForm.controls.currentPassword.touched && passwordForm.controls.currentPassword.hasError('required')) {
+              @if (
+                passwordForm.controls.currentPassword.touched &&
+                passwordForm.controls.currentPassword.hasError('required')
+              ) {
                 <mat-error>{{ 'validation.required' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline">
               <mat-label>{{ 'account.fields.newPassword' | translate }}</mat-label>
-              <input matInput [type]="showPwNew ? 'text' : 'password'" formControlName="newPassword" />
-              <button type="button" matSuffix mat-icon-button (click)="showPwNew = !showPwNew" [attr.aria-label]="showPwNew ? 'Ocultar' : 'Mostrar'" class="eye-toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  @if (showPwNew) { <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/> } @else { <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/> }
+              <input
+                matInput
+                [type]="showPwNew ? 'text' : 'password'"
+                formControlName="newPassword"
+              />
+              <button
+                type="button"
+                matSuffix
+                mat-icon-button
+                (click)="showPwNew = !showPwNew"
+                [attr.aria-label]="showPwNew ? 'Ocultar' : 'Mostrar'"
+                class="eye-toggle"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  @if (showPwNew) {
+                    <path
+                      d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                    />
+                    <path
+                      d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
+                    />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  } @else {
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  }
                 </svg>
               </button>
-              @if (passwordForm.controls.newPassword.touched && passwordForm.controls.newPassword.invalid) {
+              @if (
+                passwordForm.controls.newPassword.touched &&
+                passwordForm.controls.newPassword.invalid
+              ) {
                 <mat-error>{{ 'validation.passwordFormat' | translate }}</mat-error>
               }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="full-span">
               <mat-label>{{ 'account.fields.confirmNewPassword' | translate }}</mat-label>
-              <input matInput [type]="showPwConfirm ? 'text' : 'password'" formControlName="confirmNewPassword" />
-              <button type="button" matSuffix mat-icon-button (click)="showPwConfirm = !showPwConfirm" [attr.aria-label]="showPwConfirm ? 'Ocultar' : 'Mostrar'" class="eye-toggle">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  @if (showPwConfirm) { <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/> } @else { <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/> }
+              <input
+                matInput
+                [type]="showPwConfirm ? 'text' : 'password'"
+                formControlName="confirmNewPassword"
+              />
+              <button
+                type="button"
+                matSuffix
+                mat-icon-button
+                (click)="showPwConfirm = !showPwConfirm"
+                [attr.aria-label]="showPwConfirm ? 'Ocultar' : 'Mostrar'"
+                class="eye-toggle"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  @if (showPwConfirm) {
+                    <path
+                      d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                    />
+                    <path
+                      d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
+                    />
+                    <line x1="1" y1="1" x2="23" y2="23" />
+                  } @else {
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                    <circle cx="12" cy="12" r="3" />
+                  }
                 </svg>
               </button>
-              @if (passwordForm.controls.confirmNewPassword.touched && passwordForm.controls.confirmNewPassword.hasError('required')) {
+              @if (
+                passwordForm.controls.confirmNewPassword.touched &&
+                passwordForm.controls.confirmNewPassword.hasError('required')
+              ) {
                 <mat-error>{{ 'validation.required' | translate }}</mat-error>
               }
-              @if (passwordForm.controls.confirmNewPassword.touched && passwordForm.hasError('passwordMismatch')) {
+              @if (
+                passwordForm.controls.confirmNewPassword.touched &&
+                passwordForm.hasError('passwordMismatch')
+              ) {
                 <mat-error>{{ 'validation.passwordMismatch' | translate }}</mat-error>
               }
             </mat-form-field>
@@ -252,12 +434,12 @@
           }
 
           <div class="actions">
-            <button
-              mat-flat-button
-              type="submit"
-              [disabled]="passwordSaving()"
-            >
-              {{ passwordSaving() ? ('account.common.saving' | translate) : ('account.password.submit' | translate) }}
+            <button mat-flat-button type="submit" [disabled]="passwordSaving()">
+              {{
+                passwordSaving()
+                  ? ('account.common.saving' | translate)
+                  : ('account.password.submit' | translate)
+              }}
             </button>
           </div>
         </form>
@@ -506,7 +688,13 @@
             </label>
             <div class="channel-options">
               <label class="channel-option" [class.active]="notifPrefs().channel === 'IN_APP'">
-                <input type="radio" name="channel" value="IN_APP" [checked]="notifPrefs().channel === 'IN_APP'" disabled />
+                <input
+                  type="radio"
+                  name="channel"
+                  value="IN_APP"
+                  [checked]="notifPrefs().channel === 'IN_APP'"
+                  disabled
+                />
                 {{ 'settings.notifications.channelInApp' | translate }}
               </label>
               <label class="channel-option disabled">
@@ -534,13 +722,12 @@
         </p>
 
         <div class="actions">
-          <button
-            mat-flat-button
-            type="button"
-            [disabled]="exportLoading()"
-            (click)="exportData()"
-          >
-            {{ exportLoading() ? ('account.export.loading' | translate) : ('settings.export.button' | translate) }}
+          <button mat-flat-button type="button" [disabled]="exportLoading()" (click)="exportData()">
+            {{
+              exportLoading()
+                ? ('account.export.loading' | translate)
+                : ('settings.export.button' | translate)
+            }}
           </button>
         </div>
       </mat-card>
@@ -559,7 +746,9 @@
         </p>
 
         <div class="actions">
-          <a mat-stroked-button routerLink="/cuenta/eliminar">{{ 'account.danger.cta' | translate }}</a>
+          <a mat-stroked-button routerLink="/cuenta/eliminar">{{
+            'account.danger.cta' | translate
+          }}</a>
         </div>
       </mat-card>
     </div>

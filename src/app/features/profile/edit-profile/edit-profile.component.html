@@ -29,11 +29,17 @@
       <input matInput formControlName="website" />
     </mat-form-field>
 
-    <mat-checkbox formControlName="isPublic">{{ 'profile.fields.isPublic' | translate }}</mat-checkbox>
+    <mat-checkbox formControlName="isPublic">{{
+      'profile.fields.isPublic' | translate
+    }}</mat-checkbox>
 
     <div class="actions">
-      <button mat-stroked-button type="button" routerLink="/mi-perfil">{{ 'common.cancel' | translate }}</button>
-      <button mat-flat-button type="submit" [disabled]="loading()">{{ 'common.save' | translate }}</button>
+      <button mat-stroked-button type="button" routerLink="/mi-perfil">
+        {{ 'common.cancel' | translate }}
+      </button>
+      <button mat-flat-button type="submit" [disabled]="loading()">
+        {{ 'common.save' | translate }}
+      </button>
     </div>
   </form>
 </section>

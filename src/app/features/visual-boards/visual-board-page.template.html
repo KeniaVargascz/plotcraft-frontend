@@ -26,7 +26,9 @@
             @if (currentBoard.description) {
               <p class="description">{{ currentBoard.description }}</p>
             }
-            <p class="author">{{ currentBoard.author.displayName }} · @{{ currentBoard.author.username }}</p>
+            <p class="author">
+              {{ currentBoard.author.displayName }} · @{{ currentBoard.author.username }}
+            </p>
           </div>
 
           @if (isOwner()) {
@@ -47,7 +49,11 @@
             placeholder="Nombre de la seccion"
             (keydown.enter)="createInlineSection()"
           />
-          <button type="button" (click)="createInlineSection()" [disabled]="!newSectionTitle.trim()">
+          <button
+            type="button"
+            (click)="createInlineSection()"
+            [disabled]="!newSectionTitle.trim()"
+          >
             Añadir
           </button>
           <button type="button" class="ghost" (click)="cancelInlineSection()">Cancelar</button>
@@ -59,7 +65,12 @@
       </div>
     }
 
-    <section class="sections" cdkDropList [cdkDropListDisabled]="!isOwner()" (cdkDropListDropped)="dropSection($event)">
+    <section
+      class="sections"
+      cdkDropList
+      [cdkDropListDisabled]="!isOwner()"
+      (cdkDropListDropped)="dropSection($event)"
+    >
       @for (section of currentBoard.sections; track section.id) {
         <article class="section-card" cdkDrag>
           <header class="section-head">
@@ -73,7 +84,9 @@
             @if (isOwner()) {
               <div class="section-actions">
                 <button type="button" (click)="renameSection(section)">Editar</button>
-                <button type="button" class="danger" (click)="deleteSection(section)">Eliminar</button>
+                <button type="button" class="danger" (click)="deleteSection(section)">
+                  Eliminar
+                </button>
               </div>
             }
           </header>
@@ -88,12 +101,28 @@
             >
               @for (item of section.items; track item.id) {
                 <figure class="item-card" cdkDrag>
-                  <img [src]="item.imageUrl" [alt]="item.caption || section.title" (click)="openLightbox(section, item.id)" />
+                  <img
+                    [src]="item.imageUrl"
+                    [alt]="item.caption || section.title"
+                    (click)="openLightbox(section, item.id)"
+                  />
 
                   @if (isOwner()) {
                     <button type="button" class="item-handle" cdkDragHandle>⋮⋮</button>
-                    <button type="button" class="item-delete" (click)="deleteItem(section.id, item.id)">×</button>
-                    <button type="button" class="item-edit" (click)="editCaption(section.id, item.id, item.caption)">Pie</button>
+                    <button
+                      type="button"
+                      class="item-delete"
+                      (click)="deleteItem(section.id, item.id)"
+                    >
+                      ×
+                    </button>
+                    <button
+                      type="button"
+                      class="item-edit"
+                      (click)="editCaption(section.id, item.id, item.caption)"
+                    >
+                      Pie
+                    </button>
                   }
 
                   @if (item.caption) {
@@ -107,7 +136,9 @@
           }
 
           @if (isOwner()) {
-            <button type="button" class="add-image" (click)="openAddImageDialog(section)">+ Añadir imagen</button>
+            <button type="button" class="add-image" (click)="openAddImageDialog(section)">
+              + Añadir imagen
+            </button>
           }
         </article>
       }
@@ -115,6 +146,10 @@
   </section>
 
   @if (lightboxImages().length) {
-    <app-lightbox [images]="lightboxImages()" [initialIndex]="lightboxIndex()" (closed)="closeLightbox()" />
+    <app-lightbox
+      [images]="lightboxImages()"
+      [initialIndex]="lightboxIndex()"
+      (closed)="closeLightbox()"
+    />
   }
 }

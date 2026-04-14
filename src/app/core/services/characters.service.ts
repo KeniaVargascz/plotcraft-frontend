@@ -59,12 +59,9 @@ export class CharactersService {
 
   listMine(query: CharacterQuery = {}) {
     return this.http
-      .get<ApiResponse<PagedResponse<CharacterSummary>>>(
-        `${environment.apiUrl}/characters/me`,
-        {
-          params: this.buildParams(query),
-        },
-      )
+      .get<ApiResponse<PagedResponse<CharacterSummary>>>(`${environment.apiUrl}/characters/me`, {
+        params: this.buildParams(query),
+      })
       .pipe(map((response) => response.data));
   }
 
@@ -98,19 +95,23 @@ export class CharactersService {
 
   listRelationships(username: string, slug: string, query: CharacterQuery = {}) {
     return this.http
-      .get<
-        ApiResponse<PaginatedResponse<CharacterRelationship>>
-      >(`${environment.apiUrl}/characters/${username}/${slug}/relationships`, {
-        params: this.buildParams(query),
-      })
+      .get<ApiResponse<PaginatedResponse<CharacterRelationship>>>(
+        `${environment.apiUrl}/characters/${username}/${slug}/relationships`,
+        {
+          params: this.buildParams(query),
+        },
+      )
       .pipe(map((response) => response.data));
   }
 
   listNovels(username: string, slug: string, query: CharacterQuery = {}) {
     return this.http
-      .get<ApiResponse<PaginatedResponse<unknown>>>(`${environment.apiUrl}/characters/${username}/${slug}/novels`, {
-        params: this.buildParams(query),
-      })
+      .get<ApiResponse<PaginatedResponse<unknown>>>(
+        `${environment.apiUrl}/characters/${username}/${slug}/novels`,
+        {
+          params: this.buildParams(query),
+        },
+      )
       .pipe(map((response) => response.data));
   }
 

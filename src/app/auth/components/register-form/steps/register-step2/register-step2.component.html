@@ -6,10 +6,7 @@
   </p>
 
   <div class="otp-section" [class.disabled]="formDisabled()">
-    <pc-otp-input
-      (completed)="onOtpCompleted($event)"
-      (cleared)="onOtpCleared()"
-    />
+    <pc-otp-input (completed)="onOtpCompleted($event)" (cleared)="onOtpCleared()" />
   </div>
 
   @if (errorMessage()) {
@@ -23,7 +20,9 @@
       [disabled]="otpCode().length !== 6 || isVerifying() || formDisabled()"
       (click)="verify()"
     >
-      {{ isVerifying() ? ('auth.verify.verifying' | translate) : ('auth.verify.action' | translate) }}
+      {{
+        isVerifying() ? ('auth.verify.verifying' | translate) : ('auth.verify.action' | translate)
+      }}
     </button>
 
     <button

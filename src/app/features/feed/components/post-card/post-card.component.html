@@ -11,7 +11,7 @@
     </div>
 
     <div class="post-header-actions">
-      <span class="type-badge">{{ ('post.types.' + post.type) | translate }}</span>
+      <span class="type-badge">{{ 'post.types.' + post.type | translate }}</span>
       @if (isAuthor) {
         <div class="owner-actions">
           <button type="button" (click)="startEdit()">{{ 'post.edit' | translate }}</button>
@@ -25,7 +25,9 @@
     <form [formGroup]="form" (ngSubmit)="saveEdit()" class="edit-form">
       <textarea formControlName="content" rows="5"></textarea>
       <div class="edit-actions">
-        <button type="submit" [disabled]="form.invalid || loading()">{{ 'common.save' | translate }}</button>
+        <button type="submit" [disabled]="form.invalid || loading()">
+          {{ 'common.save' | translate }}
+        </button>
         <button type="button" (click)="cancelEdit()">{{ 'common.cancel' | translate }}</button>
       </div>
     </form>
@@ -36,7 +38,12 @@
   @if (post.imageUrls?.length) {
     <div class="post-gallery" [class]="'gallery-' + post.imageUrls.length">
       @for (url of post.imageUrls; track url; let i = $index) {
-        <img [src]="url" [alt]="'Imagen ' + (i + 1)" (click)="openLightbox(i)" class="gallery-img" />
+        <img
+          [src]="url"
+          [alt]="'Imagen ' + (i + 1)"
+          (click)="openLightbox(i)"
+          class="gallery-img"
+        />
       }
     </div>
   }

@@ -17,7 +17,9 @@
       <form [formGroup]="form" (ngSubmit)="save()" class="edit-form">
         <textarea formControlName="content" rows="3"></textarea>
         <div class="edit-actions">
-          <button type="submit" [disabled]="form.invalid || loading()">{{ 'common.save' | translate }}</button>
+          <button type="submit" [disabled]="form.invalid || loading()">
+            {{ 'common.save' | translate }}
+          </button>
           <button type="button" (click)="cancelEdit()">{{ 'common.cancel' | translate }}</button>
         </div>
       </form>

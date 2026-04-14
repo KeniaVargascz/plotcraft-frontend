@@ -58,7 +58,7 @@
         <span>{{ 'feed.title' | translate }}</span>
         <select formControlName="type">
           @for (type of postTypes; track type) {
-            <option [value]="type">{{ ('post.types.' + type) | translate }}</option>
+            <option [value]="type">{{ 'post.types.' + type | translate }}</option>
           }
         </select>
       </label>

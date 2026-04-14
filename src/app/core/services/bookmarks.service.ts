@@ -15,7 +15,9 @@ export class BookmarksService {
     if (cursor) params = params.set('cursor', cursor);
     if (limit) params = params.set('limit', limit);
     return this.http
-      .get<ApiResponse<PaginatedResponse<ReaderBookmark>>>(`${environment.apiUrl}/bookmarks`, { params })
+      .get<
+        ApiResponse<PaginatedResponse<ReaderBookmark>>
+      >(`${environment.apiUrl}/bookmarks`, { params })
       .pipe(map((response) => response.data));
   }
 

@@ -18,8 +18,8 @@
 <section class="feature-grid">
   @for (feature of ['one', 'two', 'three', 'four']; track feature) {
     <article class="feature-card">
-      <h3>{{ ('landing.features.' + feature + '.title') | translate }}</h3>
-      <p>{{ ('landing.features.' + feature + '.description') | translate }}</p>
+      <h3>{{ 'landing.features.' + feature + '.title' | translate }}</h3>
+      <p>{{ 'landing.features.' + feature + '.description' | translate }}</p>
     </article>
   }
 </section>

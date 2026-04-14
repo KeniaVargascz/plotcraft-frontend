@@ -149,16 +149,16 @@ import { CharacterKinshipDialogComponent } from './components/character-kinship-
                     </article>
                   }
                 </div>
-                  @if (hasMoreRelationships()) {
-                    <button
-                      type="button"
-                      class="load-more"
-                      [disabled]="relationshipLoading()"
-                      (click)="loadMoreRelationships()"
-                    >
-                      {{ relationshipLoading() ? 'Cargando...' : 'Cargar mas' }}
-                    </button>
-                  }
+                @if (hasMoreRelationships()) {
+                  <button
+                    type="button"
+                    class="load-more"
+                    [disabled]="relationshipLoading()"
+                    (click)="loadMoreRelationships()"
+                  >
+                    {{ relationshipLoading() ? 'Cargando...' : 'Cargar mas' }}
+                  </button>
+                }
               }
             </aside>
           </section>

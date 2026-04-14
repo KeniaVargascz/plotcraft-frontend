@@ -18,7 +18,13 @@ import { SeriesService } from './services/series.service';
 @Component({
   selector: 'app-series-catalog-page',
   standalone: true,
-  imports: [FormsModule, ErrorMessageComponent, LoadingSpinnerComponent, SeriesCardComponent, PaginatorComponent],
+  imports: [
+    FormsModule,
+    ErrorMessageComponent,
+    LoadingSpinnerComponent,
+    SeriesCardComponent,
+    PaginatorComponent,
+  ],
   template: `
     <section class="page">
       <header class="header">

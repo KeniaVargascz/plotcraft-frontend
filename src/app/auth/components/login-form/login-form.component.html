@@ -55,6 +55,8 @@
       </label>
     </div>
 
+    <a class="forgot-link" routerLink="/forgot-password">{{ 'auth.login.forgotPassword' | translate }}</a>
+
     @if (formError()) {
       <p class="feedback error">
         @if (rateLimitCountdown() > 0) {

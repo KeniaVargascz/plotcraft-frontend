@@ -72,6 +72,7 @@
         "password": "Contraseña",
         "rememberMe": "Recordarme"
       },
+      "forgotPassword": "¿Olvidaste tu contraseña?",
       "error": {
         "identifier": {
           "required": "Ingresa tu usuario o correo electronico.",
@@ -160,6 +161,48 @@
           "expired": "El codigo ha expirado. Solicita uno nuevo."
         },
         "tooManyAttempts": "Demasiados intentos. Solicita un nuevo codigo."
+      }
+    },
+    "forgotPassword": {
+      "title": "Recuperar contraseña",
+      "subtitle": "Ingresa tu correo y te enviaremos un codigo de verificacion.",
+      "fields": {
+        "email": "Correo electronico"
+      },
+      "submit": "Enviar codigo",
+      "sending": "Enviando...",
+      "success": "Codigo enviado a tu correo",
+      "backToLogin": "Volver al inicio de sesion",
+      "error": {
+        "email": {
+          "required": "El correo es obligatorio",
+          "email": "Ingresa un correo valido"
+        }
+      }
+    },
+    "resetPassword": {
+      "title": "Nueva contraseña",
+      "subtitle": "Ingresa el codigo que enviamos a {{email}} y tu nueva contraseña.",
+      "fields": {
+        "code": "Codigo de verificacion",
+        "newPassword": "Nueva contraseña",
+        "confirmPassword": "Confirmar contraseña"
+      },
+      "submit": "Cambiar contraseña",
+      "submitting": "Cambiando...",
+      "success": "Contraseña actualizada. Inicia sesion.",
+      "error": {
+        "code": {
+          "invalid": "Codigo incorrecto",
+          "expired": "El codigo ha expirado. Solicita uno nuevo.",
+          "tooManyAttempts": "Demasiados intentos. Solicita un nuevo codigo."
+        },
+        "password": {
+          "required": "La contraseña es obligatoria",
+          "minlength": "Minimo 8 caracteres",
+          "strength": "Debe incluir mayuscula, minuscula, numero y caracter especial",
+          "mismatch": "Las contraseñas no coinciden"
+        }
       }
     },
     "errors": {

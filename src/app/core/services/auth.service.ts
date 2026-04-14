@@ -8,7 +8,7 @@ import { AuthResponse } from '../models/auth-response.model';
 import { User } from '../models/user.model';
 import { TokenService } from './token.service';
 
-type LoginPayload = { email: string; password: string };
+type LoginPayload = { identifier: string; password: string };
 type RegisterPayload = { email: string; username: string; password: string };
 
 @Injectable({ providedIn: 'root' })
@@ -52,6 +52,14 @@ export class AuthService {
 
   resendOtp(email: string): Observable<unknown> {
     return this.http.post(`${environment.apiUrl}/auth/register/resend`, { email });
+  }
+
+  forgotPassword(email: string): Observable<unknown> {
+    return this.http.post(`${environment.apiUrl}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(payload: { email: string; code: string; newPassword: string }): Observable<unknown> {
+    return this.http.post(`${environment.apiUrl}/auth/reset-password`, payload);
   }
 
   login(payload: LoginPayload): Observable<User> {

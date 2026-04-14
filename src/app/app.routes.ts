@@ -751,6 +751,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'forgot-password',
+    canActivate: [guestGuard],
+    loadComponent: () =>
+      import('./auth/components/forgot-password/forgot-password.component').then(
+        (module) => module.ForgotPasswordComponent,
+      ),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

@@ -1,16 +1,15 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, EventEmitter, inject, OnDestroy, Output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { getFirstError } from '../../utils/form-errors.util';
-import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login-form',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe],
+  imports: [ReactiveFormsModule, TranslatePipe, RouterLink],
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.scss',
 })
@@ -60,7 +59,7 @@ export class LoginFormComponent implements OnDestroy {
     this.form.disable();
 
     this.authService
-      .login({ email: trimmedIdentifier, password })
+      .login({ identifier: trimmedIdentifier, password })
       .subscribe({
         next: () => {
           this.isSubmitting.set(false);

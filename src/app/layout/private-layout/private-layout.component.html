@@ -9,8 +9,8 @@
           @for (item of group.items; track item.route) {
             <a
               [routerLink]="item.route"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+              [class.active]="isNavItemActive(item)"
+              [attr.aria-current]="isNavItemActive(item) ? 'page' : null"
             >
               {{ item.label }}
             </a>
@@ -239,8 +239,8 @@
           @for (item of group.items; track item.route) {
             <a
               [routerLink]="item.route"
-              routerLinkActive="active"
-              [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+              [class.active]="isNavItemActive(item)"
+              [attr.aria-current]="isNavItemActive(item) ? 'page' : null"
               (click)="closeMobileMenu(false)"
             >
               {{ item.label }}

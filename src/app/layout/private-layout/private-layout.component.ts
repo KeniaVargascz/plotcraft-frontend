@@ -27,6 +27,7 @@ type NavItem = {
   route: string;
   label: string;
   exact?: boolean;
+  excludePrefixes?: string[];
 };
 
 type NavGroup = {
@@ -86,12 +87,16 @@ export class PrivateLayoutComponent {
       items: [
         { route: '/feed', label: 'Feed', exact: true },
         { route: '/descubrir', label: 'Descubrir' },
-        { route: '/novelas', label: 'Novelas' },
+        {
+          route: '/novelas',
+          label: 'Novelas',
+          excludePrefixes: ['/novelas/generos'],
+        },
         { route: '/mundos', label: 'Mundos' },
         { route: '/personajes', label: 'Personajes' },
         { route: '/foro', label: 'Foro' },
         { route: '/comunidades', label: 'Comunidades', exact: true },
-        { route: '/novelas/generos', label: 'Explorar generos' },
+        { route: '/novelas/generos', label: 'Categorías' },
       ],
     },
     {
@@ -220,6 +225,15 @@ export class PrivateLayoutComponent {
       return currentUrl === route;
     }
     return currentUrl === route || currentUrl.startsWith(`${route}/`);
+  }
+
+  isNavItemActive(item: NavItem): boolean {
+    const currentUrl = this.router.url;
+    if (item.excludePrefixes?.some((prefix) => currentUrl === prefix || currentUrl.startsWith(`${prefix}/`))) {
+      return false;
+    }
+
+    return this.isActive(item.route, item.exact ?? false);
   }
 
   @HostListener('document:keydown.escape')

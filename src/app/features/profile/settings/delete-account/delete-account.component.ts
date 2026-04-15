@@ -1,10 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserService } from '../../../../core/services/user.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
@@ -13,11 +9,8 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
   selector: 'app-delete-account',
   standalone: true,
   imports: [
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
     ReactiveFormsModule,
+    RouterLink,
     TranslatePipe,
   ],
   templateUrl: './delete-account.component.html',

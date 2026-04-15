@@ -1,9 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -14,10 +10,6 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
   selector: 'app-edit-profile',
   standalone: true,
   imports: [
-    MatButtonModule,
-    MatCheckboxModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatSnackBarModule,
     ReactiveFormsModule,
     RouterLink,
@@ -44,6 +36,26 @@ export class EditProfileComponent {
     bannerUrl: [this.currentUser?.profile?.bannerUrl ?? ''],
     isPublic: [this.currentUser?.profile?.isPublic ?? true],
   });
+
+  readonly displayNamePreview = computed(() => {
+    return this.form.controls.displayName.value.trim() || this.currentUser?.username || 'Tu nombre';
+  });
+
+  readonly bioPreview = computed(() => {
+    return (
+      this.form.controls.bio.value.trim() ||
+      'Tu bio aparecera aqui para presentar tu perfil dentro del ecosistema de la app.'
+    );
+  });
+
+  readonly websitePreview = computed(() => this.form.controls.website.value.trim());
+  readonly avatarPreview = computed(() => this.form.controls.avatarUrl.value.trim());
+  readonly bannerPreview = computed(() => this.form.controls.bannerUrl.value.trim());
+  readonly bioLength = computed(() => this.form.controls.bio.value.length);
+  readonly visibilityLabel = computed(() =>
+    this.form.controls.isPublic.value ? 'Perfil publico' : 'Perfil privado',
+  );
+  readonly profileInitial = computed(() => this.displayNamePreview().trim().charAt(0).toUpperCase() || 'P');
 
   submit(): void {
     if (this.form.invalid || this.loading()) {

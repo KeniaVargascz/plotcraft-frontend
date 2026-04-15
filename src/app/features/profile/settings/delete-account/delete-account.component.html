@@ -1,46 +1,98 @@
-<mat-card class="danger-card">
-  <h1>{{ 'account.delete.title' | translate }}</h1>
-  <p>{{ 'account.delete.subtitle' | translate }}</p>
+<section class="delete-shell">
+  <header class="hero-card">
+    <div class="hero-copy">
+      <p class="eyebrow">Riesgo alto</p>
+      <h1>{{ 'account.delete.title' | translate }}</h1>
+      <p class="lede">{{ 'account.delete.subtitle' | translate }}</p>
+    </div>
 
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'account.fields.currentPassword' | translate }}</mat-label>
-      <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" />
-      <button
-        type="button"
-        matSuffix
-        mat-icon-button
-        (click)="showPassword = !showPassword"
-        [attr.aria-label]="showPassword ? 'Ocultar' : 'Mostrar'"
-        class="eye-toggle"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          @if (showPassword) {
-            <path
-              d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+    <div class="hero-actions">
+      <a class="btn btn-outline" routerLink="/mi-perfil">Volver al perfil</a>
+    </div>
+  </header>
+
+  <section class="content-grid">
+    <aside class="sidebar-card">
+      <h2>Antes de continuar</h2>
+      <p>Esta accion elimina tu acceso y rompe el historial asociado a tu cuenta dentro de la app.</p>
+
+      <div class="tips">
+        <article class="tip-pill">
+          <strong>Accion irreversible</strong>
+          <span>Una vez confirmada, la cuenta no puede recuperarse desde la interfaz.</span>
+        </article>
+        <article class="tip-pill">
+          <strong>Requiere contrasena</strong>
+          <span>Usamos tu contrasena actual para confirmar que la solicitud es intencional.</span>
+        </article>
+      </div>
+    </aside>
+
+    <div class="danger-card">
+      <div class="card-head">
+        <div>
+          <p class="card-kicker">Confirmacion</p>
+          <h2>Eliminar cuenta</h2>
+        </div>
+        <span class="card-badge danger-badge">Irreversible</span>
+      </div>
+
+      <p class="danger-copy">
+        Introduce tu contrasena para confirmar la eliminacion definitiva de tu cuenta.
+      </p>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="field">
+          <label for="password">{{ 'account.fields.currentPassword' | translate }}</label>
+          <div class="input-with-toggle">
+            <input
+              id="password"
+              class="input"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
             />
-            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
-            <line x1="1" y1="1" x2="23" y2="23" />
-          } @else {
-            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-            <circle cx="12" cy="12" r="3" />
+            <button
+              type="button"
+              class="eye-btn"
+              (click)="showPassword = !showPassword"
+              [attr.aria-label]="showPassword ? 'Ocultar' : 'Mostrar'"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                @if (showPassword) {
+                  <path
+                    d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
+                  />
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                } @else {
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                }
+              </svg>
+            </button>
+          </div>
+          @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+            <span class="field-error">La contrasena es obligatoria.</span>
           }
-        </svg>
-      </button>
-    </mat-form-field>
+        </div>
 
-    <button mat-flat-button type="submit" [disabled]="form.invalid || loading()">
-      {{ 'account.delete.confirm' | translate }}
-    </button>
-  </form>
-</mat-card>
+        <div class="actions">
+          <a class="btn btn-outline" routerLink="/mi-perfil">Cancelar</a>
+          <button class="btn btn-danger" type="submit" [disabled]="form.invalid || loading()">
+            {{ loading() ? 'Eliminando...' : ('account.delete.confirm' | translate) }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+</section>

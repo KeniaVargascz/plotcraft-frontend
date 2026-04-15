@@ -25,6 +25,8 @@ import {
   NovelFilters,
 } from './components/advanced-novel-filters/advanced-novel-filters.component';
 import { PaginatorComponent } from '../../shared/components/paginator/paginator.component';
+import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
+import { GenreLocalizationService } from '../../core/services/genre-localization.service';
 
 @Component({
   selector: 'app-catalog-page',
@@ -36,6 +38,7 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
     NovelCardComponent,
     AdvancedNovelFiltersComponent,
     PaginatorComponent,
+    GenreLabelPipe,
   ],
   template: `
     <section class="catalog-shell">
@@ -55,7 +58,7 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
             <ul class="picked-pills">
               @for (g of selectedGenres(); track g.id) {
                 <li>
-                  <span>{{ g.label }}</span>
+                    <span>{{ g | genreLabel }}</span>
                   <button type="button" (click)="removeGenre(g.slug)">✕</button>
                 </li>
               }
@@ -82,7 +85,7 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
                   @for (g of availableGenresFiltered(); track g.id) {
                     <li>
                       <button type="button" (click)="addGenre(g.slug)">
-                        {{ g.label }}
+                          {{ g | genreLabel }}
                       </button>
                     </li>
                   }
@@ -306,6 +309,7 @@ export class CatalogPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly genreLocalization = inject(GenreLocalizationService);
   private readonly genresService = inject(GenresService);
   private readonly novelsService = inject(NovelsService);
 
@@ -348,7 +352,7 @@ export class CatalogPageComponent implements OnInit {
     const term = this.genreSearch.trim().toLowerCase();
     return this.genres()
       .filter((g) => !slugs.includes(g.slug))
-      .filter((g) => !term || g.label.toLowerCase().includes(term));
+      .filter((g) => !term || this.genreLocalization.labelFor(g).toLowerCase().includes(term));
   });
 
   readonly hasFanfictionGenre = computed(() => this.selectedGenreSlugs().includes('fanfiction'));
@@ -513,7 +517,9 @@ export class CatalogPageComponent implements OnInit {
     }
 
     const selectedGenre = this.genres().find((item) => item.slug === this.genre);
-    const genreLabel = selectedGenre?.label ?? this.genre;
+    const genreLabel = selectedGenre
+      ? this.genreLocalization.labelFor(selectedGenre)
+      : this.genreLocalization.labelFor(this.genre);
     this.title.set(`Genero: ${genreLabel}`);
     this.subtitle.set(`Todas las novelas publicas disponibles en ${genreLabel}.`);
   }

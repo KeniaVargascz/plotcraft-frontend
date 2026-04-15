@@ -6,12 +6,18 @@ import { firstValueFrom } from 'rxjs';
 export class TranslationService {
   private readonly http = inject(HttpClient);
   private readonly dictionary = signal<Record<string, unknown>>({});
+  readonly currentLanguage = signal('es');
 
-  async loadTranslations(): Promise<void> {
+  async loadTranslations(language = this.currentLanguage()): Promise<void> {
     const data = await firstValueFrom(
-      this.http.get<Record<string, unknown>>('/assets/i18n/es.json'),
+      this.http.get<Record<string, unknown>>(`/assets/i18n/${language}.json`),
     );
+    this.currentLanguage.set(language);
     this.dictionary.set(data);
+  }
+
+  async setLanguage(language: string): Promise<void> {
+    await this.loadTranslations(language);
   }
 
   translate(key: string, params?: Record<string, string | number>): string {

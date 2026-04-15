@@ -17,6 +17,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
 import { CharacterCardComponent } from '../characters/components/character-card.component';
 import { WorldCardComponent } from '../worlds/components/world-card.component';
 import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/linked-visual-boards-section.component';
+import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
 
 @Component({
   selector: 'app-novel-detail-page',
@@ -29,6 +30,7 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
     WorldCardComponent,
     CharacterCardComponent,
     LinkedVisualBoardsSectionComponent,
+    GenreLabelPipe,
   ],
   template: `
     @if (loading()) {
@@ -215,7 +217,7 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
                 <span class="detail-label">Géneros</span>
                 <div class="chips-block">
                   @for (g of currentNovel.genres; track g.id) {
-                    <span class="chip chip-genre">{{ g.label }}</span>
+                    <span class="chip chip-genre">{{ g | genreLabel }}</span>
                   }
                 </div>
               </div>

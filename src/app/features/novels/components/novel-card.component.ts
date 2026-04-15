@@ -3,11 +3,13 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NovelSummary } from '../../../core/models/novel.model';
 import { AuthGateService } from '../../../core/services/auth-gate.service';
+import { GenreLocalizationService } from '../../../core/services/genre-localization.service';
+import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
 
 @Component({
   selector: 'app-novel-card',
   standalone: true,
-  imports: [RouterLink, DatePipe],
+  imports: [RouterLink, DatePipe, GenreLabelPipe],
   template: `
     <article class="novel-card">
       <div class="card-top">
@@ -57,7 +59,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
             @if (genres().length) {
               <span class="tag-type-label">Genero</span>
               @for (genre of genres(); track genre.id) {
-                <span class="tag-pill tag-pill-genre">{{ genre.label }}</span>
+                <span class="tag-pill tag-pill-genre">{{ genre | genreLabel }}</span>
               }
             }
 
@@ -503,6 +505,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
 })
 export class NovelCardComponent {
   private readonly authGate = inject(AuthGateService);
+  private readonly genreLocalization = inject(GenreLocalizationService);
   readonly novel = input.required<NovelSummary>();
   readonly tagsOpen = signal(false);
 
@@ -512,7 +515,7 @@ export class NovelCardComponent {
   readonly visibleGenreLabels = computed(() =>
     this.genres()
       .slice(0, 3)
-      .map((genre) => genre.label),
+      .map((genre) => this.genreLocalization.labelFor(genre)),
   );
   readonly expandableTagCount = computed(
     () => this.genres().length + this.tags().length + this.warnings().length,

@@ -8,6 +8,7 @@ import { PeriodSelectorComponent } from './components/period-selector.component'
 import { TimeSeriesChartComponent } from './components/time-series-chart.component';
 import { TopNovelsTableComponent, TopNovelRow } from './components/top-novels-table.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
 
 type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
 
@@ -21,6 +22,7 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
     TimeSeriesChartComponent,
     TopNovelsTableComponent,
     TranslatePipe,
+    GenreLabelPipe,
   ],
   template: `
     <section class="analytics-page">
@@ -159,9 +161,9 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
               <div class="top-genres">
                 <h3>Géneros principales</h3>
                 <div class="genre-chips">
-                  @for (g of audience()!.topGenres; track g.genre.slug) {
-                    <span class="genre-chip">{{ g.genre.label }}</span>
-                  }
+                    @for (g of audience()!.topGenres; track g.genre.slug) {
+                    <span class="genre-chip">{{ g.genre | genreLabel }}</span>
+                    }
                 </div>
               </div>
             }

@@ -22,6 +22,7 @@ import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/
 import { SeriesService } from '../series/services/series.service';
 import { SeriesDetail, SeriesType } from '../series/models/series.model';
 import { forkJoin as rxForkJoin } from 'rxjs';
+import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
 
 interface PairingDraft {
   characterAId: string;
@@ -32,7 +33,7 @@ interface PairingDraft {
 @Component({
   selector: 'app-novel-form-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, TagChipsInputComponent],
+  imports: [FormsModule, RouterLink, TagChipsInputComponent, GenreLabelPipe],
   template: `
     <section class="form-shell">
       <h1>{{ isEdit() ? 'Editar novela' : 'Nueva novela' }}</h1>
@@ -230,7 +231,7 @@ interface PairingDraft {
                 [disabled]="saving()"
                 (change)="toggleGenre(genre)"
               />
-              {{ genre.label }}
+              {{ genre | genreLabel }}
             </label>
           }
         </fieldset>

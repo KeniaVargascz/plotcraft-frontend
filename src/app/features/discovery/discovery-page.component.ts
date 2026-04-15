@@ -15,6 +15,7 @@ import { CommunityCardComponent } from '../communities/components/community-card
 import { CommunityService } from '../communities/services/community.service';
 import { Community } from '../communities/models/community.model';
 import { AuthGateService } from '../../core/services/auth-gate.service';
+import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotlight-card/genre-spotlight-card.component';
 
 @Component({
   selector: 'app-discovery-page',
@@ -29,6 +30,7 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
     CharacterCardComponent,
     AuthorCardComponent,
     CommunityCardComponent,
+    GenreSpotlightCardComponent,
   ],
   template: `
     <section class="discovery-page">
@@ -236,20 +238,7 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
           </div>
           <div class="genre-grid">
             @for (genre of visibleGenres(); track genre.id; let index = $index) {
-              <a
-                class="genre-card genre-link"
-                [class]="genreToneClass(index)"
-                [routerLink]="['/novelas/genero', genre.slug]"
-              >
-                <span class="genre-accent"></span>
-                <div class="genre-copy">
-                  <strong>{{ genre.label }}</strong>
-                </div>
-                <span class="genre-action">
-                  Explorar
-                  <span aria-hidden="true">↗</span>
-                </span>
-              </a>
+              <app-genre-spotlight-card [genre]="genre" [toneIndex]="index" />
             }
 
             @if (!genres().length) {
@@ -441,7 +430,6 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
 
       .hero,
       .stats-banner,
-      .genre-card,
       .community-card,
       .loading-shell {
         padding: 0.5rem 0.85rem;
@@ -770,82 +758,6 @@ import { AuthGateService } from '../../core/services/auth-gate.service';
         white-space: nowrap;
       }
 
-      .genre-card {
-        display: flex;
-        align-items: center;
-        gap: 0.65rem;
-      }
-
-      .genre-link {
-        position: relative;
-        overflow: hidden;
-        text-decoration: none;
-        color: inherit;
-        align-content: space-between;
-        transition:
-          transform 160ms ease,
-          border-color 160ms ease,
-          background 160ms ease;
-      }
-
-      .genre-link:hover {
-        transform: translateY(-2px);
-        border-color: var(--border-s);
-        background: color-mix(in srgb, var(--bg-card) 82%, var(--accent-glow));
-      }
-
-      .genre-tone-0 .genre-accent {
-        background: linear-gradient(180deg, #6b7cff, #8ea6ff);
-      }
-
-      .genre-tone-1 .genre-accent {
-        background: linear-gradient(180deg, #4f9d76, #79c89e);
-      }
-
-      .genre-tone-2 .genre-accent {
-        background: linear-gradient(180deg, #8e5bbd, #b98cdf);
-      }
-
-      .genre-tone-3 .genre-accent {
-        background: linear-gradient(180deg, #bc7f5a, #dfaf7f);
-      }
-
-      .genre-accent {
-        position: absolute;
-        inset: 0 auto 0 0;
-        width: 0.25rem;
-        border-radius: 1rem 0 0 1rem;
-      }
-
-      .genre-copy {
-        display: flex;
-        align-items: center;
-        flex: 1;
-        min-width: 0;
-      }
-
-      .genre-card strong {
-        font-size: 0.84rem;
-        color: var(--text-1);
-      }
-
-      .genre-hint,
-      .genre-card p {
-        margin: 0;
-        color: var(--text-2);
-        line-height: 1.5;
-      }
-
-      .genre-action {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.2rem;
-        color: var(--accent-text);
-        font-size: 0.75rem;
-        flex-shrink: 0;
-      }
-
-      .genre-card a,
       .community-card,
       .release-card a,
       .section-head a {
@@ -977,7 +889,5 @@ export class DiscoveryPageComponent {
     return `release-tone-${index % 4}`;
   }
 
-  genreToneClass(index: number) {
-    return `genre-tone-${index % 4}`;
-  }
 }
+

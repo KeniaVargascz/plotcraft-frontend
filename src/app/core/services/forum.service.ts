@@ -165,6 +165,20 @@ export class ForumService {
       .pipe(map((response) => response.data));
   }
 
+  getTrendingTags(): Observable<{ tag: string; count: number }[]> {
+    return this.http
+      .get<ApiResponse<{ tag: string; count: number }[]>>(`${this.baseUrl}/tags/trending`)
+      .pipe(map((response) => response.data));
+  }
+
+  getMyStats(): Observable<{ threadsCount: number; repliesCount: number; solutionsCount: number }> {
+    return this.http
+      .get<ApiResponse<{ threadsCount: number; repliesCount: number; solutionsCount: number }>>(
+        `${this.baseUrl}/stats/me`,
+      )
+      .pipe(map((response) => response.data));
+  }
+
   listMyThreads(query: ThreadQuery = {}): Observable<PaginatedResponse<ThreadSummary>> {
     return this.http
       .get<ApiResponse<PaginatedResponse<ThreadSummary>>>(`${this.baseUrl}/mine`, {
@@ -201,7 +215,7 @@ export class ForumService {
     }
 
     if (query.tag) {
-      params = params.set('tag', query.tag);
+      params = params.set('tags', query.tag);
     }
 
     return params;

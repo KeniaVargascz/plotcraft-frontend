@@ -77,23 +77,46 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
       </main>
 
       <aside class="sidebar">
-        <div class="sidebar-card">
-          <h3>Estadisticas</h3>
-          <p class="stat">{{ totalThreads() }} hilos</p>
-        </div>
-
-        <div class="sidebar-card">
-          <h3>Categorias</h3>
-          <ul class="cat-list">
-            @for (cat of categoryList(); track cat.name) {
+        @if (isAuthenticated() && userStats()) {
+          <div class="sidebar-card">
+            <h3>Estadisticas</h3>
+            <ul class="stats-list">
               <li>
-                <button type="button" class="cat-link" (click)="filterByCategory(cat.name)">
-                  {{ cat.label }}
-                </button>
+                <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                <strong>{{ userStats()!.threadsCount }}</strong> Hilos
               </li>
-            }
-          </ul>
-        </div>
+              <li>
+                <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <strong>{{ userStats()!.repliesCount }}</strong> Respuestas
+              </li>
+              <li>
+                <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <strong>{{ userStats()!.solutionsCount }}</strong> Soluciones
+              </li>
+            </ul>
+          </div>
+        }
+
+        @if (trendingTags().length) {
+          <div class="sidebar-card">
+            <h3>Tendencias</h3>
+            <ol class="trending-list">
+              @for (t of trendingTags(); track t.tag; let i = $index) {
+                <li>
+                  <button
+                    type="button"
+                    class="tag-btn"
+                    [class.active]="activeTag() === t.tag"
+                    (click)="filterByTag(t.tag)"
+                  >
+                    <span class="rank">{{ i + 1 }}</span>
+                    <span class="tag-name">#{{ t.tag }}</span>
+                  </button>
+                </li>
+              }
+            </ol>
+          </div>
+        }
       </aside>
     </section>
   `,
@@ -172,29 +195,68 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
         font-size: 0.95rem;
         color: var(--text-1);
       }
-      .stat {
-        color: var(--text-2);
-        font-size: 0.9rem;
-        margin: 0;
-      }
-      .cat-list {
+      .stats-list {
         list-style: none;
         margin: 0;
         padding: 0;
         display: grid;
-        gap: 0.25rem;
+        gap: 0.35rem;
       }
-      .cat-link {
-        background: none;
-        border: none;
+      .stats-list li {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
         color: var(--text-2);
-        font-size: 0.85rem;
-        cursor: pointer;
-        padding: 0.25rem 0;
-        text-align: left;
+        font-size: 0.9rem;
       }
-      .cat-link:hover {
+      .stat-icon {
+        width: 16px;
+        height: 16px;
         color: var(--accent);
+        flex-shrink: 0;
+      }
+      .stats-list strong {
+        color: var(--text-1);
+        margin-right: 0.25rem;
+      }
+      .trending-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 0.15rem;
+      }
+      .tag-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        width: 100%;
+        padding: 0.35rem 0.5rem;
+        border: none;
+        border-radius: 0.5rem;
+        background: none;
+        color: var(--text-2);
+        font-size: 0.82rem;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .tag-btn:hover {
+        background: var(--bg-surface);
+        color: var(--accent);
+      }
+      .tag-btn.active {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
+      .rank {
+        color: var(--text-3);
+        font-size: 0.75rem;
+        min-width: 1rem;
+        text-align: right;
+      }
+      .tag-name {
+        flex: 1;
+        text-align: left;
       }
       .archived-link {
         display: block;
@@ -216,15 +278,17 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
       .scope-tabs {
         display: flex;
         gap: 0.5rem;
+        margin-bottom: 0.75rem;
       }
       .scope-tabs button {
-        padding: 0.5rem 1rem;
+        padding: 0.55rem 1.1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-card);
         color: var(--text-2);
         cursor: pointer;
         font-weight: 600;
+        font-size: 0.85rem;
       }
       .scope-tabs button.active {
         background: var(--accent-glow);
@@ -254,7 +318,10 @@ export class ForumHomePageComponent implements OnInit {
   readonly hasMore = signal(false);
   readonly totalThreads = signal(0);
   readonly myThreads = signal<ThreadSummary[]>([]);
+  readonly userStats = signal<{ threadsCount: number; repliesCount: number; solutionsCount: number } | null>(null);
   readonly relevantOnly = signal(true);
+  readonly trendingTags = signal<{ tag: string; count: number }[]>([]);
+  readonly activeTag = signal<string | null>(null);
   readonly archivedCount = computed(
     () => this.myThreads().filter((t) => t.status === 'ARCHIVED').length,
   );
@@ -265,17 +332,7 @@ export class ForumHomePageComponent implements OnInit {
     search: '',
   };
 
-  readonly categoryList = signal<{ name: ForumCategory; label: string }[]>([
-    { name: 'GENERAL', label: 'General' },
-    { name: 'FEEDBACK', label: 'Feedback' },
-    { name: 'WRITING_TIPS', label: 'Consejos de escritura' },
-    { name: 'WORLD_BUILDING', label: 'Worldbuilding' },
-    { name: 'CHARACTERS', label: 'Personajes' },
-    { name: 'SHOWCASE', label: 'Showcase' },
-    { name: 'ANNOUNCEMENTS', label: 'Anuncios' },
-    { name: 'HELP', label: 'Ayuda' },
-    { name: 'OFF_TOPIC', label: 'Off-topic' },
-  ]);
+  private currentTag: string | null = null;
 
   isAuthenticated() {
     return this.authService.isAuthenticated();
@@ -296,9 +353,15 @@ export class ForumHomePageComponent implements OnInit {
 
   ngOnInit() {
     this.load(true);
+    this.forumService.getTrendingTags().subscribe({
+      next: (tags) => this.trendingTags.set(tags),
+    });
     if (this.authService.isAuthenticated()) {
       this.forumService.listMyThreads({ limit: 50 }).subscribe({
         next: (res) => this.myThreads.set(res.data),
+      });
+      this.forumService.getMyStats().subscribe({
+        next: (stats) => this.userStats.set(stats),
       });
     }
   }
@@ -314,8 +377,14 @@ export class ForumHomePageComponent implements OnInit {
     this.load(true);
   }
 
-  filterByCategory(cat: ForumCategory) {
-    this.currentFilters.category = cat;
+  filterByTag(tag: string) {
+    if (this.activeTag() === tag) {
+      this.activeTag.set(null);
+      this.currentTag = null;
+    } else {
+      this.activeTag.set(tag);
+      this.currentTag = tag;
+    }
     this.load(true);
   }
 
@@ -347,6 +416,7 @@ export class ForumHomePageComponent implements OnInit {
         cursor: reset ? null : this.nextCursor(),
         category: this.currentFilters.category,
         search: this.currentFilters.search || null,
+        tag: this.currentTag,
         relevant: this.relevantOnly() && this.authService.isAuthenticated(),
       })
       .pipe(takeUntilDestroyed(this.destroyRef))

@@ -24,20 +24,13 @@ const CATEGORIES: CategoryOption[] = [
   imports: [FormsModule],
   template: `
     <div class="filters-bar">
-      <div class="categories">
-        @for (cat of categories; track cat.value) {
-          <button
-            type="button"
-            class="chip"
-            [class.active]="selectedCategory() === cat.value"
-            (click)="selectCategory(cat.value)"
-          >
-            {{ cat.label }}
-          </button>
-        }
-      </div>
-
       <div class="controls">
+        <select [(ngModel)]="selectedCategoryModel" (ngModelChange)="selectCategory($event)" class="sort-select">
+          @for (cat of categories; track cat.value) {
+            <option [value]="cat.value">{{ cat.label }}</option>
+          }
+        </select>
+
         <select [(ngModel)]="selectedSort" (ngModelChange)="emitChange()" class="sort-select">
           <option value="recent">Recientes</option>
           <option value="popular">Populares</option>
@@ -60,29 +53,6 @@ const CATEGORIES: CategoryOption[] = [
       .filters-bar {
         display: grid;
         gap: 0.75rem;
-      }
-      .categories {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-      }
-      .chip {
-        padding: 0.3rem 0.75rem;
-        border-radius: 9999px;
-        border: 1px solid var(--border);
-        background: var(--bg-surface);
-        color: var(--text-2);
-        font-size: 0.8rem;
-        cursor: pointer;
-        transition: all 0.15s;
-      }
-      .chip:hover {
-        border-color: var(--accent);
-      }
-      .chip.active {
-        background: var(--accent);
-        color: #fff;
-        border-color: var(--accent);
       }
       .controls {
         display: flex;
@@ -117,6 +87,7 @@ export class ForumFiltersComponent implements OnInit, OnDestroy {
 
   readonly categories = CATEGORIES;
   readonly selectedCategory = signal<ForumCategory | ''>('');
+  selectedCategoryModel: ForumCategory | '' = '';
   selectedSort = 'recent';
   searchText = '';
 

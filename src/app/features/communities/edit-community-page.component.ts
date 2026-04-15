@@ -8,11 +8,12 @@ import { AlertDialogComponent } from '../../shared/components/alert-dialog/alert
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { COMMUNITY_TYPE_LABELS, Community } from './models/community.model';
 import { CommunityService } from './services/community.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-edit-community-page',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, RouterLink, LoadingSpinnerComponent],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink, LoadingSpinnerComponent, TranslatePipe],
   template: `
     @if (loading()) {
       <app-loading-spinner />

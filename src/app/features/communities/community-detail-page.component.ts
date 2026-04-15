@@ -22,6 +22,7 @@ import {
   SuggestCharacterDialogResult,
 } from './components/suggest-character-dialog/suggest-character-dialog.component';
 import { RejectCharacterDialogComponent } from './components/reject-character-dialog/reject-character-dialog.component';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-community-detail-page',
@@ -32,6 +33,7 @@ import { RejectCharacterDialogComponent } from './components/reject-character-di
     LoadingSpinnerComponent,
     ForumCardComponent,
     CommunityCharacterCardComponent,
+    TranslatePipe,
   ],
   template: `
     @if (loading()) {

@@ -140,8 +140,125 @@ form {
   grid-column: 1 / -1;
 }
 
-mat-form-field {
+.field {
+  display: grid;
+  gap: 0.35rem;
+
+  label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+}
+
+.input {
   width: 100%;
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-1);
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: border-color 0.15s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+  }
+
+  &::placeholder {
+    color: var(--text-3);
+  }
+}
+
+.input-with-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .input {
+    padding-right: 2.5rem;
+  }
+}
+
+.eye-btn {
+  position: absolute;
+  right: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  min-height: unset;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--text-3);
+  cursor: pointer;
+  padding: 0;
+
+  &:hover {
+    color: var(--text-1);
+    background: var(--bg-card);
+  }
+}
+
+.field-error {
+  font-size: 0.78rem;
+  color: #e55;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.15rem;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  min-height: unset;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+
+  &:hover {
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-outline {
+  background: var(--bg-surface);
+  color: var(--text-1);
+  border-color: var(--border);
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent-text);
+  }
+}
+
+.btn-danger {
+  background: color-mix(in srgb, var(--danger) 14%, var(--bg-card));
+  color: #e55;
+  border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
+
+  &:hover {
+    background: color-mix(in srgb, var(--danger) 25%, var(--bg-card));
+  }
 }
 
 .processing-banner {
@@ -331,11 +448,19 @@ mat-form-field {
 }
 
 .coming-soon {
-  font-size: 0.72rem;
-  padding: 0.15rem 0.45rem;
+  font-size: 0.68rem;
+  padding: 0.15rem 0.5rem;
   border-radius: 999px;
   background: var(--bg-surface);
   color: var(--text-3);
+  font-weight: 500;
+  vertical-align: middle;
+  margin-left: 0.3rem;
+}
+
+.disabled-row {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .export-copy {

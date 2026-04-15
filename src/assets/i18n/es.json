@@ -1359,5 +1359,56 @@
       "free": "Libre (sin vinculación)",
       "visibility": "Visibilidad"
     }
+  },
+  "novelComments": {
+    "title": "Comentarios",
+    "placeholder": "Escribe un comentario...",
+    "submit": "Comentar",
+    "sending": "Enviando...",
+    "loading": "Cargando comentarios...",
+    "empty": "Aun no hay comentarios. Se el primero.",
+    "disabled": "El autor ha limitado los comentarios.",
+    "loadMore": "Cargar mas"
+  },
+  "recommend": {
+    "button": "Recomendar",
+    "done": "Recomendado",
+    "modalTitle": "Recomendar novela",
+    "placeholder": "Escribe un comentario sobre esta novela...",
+    "cancel": "Cancelar",
+    "confirm": "Publicar recomendacion",
+    "confirming": "Publicando...",
+    "recomienda": "recomienda"
+  },
+  "myProfile": {
+    "activity": "Mi actividad",
+    "emptyActivity": "Aun no tienes publicaciones.",
+    "goToFeed": "Ir al feed",
+    "savedPosts": "Publicaciones guardadas",
+    "loadMore": "Cargar mas",
+    "loadingMore": "Cargando..."
+  },
+  "privacy": {
+    "allowPostComments": "Comentarios en publicaciones",
+    "allowPostCommentsDesc": "Permite que otros comenten tus publicaciones del feed.",
+    "allowNovelComments": "Comentarios en novelas",
+    "allowNovelCommentsDesc": "Permite que otros comenten tus novelas.",
+    "searchable": "Aparecer en busquedas",
+    "searchableDesc": "Tu perfil puede ser encontrado por otros usuarios."
+  },
+  "notifications": {
+    "newFollower": "Nuevo seguidor",
+    "newFollowerDesc": "Cuando alguien comienza a seguirte.",
+    "newComment": "Nuevo comentario",
+    "newCommentDesc": "Cuando comentan en tu publicacion.",
+    "newReaction": "Nueva reaccion",
+    "newReactionDesc": "Cuando reaccionan a tu publicacion.",
+    "newReply": "Nueva respuesta en foro",
+    "newReplyDesc": "Cuando responden en un hilo donde participas.",
+    "newChapter": "Nuevo capitulo",
+    "newChapterDesc": "Cuando una novela que sigues publica un nuevo capitulo.",
+    "novelMilestone": "Hito de novela",
+    "novelMilestoneDesc": "Cuando tu novela alcanza un hito importante.",
+    "comingSoon": "Proximamente"
   }
 }

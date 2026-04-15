@@ -6,11 +6,12 @@ import { MarkdownService } from '../../core/services/markdown.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { CommunityForumsService } from './services/community-forums.service';
 import { CommunityForum, ForumReply, ForumThread } from './models/community-forum.model';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-community-thread-detail-page',
   standalone: true,
-  imports: [RouterLink, FormsModule, LoadingSpinnerComponent],
+  imports: [RouterLink, FormsModule, LoadingSpinnerComponent, TranslatePipe],
   template: `
     @if (loading()) {
       <app-loading-spinner />

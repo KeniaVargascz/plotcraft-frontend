@@ -69,20 +69,20 @@
         'profile.actions.accountSettings' | translate
       }}</a>
       <a class="btn btn-outline" [routerLink]="['/perfil', profileUser.username]" [queryParams]="{ tab: 'saved' }">
-        Publicaciones guardadas
+        {{ 'myProfile.savedPosts' | translate }}
       </a>
     </div>
   </section>
 
   <section class="activity-section">
-    <h2>Mi actividad</h2>
+    <h2>{{ 'myProfile.activity' | translate }}</h2>
 
     @if (activityLoading() && !activity().length) {
       <app-loading-spinner />
     } @else if (!activity().length) {
       <div class="empty-activity">
-        <p>Aun no tienes publicaciones.</p>
-        <a class="btn btn-primary" routerLink="/feed">Ir al feed</a>
+        <p>{{ 'myProfile.emptyActivity' | translate }}</p>
+        <a class="btn btn-primary" routerLink="/feed">{{ 'myProfile.goToFeed' | translate }}</a>
       </div>
     } @else {
       <div class="activity-list">
@@ -102,7 +102,7 @@
           [disabled]="activityLoading()"
           (click)="loadMoreActivity()"
         >
-          {{ activityLoading() ? 'Cargando...' : 'Cargar mas' }}
+          {{ activityLoading() ? ('myProfile.loadingMore' | translate) : ('myProfile.loadMore' | translate) }}
         </button>
       }
     }

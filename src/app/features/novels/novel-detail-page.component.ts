@@ -19,6 +19,7 @@ import { CharacterCardComponent } from '../characters/components/character-card.
 import { WorldCardComponent } from '../worlds/components/world-card.component';
 import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/linked-visual-boards-section.component';
 import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { PostsService } from '../../core/services/posts.service';
 
 @Component({
@@ -35,6 +36,7 @@ import { PostsService } from '../../core/services/posts.service';
     CharacterCardComponent,
     LinkedVisualBoardsSectionComponent,
     GenreLabelPipe,
+    TranslatePipe,
   ],
   template: `
     @if (loading()) {
@@ -132,7 +134,7 @@ import { PostsService } from '../../core/services/posts.service';
 
               @if (currentNovel.viewerContext) {
                 <button type="button" class="recommend-btn" [disabled]="recommended()" (click)="openRecommendPreview()">
-                  {{ recommended() ? 'Recomendado' : 'Recomendar' }}
+                  {{ recommended() ? ('recommend.done' | translate) : ('recommend.button' | translate) }}
                 </button>
               }
 
@@ -424,13 +426,75 @@ import { PostsService } from '../../core/services/posts.service';
           [entityLabel]="'novela'"
           [isOwner]="currentNovel.viewerContext?.isAuthor ?? false"
         />
+
+        <!-- Novel Comments -->
+        <section class="novel-comments card">
+          <h2>{{ 'novelComments.title' | translate }}</h2>
+
+          @if (commentsEnabled()) {
+            @if (authService.isAuthenticated()) {
+              <div class="comment-form">
+                <textarea
+                  [(ngModel)]="newComment"
+                  rows="3"
+                  [placeholder]="'novelComments.placeholder' | translate"
+                  maxlength="2000"
+                ></textarea>
+                <button
+                  type="button"
+                  class="btn-send"
+                  [disabled]="!newComment.trim() || commentSending()"
+                  (click)="submitComment(currentNovel.slug)"
+                >
+                  {{ commentSending() ? ('novelComments.sending' | translate) : ('novelComments.submit' | translate) }}
+                </button>
+              </div>
+            }
+
+            @if (novelCommentsLoading() && !novelComments().length) {
+              <p class="comment-hint">{{ 'novelComments.loading' | translate }}</p>
+            } @else if (!novelComments().length) {
+              <p class="comment-hint">{{ 'novelComments.empty' | translate }}</p>
+            } @else {
+              <div class="comments-list">
+                @for (c of novelComments(); track c.id) {
+                  <div class="comment-item">
+                    <div class="comment-avatar">{{ c.author.username[0].toUpperCase() }}</div>
+                    <div class="comment-body">
+                      <div class="comment-header">
+                        <a [routerLink]="['/perfil', c.author.username]" class="comment-author">
+                          {{ c.author.displayName || c.author.username }}
+                        </a>
+                        <span class="comment-date">{{ relativeDate(c.createdAt) }}</span>
+                        @if (c.author.id === authService.getCurrentUserSnapshot()?.id || currentNovel.viewerContext?.isAuthor) {
+                          <button type="button" class="comment-delete" (click)="removeComment(currentNovel.slug, c.id)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                          </button>
+                        }
+                      </div>
+                      <p class="comment-text">{{ c.content }}</p>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              @if (commentsHasMore()) {
+                <button type="button" class="btn-load-more" (click)="loadMoreComments(currentNovel.slug)">
+                  {{ 'novelComments.loadMore' | translate }}
+                </button>
+              }
+            }
+          } @else {
+            <p class="comment-hint">{{ 'novelComments.disabled' | translate }}</p>
+          }
+        </section>
       </section>
     }
 
     @if (showRecommendPreview()) {
       <div class="recommend-overlay" (click)="closeRecommendPreview()">
         <div class="recommend-modal" (click)="$event.stopPropagation()">
-          <h3>Recomendar novela</h3>
+          <h3>{{ 'recommend.modalTitle' | translate }}</h3>
 
           <div class="recommend-novel-preview">
             @if (novel()?.coverUrl) {
@@ -450,13 +514,13 @@ import { PostsService } from '../../core/services/posts.service';
           <textarea
             [(ngModel)]="recommendMessage"
             rows="3"
-            placeholder="Escribe un comentario sobre esta novela..."
+            [placeholder]="'recommend.placeholder' | translate"
           ></textarea>
 
           <div class="recommend-actions">
-            <button type="button" class="btn-cancel" (click)="closeRecommendPreview()">Cancelar</button>
+            <button type="button" class="btn-cancel" (click)="closeRecommendPreview()">{{ 'recommend.cancel' | translate }}</button>
             <button type="button" class="btn-confirm" [disabled]="recommending()" (click)="confirmRecommend()">
-              {{ recommending() ? 'Publicando...' : 'Publicar recomendacion' }}
+              {{ recommending() ? ('recommend.confirming' | translate) : ('recommend.confirm' | translate) }}
             </button>
           </div>
         </div>
@@ -687,6 +751,27 @@ import { PostsService } from '../../core/services/posts.service';
         color: var(--text-2);
         border: 1px solid var(--border);
       }
+      .novel-comments { display: grid; gap: 1rem; }
+      .novel-comments h2 { margin: 0; font-size: 1.1rem; }
+      .comment-form { display: grid; gap: 0.5rem; }
+      .comment-form textarea { width: 100%; padding: 0.75rem; border-radius: 0.75rem; border: 1px solid var(--border); background: var(--bg-surface); color: var(--text-1); font-size: 0.85rem; font-family: inherit; resize: vertical; }
+      .comment-form textarea:focus { outline: none; border-color: var(--accent); }
+      .btn-send { justify-self: end; padding: 0.5rem 1rem; border-radius: 999px; border: none; background: var(--accent); color: #fff; font-weight: 600; font-size: 0.85rem; cursor: pointer; min-height: unset; }
+      .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
+      .comment-hint { color: var(--text-3); font-size: 0.85rem; text-align: center; padding: 1rem; margin: 0; }
+      .comments-list { display: grid; gap: 0.75rem; }
+      .comment-item { display: flex; gap: 0.6rem; }
+      .comment-avatar { width: 2rem; height: 2rem; min-width: 2rem; border-radius: 50%; background: var(--accent-glow); color: var(--accent-text); display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; }
+      .comment-body { flex: 1; min-width: 0; }
+      .comment-header { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+      .comment-author { font-weight: 600; font-size: 0.85rem; color: var(--text-1); text-decoration: none; }
+      .comment-author:hover { color: var(--accent-text); }
+      .comment-date { color: var(--text-3); font-size: 0.78rem; }
+      .comment-delete { display: inline-flex; align-items: center; justify-content: center; width: 1.6rem; height: 1.6rem; min-height: unset; border: none; border-radius: 50%; background: none; color: var(--text-3); cursor: pointer; padding: 0; }
+      .comment-delete:hover { color: #e55; background: var(--bg-surface); }
+      .comment-text { margin: 0.2rem 0 0; color: var(--text-2); font-size: 0.85rem; line-height: 1.5; }
+      .btn-load-more { display: block; margin: 0 auto; padding: 0.5rem 1.2rem; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-surface); color: var(--text-1); cursor: pointer; font-size: 0.85rem; min-height: unset; }
+      .btn-load-more:hover { border-color: var(--accent); }
       .recommend-overlay {
         position: fixed;
         inset: 0;
@@ -1045,6 +1130,14 @@ export class NovelDetailPageComponent implements OnInit {
   readonly recommended = signal(false);
   readonly showRecommendPreview = signal(false);
   recommendMessage = '';
+
+  readonly novelComments = signal<import('../../core/services/novels.service').NovelCommentModel[]>([]);
+  readonly novelCommentsLoading = signal(false);
+  readonly commentsCursor = signal<string | null>(null);
+  readonly commentsHasMore = signal(false);
+  readonly commentsEnabled = signal(true);
+  readonly commentSending = signal(false);
+  newComment = '';
   readonly subscribeLoading = signal(false);
 
   toggleSubscription() {
@@ -1130,6 +1223,7 @@ export class NovelDetailPageComponent implements OnInit {
               this.loadTimeline(novel.slug);
             }
           }
+          this.loadComments(novel.slug, true);
           this.loading.set(false);
         },
         error: () => {
@@ -1359,5 +1453,60 @@ export class NovelDetailPageComponent implements OnInit {
           this.recommending.set(false);
         },
       });
+  }
+
+  // ── Novel Comments ──
+
+  loadComments(slug: string, reset: boolean) {
+    this.novelCommentsLoading.set(true);
+    this.novelsService
+      .listComments(slug, reset ? null : this.commentsCursor(), 20)
+      .subscribe({
+        next: (res) => {
+          const list = reset ? res.data : [...this.novelComments(), ...res.data];
+          this.novelComments.set(list);
+          this.commentsCursor.set(res.pagination.nextCursor);
+          this.commentsHasMore.set(res.pagination.hasMore);
+          this.commentsEnabled.set(res.commentsEnabled);
+          this.novelCommentsLoading.set(false);
+        },
+        error: () => this.novelCommentsLoading.set(false),
+      });
+  }
+
+  loadMoreComments(slug: string) {
+    this.loadComments(slug, false);
+  }
+
+  submitComment(slug: string) {
+    if (!this.newComment.trim() || this.commentSending()) return;
+    this.commentSending.set(true);
+    this.novelsService.createComment(slug, this.newComment.trim()).subscribe({
+      next: (comment) => {
+        this.novelComments.update((list) => [...list, comment]);
+        this.newComment = '';
+        this.commentSending.set(false);
+      },
+      error: () => this.commentSending.set(false),
+    });
+  }
+
+  removeComment(slug: string, commentId: string) {
+    this.novelsService.deleteComment(slug, commentId).subscribe({
+      next: () => {
+        this.novelComments.update((list) => list.filter((c) => c.id !== commentId));
+      },
+    });
+  }
+
+  relativeDate(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'ahora';
+    if (mins < 60) return `hace ${mins}m`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `hace ${hours}h`;
+    const days = Math.floor(hours / 24);
+    return `hace ${days}d`;
   }
 }

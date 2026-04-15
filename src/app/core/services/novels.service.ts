@@ -203,4 +203,43 @@ export class NovelsService {
 
     return params;
   }
+
+  // ── Novel Comments ──
+
+  listComments(slug: string, cursor?: string | null, limit = 20) {
+    let params = new HttpParams().set('limit', limit);
+    if (cursor) params = params.set('cursor', cursor);
+    return this.http
+      .get<ApiResponse<{
+        commentsEnabled: boolean;
+        data: NovelCommentModel[];
+        pagination: { nextCursor: string | null; hasMore: boolean; limit: number };
+      }>>(`${environment.apiUrl}/novels/${slug}/comments`, { params })
+      .pipe(map((r) => r.data));
+  }
+
+  createComment(slug: string, content: string) {
+    return this.http
+      .post<ApiResponse<NovelCommentModel>>(`${environment.apiUrl}/novels/${slug}/comments`, { content })
+      .pipe(map((r) => r.data));
+  }
+
+  deleteComment(slug: string, commentId: string) {
+    return this.http
+      .delete<ApiResponse<{ message: string }>>(`${environment.apiUrl}/novels/${slug}/comments/${commentId}`)
+      .pipe(map((r) => r.data));
+  }
+}
+
+export interface NovelCommentModel {
+  id: string;
+  content: string;
+  createdAt: string;
+  isDeleted: boolean;
+  author: {
+    id: string;
+    username: string;
+    displayName: string | null;
+    avatarUrl: string | null;
+  };
 }

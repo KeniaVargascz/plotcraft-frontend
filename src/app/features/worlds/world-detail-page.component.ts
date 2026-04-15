@@ -87,7 +87,10 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
             <section class="related lore-section">
               <div class="section-head">
                 <h2>Lore</h2>
-                <a [routerLink]="['/mundos', currentWorld.slug, 'lore']">Ver todo el lore</a>
+                <a class="section-cta" [routerLink]="['/mundos', currentWorld.slug, 'lore']">
+                  <span>Ver todo el lore</span>
+                  <span aria-hidden="true">→</span>
+                </a>
               </div>
               @for (loreCat of loreCategories(); track loreCat.slug) {
                 @if (loreEntries()[loreCat.slug]?.length) {
@@ -113,7 +116,10 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
             <section class="related">
               <div class="section-head">
                 <h2>Personajes del mundo</h2>
-                <a [routerLink]="['/personajes']">Ver todos</a>
+                <a class="section-cta" [routerLink]="['/personajes']">
+                  <span>Ver todos</span>
+                  <span aria-hidden="true">→</span>
+                </a>
               </div>
               <div class="character-grid">
                 @for (character of characters(); track character.id) {
@@ -157,9 +163,13 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         justify-content: space-between;
         gap: 1rem;
         flex-wrap: wrap;
+        align-items: center;
       }
       .hero {
         align-items: flex-start;
+      }
+      .section-head h2 {
+        margin: 0;
       }
       .eyebrow,
       .tagline,
@@ -241,6 +251,53 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         color: var(--text-1);
         text-decoration: none;
       }
+      .section-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.7rem 1rem;
+        border-radius: 999px;
+        border: 1px solid color-mix(in srgb, var(--accent-strong, var(--accent)) 35%, var(--border));
+        background:
+          linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--accent-glow) 78%, transparent),
+            color-mix(in srgb, var(--bg-card) 88%, transparent)
+          );
+        box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+        color: var(--accent-text);
+        font-size: 0.92rem;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        text-decoration: none;
+        transition:
+          transform 180ms ease,
+          box-shadow 180ms ease,
+          border-color 180ms ease,
+          background 180ms ease;
+      }
+      .section-cta:hover,
+      .section-cta:focus-visible {
+        transform: translateY(-1px);
+        border-color: color-mix(in srgb, var(--accent-strong, var(--accent)) 58%, var(--border));
+        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.14);
+        outline: none;
+      }
+      .section-cta span:last-child {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.35rem;
+        height: 1.35rem;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--accent) 16%, transparent);
+        font-size: 0.9rem;
+        transition: transform 180ms ease;
+      }
+      .section-cta:hover span:last-child,
+      .section-cta:focus-visible span:last-child {
+        transform: translateX(2px);
+      }
       .character-grid {
         display: grid;
         gap: 1rem;
@@ -275,6 +332,10 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         .content-grid,
         .character-grid {
           grid-template-columns: 1fr;
+        }
+        .section-cta {
+          width: 100%;
+          justify-content: center;
         }
       }
     `,

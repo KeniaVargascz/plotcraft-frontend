@@ -14,8 +14,12 @@
       <span class="type-badge">{{ 'post.types.' + post.type | translate }}</span>
       @if (isAuthor) {
         <div class="owner-actions">
-          <button type="button" (click)="startEdit()">{{ 'post.edit' | translate }}</button>
-          <button type="button" (click)="deletePost()">{{ 'post.delete' | translate }}</button>
+          <button type="button" (click)="startEdit()" title="Editar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
+          </button>
+          <button type="button" class="delete-btn" (click)="deletePost()" title="Eliminar">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          </button>
         </div>
       }
     </div>
@@ -32,7 +36,66 @@
       </div>
     </form>
   } @else {
-    <p class="post-content">{{ post.content }}</p>
+    @if (post.type === 'RECOMMENDATION') {
+      <div class="recommendation-header">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+        <span>recomienda</span>
+      </div>
+    }
+    <div class="post-content" [innerHTML]="post.content | markdown"></div>
+  }
+
+  @if (post.linkedContent?.novel; as novel) {
+    <a class="linked-card linked-novel" [routerLink]="['/novelas', novel.slug]">
+      @if (novel.coverUrl) {
+        <img class="linked-cover" [src]="novel.coverUrl" [alt]="novel.title" />
+      } @else {
+        <div class="linked-cover-placeholder">{{ novel.title.charAt(0) }}</div>
+      }
+      <div class="linked-info">
+        <strong>{{ novel.title }}</strong>
+        <span>{{ novel.chaptersCount }} caps</span>
+        @if (novel.synopsis) {
+          <p>{{ novel.synopsis | slice:0:120 }}...</p>
+        }
+        @if (post.type === 'RECOMMENDATION') {
+          <span class="by-author">por @{{ novel.author.username }}</span>
+        }
+      </div>
+    </a>
+  }
+
+  @if (post.linkedContent?.chapter; as chapter) {
+    <a class="linked-card linked-chapter"
+       [routerLink]="['/novelas', chapter.novelSlug, chapter.slug]">
+      <div class="linked-info">
+        <strong>Cap. {{ chapter.order }}: {{ chapter.title }}</strong>
+        <span>{{ chapter.novelTitle }} · {{ chapter.wordCount }} palabras</span>
+      </div>
+    </a>
+  }
+
+  @if (post.linkedContent?.world; as world) {
+    <a class="linked-card linked-world" [routerLink]="['/mundos', world.slug]">
+      <div class="linked-info">
+        <strong>{{ world.name }}</strong>
+        @if (world.tagline) {
+          <p>{{ world.tagline }}</p>
+        }
+      </div>
+    </a>
+  }
+
+  @if (post.linkedContent?.characters?.length) {
+    <div class="linked-characters">
+      @for (char of post.linkedContent!.characters; track char.id) {
+        <a class="linked-card linked-character"
+           [routerLink]="['/personajes', char.authorUsername, char.slug]">
+          <div class="char-avatar">{{ char.name.charAt(0) }}</div>
+          <span>{{ char.name }}</span>
+        </a>
+      }
+    </div>
   }
 
   @if (post.imageUrls?.length) {
@@ -64,21 +127,24 @@
     />
   }
 
-  <app-reaction-bar [post]="post" (postChange)="postChange.emit($event)" />
-
-  <footer class="post-footer">
-    <button type="button" (click)="toggleComments()">
-      {{ 'post.comments' | translate }} · {{ post.stats.commentsCount }}
+  <app-reaction-bar [post]="post" [isAuthor]="isAuthor" (postChange)="postChange.emit($event)">
+    <button type="button" class="action-btn" (click)="toggleComments()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      {{ post.stats.commentsCount }}
     </button>
 
-    @if (post.viewerContext) {
-      <button type="button" [class.active]="post.viewerContext.hasSaved" (click)="toggleSaved()">
-        {{ post.viewerContext.hasSaved ? ('post.saved' | translate) : ('post.save' | translate) }}
+    @if (post.viewerContext && !isAuthor) {
+      <button type="button" class="action-btn" [class.active]="post.viewerContext.hasSaved" (click)="toggleSaved()">
+        <svg width="16" height="16" viewBox="0 0 24 24" [attr.fill]="post.viewerContext.hasSaved ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
       </button>
     }
-  </footer>
+  </app-reaction-bar>
 
   @if (commentsOpen()) {
-    <app-comment-list [post]="post" />
+    @if (post.commentsEnabled) {
+      <app-comment-list [post]="post" />
+    } @else {
+      <p class="comments-disabled">El autor ha limitado los comentarios.</p>
+    }
   }
 </article>

@@ -1,4 +1,5 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, SlicePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -18,6 +19,7 @@ import { CharacterCardComponent } from '../characters/components/character-card.
 import { WorldCardComponent } from '../worlds/components/world-card.component';
 import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/linked-visual-boards-section.component';
 import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
+import { PostsService } from '../../core/services/posts.service';
 
 @Component({
   selector: 'app-novel-detail-page',
@@ -25,6 +27,8 @@ import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
   imports: [
     RouterLink,
     DatePipe,
+    SlicePipe,
+    FormsModule,
     ErrorMessageComponent,
     LoadingSpinnerComponent,
     WorldCardComponent,
@@ -123,6 +127,12 @@ import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
                 </button>
                 <button type="button" [disabled]="listsLoading()" (click)="toggleListsMenu()">
                   {{ listsLoading() ? 'Cargando listas...' : 'Guardar en lista' }}
+                </button>
+              }
+
+              @if (currentNovel.viewerContext) {
+                <button type="button" class="recommend-btn" [disabled]="recommended()" (click)="openRecommendPreview()">
+                  {{ recommended() ? 'Recomendado' : 'Recomendar' }}
                 </button>
               }
 
@@ -416,6 +426,42 @@ import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
         />
       </section>
     }
+
+    @if (showRecommendPreview()) {
+      <div class="recommend-overlay" (click)="closeRecommendPreview()">
+        <div class="recommend-modal" (click)="$event.stopPropagation()">
+          <h3>Recomendar novela</h3>
+
+          <div class="recommend-novel-preview">
+            @if (novel()?.coverUrl) {
+              <img [src]="novel()!.coverUrl!" [alt]="novel()!.title" />
+            } @else {
+              <div class="preview-cover-placeholder">{{ novel()!.title.charAt(0) }}</div>
+            }
+            <div class="preview-info">
+              <strong>{{ novel()!.title }}</strong>
+              <span>por @{{ novel()!.author.username }}</span>
+              @if (novel()!.synopsis) {
+                <p>{{ novel()!.synopsis! | slice:0:150 }}...</p>
+              }
+            </div>
+          </div>
+
+          <textarea
+            [(ngModel)]="recommendMessage"
+            rows="3"
+            placeholder="Escribe un comentario sobre esta novela..."
+          ></textarea>
+
+          <div class="recommend-actions">
+            <button type="button" class="btn-cancel" (click)="closeRecommendPreview()">Cancelar</button>
+            <button type="button" class="btn-confirm" [disabled]="recommending()" (click)="confirmRecommend()">
+              {{ recommending() ? 'Publicando...' : 'Publicar recomendacion' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    }
   `,
   styles: [
     `
@@ -461,6 +507,14 @@ import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
         display: flex;
         flex-wrap: wrap;
         gap: 0.75rem;
+      }
+      .author a {
+        color: var(--accent-text);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .author a:hover {
+        text-decoration: underline;
       }
       .chips span,
       .actions a,
@@ -632,6 +686,124 @@ import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
         background: var(--bg-surface);
         color: var(--text-2);
         border: 1px solid var(--border);
+      }
+      .recommend-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: grid;
+        place-items: center;
+        z-index: 1000;
+        padding: 1rem;
+      }
+      .recommend-modal {
+        display: grid;
+        gap: 1rem;
+        width: 100%;
+        max-width: 480px;
+        padding: 1.5rem;
+        border-radius: 1.25rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+      }
+      .recommend-modal h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--text-1);
+      }
+      .recommend-novel-preview {
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+      }
+      .recommend-novel-preview img {
+        width: 60px;
+        height: 80px;
+        border-radius: 0.5rem;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
+      .preview-cover-placeholder {
+        width: 60px;
+        height: 80px;
+        border-radius: 0.5rem;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        display: grid;
+        place-items: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .preview-info {
+        display: grid;
+        gap: 0.15rem;
+        align-content: start;
+        min-width: 0;
+      }
+      .preview-info strong {
+        color: var(--text-1);
+        font-size: 0.9rem;
+      }
+      .preview-info span {
+        color: var(--text-3);
+        font-size: 0.8rem;
+      }
+      .preview-info p {
+        margin: 0;
+        color: var(--text-2);
+        font-size: 0.8rem;
+        line-height: 1.4;
+      }
+      .recommend-modal textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        font-size: 0.85rem;
+        resize: vertical;
+        font-family: inherit;
+      }
+      .recommend-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+      }
+      .btn-cancel {
+        padding: 0.55rem 1rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+      }
+      .btn-cancel:hover {
+        border-color: var(--accent);
+      }
+      .btn-confirm {
+        padding: 0.55rem 1rem;
+        border-radius: 999px;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+      }
+      .btn-confirm:hover {
+        box-shadow: 0 0 12px var(--accent-glow);
+      }
+      .btn-confirm:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
       @media (max-width: 640px) {
         .detail-row {
@@ -854,6 +1026,7 @@ export class NovelDetailPageComponent implements OnInit {
   private readonly readingListsService = inject(ReadingListsService);
   private readonly timelineService = inject(TimelineService);
   readonly authService = inject(AuthService);
+  private readonly postsService = inject(PostsService);
 
   readonly loading = signal(true);
   readonly error = signal(false);
@@ -868,6 +1041,10 @@ export class NovelDetailPageComponent implements OnInit {
   readonly listActionId = signal<string | null>(null);
   readonly kudoLoading = signal(false);
   readonly kudoBeat = signal(false);
+  readonly recommending = signal(false);
+  readonly recommended = signal(false);
+  readonly showRecommendPreview = signal(false);
+  recommendMessage = '';
   readonly subscribeLoading = signal(false);
 
   toggleSubscription() {
@@ -1147,6 +1324,39 @@ export class NovelDetailPageComponent implements OnInit {
           this.readingLists.set([]);
           this.listMembership.set(new Set<string>());
           this.listsError.set('No se pudieron cargar tus listas.');
+        },
+      });
+  }
+
+  openRecommendPreview() {
+    const n = this.novel();
+    if (!n) return;
+    this.recommendMessage = `Recomiendo "${n.title}" de @${n.author.username}`;
+    this.showRecommendPreview.set(true);
+  }
+
+  closeRecommendPreview() {
+    this.showRecommendPreview.set(false);
+  }
+
+  confirmRecommend() {
+    const n = this.novel();
+    if (!n || this.recommending()) return;
+    this.recommending.set(true);
+    this.postsService
+      .create({
+        content: this.recommendMessage.trim() || `Recomiendo "${n.title}"`,
+        type: 'RECOMMENDATION',
+        novel_id: n.id,
+      })
+      .subscribe({
+        next: () => {
+          this.recommending.set(false);
+          this.recommended.set(true);
+          this.showRecommendPreview.set(false);
+        },
+        error: () => {
+          this.recommending.set(false);
         },
       });
   }

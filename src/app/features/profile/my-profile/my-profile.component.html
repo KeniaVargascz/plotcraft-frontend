@@ -59,15 +59,52 @@
     </div>
 
     <div class="actions">
-      <a mat-flat-button routerLink="/mi-perfil/editar">{{
+      <a class="btn btn-primary" routerLink="/mi-perfil/editar">{{
         'profile.actions.editProfile' | translate
       }}</a>
-      <a mat-stroked-button routerLink="/mis-novelas">{{
+      <a class="btn btn-outline" routerLink="/mis-novelas">{{
         'profile.actions.viewMyNovels' | translate
       }}</a>
-      <a mat-stroked-button routerLink="/cuenta">{{
+      <a class="btn btn-outline" routerLink="/cuenta">{{
         'profile.actions.accountSettings' | translate
       }}</a>
+      <a class="btn btn-outline" [routerLink]="['/perfil', profileUser.username]" [queryParams]="{ tab: 'saved' }">
+        Publicaciones guardadas
+      </a>
     </div>
+  </section>
+
+  <section class="activity-section">
+    <h2>Mi actividad</h2>
+
+    @if (activityLoading() && !activity().length) {
+      <app-loading-spinner />
+    } @else if (!activity().length) {
+      <div class="empty-activity">
+        <p>Aun no tienes publicaciones.</p>
+        <a class="btn btn-primary" routerLink="/feed">Ir al feed</a>
+      </div>
+    } @else {
+      <div class="activity-list">
+        @for (post of activity(); track post.id) {
+          <app-post-card
+            [post]="post"
+            (postChange)="onPostUpdate($event)"
+            (postDeleted)="onPostRemoved($event)"
+          />
+        }
+      </div>
+
+      @if (activityHasMore()) {
+        <button
+          type="button"
+          class="btn btn-outline load-more"
+          [disabled]="activityLoading()"
+          (click)="loadMoreActivity()"
+        >
+          {{ activityLoading() ? 'Cargando...' : 'Cargar mas' }}
+        </button>
+      }
+    }
   </section>
 }

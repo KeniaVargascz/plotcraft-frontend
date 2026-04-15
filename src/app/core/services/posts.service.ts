@@ -23,6 +23,10 @@ export class PostsService {
     type: PostType;
     image_urls?: string[];
     tags?: string[];
+    novel_id?: string;
+    chapter_id?: string;
+    world_id?: string;
+    character_ids?: string[];
   }): Observable<PostModel> {
     return this.http
       .post<ApiResponse<PostModel>>(`${environment.apiUrl}/posts`, payload)

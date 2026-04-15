@@ -77,6 +77,8 @@ export class AccountSettingsComponent implements OnInit {
     showFollows: true,
     showStats: true,
     allowMessages: true,
+    allowPostComments: true,
+    allowNovelComments: true,
     searchable: true,
   });
   readonly notifPrefs = signal<NotificationPreferences>({

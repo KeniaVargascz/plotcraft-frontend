@@ -30,6 +30,40 @@ form {
   gap: 1rem;
 }
 
+.rich-toolbar {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem 0.75rem 0 0;
+  background: var(--bg-surface);
+  border-bottom: none;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: none;
+    color: var(--text-2);
+    cursor: pointer;
+    font-size: 0.85rem;
+
+    &:hover {
+      background: var(--bg-card);
+      color: var(--text-1);
+    }
+  }
+}
+
+.rich-toolbar + textarea {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
 textarea,
 select {
   width: 100%;
@@ -159,6 +193,44 @@ select {
   &:hover {
     background: var(--accent);
     color: #111;
+  }
+}
+
+.content-linker {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.linker-select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  color: var(--text-1);
+  font-size: 0.85rem;
+}
+
+.character-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.char-option {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  font-size: 0.82rem;
+  color: var(--text-2);
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    accent-color: var(--accent);
   }
 }
 

@@ -13,13 +13,13 @@ import { CategoryBadgeComponent } from './category-badge.component';
       <div class="card-header">
         <app-category-badge [category]="thread().category" />
         @if (thread().isPinned) {
-          <span class="badge pin-badge">📌 Fijado</span>
+          <span class="badge pin-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg> Fijado</span>
         }
         @if (thread().status === 'CLOSED') {
-          <span class="badge closed-badge">🔒 No acepta respuestas</span>
+          <span class="badge closed-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> No acepta respuestas</span>
         }
         @if (thread().status === 'ARCHIVED') {
-          <span class="badge archived-badge">📦 Archivado</span>
+          <span class="badge archived-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg> Archivado</span>
         }
       </div>
 
@@ -56,19 +56,19 @@ import { CategoryBadgeComponent } from './category-badge.component';
         </div>
 
         <div class="stats">
-          <span title="Respuestas">&#128172; {{ thread().stats.repliesCount }}</span>
-          <span title="Reacciones">&#9829; {{ thread().stats.reactionsCount }}</span>
-          <span title="Vistas">&#128065; {{ thread().viewsCount }}</span>
+          <span title="Respuestas"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> {{ thread().stats.repliesCount }}</span>
+          <span title="Reacciones"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> {{ thread().stats.reactionsCount }}</span>
+          <span title="Vistas"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> {{ thread().viewsCount }}</span>
           @if (thread().stats.hasSolution) {
-            <span class="solution-badge">✅ Solucionado</span>
+            <span class="solution-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Solucionado</span>
           } @else if (thread().stats.repliesCount > 0) {
-            <span class="unsolved-badge">🔍 Sin solucion</span>
+            <span class="unsolved-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Sin solucion</span>
           }
           @if (thread().stats.hasPoll) {
             @if (thread().status === 'CLOSED') {
-              <span class="poll-closed-badge">📊 Encuesta cerrada</span>
+              <span class="poll-closed-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Encuesta cerrada</span>
             } @else {
-              <span class="poll-badge">📊 Encuesta abierta</span>
+              <span class="poll-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg> Encuesta abierta</span>
             }
           }
         </div>
@@ -122,6 +122,9 @@ import { CategoryBadgeComponent } from './category-badge.component';
         margin-bottom: 0.5rem;
       }
       .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
         font-size: 0.7rem;
         font-weight: 600;
         padding: 0.15rem 0.5rem;
@@ -204,6 +207,11 @@ import { CategoryBadgeComponent } from './category-badge.component';
         display: flex;
         gap: 0.75rem;
         align-items: center;
+      }
+      .stats span {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
       }
       .solution-badge {
         color: #16a34a;

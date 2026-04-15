@@ -6,6 +6,8 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { PostsService } from '../../../../core/services/posts.service';
 import { LightboxComponent } from '../../../../shared/components/lightbox/lightbox.component';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { MarkdownPipe } from '../../../../shared/pipes/markdown.pipe';
+import { SlicePipe } from '@angular/common';
 import { CommentListComponent } from '../comment-list/comment-list.component';
 import { ReactionBarComponent } from '../reaction-bar/reaction-bar.component';
 
@@ -16,6 +18,8 @@ import { ReactionBarComponent } from '../reaction-bar/reaction-bar.component';
     ReactiveFormsModule,
     RouterLink,
     TranslatePipe,
+    MarkdownPipe,
+    SlicePipe,
     CommentListComponent,
     ReactionBarComponent,
     LightboxComponent,

@@ -17,6 +17,7 @@ export class ReactionBarComponent {
   readonly authService = inject(AuthService);
 
   @Input({ required: true }) post!: PostModel;
+  @Input() isAuthor = false;
   @Output() postChange = new EventEmitter<PostModel>();
 
   readonly loading = signal(false);

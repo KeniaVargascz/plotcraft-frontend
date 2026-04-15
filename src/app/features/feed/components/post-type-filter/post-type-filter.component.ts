@@ -21,6 +21,11 @@ export class PostTypeFilterComponent {
     'WORLDBUILDING',
     'SHOWCASE',
     'ANNOUNCEMENT',
+    'NEW_CHAPTER',
+    'NEW_NOVEL',
+    'WORLD_UPDATE',
+    'NEW_CHARACTER',
+    'RECOMMENDATION',
   ];
 
   choose(option: PostType | 'ALL') {

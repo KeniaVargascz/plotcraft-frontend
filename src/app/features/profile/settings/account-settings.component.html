@@ -536,6 +536,42 @@
 
             <label class="toggle-row">
               <div class="toggle-info">
+                <strong>Comentarios en publicaciones</strong>
+                <span>Permite que otros comenten tus publicaciones del feed.</span>
+              </div>
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="privacy().allowPostComments"
+                  (change)="updatePrivacyField('allowPostComments', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
+            </label>
+
+            <label class="toggle-row">
+              <div class="toggle-info">
+                <strong>Comentarios en novelas</strong>
+                <span>Permite que otros comenten tus novelas.</span>
+              </div>
+              <span class="toggle-control">
+                <input
+                  class="toggle-input"
+                  type="checkbox"
+                  [checked]="privacy().allowNovelComments"
+                  (change)="updatePrivacyField('allowNovelComments', $any($event.target).checked)"
+                />
+                <span class="toggle-switch" aria-hidden="true">
+                  <span class="toggle-thumb"></span>
+                </span>
+              </span>
+            </label>
+
+            <label class="toggle-row">
+              <div class="toggle-info">
                 <strong>Aparecer en busquedas</strong>
                 <span>Tu perfil puede ser encontrado por otros usuarios.</span>
               </div>

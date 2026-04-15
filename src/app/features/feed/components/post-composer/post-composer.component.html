@@ -5,7 +5,16 @@
   </header>
 
   <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="rich-toolbar">
+      <button type="button" (click)="insertBold()" title="Negrita"><strong>B</strong></button>
+      <button type="button" (click)="insertItalic()" title="Cursiva"><em>I</em></button>
+      <button type="button" (click)="insertLink()" title="Enlace">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      </button>
+    </div>
+
     <textarea
+      #contentTextarea
       formControlName="content"
       rows="5"
       [placeholder]="'post.placeholder' | translate"
@@ -53,10 +62,53 @@
       }
     </div>
 
+    @if (needsContentLinker()) {
+      <div class="content-linker">
+        @if (form.controls.type.value === 'NEW_NOVEL' || form.controls.type.value === 'NEW_CHAPTER') {
+          <select (change)="selectNovel($event)" class="linker-select">
+            <option value="">Selecciona novela</option>
+            @for (novel of myNovels(); track novel.id) {
+              <option [value]="novel.id">{{ novel.title }}</option>
+            }
+          </select>
+        }
+        @if (form.controls.type.value === 'NEW_CHAPTER' && selectedNovelChapters().length) {
+          <select (change)="selectChapter($event)" class="linker-select">
+            <option value="">Selecciona capitulo</option>
+            @for (ch of selectedNovelChapters(); track ch.id) {
+              <option [value]="ch.id">Cap. {{ ch.order }}: {{ ch.title }}</option>
+            }
+          </select>
+        }
+        @if (form.controls.type.value === 'WORLD_UPDATE') {
+          <select (change)="selectWorld($event)" class="linker-select">
+            <option value="">Selecciona mundo</option>
+            @for (world of myWorlds(); track world.id) {
+              <option [value]="world.id">{{ world.name }}</option>
+            }
+          </select>
+        }
+        @if (form.controls.type.value === 'NEW_CHARACTER') {
+          <div class="character-picker">
+            @for (char of myCharacters(); track char.id) {
+              <label class="char-option">
+                <input
+                  type="checkbox"
+                  [checked]="selectedCharacterIds().includes(char.id)"
+                  (change)="toggleCharacter(char.id)"
+                />
+                {{ char.name }}
+              </label>
+            }
+          </div>
+        }
+      </div>
+    }
+
     <div class="composer-actions">
       <label>
         <span>{{ 'feed.title' | translate }}</span>
-        <select formControlName="type">
+        <select formControlName="type" (change)="onTypeChange()">
           @for (type of postTypes; track type) {
             <option [value]="type">{{ 'post.types.' + type | translate }}</option>
           }

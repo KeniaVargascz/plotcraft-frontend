@@ -268,7 +268,12 @@
       "UPDATE": "Actualizacion",
       "WORLDBUILDING": "World-building",
       "SHOWCASE": "Showcase",
-      "ANNOUNCEMENT": "Anuncio"
+      "ANNOUNCEMENT": "Anuncio",
+      "NEW_CHAPTER": "Nuevo capitulo",
+      "NEW_NOVEL": "Nueva novela",
+      "WORLD_UPDATE": "Mundo actualizado",
+      "NEW_CHARACTER": "Nuevo personaje",
+      "RECOMMENDATION": "Recomendacion"
     },
     "reactions": {
       "like": "Me gusta",

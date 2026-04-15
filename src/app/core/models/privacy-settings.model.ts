@@ -4,5 +4,7 @@ export interface PrivacySettings {
   showFollows: boolean;
   showStats: boolean;
   allowMessages: boolean;
+  allowPostComments: boolean;
+  allowNovelComments: boolean;
   searchable: boolean;
 }

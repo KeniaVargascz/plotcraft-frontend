@@ -25,7 +25,11 @@ const CATEGORIES: CategoryOption[] = [
   template: `
     <div class="filters-bar">
       <div class="controls">
-        <select [(ngModel)]="selectedCategoryModel" (ngModelChange)="selectCategory($event)" class="sort-select">
+        <select
+          [(ngModel)]="selectedCategoryModel"
+          (ngModelChange)="selectCategory($event)"
+          class="sort-select"
+        >
           @for (cat of categories; track cat.value) {
             <option [value]="cat.value">{{ cat.label }}</option>
           }

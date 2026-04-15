@@ -161,9 +161,9 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
               <div class="top-genres">
                 <h3>Géneros principales</h3>
                 <div class="genre-chips">
-                    @for (g of audience()!.topGenres; track g.genre.slug) {
+                  @for (g of audience()!.topGenres; track g.genre.slug) {
                     <span class="genre-chip">{{ g.genre | genreLabel }}</span>
-                    }
+                  }
                 </div>
               </div>
             }

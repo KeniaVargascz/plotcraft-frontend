@@ -888,6 +888,4 @@ export class DiscoveryPageComponent {
   releaseToneClass(index: number) {
     return `release-tone-${index % 4}`;
   }
-
 }
-

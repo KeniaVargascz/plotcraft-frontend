@@ -70,9 +70,8 @@ export class UserProfilePageComponent implements OnInit {
 
       const tab = this.route.snapshot.queryParamMap.get('tab');
       const validTabs = ['posts', 'novels', 'worlds', 'characters', 'saved'] as const;
-      this.activeTab.set(
-        validTabs.includes(tab as any) ? (tab as typeof validTabs[number]) : 'posts',
-      );
+      type ValidTab = (typeof validTabs)[number];
+      this.activeTab.set(validTabs.includes(tab as ValidTab) ? (tab as ValidTab) : 'posts');
       this.loadProfile(username);
       this.loadActiveTab(username, true);
     });

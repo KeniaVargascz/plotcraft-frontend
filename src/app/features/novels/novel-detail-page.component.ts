@@ -133,8 +133,17 @@ import { PostsService } from '../../core/services/posts.service';
               }
 
               @if (currentNovel.viewerContext) {
-                <button type="button" class="recommend-btn" [disabled]="recommended()" (click)="openRecommendPreview()">
-                  {{ recommended() ? ('recommend.done' | translate) : ('recommend.button' | translate) }}
+                <button
+                  type="button"
+                  class="recommend-btn"
+                  [disabled]="recommended()"
+                  (click)="openRecommendPreview()"
+                >
+                  {{
+                    recommended()
+                      ? ('recommend.done' | translate)
+                      : ('recommend.button' | translate)
+                  }}
                 </button>
               }
 
@@ -446,7 +455,11 @@ import { PostsService } from '../../core/services/posts.service';
                   [disabled]="!newComment.trim() || commentSending()"
                   (click)="submitComment(currentNovel.slug)"
                 >
-                  {{ commentSending() ? ('novelComments.sending' | translate) : ('novelComments.submit' | translate) }}
+                  {{
+                    commentSending()
+                      ? ('novelComments.sending' | translate)
+                      : ('novelComments.submit' | translate)
+                  }}
                 </button>
               </div>
             }
@@ -466,9 +479,29 @@ import { PostsService } from '../../core/services/posts.service';
                           {{ c.author.displayName || c.author.username }}
                         </a>
                         <span class="comment-date">{{ relativeDate(c.createdAt) }}</span>
-                        @if (c.author.id === authService.getCurrentUserSnapshot()?.id || currentNovel.viewerContext?.isAuthor) {
-                          <button type="button" class="comment-delete" (click)="removeComment(currentNovel.slug, c.id)">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                        @if (
+                          c.author.id === authService.getCurrentUserSnapshot()?.id ||
+                          currentNovel.viewerContext?.isAuthor
+                        ) {
+                          <button
+                            type="button"
+                            class="comment-delete"
+                            (click)="removeComment(currentNovel.slug, c.id)"
+                          >
+                            <svg
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <path d="M3 6h18" />
+                              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                            </svg>
                           </button>
                         }
                       </div>
@@ -479,7 +512,11 @@ import { PostsService } from '../../core/services/posts.service';
               </div>
 
               @if (commentsHasMore()) {
-                <button type="button" class="btn-load-more" (click)="loadMoreComments(currentNovel.slug)">
+                <button
+                  type="button"
+                  class="btn-load-more"
+                  (click)="loadMoreComments(currentNovel.slug)"
+                >
                   {{ 'novelComments.loadMore' | translate }}
                 </button>
               }
@@ -506,7 +543,7 @@ import { PostsService } from '../../core/services/posts.service';
               <strong>{{ novel()!.title }}</strong>
               <span>por @{{ novel()!.author.username }}</span>
               @if (novel()!.synopsis) {
-                <p>{{ novel()!.synopsis! | slice:0:150 }}...</p>
+                <p>{{ novel()!.synopsis! | slice: 0 : 150 }}...</p>
               }
             </div>
           </div>
@@ -518,9 +555,20 @@ import { PostsService } from '../../core/services/posts.service';
           ></textarea>
 
           <div class="recommend-actions">
-            <button type="button" class="btn-cancel" (click)="closeRecommendPreview()">{{ 'recommend.cancel' | translate }}</button>
-            <button type="button" class="btn-confirm" [disabled]="recommending()" (click)="confirmRecommend()">
-              {{ recommending() ? ('recommend.confirming' | translate) : ('recommend.confirm' | translate) }}
+            <button type="button" class="btn-cancel" (click)="closeRecommendPreview()">
+              {{ 'recommend.cancel' | translate }}
+            </button>
+            <button
+              type="button"
+              class="btn-confirm"
+              [disabled]="recommending()"
+              (click)="confirmRecommend()"
+            >
+              {{
+                recommending()
+                  ? ('recommend.confirming' | translate)
+                  : ('recommend.confirm' | translate)
+              }}
             </button>
           </div>
         </div>
@@ -751,27 +799,138 @@ import { PostsService } from '../../core/services/posts.service';
         color: var(--text-2);
         border: 1px solid var(--border);
       }
-      .novel-comments { display: grid; gap: 1rem; }
-      .novel-comments h2 { margin: 0; font-size: 1.1rem; }
-      .comment-form { display: grid; gap: 0.5rem; }
-      .comment-form textarea { width: 100%; padding: 0.75rem; border-radius: 0.75rem; border: 1px solid var(--border); background: var(--bg-surface); color: var(--text-1); font-size: 0.85rem; font-family: inherit; resize: vertical; }
-      .comment-form textarea:focus { outline: none; border-color: var(--accent); }
-      .btn-send { justify-self: end; padding: 0.5rem 1rem; border-radius: 999px; border: none; background: var(--accent); color: #fff; font-weight: 600; font-size: 0.85rem; cursor: pointer; min-height: unset; }
-      .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
-      .comment-hint { color: var(--text-3); font-size: 0.85rem; text-align: center; padding: 1rem; margin: 0; }
-      .comments-list { display: grid; gap: 0.75rem; }
-      .comment-item { display: flex; gap: 0.6rem; }
-      .comment-avatar { width: 2rem; height: 2rem; min-width: 2rem; border-radius: 50%; background: var(--accent-glow); color: var(--accent-text); display: grid; place-items: center; font-size: 0.75rem; font-weight: 700; }
-      .comment-body { flex: 1; min-width: 0; }
-      .comment-header { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-      .comment-author { font-weight: 600; font-size: 0.85rem; color: var(--text-1); text-decoration: none; }
-      .comment-author:hover { color: var(--accent-text); }
-      .comment-date { color: var(--text-3); font-size: 0.78rem; }
-      .comment-delete { display: inline-flex; align-items: center; justify-content: center; width: 1.6rem; height: 1.6rem; min-height: unset; border: none; border-radius: 50%; background: none; color: var(--text-3); cursor: pointer; padding: 0; }
-      .comment-delete:hover { color: #e55; background: var(--bg-surface); }
-      .comment-text { margin: 0.2rem 0 0; color: var(--text-2); font-size: 0.85rem; line-height: 1.5; }
-      .btn-load-more { display: block; margin: 0 auto; padding: 0.5rem 1.2rem; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-surface); color: var(--text-1); cursor: pointer; font-size: 0.85rem; min-height: unset; }
-      .btn-load-more:hover { border-color: var(--accent); }
+      .novel-comments {
+        display: grid;
+        gap: 1rem;
+      }
+      .novel-comments h2 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+      .comment-form {
+        display: grid;
+        gap: 0.5rem;
+      }
+      .comment-form textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        font-size: 0.85rem;
+        font-family: inherit;
+        resize: vertical;
+      }
+      .comment-form textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      .btn-send {
+        justify-self: end;
+        padding: 0.5rem 1rem;
+        border-radius: 999px;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        min-height: unset;
+      }
+      .btn-send:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .comment-hint {
+        color: var(--text-3);
+        font-size: 0.85rem;
+        text-align: center;
+        padding: 1rem;
+        margin: 0;
+      }
+      .comments-list {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .comment-item {
+        display: flex;
+        gap: 0.6rem;
+      }
+      .comment-avatar {
+        width: 2rem;
+        height: 2rem;
+        min-width: 2rem;
+        border-radius: 50%;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        display: grid;
+        place-items: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+      .comment-body {
+        flex: 1;
+        min-width: 0;
+      }
+      .comment-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .comment-author {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--text-1);
+        text-decoration: none;
+      }
+      .comment-author:hover {
+        color: var(--accent-text);
+      }
+      .comment-date {
+        color: var(--text-3);
+        font-size: 0.78rem;
+      }
+      .comment-delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.6rem;
+        height: 1.6rem;
+        min-height: unset;
+        border: none;
+        border-radius: 50%;
+        background: none;
+        color: var(--text-3);
+        cursor: pointer;
+        padding: 0;
+      }
+      .comment-delete:hover {
+        color: #e55;
+        background: var(--bg-surface);
+      }
+      .comment-text {
+        margin: 0.2rem 0 0;
+        color: var(--text-2);
+        font-size: 0.85rem;
+        line-height: 1.5;
+      }
+      .btn-load-more {
+        display: block;
+        margin: 0 auto;
+        padding: 0.5rem 1.2rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        cursor: pointer;
+        font-size: 0.85rem;
+        min-height: unset;
+      }
+      .btn-load-more:hover {
+        border-color: var(--accent);
+      }
       .recommend-overlay {
         position: fixed;
         inset: 0;
@@ -1131,7 +1290,9 @@ export class NovelDetailPageComponent implements OnInit {
   readonly showRecommendPreview = signal(false);
   recommendMessage = '';
 
-  readonly novelComments = signal<import('../../core/services/novels.service').NovelCommentModel[]>([]);
+  readonly novelComments = signal<import('../../core/services/novels.service').NovelCommentModel[]>(
+    [],
+  );
   readonly novelCommentsLoading = signal(false);
   readonly commentsCursor = signal<string | null>(null);
   readonly commentsHasMore = signal(false);
@@ -1459,19 +1620,17 @@ export class NovelDetailPageComponent implements OnInit {
 
   loadComments(slug: string, reset: boolean) {
     this.novelCommentsLoading.set(true);
-    this.novelsService
-      .listComments(slug, reset ? null : this.commentsCursor(), 20)
-      .subscribe({
-        next: (res) => {
-          const list = reset ? res.data : [...this.novelComments(), ...res.data];
-          this.novelComments.set(list);
-          this.commentsCursor.set(res.pagination.nextCursor);
-          this.commentsHasMore.set(res.pagination.hasMore);
-          this.commentsEnabled.set(res.commentsEnabled);
-          this.novelCommentsLoading.set(false);
-        },
-        error: () => this.novelCommentsLoading.set(false),
-      });
+    this.novelsService.listComments(slug, reset ? null : this.commentsCursor(), 20).subscribe({
+      next: (res) => {
+        const list = reset ? res.data : [...this.novelComments(), ...res.data];
+        this.novelComments.set(list);
+        this.commentsCursor.set(res.pagination.nextCursor);
+        this.commentsHasMore.set(res.pagination.hasMore);
+        this.commentsEnabled.set(res.commentsEnabled);
+        this.novelCommentsLoading.set(false);
+      },
+      error: () => this.novelCommentsLoading.set(false),
+    });
   }
 
   loadMoreComments(slug: string) {

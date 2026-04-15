@@ -173,9 +173,9 @@ export class ForumService {
 
   getMyStats(): Observable<{ threadsCount: number; repliesCount: number; solutionsCount: number }> {
     return this.http
-      .get<ApiResponse<{ threadsCount: number; repliesCount: number; solutionsCount: number }>>(
-        `${this.baseUrl}/stats/me`,
-      )
+      .get<
+        ApiResponse<{ threadsCount: number; repliesCount: number; solutionsCount: number }>
+      >(`${this.baseUrl}/stats/me`)
       .pipe(map((response) => response.data));
   }
 

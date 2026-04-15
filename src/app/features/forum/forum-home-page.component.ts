@@ -71,7 +71,21 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
 
         @if (isAuthenticated() && archivedCount() > 0) {
           <a routerLink="/foro/archivados" class="archived-link">
-            <svg class="archive-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+            <svg
+              class="archive-icon"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="21 8 21 21 3 21 3 8" />
+              <rect x="1" y="3" width="22" height="5" />
+              <line x1="10" y1="12" x2="14" y2="12" />
+            </svg>
             Ver mis hilos archivados ({{ archivedCount() }})
           </a>
         }
@@ -83,15 +97,46 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
             <h3>Estadisticas</h3>
             <ul class="stats-list">
               <li>
-                <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                <svg
+                  class="stat-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 20h9" />
+                  <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z" />
+                </svg>
                 <strong>{{ userStats()!.threadsCount }}</strong> Hilos
               </li>
               <li>
-                <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <svg
+                  class="stat-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>
                 <strong>{{ userStats()!.repliesCount }}</strong> Respuestas
               </li>
               <li>
-                <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                <svg
+                  class="stat-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
                 <strong>{{ userStats()!.solutionsCount }}</strong> Soluciones
               </li>
             </ul>
@@ -319,7 +364,11 @@ export class ForumHomePageComponent implements OnInit {
   readonly hasMore = signal(false);
   readonly totalThreads = signal(0);
   readonly myThreads = signal<ThreadSummary[]>([]);
-  readonly userStats = signal<{ threadsCount: number; repliesCount: number; solutionsCount: number } | null>(null);
+  readonly userStats = signal<{
+    threadsCount: number;
+    repliesCount: number;
+    solutionsCount: number;
+  } | null>(null);
   readonly relevantOnly = signal(true);
   readonly trendingTags = signal<{ tag: string; count: number }[]>([]);
   readonly activeTag = signal<string | null>(null);

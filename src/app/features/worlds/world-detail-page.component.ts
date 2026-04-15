@@ -258,12 +258,11 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
         padding: 0.7rem 1rem;
         border-radius: 999px;
         border: 1px solid color-mix(in srgb, var(--accent-strong, var(--accent)) 35%, var(--border));
-        background:
-          linear-gradient(
-            135deg,
-            color-mix(in srgb, var(--accent-glow) 78%, transparent),
-            color-mix(in srgb, var(--bg-card) 88%, transparent)
-          );
+        background: linear-gradient(
+          135deg,
+          color-mix(in srgb, var(--accent-glow) 78%, transparent),
+          color-mix(in srgb, var(--bg-card) 88%, transparent)
+        );
         box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
         color: var(--accent-text);
         font-size: 0.92rem;

@@ -9,12 +9,7 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 @Component({
   selector: 'app-edit-profile',
   standalone: true,
-  imports: [
-    MatSnackBarModule,
-    ReactiveFormsModule,
-    RouterLink,
-    TranslatePipe,
-  ],
+  imports: [MatSnackBarModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.scss',
 })
@@ -55,7 +50,9 @@ export class EditProfileComponent {
   readonly visibilityLabel = computed(() =>
     this.form.controls.isPublic.value ? 'Perfil publico' : 'Perfil privado',
   );
-  readonly profileInitial = computed(() => this.displayNamePreview().trim().charAt(0).toUpperCase() || 'P');
+  readonly profileInitial = computed(
+    () => this.displayNamePreview().trim().charAt(0).toUpperCase() || 'P',
+  );
 
   submit(): void {
     if (this.form.invalid || this.loading()) {

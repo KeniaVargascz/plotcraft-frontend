@@ -229,7 +229,11 @@ export class PrivateLayoutComponent {
 
   isNavItemActive(item: NavItem): boolean {
     const currentUrl = this.router.url;
-    if (item.excludePrefixes?.some((prefix) => currentUrl === prefix || currentUrl.startsWith(`${prefix}/`))) {
+    if (
+      item.excludePrefixes?.some(
+        (prefix) => currentUrl === prefix || currentUrl.startsWith(`${prefix}/`),
+      )
+    ) {
       return false;
     }
 

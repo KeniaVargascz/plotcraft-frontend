@@ -30,12 +30,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
 @Component({
   selector: 'app-account-settings',
   standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    RouterLink,
-    TranslatePipe,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './account-settings.component.html',
   styleUrl: './account-settings.component.scss',
 })

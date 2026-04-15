@@ -90,9 +90,7 @@ export class MyProfileComponent {
   }
 
   onPostUpdate(updated: PostModel) {
-    this.activity.update((list) =>
-      list.map((p) => (p.id === updated.id ? updated : p)),
-    );
+    this.activity.update((list) => list.map((p) => (p.id === updated.id ? updated : p)));
   }
 
   onPostRemoved(postId: string) {

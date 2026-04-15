@@ -57,6 +57,7 @@ export interface NovelSummary {
   isAlternateUniverse?: boolean;
   linkedCommunityId?: string | null;
   linkedCommunity?: NovelLinkedCommunity | null;
+  chapters?: { id: string; title: string; slug: string; order: number }[];
   createdAt: string;
   updatedAt: string;
   author: {

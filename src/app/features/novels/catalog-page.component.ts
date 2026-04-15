@@ -58,7 +58,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
             <ul class="picked-pills">
               @for (g of selectedGenres(); track g.id) {
                 <li>
-                    <span>{{ g | genreLabel }}</span>
+                  <span>{{ g | genreLabel }}</span>
                   <button type="button" (click)="removeGenre(g.slug)">✕</button>
                 </li>
               }
@@ -85,7 +85,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
                   @for (g of availableGenresFiltered(); track g.id) {
                     <li>
                       <button type="button" (click)="addGenre(g.slug)">
-                          {{ g | genreLabel }}
+                        {{ g | genreLabel }}
                       </button>
                     </li>
                   }

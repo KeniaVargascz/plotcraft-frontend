@@ -8,11 +8,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 @Component({
   selector: 'app-delete-account',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    TranslatePipe,
-  ],
+  imports: [ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './delete-account.component.html',
   styleUrl: './delete-account.component.scss',
 })

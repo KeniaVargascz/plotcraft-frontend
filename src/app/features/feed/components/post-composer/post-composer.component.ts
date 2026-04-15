@@ -1,4 +1,13 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Output,
+  ViewChild,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PostModel, PostType } from '../../../../core/models/post.model';
 import { PostsService } from '../../../../core/services/posts.service';
@@ -54,8 +63,15 @@ export class PostComposerComponent {
   readonly publishing = signal(false);
   readonly error = signal<string | null>(null);
   readonly postTypes: PostType[] = [
-    'TEXT', 'UPDATE', 'WORLDBUILDING', 'SHOWCASE', 'ANNOUNCEMENT',
-    'NEW_CHAPTER', 'NEW_NOVEL', 'WORLD_UPDATE', 'NEW_CHARACTER',
+    'TEXT',
+    'UPDATE',
+    'WORLDBUILDING',
+    'SHOWCASE',
+    'ANNOUNCEMENT',
+    'NEW_CHAPTER',
+    'NEW_NOVEL',
+    'WORLD_UPDATE',
+    'NEW_CHARACTER',
   ];
   readonly imageUrls = signal<string[]>([]);
   readonly tags = signal<string[]>([]);
@@ -155,22 +171,36 @@ export class PostComposerComponent {
           id: n.id,
           title: n.title,
           slug: n.slug,
-          chapters: (n as any).chapters?.map((c: any) => ({
-            id: c.id, title: c.title, slug: c.slug, order: c.order,
-          })) ?? [],
+          chapters:
+            n.chapters?.map((c) => ({
+              id: c.id,
+              title: c.title,
+              slug: c.slug,
+              order: c.order,
+            })) ?? [],
         }));
         this.myNovels.set(novels);
       },
     });
     this.worldsService.listMine({ limit: 50 }).subscribe({
-      next: (res) => this.myWorlds.set(res.data.map((w) => ({
-        id: w.id, name: w.name, slug: w.slug,
-      }))),
+      next: (res) =>
+        this.myWorlds.set(
+          res.data.map((w) => ({
+            id: w.id,
+            name: w.name,
+            slug: w.slug,
+          })),
+        ),
     });
     this.charactersService.listMine({ limit: 50 }).subscribe({
-      next: (res) => this.myCharacters.set(res.data.map((c) => ({
-        id: c.id, name: c.name, slug: c.slug,
-      }))),
+      next: (res) =>
+        this.myCharacters.set(
+          res.data.map((c) => ({
+            id: c.id,
+            name: c.name,
+            slug: c.slug,
+          })),
+        ),
     });
   }
 

@@ -59,7 +59,7 @@ import { Community } from '../communities/models/community.model';
 
         <div class="field">
           <span>Etiquetas</span>
-          <app-tag-chips-input formControlName="tags" [maxTags]="5" />
+          <app-tag-chips-input formControlName="tags" [maxTags]="10" />
         </div>
 
         @if (joinedCommunities().length) {

@@ -119,7 +119,20 @@ import { PostsService } from '../../core/services/posts.service';
                   [disabled]="subscribeLoading()"
                   (click)="toggleSubscription()"
                 >
-                  {{ currentNovel.viewerContext?.isSubscribed ? '🔔 Suscrito' : '🔔 Suscribirse' }}
+                  <svg
+                    style="display:inline-block;vertical-align:middle;margin-right:4px"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg
+                  >{{ currentNovel.viewerContext?.isSubscribed ? 'Suscrito' : 'Suscribirse' }}
                 </button>
               }
 
@@ -248,8 +261,8 @@ import { PostsService } from '../../core/services/posts.service';
               <div class="detail-row">
                 <span class="detail-label">Romance</span>
                 <div class="chips-block">
-                  @for (rg of currentNovel.romanceGenres; track rg) {
-                    <span class="romance-genre-badge">{{ romanceGenreLabel(rg) }}</span>
+                  @for (rg of currentNovel.romanceGenres; track rg.id) {
+                    <span class="romance-genre-badge">{{ rg.label }}</span>
                   }
                 </div>
               </div>
@@ -1510,13 +1523,7 @@ export class NovelDetailPageComponent implements OnInit {
   }
 
   romanceGenreLabel(value: string | null): string {
-    const labels: Record<string, string> = {
-      BL: 'BL (Boys Love)',
-      GL: 'GL (Girls Love)',
-      HETEROSEXUAL: 'Heterosexual',
-      OTHER: 'Otros',
-    };
-    return value ? (labels[value] ?? value) : '';
+    return value ?? '';
   }
 
   private isPairingTag(tag: string): boolean {

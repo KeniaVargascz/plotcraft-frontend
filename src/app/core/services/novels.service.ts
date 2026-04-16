@@ -10,7 +10,6 @@ import {
   NovelStatus,
   NovelSummary,
   NovelType,
-  RomanceGenre,
 } from '../models/novel.model';
 
 export type NovelQuery = {
@@ -28,7 +27,7 @@ export type NovelQuery = {
   updatedBefore?: string | null;
   tags?: string[];
   sortBy?: string | null;
-  romanceGenres?: RomanceGenre[] | null;
+  romanceGenreIds?: string[] | null;
   pairings?: string[] | null;
   novelType?: NovelType | null;
   fandomSlug?: string | null;
@@ -45,7 +44,7 @@ export type NovelPayload = {
   genreIds?: string[];
   isPublic?: boolean;
   languageId?: string;
-  romanceGenres?: RomanceGenre[] | null;
+  romanceGenreIds?: string[] | null;
   pairings?: { characterAId: string; characterBId: string; isMain?: boolean }[];
   novelType?: NovelType;
   isAlternateUniverse?: boolean;
@@ -183,9 +182,9 @@ export class NovelsService {
     if (query.sortBy) {
       params = params.set('sortBy', query.sortBy);
     }
-    if (query.romanceGenres?.length) {
-      for (const g of query.romanceGenres) {
-        params = params.append('romanceGenres', g);
+    if (query.romanceGenreIds?.length) {
+      for (const g of query.romanceGenreIds) {
+        params = params.append('romanceGenreIds', g);
       }
     }
     if (query.pairings?.length) {

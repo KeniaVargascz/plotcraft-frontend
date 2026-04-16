@@ -1,11 +1,11 @@
 import { Genre } from './genre.model';
 import { LanguageCatalogItem } from './language.model';
+import { RomanceGenreCatalogItem } from './romance-genre.model';
 import { CharacterSummary } from './character.model';
 import { WorldSummary } from './world.model';
 
 export type NovelStatus = 'DRAFT' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
 export type NovelRating = 'G' | 'PG' | 'T' | 'R' | 'EXPLICIT';
-export type RomanceGenre = 'BL' | 'GL' | 'HETEROSEXUAL' | 'OTHER';
 export type NovelType = 'ORIGINAL' | 'FANFIC';
 
 export interface NovelLinkedCommunity {
@@ -49,7 +49,7 @@ export interface NovelSummary {
   viewsCount: number;
   languageId: string;
   language: LanguageCatalogItem | null;
-  romanceGenres: RomanceGenre[];
+  romanceGenres: RomanceGenreCatalogItem[];
   pairings: NovelPairing[];
   totalWordsCount: number;
   chaptersCount?: number;

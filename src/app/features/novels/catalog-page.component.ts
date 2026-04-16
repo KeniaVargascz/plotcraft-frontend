@@ -391,7 +391,7 @@ export class CatalogPageComponent implements OnInit {
           tags: queryParams.getAll('tags'),
           status: queryParams.get('status'),
           sortBy: queryParams.get('sortBy'),
-          romanceGenres: queryParams.getAll('romanceGenres'),
+          romanceGenreIds: queryParams.getAll('romanceGenreIds'),
           pairings: queryParams.getAll('pairings'),
           novelType: (queryParams.get('novelType') as 'ORIGINAL' | 'FANFIC' | null) || '',
           fandomSlug: queryParams.get('fandomSlug'),
@@ -432,7 +432,7 @@ export class CatalogPageComponent implements OnInit {
       tags: adv.tags?.length ? adv.tags : null,
       status: adv.status || null,
       sortBy: adv.sortBy && adv.sortBy !== 'newest' ? adv.sortBy : null,
-      romanceGenres: adv.romanceGenres?.length ? adv.romanceGenres : null,
+      romanceGenreIds: adv.romanceGenreIds?.length ? adv.romanceGenreIds : null,
       pairings: adv.pairings?.length ? adv.pairings : null,
     };
 
@@ -460,7 +460,7 @@ export class CatalogPageComponent implements OnInit {
       tags: filters.tags?.length ? filters.tags : null,
       status: filters.status || null,
       sortBy: filters.sortBy && filters.sortBy !== 'newest' ? filters.sortBy : null,
-      romanceGenres: filters.romanceGenres?.length ? filters.romanceGenres : null,
+      romanceGenreIds: filters.romanceGenreIds?.length ? filters.romanceGenreIds : null,
       pairings: filters.pairings?.length ? filters.pairings : null,
       novelType: filters.novelType || null,
       fandomSlug: filters.fandomSlug || null,
@@ -489,8 +489,7 @@ export class CatalogPageComponent implements OnInit {
         tags: adv.tags,
         status: (adv.status as 'COMPLETED' | null) || null,
         sortBy: adv.sortBy,
-        romanceGenres:
-          (adv.romanceGenres as ('BL' | 'GL' | 'HETEROSEXUAL' | 'OTHER')[] | null) || null,
+        romanceGenreIds: adv.romanceGenreIds ?? null,
         pairings: adv.pairings ?? null,
         novelType: (adv.novelType as 'ORIGINAL' | 'FANFIC') || null,
         fandomSlug: adv.fandomSlug || null,

@@ -3,9 +3,10 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DiscoverySnapshot } from '../../core/models/discovery.model';
 import { Genre } from '../../core/models/genre.model';
+import { PostModel } from '../../core/models/post.model';
 import { DiscoveryService } from '../../core/services/discovery.service';
 import { GenresService } from '../../core/services/genres.service';
-import { HighlightPipe } from '../../shared/pipes/highlight.pipe';
+import { PostsService } from '../../core/services/posts.service';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { CharacterCardComponent } from '../characters/components/character-card.component';
 import { NovelCardComponent } from '../novels/components/novel-card.component';
@@ -16,6 +17,7 @@ import { CommunityService } from '../communities/services/community.service';
 import { Community } from '../communities/models/community.model';
 import { AuthGateService } from '../../core/services/auth-gate.service';
 import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotlight-card/genre-spotlight-card.component';
+import { PostCardComponent } from '../feed/components/post-card/post-card.component';
 
 @Component({
   selector: 'app-discovery-page',
@@ -23,7 +25,6 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
   imports: [
     RouterLink,
     DatePipe,
-    HighlightPipe,
     TranslatePipe,
     NovelCardComponent,
     WorldCardComponent,
@@ -31,6 +32,7 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
     AuthorCardComponent,
     CommunityCardComponent,
     GenreSpotlightCardComponent,
+    PostCardComponent,
   ],
   template: `
     <section class="discovery-page">
@@ -360,15 +362,10 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
             </h2>
             <a routerLink="/feed">Ver mas en feed</a>
           </div>
-          @if (snapshot()!.community_posts.length) {
-            <div class="community-list">
-              @for (post of snapshot()!.community_posts; track post.id) {
-                <article class="community-card" [routerLink]="['/feed']">
-                  <p [innerHTML]="post.content_excerpt | highlight: ''"></p>
-                  <span>
-                    {{ post.author.display_name }} · {{ post.stats.reactions_count }} reacciones
-                  </span>
-                </article>
+          @if (recentPosts().length) {
+            <div class="recent-posts-list">
+              @for (post of recentPosts(); track post.id) {
+                <app-post-card [post]="post" />
               }
             </div>
           } @else {
@@ -430,7 +427,6 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
 
       .hero,
       .stats-banner,
-      .community-card,
       .loading-shell {
         padding: 0.5rem 0.85rem;
         border-radius: 0.75rem;
@@ -573,8 +569,12 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
       }
 
       .release-grid,
-      .genre-grid,
-      .community-list {
+      .genre-grid {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .recent-posts-list {
         display: grid;
         gap: 1rem;
       }
@@ -708,8 +708,7 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
         font-size: 0.76rem;
       }
 
-      .release-meta,
-      .community-card span {
+      .release-meta {
         color: var(--text-2);
       }
 
@@ -758,7 +757,6 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
         white-space: nowrap;
       }
 
-      .community-card,
       .release-card a,
       .section-head a {
         text-decoration: none;
@@ -771,27 +769,6 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
         white-space: nowrap;
         margin-left: auto;
         flex-shrink: 0;
-      }
-
-      .community-card {
-        display: grid;
-        gap: 0.7rem;
-        cursor: pointer;
-        transition:
-          transform 160ms ease,
-          border-color 160ms ease,
-          background 160ms ease;
-      }
-
-      .community-card p {
-        margin: 0;
-        line-height: 1.6;
-      }
-
-      .community-card:hover {
-        transform: translateY(-2px);
-        border-color: var(--border-s);
-        background: color-mix(in srgb, var(--bg-card) 82%, var(--accent-glow));
       }
 
       .loading-shell {
@@ -847,12 +824,14 @@ export class DiscoveryPageComponent {
   private readonly discoveryService = inject(DiscoveryService);
   private readonly genresService = inject(GenresService);
   private readonly communitiesService = inject(CommunityService);
+  private readonly postsService = inject(PostsService);
   private readonly authGate = inject(AuthGateService);
 
   readonly snapshot = signal<DiscoverySnapshot | null>(null);
   readonly loading = signal(true);
   readonly genres = signal<Genre[]>([]);
   readonly popularCommunities = signal<Community[]>([]);
+  readonly recentPosts = signal<PostModel[]>([]);
   readonly visibleGenres = computed(() => this.genres().slice(0, 4));
 
   constructor() {
@@ -863,6 +842,10 @@ export class DiscoveryPageComponent {
     this.communitiesService.getCommunities({ limit: 6 }).subscribe({
       next: (res) => this.popularCommunities.set(res.data),
       error: () => this.popularCommunities.set([]),
+    });
+    this.postsService.list({ limit: 5 }).subscribe({
+      next: (res) => this.recentPosts.set(res.data),
+      error: () => this.recentPosts.set([]),
     });
     this.load();
   }

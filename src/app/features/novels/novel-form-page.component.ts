@@ -5,12 +5,13 @@ import { forkJoin, of, switchMap } from 'rxjs';
 import { CharacterSummary } from '../../core/models/character.model';
 import { Genre } from '../../core/models/genre.model';
 import { LanguageCatalogItem } from '../../core/models/language.model';
-import { NovelRating, NovelStatus, NovelType, RomanceGenre } from '../../core/models/novel.model';
+import { NovelRating, NovelStatus, NovelType } from '../../core/models/novel.model';
+import { RomanceGenreCatalogItem } from '../../core/models/romance-genre.model';
+import { RomanceGenresService } from '../../core/services/romance-genres.service';
 import { Community } from '../communities/models/community.model';
 import { CommunityService } from '../communities/services/community.service';
 import { CommunityCharactersService } from '../communities/services/community-characters.service';
 import { CommunityCharacter } from '../communities/models/community-character.model';
-import { ROMANCE_GENRES } from '../../shared/constants/romance-genres';
 import { WorldSummary } from '../../core/models/world.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CharactersService } from '../../core/services/characters.service';
@@ -176,17 +177,17 @@ interface PairingDraft {
 
         <fieldset class="full">
           <legend>Géneros del romance</legend>
-          <div class="romance-checks">
-            @for (g of romanceGenreOptions; track g.value) {
-              <label class="check-row">
-                <input
-                  type="checkbox"
-                  [checked]="selectedRomanceGenres().includes(g.value)"
-                  [disabled]="saving()"
-                  (change)="toggleRomanceGenre(g.value)"
-                />
+          <div class="romance-pills">
+            @for (g of romanceGenreOptions(); track g.id) {
+              <button
+                type="button"
+                class="pill"
+                [class.selected]="selectedRomanceGenreIds().includes(g.id)"
+                [disabled]="saving()"
+                (click)="toggleRomanceGenre(g.id)"
+              >
                 {{ g.label }}
-              </label>
+              </button>
             }
           </div>
         </fieldset>
@@ -223,17 +224,46 @@ interface PairingDraft {
 
         <fieldset class="full genres">
           <legend>Generos</legend>
-          @for (genre of genres(); track genre.id) {
-            <label>
-              <input
-                type="checkbox"
-                [checked]="selectedGenreIds().includes(genre.id)"
-                [disabled]="saving()"
-                (change)="toggleGenre(genre)"
-              />
-              {{ genre | genreLabel }}
-            </label>
-          }
+          <div class="genre-picker">
+            <select
+              [disabled]="saving() || selectedGenreIds().length >= 5 || !availableGenres().length"
+              [ngModel]="''"
+              (ngModelChange)="addGenreById($event)"
+            >
+              <option value="" disabled>
+                @if (selectedGenreIds().length >= 5) {
+                  Maximo 5 generos
+                } @else if (!availableGenres().length) {
+                  No quedan generos por agregar
+                } @else {
+                  Selecciona un genero...
+                }
+              </option>
+              @for (genre of availableGenres(); track genre.id) {
+                <option [value]="genre.id">{{ genre | genreLabel }}</option>
+              }
+            </select>
+            @if (selectedGenres().length) {
+              <ul class="picked-list">
+                @for (genre of selectedGenres(); track genre.id) {
+                  <li>
+                    {{ genre | genreLabel }}
+                    <button
+                      type="button"
+                      class="icon"
+                      [disabled]="saving()"
+                      aria-label="Quitar genero"
+                      (click)="removeGenre(genre.id)"
+                    >
+                      ✕
+                    </button>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="hint">Puedes elegir hasta 5 generos.</p>
+            }
+          </div>
         </fieldset>
 
         @if (novelType !== 'FANFIC') {
@@ -701,10 +731,12 @@ interface PairingDraft {
         padding: 0.75rem 0.9rem;
       }
 
-      .genres {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
+      .genres .genre-picker {
+        display: grid;
+        gap: 0.5rem;
+      }
+      .genres .genre-picker select {
+        width: 100%;
       }
       .selected-items {
         display: flex;
@@ -811,6 +843,14 @@ interface PairingDraft {
         margin: 0;
         color: var(--text-2);
       }
+      .hint a {
+        color: var(--accent-text);
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      .hint a:hover {
+        color: var(--accent);
+      }
 
       .error {
         margin: 0;
@@ -840,22 +880,36 @@ interface PairingDraft {
         font-size: 0.9rem;
         color: var(--text-2);
       }
-      .romance-checks {
+      .romance-pills {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.6rem;
+        gap: 0.5rem;
         margin-top: 0.5rem;
       }
-      .romance-checks .check-row {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.4rem 0.7rem;
+      .romance-pills .pill {
+        padding: 0.4rem 0.9rem;
         border: 1px solid var(--border);
-        border-radius: 0.6rem;
+        border-radius: 999px;
         background: var(--bg-surface);
+        color: var(--text-1);
         cursor: pointer;
         font-size: 0.85rem;
+        transition:
+          background 120ms ease,
+          border-color 120ms ease,
+          color 120ms ease;
+      }
+      .romance-pills .pill:hover:not(:disabled) {
+        border-color: var(--accent);
+      }
+      .romance-pills .pill.selected {
+        background: var(--accent-glow);
+        border-color: var(--accent);
+        color: var(--accent-text);
+      }
+      .romance-pills .pill:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
       .pairing-form {
         display: flex;
@@ -1024,6 +1078,7 @@ export class NovelFormPageComponent implements OnInit {
   private readonly novelsService = inject(NovelsService);
   private readonly genresService = inject(GenresService);
   private readonly languagesService = inject(LanguagesService);
+  private readonly romanceGenresService = inject(RomanceGenresService);
   private readonly charactersService = inject(CharactersService);
   private readonly authService = inject(AuthService);
   private readonly worldsService = inject(WorldsService);
@@ -1123,6 +1178,14 @@ export class NovelFormPageComponent implements OnInit {
   readonly worlds = signal<WorldSummary[]>([]);
   readonly languages = signal<LanguageCatalogItem[]>([]);
   readonly selectedGenreIds = signal<string[]>([]);
+  readonly selectedGenres = computed(() => {
+    const taken = new Set(this.selectedGenreIds());
+    return this.genres().filter((g) => taken.has(g.id));
+  });
+  readonly availableGenres = computed(() => {
+    const taken = new Set(this.selectedGenreIds());
+    return this.genres().filter((g) => !taken.has(g.id));
+  });
   readonly selectedCharacterIds = signal<string[]>([]);
   readonly initialCharacterIds = signal<string[]>([]);
   readonly charDropdownOpen = signal(false);
@@ -1189,12 +1252,12 @@ export class NovelFormPageComponent implements OnInit {
   isPublic = false;
   pendingWorldId = '';
 
-  readonly selectedRomanceGenres = signal<RomanceGenre[]>([]);
-  readonly romanceGenreOptions = ROMANCE_GENRES;
+  readonly selectedRomanceGenreIds = signal<string[]>([]);
+  readonly romanceGenreOptions = signal<RomanceGenreCatalogItem[]>([]);
 
-  toggleRomanceGenre(value: RomanceGenre) {
-    this.selectedRomanceGenres.update((list) =>
-      list.includes(value) ? list.filter((v) => v !== value) : [...list, value],
+  toggleRomanceGenre(id: string) {
+    this.selectedRomanceGenreIds.update((list) =>
+      list.includes(id) ? list.filter((v) => v !== id) : [...list, id],
     );
   }
 
@@ -1371,6 +1434,10 @@ export class NovelFormPageComponent implements OnInit {
       },
       error: () => this.languages.set([]),
     });
+    this.romanceGenresService.list().subscribe({
+      next: (genres) => this.romanceGenreOptions.set(genres),
+      error: () => this.romanceGenreOptions.set([]),
+    });
     this.charactersService.listMine({ limit: 50, sort: 'updated' }).subscribe({
       next: (response) => this.characters.set(response.data),
       error: () => this.characters.set([]),
@@ -1462,7 +1529,7 @@ export class NovelFormPageComponent implements OnInit {
         this.characters.set(Array.from(merged.values()));
         this.selectedWorldIds.set(novel.worlds.map((world) => world.id));
         this.initialWorldIds.set(novel.worlds.map((world) => world.id));
-        this.selectedRomanceGenres.set(novel.romanceGenres ?? []);
+        this.selectedRomanceGenreIds.set(novel.romanceGenres?.map((rg) => rg.id) ?? []);
         this.pairings.set(
           (novel.pairings ?? []).map((p) => ({
             characterAId: p.characterA.id,
@@ -1482,6 +1549,17 @@ export class NovelFormPageComponent implements OnInit {
           ? [...current, genre.id]
           : current,
     );
+  }
+
+  addGenreById(id: string) {
+    if (!id) return;
+    this.selectedGenreIds.update((current) =>
+      current.includes(id) || current.length >= 5 ? current : [...current, id],
+    );
+  }
+
+  removeGenre(id: string) {
+    this.selectedGenreIds.update((current) => current.filter((x) => x !== id));
   }
 
   toggleCharacter(character: CharacterSummary) {
@@ -1577,7 +1655,7 @@ export class NovelFormPageComponent implements OnInit {
       warnings: this.warningList(),
       genreIds: this.selectedGenreIds(),
       isPublic: this.isEdit() ? this.isPublic : false,
-      romanceGenres: this.selectedRomanceGenres(),
+      romanceGenreIds: this.selectedRomanceGenreIds(),
       pairings: this.pairings(),
       isAlternateUniverse: this.isAlternateUniverse,
     };

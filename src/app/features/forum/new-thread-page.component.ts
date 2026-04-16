@@ -1,5 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/tag-chips-input.component';
 import { Router } from '@angular/router';
 import { ForumCategory } from '../../core/models/forum-thread.model';
 import { ForumService } from '../../core/services/forum.service';
@@ -24,7 +25,7 @@ const CATEGORIES: CategoryOption[] = [
 @Component({
   selector: 'app-new-thread-page',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, TagChipsInputComponent],
   template: `
     <section class="new-thread-page">
       <h1 class="page-title">Nuevo hilo</h1>
@@ -55,24 +56,13 @@ const CATEGORIES: CategoryOption[] = [
 
         <!-- Tags -->
         <div class="field">
-          <span class="label">Etiquetas (max 5)</span>
-          <div class="tags-input">
-            @for (tag of tags(); track $index) {
-              <span class="tag-chip">
-                {{ tag }}
-                <button type="button" class="tag-remove" (click)="removeTag($index)">x</button>
-              </span>
-            }
-            @if (tags().length < 5) {
-              <input
-                type="text"
-                [(ngModel)]="newTag"
-                placeholder="Agregar etiqueta..."
-                class="tag-field"
-                (keydown.enter)="addTag()"
-              />
-            }
-          </div>
+          <span class="label">Etiquetas</span>
+          <app-tag-chips-input
+            [tags]="tags()"
+            [maxTags]="10"
+            placeholder="Agregar etiqueta..."
+            (tagsChange)="tags.set($event)"
+          />
         </div>
 
         <!-- Content -->
@@ -270,43 +260,6 @@ const CATEGORIES: CategoryOption[] = [
         font-size: 0.75rem;
         color: var(--text-3);
         text-align: right;
-      }
-      .tags-input {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.35rem;
-        padding: 0.4rem;
-        border: 1px solid var(--border);
-        border-radius: 0.65rem;
-        background: var(--bg-surface);
-      }
-      .tag-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.25rem;
-        padding: 0.2rem 0.55rem;
-        border-radius: 9999px;
-        background: var(--accent);
-        color: #fff;
-        font-size: 0.8rem;
-      }
-      .tag-remove {
-        background: none;
-        border: none;
-        color: var(--accent-text);
-        cursor: pointer;
-        font-size: 0.75rem;
-        padding: 0;
-        line-height: 1;
-      }
-      .tag-field {
-        flex: 1;
-        min-width: 100px;
-        border: none;
-        background: transparent;
-        color: var(--text-1);
-        font-size: 0.85rem;
-        outline: none;
       }
       .content-tabs {
         display: flex;
@@ -522,7 +475,6 @@ export class NewThreadPageComponent implements OnInit {
   title = '';
   category: ForumCategory = 'GENERAL';
   content = '';
-  newTag = '';
 
   readonly tags = signal<string[]>([]);
   readonly previewContent = signal(false);
@@ -536,17 +488,6 @@ export class NewThreadPageComponent implements OnInit {
 
   renderedContent() {
     return this.md.render(this.content);
-  }
-
-  addTag() {
-    const tag = this.newTag.trim().toLowerCase();
-    if (!tag || this.tags().includes(tag) || this.tags().length >= 5) return;
-    this.tags.set([...this.tags(), tag]);
-    this.newTag = '';
-  }
-
-  removeTag(index: number) {
-    this.tags.set(this.tags().filter((_, i) => i !== index));
   }
 
   addOption() {

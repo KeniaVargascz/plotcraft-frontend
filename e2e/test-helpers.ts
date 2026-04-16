@@ -12,7 +12,7 @@ export async function clearSession(page: Page) {
 export async function loginAsDemo(page: Page, email = 'demo@plotcraft.com') {
   await clearSession(page);
   await page.goto('/login');
-  await page.locator('input[formcontrolname="email"]').fill(email);
+  await page.locator('input[formcontrolname="identifier"]').fill(email);
   await page.locator('input[formcontrolname="password"]').fill('Demo1234!');
   await Promise.all([
     page.waitForURL('**/feed'),

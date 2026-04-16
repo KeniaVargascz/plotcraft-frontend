@@ -12,6 +12,16 @@
 npm-debug.log
 yarn-error.log
 
+# Runtime / dev server logs
+*.log
+.frontend-runtime.log
+.frontend-runtime.err.log
+
+# Playwright artifacts
+/test-results
+/playwright-report
+/playwright/.cache
+
 # IDEs and editors
 .idea/
 .project

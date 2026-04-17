@@ -1,13 +1,11 @@
 .type-select {
-  padding: 0.55rem 1rem;
+  padding: 0.55rem 2.5rem 0.55rem 1rem;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: var(--bg-card);
+  background-color: var(--bg-card);
   color: var(--text-1);
   font-size: 1rem;
-  cursor: pointer;
   outline: none;
-  appearance: auto;
 }
 
 .type-select:focus {

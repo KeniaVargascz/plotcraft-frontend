@@ -20,6 +20,7 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { PostCardComponent } from '../components/post-card/post-card.component';
 import { PostComposerComponent } from '../components/post-composer/post-composer.component';
 import { PostTypeFilterComponent } from '../components/post-type-filter/post-type-filter.component';
+import { SuggestionListComponent } from '../components/suggestion-list/suggestion-list.component';
 
 @Component({
   selector: 'app-feed-page',
@@ -32,6 +33,7 @@ import { PostTypeFilterComponent } from '../components/post-type-filter/post-typ
     PostTypeFilterComponent,
     PostCardComponent,
     TagChipsInputComponent,
+    SuggestionListComponent,
   ],
   templateUrl: './feed-page.component.html',
   styleUrl: './feed-page.component.scss',
@@ -134,6 +136,9 @@ export class FeedPageComponent implements AfterViewInit, OnDestroy {
       .subscribe({
         next: () => {
           this.suggestions.update((items) => items.filter((item) => item.username !== username));
+        },
+        error: () => {
+          this.error.set(true);
         },
       });
   }

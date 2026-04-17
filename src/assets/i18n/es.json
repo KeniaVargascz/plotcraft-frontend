@@ -249,6 +249,7 @@
     "all": "Todas",
     "suggestions": "Sugerencias para seguir",
     "noSuggestions": "Ya sigues a todos los perfiles sugeridos.",
+    "discoverAuthors": "Descubrir autores",
     "composer": {
       "tagsPlaceholder": "Anadir etiqueta..."
     }
@@ -285,7 +286,13 @@
     "saved": "Guardado",
     "unsave": "Quitar de guardados",
     "comments": "Comentarios",
-    "noComments": "Sin comentarios aun. Se el primero."
+    "noComments": "Sin comentarios aun. Se el primero.",
+    "commentsDisabled": "El autor ha limitado los comentarios."
+  },
+  "actions": {
+    "save": "Guardar",
+    "edit": "Editar",
+    "delete": "Eliminar"
   },
   "comment": {
     "placeholder": "Escribe un comentario...",

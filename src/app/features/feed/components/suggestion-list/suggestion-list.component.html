@@ -1,0 +1,19 @@
+<section class="inline-suggestions" aria-label="Sugerencias para seguir">
+  <h3>{{ 'feed.suggestions' | translate }}</h3>
+  <div class="inline-suggestions-list">
+    @for (suggestion of visibleSuggestions; track suggestion.id) {
+      <article class="inline-suggestion-item">
+        <div class="inline-suggestion-avatar" [attr.aria-label]="'Avatar de ' + (suggestion.displayName || suggestion.username)">
+          {{ getInitial(suggestion) }}
+        </div>
+        <div class="inline-suggestion-info">
+          <strong>{{ suggestion.displayName || suggestion.username }}</strong>
+          <span>@{{ suggestion.username }}</span>
+        </div>
+        <button type="button" [attr.aria-label]="'Seguir a ' + suggestion.username" (click)="follow.emit(suggestion.username)">
+          {{ 'profile.follow' | translate }}
+        </button>
+      </article>
+    }
+  </div>
+</section>

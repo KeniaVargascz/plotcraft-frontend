@@ -3,15 +3,15 @@
     <span class="type-badge">{{ 'post.types.' + post.type | translate }}</span>
     <div class="type-row-actions">
       @if (post.viewerContext && !isAuthor) {
-        <button type="button" class="icon-btn" [class.saved-active]="post.viewerContext.hasSaved" (click)="toggleSaved()" title="Guardar">
+        <button type="button" class="icon-btn" [class.saved-active]="post.viewerContext.hasSaved" (click)="toggleSaved()" [attr.aria-label]="'actions.save' | translate">
           <svg width="16" height="16" viewBox="0 0 24 24" [attr.fill]="post.viewerContext.hasSaved ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
         </button>
       }
       @if (isAuthor) {
-        <button type="button" class="icon-btn" (click)="startEdit()" title="Editar">
+        <button type="button" class="icon-btn" (click)="startEdit()" [attr.aria-label]="'actions.edit' | translate">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
         </button>
-        <button type="button" class="icon-btn delete-btn" (click)="deletePost()" title="Eliminar">
+        <button type="button" class="icon-btn delete-btn" (click)="deletePost()" [attr.aria-label]="'actions.delete' | translate">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
         </button>
       }
@@ -25,7 +25,7 @@
         <a [routerLink]="['/perfil', post.author.username]">
           {{ post.author.displayName || post.author.username }}
         </a>
-        <p>@{{ post.author.username }} · {{ post.createdAt | relativeDate }}</p>
+        <p>@{{ post.author.username }} · <time [attr.datetime]="post.createdAt">{{ post.createdAt | relativeDate }}</time></p>
       </div>
     </div>
   </header>
@@ -144,7 +144,7 @@
     @if (post.commentsEnabled) {
       <app-comment-list [post]="post" />
     } @else {
-      <p class="comments-disabled">El autor ha limitado los comentarios.</p>
+      <p class="comments-disabled">{{ 'post.commentsDisabled' | translate }}</p>
     }
   }
 </article>

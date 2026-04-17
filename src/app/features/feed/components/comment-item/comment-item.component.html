@@ -4,18 +4,18 @@
   <div class="comment-body">
     <header>
       <strong>{{ comment.author.displayName || comment.author.username }}</strong>
-      <span>@{{ comment.author.username }} · {{ comment.createdAt | relativeDate }}</span>
+      <span>@{{ comment.author.username }} · <time [attr.datetime]="comment.createdAt">{{ comment.createdAt | relativeDate }}</time></span>
       @if (isAuthor) {
         <div class="comment-actions desktop-actions">
           <button type="button" (click)="startEdit()">{{ 'comment.edit' | translate }}</button>
           <button type="button" (click)="remove()">{{ 'comment.delete' | translate }}</button>
         </div>
         <div class="comment-actions mobile-actions">
-          <button type="button" class="menu-trigger" (click)="menuOpen.set(!menuOpen())">...</button>
+          <button type="button" class="menu-trigger" [attr.aria-expanded]="menuOpen()" aria-label="Menu" (click)="menuOpen.set(!menuOpen())">...</button>
           @if (menuOpen()) {
-            <div class="dropdown-menu">
-              <button type="button" (click)="startEdit(); menuOpen.set(false)">{{ 'comment.edit' | translate }}</button>
-              <button type="button" (click)="remove(); menuOpen.set(false)">{{ 'comment.delete' | translate }}</button>
+            <div class="dropdown-menu" role="menu">
+              <button type="button" role="menuitem" (click)="startEdit(); menuOpen.set(false)">{{ 'comment.edit' | translate }}</button>
+              <button type="button" role="menuitem" (click)="remove(); menuOpen.set(false)">{{ 'comment.delete' | translate }}</button>
             </div>
           }
         </div>

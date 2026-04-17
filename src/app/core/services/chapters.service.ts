@@ -132,4 +132,56 @@ export class ChaptersService {
 
     return params;
   }
+
+  // ── Chapter Comments ──
+
+  listChapterComments(
+    novelSlug: string,
+    chapterSlug: string,
+    cursor?: string | null,
+    limit = 20,
+  ) {
+    let params = new HttpParams().set('limit', limit);
+    if (cursor) params = params.set('cursor', cursor);
+    return this.http
+      .get<
+        ApiResponse<{
+          commentsEnabled: boolean;
+          data: ChapterCommentModel[];
+          pagination: { nextCursor: string | null; hasMore: boolean; limit: number };
+        }>
+      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/comments`, { params })
+      .pipe(map((r) => r.data));
+  }
+
+  createChapterComment(novelSlug: string, chapterSlug: string, content: string) {
+    return this.http
+      .post<
+        ApiResponse<ChapterCommentModel>
+      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/comments`, { content })
+      .pipe(map((r) => r.data));
+  }
+
+  deleteChapterComment(novelSlug: string, chapterSlug: string, commentId: string) {
+    return this.http
+      .delete<
+        ApiResponse<{ message: string }>
+      >(
+        `${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/comments/${commentId}`,
+      )
+      .pipe(map((r) => r.data));
+  }
+}
+
+export interface ChapterCommentModel {
+  id: string;
+  content: string;
+  createdAt: string;
+  isDeleted: boolean;
+  author: {
+    id: string;
+    username: string;
+    displayName: string | null;
+    avatarUrl: string | null;
+  };
 }

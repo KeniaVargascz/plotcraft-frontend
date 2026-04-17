@@ -74,6 +74,7 @@ export interface NovelSummary {
     bookmarksCount: number;
     worldsCount: number;
     charactersCount: number;
+    commentsCount: number;
     kudosCount: number;
     votesCount: number;
     subscribersCount: number;

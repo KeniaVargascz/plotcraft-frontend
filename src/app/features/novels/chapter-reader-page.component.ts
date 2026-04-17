@@ -9,6 +9,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { throttleTime, Subject } from 'rxjs';
@@ -19,11 +20,12 @@ import { Highlight, HighlightColor } from '../../core/models/highlight.model';
 import { ReaderPreferences } from '../../core/models/reader.model';
 import { AuthService } from '../../core/services/auth.service';
 import { BookmarksService } from '../../core/services/bookmarks.service';
-import { ChaptersService } from '../../core/services/chapters.service';
+import { ChaptersService, ChapterCommentModel } from '../../core/services/chapters.service';
 import { HighlightsService } from '../../core/services/highlights.service';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { ReaderService } from '../../core/services/reader.service';
 import { VotesService } from '../../core/services/votes.service';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
 import {
   PromptDialogComponent,
@@ -31,11 +33,13 @@ import {
 } from '../../shared/components/prompt-dialog/prompt-dialog.component';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { TranslationService } from '../../core/services/translation.service';
 
 @Component({
   selector: 'app-chapter-reader-page',
   standalone: true,
-  imports: [RouterLink, ErrorMessageComponent, LoadingSpinnerComponent],
+  imports: [FormsModule, RouterLink, ErrorMessageComponent, LoadingSpinnerComponent, TranslatePipe],
   template: `
     @if (loading()) {
       <app-loading-spinner />
@@ -43,10 +47,10 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
       <app-error-message />
     } @else if (chapter(); as currentChapter) {
       <article class="reader-shell">
+        <div class="reader-sticky">
         <header class="reader-topbar">
           <div class="reader-topbar__left">
-            <a routerLink="/novelas">Novelas</a>
-            <span>/</span>
+            <a routerLink="/novelas">{{ 'nav.novels' | translate }}</a>
             <a [routerLink]="['/novelas', currentChapter.novel.slug]">{{
               currentChapter.novel.title
             }}</a>
@@ -55,20 +59,84 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
           <div class="reader-topbar__actions">
             @if (!isAuthenticated()) {
               <span class="hint-banner">
-                Inicia sesion para guardar tu progreso y subrayar fragmentos.
+                {{ 'reader.loginHint' | translate }}
               </span>
             } @else {
-              <button type="button" (click)="toggleBookmark()">Marcar posicion</button>
-              <button type="button" (click)="showBookmarksPanel.update((value) => !value)">
-                Marcadores
+              <button
+                type="button"
+                class="icon-btn"
+                [attr.aria-label]="'reader.actions.bookmarkPosition' | translate"
+                [title]="'reader.actions.bookmarkPosition' | translate"
+                (click)="toggleBookmark()"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                </svg>
+                <span class="btn-label">{{ 'reader.actions.bookmarkPosition' | translate }}</span>
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                [attr.aria-label]="'reader.actions.bookmarks' | translate"
+                [title]="'reader.actions.bookmarks' | translate"
+                (click)="toggleBookmarksPanel()"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <line x1="8" y1="6" x2="21" y2="6" />
+                  <line x1="8" y1="12" x2="21" y2="12" />
+                  <line x1="8" y1="18" x2="21" y2="18" />
+                  <circle cx="3.5" cy="6" r="1" />
+                  <circle cx="3.5" cy="12" r="1" />
+                  <circle cx="3.5" cy="18" r="1" />
+                </svg>
+                <span class="btn-label">{{ 'reader.actions.bookmarks' | translate }}</span>
               </button>
             }
             <button
               type="button"
+              class="icon-btn"
+              [attr.aria-label]="'reader.actions.preferences' | translate"
+              [title]="'reader.actions.preferences' | translate"
               data-testid="reader-settings"
               (click)="showPreferences.update((value) => !value)"
             >
-              Preferencias
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <circle cx="12" cy="12" r="3" />
+                <path
+                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                />
+              </svg>
+              <span class="btn-label">{{ 'reader.actions.preferences' | translate }}</span>
             </button>
           </div>
         </header>
@@ -78,6 +146,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
             <span [style.width.%]="progressPercent() * 100"></span>
           </div>
         }
+        </div>
 
         <header class="reader-header">
           <h1>{{ currentChapter.title }}</h1>
@@ -89,24 +158,46 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
           </p>
         </header>
 
+        @if (showPreferences()) {
+          <div class="prefs-overlay" (click)="showPreferences.set(false)"></div>
+        }
+        @if (showBookmarksPanel()) {
+          <div class="bookmarks-overlay" (click)="showBookmarksPanel.set(false)"></div>
+        }
+
         <div class="reader-layout">
           @if (showPreferences()) {
-            <aside class="panel">
-              <h3>Preferencias de lectura</h3>
+            <aside class="panel prefs-panel">
+              <div class="prefs-header">
+                <h3>{{ 'reader.preferences.title' | translate }}</h3>
+                <button
+                  type="button"
+                  class="prefs-close"
+                  aria-label="Cerrar"
+                  (click)="showPreferences.set(false)"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
               <label>
-                Fuente
+                {{ 'reader.preferences.font' | translate }}
                 <select
                   [value]="preferences().font_family"
                   (change)="onPreferenceChange('font_family', $any($event.target).value)"
                 >
-                  <option value="crimson">Crimson Pro</option>
-                  <option value="outfit">Outfit</option>
-                  <option value="georgia">Georgia</option>
-                  <option value="mono">Monoespaciada</option>
+                  <option value="crimson">{{ 'reader.preferences.fonts.crimson' | translate }}</option>
+                  <option value="outfit">{{ 'reader.preferences.fonts.outfit' | translate }}</option>
+                  <option value="georgia">{{ 'reader.preferences.fonts.georgia' | translate }}</option>
+                  <option value="mono">{{ 'reader.preferences.fonts.mono' | translate }}</option>
                 </select>
               </label>
               <label>
-                Tamano de letra
+                {{ 'reader.preferences.fontSize' | translate }}
                 <input
                   type="range"
                   min="14"
@@ -117,7 +208,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
                 />
               </label>
               <label>
-                Interlineado
+                {{ 'reader.preferences.lineHeight' | translate }}
                 <input
                   type="range"
                   min="1.4"
@@ -128,24 +219,13 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
                 />
               </label>
               <label>
-                Ancho
-                <input
-                  type="range"
-                  min="560"
-                  max="960"
-                  step="10"
-                  [value]="preferences().max_width"
-                  (input)="onPreferenceChange('max_width', +$any($event.target).value)"
-                />
-              </label>
-              <label>
-                Modo
+                {{ 'reader.preferences.mode' | translate }}
                 <select
                   [value]="preferences().reading_mode"
                   (change)="onPreferenceChange('reading_mode', $any($event.target).value)"
                 >
-                  <option value="scroll">Scroll</option>
-                  <option value="paginated">Paginado</option>
+                  <option value="scroll">{{ 'reader.preferences.modeScroll' | translate }}</option>
+                  <option value="paginated">{{ 'reader.preferences.modePaginated' | translate }}</option>
                 </select>
               </label>
               <label class="toggle">
@@ -154,24 +234,43 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
                   [checked]="preferences().show_progress"
                   (change)="onPreferenceChange('show_progress', $any($event.target).checked)"
                 />
-                Mostrar progreso
+                {{ 'reader.preferences.showProgress' | translate }}
               </label>
             </aside>
           }
 
           <section class="reader-main">
             @if (showBookmarksPanel()) {
-              <aside class="panel panel-inline">
-                <h3>Marcadores</h3>
+              <aside class="panel panel-inline bookmarks-panel" #bookmarksPanel>
+                <div class="prefs-header">
+                  <h3>{{ 'reader.bookmarksPanel.title' | translate }}</h3>
+                  <button
+                    type="button"
+                    class="prefs-close"
+                    aria-label="Cerrar"
+                    (click)="showBookmarksPanel.set(false)"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" aria-hidden="true">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </div>
                 @if (!bookmarks().length) {
-                  <p>Sin marcadores en este capitulo</p>
+                  <p>{{ 'reader.bookmarksPanel.empty' | translate }}</p>
                 } @else {
                   @for (bookmark of bookmarks(); track bookmark.id) {
                     <div class="panel-row">
-                      <a [routerLink]="[]" [fragment]="bookmark.anchor_id ?? undefined">{{
-                        bookmark.label || bookmark.chapter.title
-                      }}</a>
-                      <button type="button" (click)="removeBookmark(bookmark.id)">Quitar</button>
+                      <button
+                        type="button"
+                        class="bookmark-link"
+                        (click)="scrollToBookmark(bookmark.anchor_id)"
+                      >
+                        {{ bookmark.label || bookmark.anchor_id || bookmark.chapter.title }}
+                      </button>
+                      <button type="button" (click)="removeBookmark(bookmark.id)">{{ 'reader.bookmarksPanel.remove' | translate }}</button>
                     </div>
                   }
                 }
@@ -203,6 +302,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
                 [innerHTML]="renderedHtml()"
                 (mouseup)="handleSelection()"
                 (contextmenu)="handleContextMenu($event)"
+                (click)="handleReaderClick($event)"
               ></section>
             }
 
@@ -223,14 +323,34 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
         </div>
 
         <div class="chapter-vote-section">
-          <button
-            type="button"
-            class="vote-action"
-            [class.vote-active]="chapterHasVoted()"
-            (click)="toggleChapterVote()"
-          >
-            &#9650; {{ chapterHasVoted() ? 'Votado' : 'Votar' }}
-          </button>
+          @if (isAuthenticated()) {
+            <button
+              type="button"
+              class="vote-action"
+              [class.vote-active]="chapterHasVoted()"
+              (click)="toggleChapterVote()"
+            >
+              <svg
+                class="vote-icon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                [attr.fill]="chapterHasVoted() ? 'currentColor' : 'none'"
+                aria-hidden="true"
+              >
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                />
+              </svg>
+              {{ chapterHasVoted() ? ('votes.voted' | translate) : ('votes.vote' | translate) }}
+            </button>
+          } @else {
+            <a class="vote-login" routerLink="/login">{{ 'reader.vote.loginCta' | translate }}</a>
+          }
           <span class="vote-label">{{
             chapterVotesCount() === 1 ? '1 voto' : chapterVotesCount() + ' votos'
           }}</span>
@@ -252,6 +372,80 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
             >
           }
         </footer>
+
+        <section class="chapter-comments card" data-testid="chapter-comments">
+          <h2>{{ 'reader.comments.title' | translate }}</h2>
+
+          @if (commentsEnabled()) {
+            @if (isAuthenticated()) {
+              <div class="comment-form">
+                <textarea
+                  [(ngModel)]="newComment"
+                  rows="3"
+                  [placeholder]="'reader.comments.placeholder' | translate"
+                  maxlength="2000"
+                ></textarea>
+                <button
+                  type="button"
+                  class="btn-send"
+                  [disabled]="!newComment.trim() || commentSending()"
+                  (click)="submitComment(currentChapter)"
+                >
+                  {{ commentSending() ? ('reader.comments.submitting' | translate) : ('reader.comments.submit' | translate) }}
+                </button>
+              </div>
+            } @else {
+              <a class="comment-login" routerLink="/login">
+                {{ 'reader.comments.loginCta' | translate }}
+              </a>
+            }
+
+            @if (commentsLoading() && !comments().length) {
+              <p class="comment-hint">{{ 'reader.comments.loading' | translate }}</p>
+            } @else if (!comments().length) {
+              <p class="comment-hint">{{ 'reader.comments.empty' | translate }}</p>
+            } @else {
+              <div class="comments-list">
+                @for (c of comments(); track c.id) {
+                  <div class="comment-item">
+                    <div class="comment-avatar">{{ c.author.username[0].toUpperCase() }}</div>
+                    <div class="comment-body">
+                      <div class="comment-header">
+                        <a [routerLink]="['/perfil', c.author.username]" class="comment-author">
+                          {{ c.author.displayName || c.author.username }}
+                        </a>
+                        <span class="comment-date">{{ relativeDate(c.createdAt) }}</span>
+                        @if (canDeleteComment(c, currentChapter)) {
+                          <button
+                            type="button"
+                            class="comment-delete"
+                            (click)="removeComment(currentChapter, c.id)"
+                            [attr.aria-label]="'reader.comments.deleteAria' | translate"
+                          >
+                            ✕
+                          </button>
+                        }
+                      </div>
+                      <p class="comment-text">{{ c.content }}</p>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              @if (commentsHasMore()) {
+                <button
+                  type="button"
+                  class="btn-load-more"
+                  (click)="loadMoreComments(currentChapter)"
+                >
+                  {{ 'reader.comments.loadMore' | translate }}
+                </button>
+              }
+            }
+          } @else {
+            <p class="comment-hint">{{ 'reader.comments.disabled' | translate }}</p>
+          }
+        </section>
       </article>
     }
   `,
@@ -262,7 +456,6 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
         gap: 1rem;
       }
       .reader-topbar,
-      .reader-topbar__left,
       .reader-topbar__actions,
       .reader-layout,
       .reader-nav,
@@ -273,13 +466,51 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
         justify-content: space-between;
         flex-wrap: wrap;
       }
-      .reader-topbar {
+      /* Breadcrumb "Novelas / Titulo" en una sola linea, sin subrayado.
+         El separador se inyecta con ::after para evitar problemas de baseline
+         (un <span> con "/" se renderiza visualmente desalineado). */
+      .reader-topbar__left {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: baseline;
+        gap: 0;
+        min-width: 0;
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+      .reader-topbar__left a {
+        text-decoration: none;
+        white-space: nowrap;
+        color: var(--accent-text);
+      }
+      .reader-topbar__left a:hover {
+        color: var(--accent);
+      }
+      .reader-topbar__left a:not(:last-child)::after {
+        content: '/';
+        display: inline-block;
+        margin: 0 0.45rem;
+        color: var(--text-2);
+        font-weight: 400;
+      }
+      .reader-topbar__left a:last-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+      }
+      /* Topbar + barra de progreso pegadas arriba juntas. */
+      .reader-sticky {
         position: sticky;
         top: 0;
         z-index: 5;
         background: color-mix(in srgb, var(--bg-app) 88%, transparent);
-        padding: 0.75rem 0;
         backdrop-filter: blur(8px);
+        padding: 0.75rem 0 0.5rem;
+        display: grid;
+        gap: 0.5rem;
+      }
+      .reader-topbar {
+        padding: 0;
       }
       .progress-strip {
         height: 3px;
@@ -323,6 +554,68 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
       }
       .panel-inline {
         width: 100%;
+        scroll-margin-top: 5rem;
+      }
+      .bookmark-link {
+        background: transparent;
+        border: 0;
+        color: var(--accent-text);
+        padding: 0;
+        cursor: pointer;
+        text-align: left;
+        font-size: inherit;
+        min-height: auto;
+      }
+      .bookmark-link:hover {
+        color: var(--accent);
+        text-decoration: underline;
+      }
+      :host ::ng-deep .bookmark-flash {
+        background: color-mix(in srgb, var(--accent) 25%, transparent) !important;
+        border-radius: 0.25rem;
+        transition: background 400ms ease;
+      }
+      :host ::ng-deep .bookmark-marker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.15rem 0.5rem;
+        margin-left: 0.5rem;
+        float: right;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.75rem;
+        line-height: 1.4;
+        vertical-align: middle;
+        cursor: default;
+        white-space: nowrap;
+      }
+      :host ::ng-deep .bookmark-marker svg {
+        flex-shrink: 0;
+      }
+      :host ::ng-deep .bookmark-marker-label:empty {
+        display: none;
+      }
+      :host ::ng-deep .bookmark-marker-delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        min-height: 16px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: transparent;
+        color: var(--accent-text);
+        font-size: 0.65rem;
+        cursor: pointer;
+        line-height: 1;
+      }
+      :host ::ng-deep .bookmark-marker-delete:hover {
+        background: color-mix(in srgb, #8b2e2e 30%, var(--bg-surface));
+        color: #ffb3b3;
       }
       .reader-body {
         max-width: var(--reader-max-width, 720px);
@@ -351,6 +644,25 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
         background: var(--accent-glow);
         color: var(--accent-text);
       }
+      .icon-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.4rem 0.75rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+      .icon-btn:hover {
+        border-color: var(--accent-text);
+        color: var(--accent-text);
+      }
+      .icon-btn svg {
+        flex-shrink: 0;
+      }
       button,
       select,
       input {
@@ -359,6 +671,50 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
         background: var(--bg-surface);
         color: var(--text-1);
         padding: 0.5rem 0.8rem;
+      }
+      /* Quita el azul de controles nativos (range, checkbox, select focus). */
+      select,
+      input[type='range'],
+      input[type='checkbox'] {
+        accent-color: var(--accent-text);
+      }
+      select:focus,
+      input:focus {
+        outline: 2px solid var(--accent-text);
+        outline-offset: 2px;
+      }
+      input[type='range'] {
+        padding: 0;
+        border: 0;
+        background: transparent;
+      }
+      input[type='range']::-webkit-slider-runnable-track {
+        height: 4px;
+        border-radius: 2px;
+        background: var(--border);
+      }
+      input[type='range']::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--accent-text);
+        margin-top: -6px;
+        cursor: pointer;
+      }
+      input[type='range']::-moz-range-track {
+        height: 4px;
+        border-radius: 2px;
+        background: var(--border);
+        border: 0;
+      }
+      input[type='range']::-moz-range-thumb {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: var(--accent-text);
+        border: 0;
+        cursor: pointer;
       }
       label {
         display: grid;
@@ -382,6 +738,12 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
       .vote-action {
         cursor: pointer;
         font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .vote-action .vote-icon {
+        flex-shrink: 0;
       }
       .vote-active,
       .vote-active:hover {
@@ -389,13 +751,240 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
         color: var(--accent-text) !important;
         border-color: var(--accent-text) !important;
       }
+      .vote-login {
+        padding: 0.5rem 0.9rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.85rem;
+        text-decoration: none;
+      }
+      .vote-login:hover {
+        color: var(--accent);
+      }
+
+      /* === Chapter comments === */
+      .chapter-comments.card {
+        padding: 1.25rem;
+        display: grid;
+        gap: 1rem;
+      }
+      .chapter-comments h2 {
+        margin: 0;
+        font-size: 1.15rem;
+      }
+      .comment-form {
+        display: grid;
+        gap: 0.5rem;
+      }
+      .comment-form textarea {
+        width: 100%;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        padding: 0.75rem 0.9rem;
+        resize: vertical;
+        font: inherit;
+      }
+      .comment-form .btn-send {
+        justify-self: end;
+        padding: 0.55rem 1rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        border: 1px solid var(--accent-text);
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .comment-form .btn-send:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+      .comment-login {
+        display: inline-block;
+        align-self: start;
+        padding: 0.5rem 0.9rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.85rem;
+        text-decoration: none;
+        width: fit-content;
+      }
+      .comment-login:hover {
+        color: var(--accent);
+      }
+      .comment-hint {
+        margin: 0;
+        color: var(--text-2);
+        font-size: 0.9rem;
+      }
+      .comments-list {
+        display: grid;
+        gap: 0.85rem;
+      }
+      .comment-item {
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-start;
+      }
+      .comment-avatar {
+        flex-shrink: 0;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 999px;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        display: grid;
+        place-items: center;
+        font-weight: 600;
+      }
+      .comment-body {
+        flex: 1;
+        min-width: 0;
+      }
+      .comment-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.2rem;
+      }
+      .comment-author {
+        color: var(--text-1);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .comment-author:hover {
+        color: var(--accent-text);
+      }
+      .comment-date {
+        color: var(--text-2);
+        font-size: 0.8rem;
+      }
+      .comment-delete {
+        margin-left: auto;
+        background: transparent;
+        border: 0;
+        color: var(--text-2);
+        padding: 0.15rem 0.4rem;
+        cursor: pointer;
+        border-radius: 0.4rem;
+      }
+      .comment-delete:hover {
+        background: color-mix(in srgb, #8b2e2e 18%, var(--bg-surface));
+        color: #ffb3b3;
+      }
+      .comment-text {
+        margin: 0;
+        color: var(--text-1);
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+      }
+      .btn-load-more {
+        justify-self: center;
+        padding: 0.45rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        cursor: pointer;
+      }
+      .btn-load-more:hover {
+        border-color: var(--accent-text);
+        color: var(--accent-text);
+      }
+      .chapter-comments.card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 1.25rem;
+      }
       .vote-label {
         color: var(--text-2);
         font-size: 0.85rem;
       }
+      .prefs-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .prefs-header h3 {
+        margin: 0;
+      }
+      .prefs-close {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        min-height: 32px;
+        padding: 0;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-2);
+        cursor: pointer;
+      }
+      .prefs-close:hover {
+        color: var(--accent-text);
+        border-color: var(--accent-text);
+      }
+      /* Overlays ocultos en desktop, visibles en mobile. */
+      .prefs-overlay,
+      .bookmarks-overlay {
+        display: none;
+      }
       @media (max-width: 960px) {
         .reader-layout {
           display: grid;
+        }
+        .panel {
+          width: 100%;
+        }
+        .panel-inline {
+          border: 2px solid var(--accent-text);
+          box-shadow: 0 8px 24px -12px var(--shadow);
+        }
+        /* Preferencias y marcadores como dialogs flotantes en mobile. */
+        .prefs-overlay,
+        .bookmarks-overlay {
+          display: block;
+          position: fixed;
+          inset: 0;
+          z-index: 90;
+          background: rgba(0, 0, 0, 0.55);
+          backdrop-filter: blur(3px);
+        }
+        .prefs-panel,
+        .bookmarks-panel {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          z-index: 91;
+          width: min(360px, calc(100vw - 2rem));
+          max-height: 85vh;
+          overflow-y: auto;
+          border: 1px solid var(--border);
+          border-radius: 1.25rem;
+          background: var(--bg-card);
+          box-shadow: 0 16px 48px -12px var(--shadow);
+        }
+      }
+      /* Mobile: oculta el texto de los botones de la topbar y deja solo el icono.
+         Forzamos width = height = min-height (44px global) para circulo perfecto. */
+      @media (max-width: 640px) {
+        .icon-btn .btn-label {
+          display: none;
+        }
+        .icon-btn {
+          padding: 0;
+          width: 44px;
+          height: 44px;
+          min-height: 44px;
+          flex: 0 0 44px;
+          justify-content: center;
+          aspect-ratio: 1 / 1;
         }
       }
     `,
@@ -412,14 +1001,17 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly dialog = inject(MatDialog);
   private readonly votesService = inject(VotesService);
+  private readonly sanitizer = inject(DomSanitizer);
 
   @ViewChild('readerContainer') readerContainer?: ElementRef<HTMLElement>;
+  @ViewChild('bookmarksPanel') bookmarksPanel?: ElementRef<HTMLElement>;
 
   readonly loading = signal(true);
   readonly error = signal(false);
   readonly chapter = signal<ChapterDetail | null>(null);
-  readonly renderedHtml = signal('');
-  readonly pages = signal<string[]>([]);
+  readonly renderedHtml = signal<SafeHtml>('');
+  private renderedHtmlRaw = '';
+  readonly pages = signal<SafeHtml[]>([]);
   readonly currentPage = signal(0);
   readonly showPreferences = signal(false);
   readonly showBookmarksPanel = signal(false);
@@ -443,6 +1035,15 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
 
   readonly chapterVotesCount = signal(0);
   readonly chapterHasVoted = signal(false);
+
+  // Comments state
+  readonly comments = signal<ChapterCommentModel[]>([]);
+  readonly commentsCursor = signal<string | null>(null);
+  readonly commentsHasMore = signal(false);
+  readonly commentsEnabled = signal(true);
+  readonly commentsLoading = signal(false);
+  readonly commentSending = signal(false);
+  newComment = '';
 
   readonly colors: HighlightColor[] = ['yellow', 'green', 'blue', 'pink'];
   readonly colorMap: Record<HighlightColor, string> = {
@@ -555,19 +1156,83 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     }
   }
 
+  toggleBookmarksPanel() {
+    const opening = !this.showBookmarksPanel();
+    this.showBookmarksPanel.set(opening);
+    if (opening) {
+      setTimeout(() => {
+        this.bookmarksPanel?.nativeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+        });
+      }, 50);
+    }
+  }
+
   toggleBookmark() {
     const chapter = this.chapter();
     if (!chapter || !this.isAuthenticated()) {
       return;
     }
 
-    this.bookmarksService
-      .create({
-        novel_id: chapter.novel.id,
-        chapter_id: chapter.id,
-        anchor_id: this.currentAnchorId(),
+    const anchorId = this.currentAnchorId();
+
+    this.dialog
+      .open(PromptDialogComponent, {
+        width: '360px',
+        data: {
+          title: this.t.translate('reader.bookmarks.add'),
+          label: this.t.translate('reader.bookmarks.label'),
+          placeholder: this.t.translate('reader.bookmarks.labelPlaceholder'),
+        } as PromptDialogData,
       })
-      .subscribe(() => this.loadChapterBookmarks(chapter.id));
+      .afterClosed()
+      .subscribe((label: string | null) => {
+        if (label === null) return;
+        this.bookmarksService
+          .create({
+            novel_id: chapter.novel.id,
+            chapter_id: chapter.id,
+            anchor_id: anchorId,
+            label: label || undefined,
+          })
+          .subscribe(() => {
+            this.loadChapterBookmarks(chapter.id);
+            this.showBookmarksPanel.set(true);
+            if (anchorId) {
+              this.highlightAnchor(anchorId);
+            }
+          });
+      });
+  }
+
+  handleReaderClick(event: MouseEvent) {
+    const target = event.target as HTMLElement | null;
+    const deleteBtn = target?.closest('.bookmark-marker-delete') as HTMLElement | null;
+    if (deleteBtn) {
+      event.preventDefault();
+      event.stopPropagation();
+      const bookmarkId = deleteBtn.getAttribute('data-bookmark-id');
+      if (bookmarkId) {
+        this.removeBookmark(bookmarkId);
+      }
+    }
+  }
+
+  scrollToBookmark(anchorId: string | null) {
+    if (!anchorId) return;
+    const el = document.getElementById(anchorId);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      this.highlightAnchor(anchorId);
+    }
+  }
+
+  private highlightAnchor(anchorId: string) {
+    const el = document.getElementById(anchorId);
+    if (!el) return;
+    el.classList.add('bookmark-flash');
+    setTimeout(() => el.classList.remove('bookmark-flash'), 1500);
   }
 
   removeBookmark(id: string) {
@@ -731,6 +1396,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       this.refreshRenderedContent();
       this.buildPages();
       this.loading.set(false);
+      this.loadComments(chapter, true);
       if (this.isAuthenticated()) {
         this.readerService
           .addHistory({ novel_id: chapter.novel.id, chapter_id: chapter.id })
@@ -792,9 +1458,11 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   }
 
   private loadChapterBookmarks(chapterId: string) {
-    this.bookmarksService
-      .listByChapter(chapterId)
-      .subscribe((bookmarks) => this.bookmarks.set(bookmarks));
+    this.bookmarksService.listByChapter(chapterId).subscribe((bookmarks) => {
+      this.bookmarks.set(bookmarks);
+      this.refreshRenderedContent();
+      this.buildPages();
+    });
   }
 
   private loadChapterHighlights(chapterId: string) {
@@ -811,12 +1479,16 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    const html = this.applyHighlightsToHtml(
+    let html = this.applyHighlightsToHtml(
       this.assignAnchorIds(this.markdownService.render(chapter.content)),
       this.highlights(),
     );
+    html = this.applyBookmarkMarkers(html, this.bookmarks());
 
-    this.renderedHtml.set(html);
+    // Bypass Angular's innerHTML sanitizer (DOMPurify already sanitized the content)
+    // so that id and data-anchor-id attributes survive for bookmarks/highlights.
+    this.renderedHtmlRaw = html;
+    this.renderedHtml.set(this.sanitizer.bypassSecurityTrustHtml(html));
   }
 
   private assignAnchorIds(html: string) {
@@ -868,6 +1540,40 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     return doc.body.innerHTML;
   }
 
+  private applyBookmarkMarkers(html: string, bookmarks: ReaderBookmark[]): string {
+    if (!bookmarks.length) return html;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    const grouped = new Map<string, ReaderBookmark[]>();
+
+    for (const bk of bookmarks) {
+      if (!bk.anchor_id) continue;
+      const list = grouped.get(bk.anchor_id) ?? [];
+      list.push(bk);
+      grouped.set(bk.anchor_id, list);
+    }
+
+    grouped.forEach((items, anchorId) => {
+      const element = doc.body.querySelector(`#${anchorId}`);
+      if (!element) return;
+      const markers = items
+        .map(
+          (bk) =>
+            `<span class="bookmark-marker" data-bookmark-id="${bk.id}">` +
+            `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" aria-hidden="true">` +
+            `<path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>` +
+            `</svg>` +
+            `<span class="bookmark-marker-label">${this.escapeHtml(bk.label || '')}</span>` +
+            `<button type="button" class="bookmark-marker-delete" data-bookmark-id="${bk.id}" title="Eliminar marcador">✕</button>` +
+            `</span>`,
+        )
+        .join('');
+      element.insertAdjacentHTML('beforeend', markers);
+    });
+
+    return doc.body.innerHTML;
+  }
+
   private buildPages() {
     if (this.preferences().reading_mode !== 'paginated') {
       this.pages.set([]);
@@ -875,16 +1581,20 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     }
 
     const parser = new DOMParser();
-    const doc = parser.parseFromString(this.renderedHtml(), 'text/html');
+    const doc = parser.parseFromString(this.renderedHtmlRaw, 'text/html');
     const nodes = [...doc.body.children].map((node) => node.outerHTML);
     const pageSize = Math.max(2, Math.floor((window.innerHeight - 240) / 120));
-    const pages: string[] = [];
+    const safePages: SafeHtml[] = [];
 
     for (let index = 0; index < nodes.length; index += pageSize) {
-      pages.push(nodes.slice(index, index + pageSize).join(''));
+      safePages.push(
+        this.sanitizer.bypassSecurityTrustHtml(
+          nodes.slice(index, index + pageSize).join(''),
+        ),
+      );
     }
 
-    this.pages.set(pages.length ? pages : ['']);
+    this.pages.set(safePages.length ? safePages : [this.sanitizer.bypassSecurityTrustHtml('')]);
   }
 
   private restoreProgress(novelId: string) {
@@ -978,6 +1688,81 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       '--reader-font-family',
       fontMap[this.preferences().font_family] ?? fontMap['crimson'],
     );
+  }
+
+  // ── Comments ──
+
+  loadComments(chapter: ChapterDetail, reset: boolean) {
+    if (reset) {
+      this.comments.set([]);
+      this.commentsCursor.set(null);
+      this.commentsHasMore.set(false);
+    }
+    this.commentsLoading.set(true);
+    this.chaptersService
+      .listChapterComments(
+        chapter.novel.slug,
+        chapter.slug,
+        reset ? null : this.commentsCursor(),
+        20,
+      )
+      .subscribe({
+        next: (res) => {
+          this.comments.update((prev) => (reset ? res.data : [...prev, ...res.data]));
+          this.commentsCursor.set(res.pagination.nextCursor);
+          this.commentsHasMore.set(res.pagination.hasMore);
+          this.commentsEnabled.set(res.commentsEnabled);
+          this.commentsLoading.set(false);
+        },
+        error: () => this.commentsLoading.set(false),
+      });
+  }
+
+  loadMoreComments(chapter: ChapterDetail) {
+    this.loadComments(chapter, false);
+  }
+
+  submitComment(chapter: ChapterDetail) {
+    const text = this.newComment.trim();
+    if (!text || this.commentSending() || !this.isAuthenticated()) return;
+    this.commentSending.set(true);
+    this.chaptersService.createChapterComment(chapter.novel.slug, chapter.slug, text).subscribe({
+      next: (created) => {
+        this.comments.update((prev) => [...prev, created]);
+        this.newComment = '';
+        this.commentSending.set(false);
+      },
+      error: () => this.commentSending.set(false),
+    });
+  }
+
+  removeComment(chapter: ChapterDetail, commentId: string) {
+    this.chaptersService
+      .deleteChapterComment(chapter.novel.slug, chapter.slug, commentId)
+      .subscribe({
+        next: () => this.comments.update((prev) => prev.filter((c) => c.id !== commentId)),
+      });
+  }
+
+  canDeleteComment(comment: ChapterCommentModel, chapter: ChapterDetail): boolean {
+    const me = this.authService.getCurrentUserSnapshot();
+    if (!me) return false;
+    return comment.author.id === me.id || chapter.novel.author.username === me.username;
+  }
+
+  private readonly t = inject(TranslationService);
+
+  relativeDate(iso: string): string {
+    const then = new Date(iso).getTime();
+    const diffSec = Math.max(0, Math.floor((Date.now() - then) / 1000));
+    if (diffSec < 60) return this.t.translate('reader.relativeTime.justNow');
+    if (diffSec < 3600)
+      return this.t.translate('reader.relativeTime.minutes', { n: Math.floor(diffSec / 60) });
+    if (diffSec < 86400)
+      return this.t.translate('reader.relativeTime.hours', { n: Math.floor(diffSec / 3600) });
+    if (diffSec < 604800)
+      return this.t.translate('reader.relativeTime.days', { n: Math.floor(diffSec / 86400) });
+    return new Date(iso).toLocaleDateString();
   }
 
   private loadVoteStatus(chapterId: string) {

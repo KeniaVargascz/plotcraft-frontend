@@ -113,6 +113,14 @@ import { MarkdownService } from '../../core/services/markdown.service';
         flex-wrap: wrap;
       }
 
+      .editor-topbar a {
+        color: var(--accent-text);
+        text-decoration: none;
+      }
+      .editor-topbar a:hover {
+        color: var(--accent);
+      }
+
       .editor-pane {
         padding: 1rem;
         border-radius: 1rem;
@@ -179,6 +187,13 @@ import { MarkdownService } from '../../core/services/markdown.service';
         align-items: center;
         gap: 0.25rem;
         flex: 0 0 auto; /* alto natural, no crece ni se encoge */
+        /* Se mantiene fija arriba mientras el escritor desplaza el contenido. */
+        position: sticky;
+        top: 0;
+        z-index: 5;
+        /* Fondo opaco para tapar el contenido que pasa por debajo. */
+        background: var(--bg-card);
+        backdrop-filter: blur(6px);
       }
       :host ::ng-deep .chapter-quill .ql-container.ql-snow {
         border-radius: 0 0 0.9rem 0.9rem;
@@ -186,7 +201,9 @@ import { MarkdownService } from '../../core/services/markdown.service';
         line-height: 1.6;
         flex: 1 1 auto; /* ocupa el espacio restante del host */
         min-height: 0; /* anula min-height intrinsico que rompe flex */
-        overflow: hidden;
+        /* visible para que el editor crezca con el contenido y la pagina
+           sea quien scrollee (necesario para que la toolbar sticky funcione). */
+        overflow: visible;
       }
       :host ::ng-deep .chapter-quill .ql-editor {
         max-width: 100%;
@@ -194,6 +211,9 @@ import { MarkdownService } from '../../core/services/markdown.service';
         /* Palabras o URLs largas no rompen el layout. */
         overflow-wrap: anywhere;
         word-break: break-word;
+        /* Anula el overflow-y: auto por defecto de Quill: el contenido crece
+           verticalmente y el scroll lo maneja la pagina, no el editor. */
+        overflow-y: visible;
       }
       :host ::ng-deep .chapter-quill .ql-editor.ql-blank::before {
         color: var(--text-2);

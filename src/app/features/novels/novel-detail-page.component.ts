@@ -234,6 +234,7 @@ import { PostsService } from '../../core/services/posts.service';
             <span>{{ currentNovel.stats.kudosCount }} kudos</span>
             <span>{{ currentNovel.stats.bookmarksCount }} guardados</span>
             <span>{{ currentNovel.stats.votesCount }} votos</span>
+            <span>{{ currentNovel.stats.commentsCount }} comentarios</span>
             <span>{{ currentNovel.stats.worldsCount }} mundos</span>
             <span>{{ currentNovel.stats.charactersCount }} personajes</span>
             <span>{{ currentNovel.viewsCount }} vistas</span>
@@ -449,72 +450,51 @@ import { PostsService } from '../../core/services/posts.service';
           [isOwner]="currentNovel.viewerContext?.isAuthor ?? false"
         />
 
-        <!-- Novel Comments -->
-        <section class="novel-comments card">
-          <h2>{{ 'novelComments.title' | translate }}</h2>
+        <section class="novel-comments">
+          <h2>Comentarios</h2>
 
           @if (commentsEnabled()) {
             @if (authService.isAuthenticated()) {
               <div class="comment-form">
                 <textarea
-                  [(ngModel)]="newComment"
                   rows="3"
-                  [placeholder]="'novelComments.placeholder' | translate"
-                  maxlength="2000"
+                  placeholder="Escribe un comentario…"
+                  [(ngModel)]="newComment"
                 ></textarea>
                 <button
-                  type="button"
                   class="btn-send"
-                  [disabled]="!newComment.trim() || commentSending()"
+                  [disabled]="commentSending() || !newComment.trim()"
                   (click)="submitComment(currentNovel.slug)"
                 >
-                  {{
-                    commentSending()
-                      ? ('novelComments.sending' | translate)
-                      : ('novelComments.submit' | translate)
-                  }}
+                  {{ commentSending() ? 'Enviando…' : 'Comentar' }}
                 </button>
               </div>
             }
 
             @if (novelCommentsLoading() && !novelComments().length) {
-              <p class="comment-hint">{{ 'novelComments.loading' | translate }}</p>
+              <p class="comment-hint">Cargando comentarios…</p>
             } @else if (!novelComments().length) {
-              <p class="comment-hint">{{ 'novelComments.empty' | translate }}</p>
+              <p class="comment-hint">Aún no hay comentarios. ¡Sé el primero!</p>
             } @else {
               <div class="comments-list">
                 @for (c of novelComments(); track c.id) {
                   <div class="comment-item">
-                    <div class="comment-avatar">{{ c.author.username[0].toUpperCase() }}</div>
+                    <div class="comment-avatar">
+                      {{ (c.author.displayName || c.author.username).charAt(0).toUpperCase() }}
+                    </div>
                     <div class="comment-body">
                       <div class="comment-header">
-                        <a [routerLink]="['/perfil', c.author.username]" class="comment-author">
-                          {{ c.author.displayName || c.author.username }}
+                        <a class="comment-author" [routerLink]="['/@' + c.author.username]">
+                          {{ c.author.displayName || '@' + c.author.username }}
                         </a>
                         <span class="comment-date">{{ relativeDate(c.createdAt) }}</span>
-                        @if (
-                          c.author.id === authService.getCurrentUserSnapshot()?.id ||
-                          currentNovel.viewerContext?.isAuthor
-                        ) {
+                        @if (currentNovel.viewerContext?.isAuthor) {
                           <button
-                            type="button"
                             class="comment-delete"
+                            title="Eliminar comentario"
                             (click)="removeComment(currentNovel.slug, c.id)"
                           >
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="2"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            >
-                              <path d="M3 6h18" />
-                              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                            </svg>
+                            ✕
                           </button>
                         }
                       </div>
@@ -526,18 +506,19 @@ import { PostsService } from '../../core/services/posts.service';
 
               @if (commentsHasMore()) {
                 <button
-                  type="button"
                   class="btn-load-more"
+                  [disabled]="novelCommentsLoading()"
                   (click)="loadMoreComments(currentNovel.slug)"
                 >
-                  {{ 'novelComments.loadMore' | translate }}
+                  {{ novelCommentsLoading() ? 'Cargando…' : 'Ver más comentarios' }}
                 </button>
               }
             }
           } @else {
-            <p class="comment-hint">{{ 'novelComments.disabled' | translate }}</p>
+            <p class="comment-hint">Los comentarios están desactivados para esta novela.</p>
           }
         </section>
+
       </section>
     }
 
@@ -598,6 +579,11 @@ import { PostsService } from '../../core/services/posts.service';
         display: grid;
         gap: 1rem;
       }
+      .chapter-list {
+        /* Cuando la columna se estira (porque la aside derecha es mas alta),
+           los items se reparten en el espacio sobrante. Forzamos top-align. */
+        align-content: start;
+      }
       .hero,
       .content-grid,
       .section-head {
@@ -607,6 +593,13 @@ import { PostsService } from '../../core/services/posts.service';
       .section-head {
         grid-template-columns: 1fr auto;
         align-items: center;
+      }
+      .section-head a {
+        color: var(--accent-text);
+        text-decoration: none;
+      }
+      .section-head a:hover {
+        color: var(--accent);
       }
       .hero {
         grid-template-columns: 220px 1fr;
@@ -1391,13 +1384,13 @@ export class NovelDetailPageComponent implements OnInit {
       this.novelsService.getBySlug(slug).subscribe({
         next: (novel) => {
           this.novel.set(novel);
+          this.loadComments(slug, true);
           if (this.authService.isAuthenticated()) {
             this.loadReadingLists(novel.id);
             if (novel.viewerContext?.isAuthor) {
               this.loadTimeline(novel.slug);
             }
           }
-          this.loadComments(novel.slug, true);
           this.loading.set(false);
         },
         error: () => {

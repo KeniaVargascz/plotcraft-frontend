@@ -477,7 +477,8 @@
       "add": "Marcar posicion",
       "added": "Marcador anadido",
       "remove": "Quitar marcador",
-      "label": "Etiqueta (opcional)",
+      "label": "Nombre del marcador",
+      "labelPlaceholder": "Ej: escena importante",
       "noBookmarks": "Sin marcadores en este capitulo",
       "goTo": "Ir a esta posicion"
     },
@@ -491,6 +492,38 @@
         "blue": "Azul",
         "pink": "Rosa"
       }
+    },
+    "loginHint": "Inicia sesion para guardar tu progreso y subrayar fragmentos.",
+    "actions": {
+      "bookmarkPosition": "Marcar posicion",
+      "bookmarks": "Marcadores",
+      "preferences": "Preferencias"
+    },
+    "bookmarksPanel": {
+      "title": "Marcadores",
+      "empty": "Sin marcadores en este capitulo",
+      "remove": "Quitar"
+    },
+    "vote": {
+      "loginCta": "Inicia sesion para votar"
+    },
+    "comments": {
+      "title": "Comentarios",
+      "placeholder": "Escribe un comentario sobre este capitulo...",
+      "submit": "Comentar",
+      "submitting": "Enviando...",
+      "loginCta": "Inicia sesion para comentar",
+      "loading": "Cargando comentarios...",
+      "empty": "Aun no hay comentarios. Se el primero!",
+      "deleteAria": "Eliminar comentario",
+      "disabled": "El autor ha deshabilitado los comentarios.",
+      "loadMore": "Cargar mas"
+    },
+    "relativeTime": {
+      "justNow": "hace unos segundos",
+      "minutes": "hace {{n}} min",
+      "hours": "hace {{n}} h",
+      "days": "hace {{n}} d"
     }
   },
   "library": {

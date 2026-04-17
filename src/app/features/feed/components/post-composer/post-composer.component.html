@@ -65,28 +65,28 @@
     @if (needsContentLinker()) {
       <div class="content-linker">
         @if (form.controls.type.value === 'NEW_NOVEL' || form.controls.type.value === 'NEW_CHAPTER') {
-          <select (change)="selectNovel($event)" class="linker-select">
-            <option value="">Selecciona novela</option>
-            @for (novel of myNovels(); track novel.id) {
-              <option [value]="novel.id">{{ novel.title }}</option>
-            }
-          </select>
+          <app-custom-select
+            [options]="novelOptions"
+            [value]="selectedNovelId() || ''"
+            [placeholder]="'Selecciona novela'"
+            (valueChange)="selectNovel($event)"
+          />
         }
         @if (form.controls.type.value === 'NEW_CHAPTER' && selectedNovelChapters().length) {
-          <select (change)="selectChapter($event)" class="linker-select">
-            <option value="">Selecciona capitulo</option>
-            @for (ch of selectedNovelChapters(); track ch.id) {
-              <option [value]="ch.id">Cap. {{ ch.order }}: {{ ch.title }}</option>
-            }
-          </select>
+          <app-custom-select
+            [options]="chapterOptions"
+            [value]="selectedChapterId() || ''"
+            [placeholder]="'Selecciona capitulo'"
+            (valueChange)="selectChapter($event)"
+          />
         }
         @if (form.controls.type.value === 'WORLD_UPDATE') {
-          <select (change)="selectWorld($event)" class="linker-select">
-            <option value="">Selecciona mundo</option>
-            @for (world of myWorlds(); track world.id) {
-              <option [value]="world.id">{{ world.name }}</option>
-            }
-          </select>
+          <app-custom-select
+            [options]="worldOptions"
+            [value]="selectedWorldId() || ''"
+            [placeholder]="'Selecciona mundo'"
+            (valueChange)="selectWorld($event)"
+          />
         }
         @if (form.controls.type.value === 'NEW_CHARACTER') {
           <div class="character-picker">
@@ -108,11 +108,11 @@
     <div class="composer-actions">
       <label>
         <span>{{ 'feed.title' | translate }}</span>
-        <select formControlName="type" (change)="onTypeChange()">
-          @for (type of postTypes; track type) {
-            <option [value]="type">{{ 'post.types.' + type | translate }}</option>
-          }
-        </select>
+        <app-custom-select
+          [options]="postTypeOptions"
+          [value]="form.controls.type.value"
+          (valueChange)="selectPostType($event)"
+        />
       </label>
 
       <button type="submit" [disabled]="form.invalid || publishing()" data-testid="publish-post">

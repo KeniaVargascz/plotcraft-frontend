@@ -74,15 +74,6 @@ textarea {
   resize: vertical;
 }
 
-select {
-  width: 100%;
-  border-radius: 1rem;
-  border: 1px solid var(--border);
-  background-color: var(--bg-surface);
-  color: var(--text-1);
-  padding: 1rem 2.5rem 1rem 1rem;
-}
-
 .composer-actions {
   display: flex;
   justify-content: space-between;
@@ -209,15 +200,6 @@ select {
   gap: 0.5rem;
 }
 
-.linker-select {
-  width: 100%;
-  padding: 0.55rem 2.5rem 0.55rem 0.75rem;
-  border-radius: 0.65rem;
-  border: 1px solid var(--border);
-  background-color: var(--bg-surface);
-  color: var(--text-1);
-  font-size: 1rem;
-}
 
 .character-picker {
   display: flex;

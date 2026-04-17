@@ -1,7 +1,5 @@
-<select class="type-select" [ngModel]="selected" (ngModelChange)="choose($event)">
-  @for (option of options; track option) {
-    <option [value]="option">
-      {{ option === 'ALL' ? ('feed.all' | translate) : ('post.types.' + option | translate) }}
-    </option>
-  }
-</select>
+<app-custom-select
+  [options]="selectOptions"
+  [value]="selected"
+  (valueChange)="onSelect($event)"
+/>

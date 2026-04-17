@@ -15,7 +15,9 @@ import { NovelsService } from '../../../../core/services/novels.service';
 import { WorldsService } from '../../../../core/services/worlds.service';
 import { CharactersService } from '../../../../core/services/characters.service';
 import { TagChipsInputComponent } from '../../../../shared/components/tag-chips-input/tag-chips-input.component';
+import { CustomSelectComponent, SelectOption } from '../../../../shared/components/custom-select/custom-select.component';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { TranslationService } from '../../../../core/services/translation.service';
 import { ErrorMessageComponent } from '../../../../shared/components/error-message/error-message.component';
 
 interface ComposerNovel {
@@ -46,6 +48,7 @@ interface ComposerCharacter {
     TranslatePipe,
     ErrorMessageComponent,
     TagChipsInputComponent,
+    CustomSelectComponent,
   ],
   templateUrl: './post-composer.component.html',
   styleUrl: './post-composer.component.scss',
@@ -53,6 +56,7 @@ interface ComposerCharacter {
 export class PostComposerComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly postsService = inject(PostsService);
+  private readonly t = inject(TranslationService);
   private readonly novelsService = inject(NovelsService);
   private readonly worldsService = inject(WorldsService);
   private readonly charactersService = inject(CharactersService);
@@ -112,6 +116,34 @@ export class PostComposerComponent {
     return this.imageUrls().length < 4;
   }
 
+  get postTypeOptions(): SelectOption[] {
+    return this.postTypes.map((type) => ({
+      value: type,
+      label: this.t.translate('post.types.' + type),
+    }));
+  }
+
+  get novelOptions(): SelectOption[] {
+    return [
+      { value: '', label: 'Selecciona novela' },
+      ...this.myNovels().map((n) => ({ value: n.id, label: n.title })),
+    ];
+  }
+
+  get chapterOptions(): SelectOption[] {
+    return [
+      { value: '', label: 'Selecciona capitulo' },
+      ...this.selectedNovelChapters().map((c) => ({ value: c.id, label: `Cap. ${c.order}: ${c.title}` })),
+    ];
+  }
+
+  get worldOptions(): SelectOption[] {
+    return [
+      { value: '', label: 'Selecciona mundo' },
+      ...this.myWorlds().map((w) => ({ value: w.id, label: w.name })),
+    ];
+  }
+
   toggleImageInput() {
     this.showImageInput.update((v) => !v);
   }
@@ -143,18 +175,22 @@ export class PostComposerComponent {
     }
   }
 
-  selectNovel(event: Event) {
-    const id = (event.target as HTMLSelectElement).value || null;
-    this.selectedNovelId.set(id);
+  selectNovel(value: string) {
+    this.selectedNovelId.set(value || null);
     this.selectedChapterId.set(null);
   }
 
-  selectChapter(event: Event) {
-    this.selectedChapterId.set((event.target as HTMLSelectElement).value || null);
+  selectChapter(value: string) {
+    this.selectedChapterId.set(value || null);
   }
 
-  selectWorld(event: Event) {
-    this.selectedWorldId.set((event.target as HTMLSelectElement).value || null);
+  selectWorld(value: string) {
+    this.selectedWorldId.set(value || null);
+  }
+
+  selectPostType(value: string) {
+    this.form.controls.type.setValue(value as PostType);
+    this.onTypeChange();
   }
 
   toggleCharacter(id: string) {

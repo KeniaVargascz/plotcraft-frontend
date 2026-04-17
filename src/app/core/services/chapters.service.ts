@@ -135,12 +135,7 @@ export class ChaptersService {
 
   // ── Chapter Comments ──
 
-  listChapterComments(
-    novelSlug: string,
-    chapterSlug: string,
-    cursor?: string | null,
-    limit = 20,
-  ) {
+  listChapterComments(novelSlug: string, chapterSlug: string, cursor?: string | null, limit = 20) {
     let params = new HttpParams().set('limit', limit);
     if (cursor) params = params.set('cursor', cursor);
     return this.http
@@ -166,16 +161,20 @@ export class ChaptersService {
     return this.http
       .delete<
         ApiResponse<{ message: string }>
-      >(
-        `${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/comments/${commentId}`,
-      )
+      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/comments/${commentId}`)
       .pipe(map((r) => r.data));
   }
 
   createParagraphComment(
     novelSlug: string,
     chapterSlug: string,
-    payload: { content: string; anchor_id: string; quoted_text: string; start_offset: number; end_offset: number },
+    payload: {
+      content: string;
+      anchor_id: string;
+      quoted_text: string;
+      start_offset: number;
+      end_offset: number;
+    },
   ) {
     return this.http
       .post<

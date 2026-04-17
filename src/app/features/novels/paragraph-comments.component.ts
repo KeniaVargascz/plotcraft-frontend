@@ -1,18 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import {
-  ChaptersService,
-  ChapterCommentModel,
-} from '../../core/services/chapters.service';
+import { ChaptersService, ChapterCommentModel } from '../../core/services/chapters.service';
 
 @Component({
   selector: 'app-paragraph-comments',
@@ -92,12 +81,22 @@ import {
         animation: p-fade-in 0.15s ease-out;
       }
       @keyframes p-fade-in {
-        from { opacity: 0; }
-        to { opacity: 1; }
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
       @keyframes p-slide-up {
-        from { opacity: 0; transform: translateY(12px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
       .p-dialog {
         background: var(--bg-surface);
@@ -322,17 +321,15 @@ export class ParagraphCommentsComponent implements OnChanges {
     this.sending.set(true);
     const quote = this.quotedText?.trim() || '';
     const trimmedQuote = quote.length > 200 ? quote.slice(0, 200) + '…' : quote;
-    const payload: Record<string, unknown> = {
+    const payload = {
       content: text,
       anchor_id: this.anchorId,
+      quoted_text: trimmedQuote || '',
+      start_offset: this.startOffset ?? 0,
+      end_offset: this.endOffset ?? 0,
     };
-    if (trimmedQuote) {
-      payload['quoted_text'] = trimmedQuote;
-      payload['start_offset'] = this.startOffset;
-      payload['end_offset'] = this.endOffset;
-    }
     this.chaptersService
-      .createParagraphComment(this.novelSlug, this.chapterSlug, payload as any)
+      .createParagraphComment(this.novelSlug, this.chapterSlug, payload)
       .subscribe({
         next: () => {
           this.sending.set(false);
@@ -377,5 +374,4 @@ export class ParagraphCommentsComponent implements OnChanges {
     const days = Math.floor(hours / 24);
     return `hace ${days}d`;
   }
-
 }

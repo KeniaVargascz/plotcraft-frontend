@@ -186,7 +186,9 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
       }
       .grid {
         display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 1rem;
+        align-items: start;
       }
       .genre-field {
         display: grid;

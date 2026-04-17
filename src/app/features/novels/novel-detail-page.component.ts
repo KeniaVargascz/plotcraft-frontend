@@ -518,7 +518,6 @@ import { PostsService } from '../../core/services/posts.service';
             <p class="comment-hint">Los comentarios están desactivados para esta novela.</p>
           }
         </section>
-
       </section>
     }
 

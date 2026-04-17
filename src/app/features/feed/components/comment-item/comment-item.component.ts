@@ -1,4 +1,4 @@
-import { Component, DestroyRef, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, EventEmitter, HostListener, Input, Output, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommentModel } from '../../../../core/models/comment.model';
@@ -18,7 +18,15 @@ export class CommentItemComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly commentsService = inject(CommentsService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly elementRef = inject(ElementRef);
   readonly authService = inject(AuthService);
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    if (this.menuOpen() && !this.elementRef.nativeElement.contains(event.target)) {
+      this.menuOpen.set(false);
+    }
+  }
 
   @Input({ required: true }) comment!: CommentModel;
   @Input({ required: true }) postId!: string;

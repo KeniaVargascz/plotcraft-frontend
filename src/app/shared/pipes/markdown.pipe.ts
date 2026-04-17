@@ -1,8 +1,11 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, inject } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Pipe({ name: 'markdown', standalone: true })
 export class MarkdownPipe implements PipeTransform {
-  transform(value: string): string {
+  private readonly sanitizer = inject(DomSanitizer);
+
+  transform(value: string): SafeHtml {
     let html = this.escapeHtml(value);
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
@@ -11,7 +14,7 @@ export class MarkdownPipe implements PipeTransform {
       '<a href="$2" target="_blank" rel="noopener">$1</a>',
     );
     html = html.replace(/\n/g, '<br>');
-    return html;
+    return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
   private escapeHtml(text: string): string {

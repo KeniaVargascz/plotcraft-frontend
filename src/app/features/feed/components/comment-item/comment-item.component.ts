@@ -23,6 +23,7 @@ export class CommentItemComponent {
 
   readonly editing = signal(false);
   readonly loading = signal(false);
+  readonly menuOpen = signal(false);
   readonly form = this.formBuilder.nonNullable.group({
     content: ['', [Validators.required, Validators.maxLength(2000)]],
   });

@@ -22,7 +22,6 @@ export class ReactionBarComponent {
 
   readonly loading = signal(false);
   readonly reactionOptions: Array<{ type: ReactionType; emoji: string }> = [
-    { type: 'LIKE', emoji: '❤' },
     { type: 'LOVE', emoji: '✨' },
     { type: 'FIRE', emoji: '🔥' },
     { type: 'CLAP', emoji: '👏' },

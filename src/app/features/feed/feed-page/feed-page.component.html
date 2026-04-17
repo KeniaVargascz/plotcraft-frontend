@@ -16,14 +16,57 @@
       </div>
     } @else {
       <div class="post-stack">
-        @for (post of posts(); track post.id) {
+        @for (post of posts(); track post.id; let i = $index) {
           <app-post-card
             [post]="post"
             (postChange)="updatePost($event)"
             (postDeleted)="removePost($event)"
           />
+          @if ((i + 1) % 10 === 0 && suggestions().length) {
+            <section class="inline-suggestions">
+              <h3>{{ 'feed.suggestions' | translate }}</h3>
+              <div class="inline-suggestions-list">
+                @for (suggestion of suggestions().slice(0, 4); track suggestion.id) {
+                  <article class="inline-suggestion-item">
+                    <div class="inline-suggestion-avatar">
+                      {{ (suggestion.displayName || suggestion.username).slice(0, 1).toUpperCase() }}
+                    </div>
+                    <div class="inline-suggestion-info">
+                      <strong>{{ suggestion.displayName || suggestion.username }}</strong>
+                      <span>@{{ suggestion.username }}</span>
+                    </div>
+                    <button type="button" (click)="followSuggestion(suggestion.username)">
+                      {{ 'profile.follow' | translate }}
+                    </button>
+                  </article>
+                }
+              </div>
+            </section>
+          }
         }
       </div>
+
+      @if (posts().length % 10 !== 0 && suggestions().length && !hasMore()) {
+        <section class="inline-suggestions">
+          <h3>{{ 'feed.suggestions' | translate }}</h3>
+          <div class="inline-suggestions-list">
+            @for (suggestion of suggestions().slice(0, 4); track suggestion.id) {
+              <article class="inline-suggestion-item">
+                <div class="inline-suggestion-avatar">
+                  {{ (suggestion.displayName || suggestion.username).slice(0, 1).toUpperCase() }}
+                </div>
+                <div class="inline-suggestion-info">
+                  <strong>{{ suggestion.displayName || suggestion.username }}</strong>
+                  <span>@{{ suggestion.username }}</span>
+                </div>
+                <button type="button" (click)="followSuggestion(suggestion.username)">
+                  {{ 'profile.follow' | translate }}
+                </button>
+              </article>
+            }
+          </div>
+        </section>
+      }
     }
 
     <div #sentinel class="sentinel"></div>

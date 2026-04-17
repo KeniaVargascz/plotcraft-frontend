@@ -173,7 +173,7 @@ select {
   border-radius: 0.75rem;
   background: var(--bg-surface);
   color: var(--text-1);
-  font-size: 0.85rem;
+  font-size: 1rem;
 
   &::placeholder {
     color: var(--text-3);
@@ -208,7 +208,7 @@ select {
   border: 1px solid var(--border);
   background: var(--bg-surface);
   color: var(--text-1);
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 .character-picker {

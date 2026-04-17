@@ -74,7 +74,7 @@
   border: 1px solid var(--border);
   background: var(--bg-surface);
   color: var(--text-1);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .search-btn {
@@ -117,8 +117,85 @@
   font-weight: 600;
 }
 
+.inline-suggestions {
+  display: none;
+}
+
 @media (max-width: 1080px) {
   .feed-layout {
     grid-template-columns: 1fr;
+  }
+
+  .feed-sidebar {
+    display: none;
+  }
+
+  .inline-suggestions {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    border-radius: 1.4rem;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg-card) 94%, transparent);
+  }
+
+  .inline-suggestions h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .inline-suggestions-list {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .inline-suggestion-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .inline-suggestion-item:last-child {
+    border-bottom: 0;
+  }
+
+  .inline-suggestion-avatar {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--accent-glow);
+    color: var(--accent-text);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .inline-suggestion-info {
+    flex: 1;
+    min-width: 0;
+
+    strong {
+      display: block;
+      color: var(--text-1);
+    }
+
+    span {
+      color: var(--text-2);
+      font-size: 0.875rem;
+    }
+  }
+
+  .inline-suggestion-item button {
+    border: 1px solid var(--border-s);
+    background: var(--accent-glow);
+    color: var(--accent-text);
+    border-radius: 999px;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    cursor: pointer;
   }
 }

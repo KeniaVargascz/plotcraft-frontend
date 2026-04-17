@@ -1,4 +1,23 @@
 <article class="post-card" data-testid="post-card">
+  <div class="type-row">
+    <span class="type-badge">{{ 'post.types.' + post.type | translate }}</span>
+    <div class="type-row-actions">
+      @if (post.viewerContext && !isAuthor) {
+        <button type="button" class="icon-btn" [class.saved-active]="post.viewerContext.hasSaved" (click)="toggleSaved()" title="Guardar">
+          <svg width="16" height="16" viewBox="0 0 24 24" [attr.fill]="post.viewerContext.hasSaved ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        </button>
+      }
+      @if (isAuthor) {
+        <button type="button" class="icon-btn" (click)="startEdit()" title="Editar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </button>
+        <button type="button" class="icon-btn delete-btn" (click)="deletePost()" title="Eliminar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+        </button>
+      }
+    </div>
+  </div>
+
   <header class="post-header">
     <div class="author-block">
       <div class="avatar">{{ post.author.username.slice(0, 1).toUpperCase() }}</div>
@@ -8,20 +27,6 @@
         </a>
         <p>@{{ post.author.username }} · {{ relativeDate(post.createdAt) }}</p>
       </div>
-    </div>
-
-    <div class="post-header-actions">
-      <span class="type-badge">{{ 'post.types.' + post.type | translate }}</span>
-      @if (isAuthor) {
-        <div class="owner-actions">
-          <button type="button" (click)="startEdit()" title="Editar">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z"/></svg>
-          </button>
-          <button type="button" class="delete-btn" (click)="deletePost()" title="Eliminar">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-          </button>
-        </div>
-      }
     </div>
   </header>
 
@@ -133,12 +138,6 @@
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       {{ post.stats.commentsCount }}
     </button>
-
-    @if (post.viewerContext && !isAuthor) {
-      <button type="button" class="action-btn" [class.active]="post.viewerContext.hasSaved" (click)="toggleSaved()">
-        <svg width="16" height="16" viewBox="0 0 24 24" [attr.fill]="post.viewerContext.hasSaved ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-      </button>
-    }
   </app-reaction-bar>
 
   @if (commentsOpen()) {

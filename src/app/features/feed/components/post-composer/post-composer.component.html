@@ -32,7 +32,7 @@
         <div class="image-previews">
           @for (url of imageUrls(); track url; let i = $index) {
             <div class="image-preview">
-              <img [src]="url" alt="Preview" />
+              <img [src]="url" alt="Preview" loading="lazy" />
               <button type="button" class="remove-image" (click)="removeImage(i)">&times;</button>
             </div>
           }

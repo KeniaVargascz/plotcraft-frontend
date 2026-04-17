@@ -40,7 +40,14 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
 @Component({
   selector: 'app-chapter-reader-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, ErrorMessageComponent, LoadingSpinnerComponent, TranslatePipe, ParagraphCommentsComponent],
+  imports: [
+    FormsModule,
+    RouterLink,
+    ErrorMessageComponent,
+    LoadingSpinnerComponent,
+    TranslatePipe,
+    ParagraphCommentsComponent,
+  ],
   template: `
     @if (loading()) {
       <app-loading-spinner />
@@ -49,29 +56,82 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
     } @else if (chapter(); as currentChapter) {
       <article class="reader-shell">
         <div class="reader-sticky">
-        <header class="reader-topbar">
-          <div class="reader-topbar__left">
-            <a routerLink="/novelas">{{ 'nav.novels' | translate }}</a>
-            <a [routerLink]="['/novelas', currentChapter.novel.slug]">{{
-              currentChapter.novel.title
-            }}</a>
-          </div>
+          <header class="reader-topbar">
+            <div class="reader-topbar__left">
+              <a routerLink="/novelas">{{ 'nav.novels' | translate }}</a>
+              <a [routerLink]="['/novelas', currentChapter.novel.slug]">{{
+                currentChapter.novel.title
+              }}</a>
+            </div>
 
-          <div class="reader-topbar__actions">
-            @if (!isAuthenticated()) {
-              <span class="hint-banner">
-                {{ 'reader.loginHint' | translate }}
-              </span>
-            } @else {
+            <div class="reader-topbar__actions">
+              @if (!isAuthenticated()) {
+                <span class="hint-banner">
+                  {{ 'reader.loginHint' | translate }}
+                </span>
+              } @else {
+                <button
+                  type="button"
+                  class="icon-btn"
+                  [attr.aria-label]="'reader.actions.bookmarkPosition' | translate"
+                  [title]="
+                    bookmarks().length >= MAX_BOOKMARKS_PER_CHAPTER
+                      ? 'Maximo ' + MAX_BOOKMARKS_PER_CHAPTER + ' marcadores por capitulo'
+                      : ('reader.actions.bookmarkPosition' | translate)
+                  "
+                  [disabled]="bookmarks().length >= MAX_BOOKMARKS_PER_CHAPTER"
+                  (click)="toggleBookmark()"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                  </svg>
+                  <span class="btn-label">{{ 'reader.actions.bookmarkPosition' | translate }}</span>
+                </button>
+                <button
+                  type="button"
+                  class="icon-btn"
+                  [attr.aria-label]="'reader.actions.bookmarks' | translate"
+                  [title]="'reader.actions.bookmarks' | translate"
+                  (click)="toggleBookmarksPanel()"
+                >
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <line x1="8" y1="6" x2="21" y2="6" />
+                    <line x1="8" y1="12" x2="21" y2="12" />
+                    <line x1="8" y1="18" x2="21" y2="18" />
+                    <circle cx="3.5" cy="6" r="1" />
+                    <circle cx="3.5" cy="12" r="1" />
+                    <circle cx="3.5" cy="18" r="1" />
+                  </svg>
+                  <span class="btn-label">{{ 'reader.actions.bookmarks' | translate }}</span>
+                </button>
+              }
               <button
                 type="button"
                 class="icon-btn"
-                [attr.aria-label]="'reader.actions.bookmarkPosition' | translate"
-                [title]="bookmarks().length >= MAX_BOOKMARKS_PER_CHAPTER
-                  ? 'Maximo ' + MAX_BOOKMARKS_PER_CHAPTER + ' marcadores por capitulo'
-                  : ('reader.actions.bookmarkPosition' | translate)"
-                [disabled]="bookmarks().length >= MAX_BOOKMARKS_PER_CHAPTER"
-                (click)="toggleBookmark()"
+                [attr.aria-label]="'reader.actions.preferences' | translate"
+                [title]="'reader.actions.preferences' | translate"
+                data-testid="reader-settings"
+                (click)="showPreferences.update((value) => !value)"
               >
                 <svg
                   width="18"
@@ -84,69 +144,18 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
                   stroke-linejoin="round"
                   aria-hidden="true"
                 >
-                  <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                  <circle cx="12" cy="12" r="3" />
+                  <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+                  />
                 </svg>
-                <span class="btn-label">{{ 'reader.actions.bookmarkPosition' | translate }}</span>
+                <span class="btn-label">{{ 'reader.actions.preferences' | translate }}</span>
               </button>
-              <button
-                type="button"
-                class="icon-btn"
-                [attr.aria-label]="'reader.actions.bookmarks' | translate"
-                [title]="'reader.actions.bookmarks' | translate"
-                (click)="toggleBookmarksPanel()"
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <line x1="8" y1="6" x2="21" y2="6" />
-                  <line x1="8" y1="12" x2="21" y2="12" />
-                  <line x1="8" y1="18" x2="21" y2="18" />
-                  <circle cx="3.5" cy="6" r="1" />
-                  <circle cx="3.5" cy="12" r="1" />
-                  <circle cx="3.5" cy="18" r="1" />
-                </svg>
-                <span class="btn-label">{{ 'reader.actions.bookmarks' | translate }}</span>
-              </button>
-            }
-            <button
-              type="button"
-              class="icon-btn"
-              [attr.aria-label]="'reader.actions.preferences' | translate"
-              [title]="'reader.actions.preferences' | translate"
-              data-testid="reader-settings"
-              (click)="showPreferences.update((value) => !value)"
-            >
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <circle cx="12" cy="12" r="3" />
-                <path
-                  d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
-                />
-              </svg>
-              <span class="btn-label">{{ 'reader.actions.preferences' | translate }}</span>
-            </button>
-          </div>
-        </header>
+            </div>
+          </header>
 
-        <!-- TODO: Barra de progreso deshabilitada — ver nota en ngOnInit -->
-        <!-- @if (preferences().show_progress) {
+          <!-- TODO: Barra de progreso deshabilitada — ver nota en ngOnInit -->
+          <!-- @if (preferences().show_progress) {
           <div class="progress-strip" data-testid="progress-bar">
             <span [style.width.%]="progressPercent() * 100"></span>
           </div>
@@ -183,9 +192,17 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
                       aria-label="Cerrar"
                       (click)="showPreferences.set(false)"
                     >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" aria-hidden="true">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
                         <line x1="18" y1="6" x2="6" y2="18" />
                         <line x1="6" y1="6" x2="18" y2="18" />
                       </svg>
@@ -197,10 +214,18 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
                       [value]="preferences().font_family"
                       (change)="onPreferenceChange('font_family', $any($event.target).value)"
                     >
-                      <option value="crimson">{{ 'reader.preferences.fonts.crimson' | translate }}</option>
-                      <option value="outfit">{{ 'reader.preferences.fonts.outfit' | translate }}</option>
-                      <option value="georgia">{{ 'reader.preferences.fonts.georgia' | translate }}</option>
-                      <option value="mono">{{ 'reader.preferences.fonts.mono' | translate }}</option>
+                      <option value="crimson">
+                        {{ 'reader.preferences.fonts.crimson' | translate }}
+                      </option>
+                      <option value="outfit">
+                        {{ 'reader.preferences.fonts.outfit' | translate }}
+                      </option>
+                      <option value="georgia">
+                        {{ 'reader.preferences.fonts.georgia' | translate }}
+                      </option>
+                      <option value="mono">
+                        {{ 'reader.preferences.fonts.mono' | translate }}
+                      </option>
                     </select>
                   </label>
                   <label>
@@ -231,8 +256,12 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
                       [value]="preferences().reading_mode"
                       (change)="onPreferenceChange('reading_mode', $any($event.target).value)"
                     >
-                      <option value="scroll">{{ 'reader.preferences.modeScroll' | translate }}</option>
-                      <option value="paginated">{{ 'reader.preferences.modePaginated' | translate }}</option>
+                      <option value="scroll">
+                        {{ 'reader.preferences.modeScroll' | translate }}
+                      </option>
+                      <option value="paginated">
+                        {{ 'reader.preferences.modePaginated' | translate }}
+                      </option>
                     </select>
                   </label>
                   <label class="toggle">
@@ -255,9 +284,17 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
                       aria-label="Cerrar"
                       (click)="showBookmarksPanel.set(false)"
                     >
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" aria-hidden="true">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
                         <line x1="18" y1="6" x2="6" y2="18" />
                         <line x1="6" y1="6" x2="18" y2="18" />
                       </svg>
@@ -275,7 +312,9 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
                         >
                           {{ bookmark.label || bookmark.anchor_id || bookmark.chapter.title }}
                         </button>
-                        <button type="button" (click)="removeBookmark(bookmark.id)">{{ 'reader.bookmarksPanel.remove' | translate }}</button>
+                        <button type="button" (click)="removeBookmark(bookmark.id)">
+                          {{ 'reader.bookmarksPanel.remove' | translate }}
+                        </button>
                       </div>
                     }
                   }
@@ -325,12 +364,19 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
                     {{ color }}
                   </button>
                 }
-                <button
-                  type="button"
-                  class="toolbar-comment-btn"
-                  (click)="openParagraphComment()"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <button type="button" class="toolbar-comment-btn" (click)="openParagraphComment()">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
                 </button>
               </div>
             }
@@ -355,7 +401,6 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
               />
             }
           </section>
-
         </div>
 
         <div class="chapter-vote-section">
@@ -427,7 +472,11 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
                   [disabled]="!newComment.trim() || commentSending()"
                   (click)="submitComment(currentChapter)"
                 >
-                  {{ commentSending() ? ('reader.comments.submitting' | translate) : ('reader.comments.submit' | translate) }}
+                  {{
+                    commentSending()
+                      ? ('reader.comments.submitting' | translate)
+                      : ('reader.comments.submit' | translate)
+                  }}
                 </button>
               </div>
             } @else {
@@ -1150,6 +1199,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
 
   private readonly progressQueue = new Subject<number>();
   private readonly preferencesQueue = new Subject<Partial<ReaderPreferences>>();
+  private scrollRafPending = false;
   private slug = '';
   private chapterSlug = '';
 
@@ -1230,19 +1280,18 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
 
   @HostListener('window:scroll')
   onWindowScroll() {
-    if (this.preferences().reading_mode !== 'scroll' || !this.readerContainer) {
-      return;
-    }
-
-    const container = this.readerContainer.nativeElement;
-    const rect = container.getBoundingClientRect();
-    const maxDistance = container.offsetHeight - window.innerHeight;
-    const traveled = Math.min(Math.max(-rect.top, 0), Math.max(maxDistance, 1));
-    const pct = maxDistance > 0 ? traveled / maxDistance : 1;
-
-    this.progressPercent.set(pct);
-    // TODO: Progreso de lectura deshabilitado — ver nota en ngOnInit
-    // this.progressQueue.next(pct);
+    if (this.scrollRafPending) return;
+    this.scrollRafPending = true;
+    requestAnimationFrame(() => {
+      this.scrollRafPending = false;
+      if (this.preferences().reading_mode !== 'scroll' || !this.readerContainer) return;
+      const container = this.readerContainer.nativeElement;
+      const rect = container.getBoundingClientRect();
+      const maxDistance = container.offsetHeight - window.innerHeight;
+      const traveled = Math.min(Math.max(-rect.top, 0), Math.max(maxDistance, 1));
+      const pct = maxDistance > 0 ? traveled / maxDistance : 1;
+      this.progressPercent.set(pct);
+    });
   }
 
   @HostListener('window:keydown.arrowright')
@@ -1728,9 +1777,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
 
     for (let index = 0; index < nodes.length; index += pageSize) {
       safePages.push(
-        this.sanitizer.bypassSecurityTrustHtml(
-          nodes.slice(index, index + pageSize).join(''),
-        ),
+        this.sanitizer.bypassSecurityTrustHtml(nodes.slice(index, index + pageSize).join('')),
       );
     }
 

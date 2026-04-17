@@ -1,12 +1,14 @@
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   ElementRef,
   OnDestroy,
   ViewChild,
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { FollowModel } from '../../../core/models/follow.model';
@@ -37,6 +39,7 @@ import { PostTypeFilterComponent } from '../components/post-type-filter/post-typ
 export class FeedPageComponent implements AfterViewInit, OnDestroy {
   private readonly feedService = inject(FeedService);
   private readonly followsService = inject(FollowsService);
+  private readonly destroyRef = inject(DestroyRef);
   private observer?: IntersectionObserver;
 
   @ViewChild('sentinel') sentinel?: ElementRef<HTMLDivElement>;
@@ -98,6 +101,7 @@ export class FeedPageComponent implements AfterViewInit, OnDestroy {
     this.loading.set(true);
     this.feedService
       .searchFeed({ search: q || null, tags: tags.length ? tags : undefined })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
           this.posts.set(response.data);
@@ -124,11 +128,14 @@ export class FeedPageComponent implements AfterViewInit, OnDestroy {
   }
 
   followSuggestion(username: string) {
-    this.followsService.follow(username).subscribe({
-      next: () => {
-        this.suggestions.update((items) => items.filter((item) => item.username !== username));
-      },
-    });
+    this.followsService
+      .follow(username)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.suggestions.update((items) => items.filter((item) => item.username !== username));
+        },
+      });
   }
 
   private loadPosts(reset: boolean) {
@@ -144,6 +151,7 @@ export class FeedPageComponent implements AfterViewInit, OnDestroy {
         cursor: reset ? null : this.nextCursor(),
         type: this.selectedType(),
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
           this.posts.set(reset ? response.data : [...this.posts(), ...response.data]);
@@ -161,9 +169,12 @@ export class FeedPageComponent implements AfterViewInit, OnDestroy {
   }
 
   private loadSuggestions() {
-    this.followsService.getSuggestions().subscribe({
-      next: (suggestions) => this.suggestions.set(suggestions),
-    });
+    this.followsService
+      .getSuggestions()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (suggestions) => this.suggestions.set(suggestions),
+      });
   }
 
   private setupObserver() {

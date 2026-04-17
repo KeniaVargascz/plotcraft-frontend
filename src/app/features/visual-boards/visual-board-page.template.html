@@ -104,6 +104,7 @@
                   <img
                     [src]="item.imageUrl"
                     [alt]="item.caption || section.title"
+                    loading="lazy"
                     (click)="openLightbox(section, item.id)"
                   />
 

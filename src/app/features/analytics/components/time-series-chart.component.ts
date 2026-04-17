@@ -7,9 +7,28 @@ import {
   OnDestroy,
   AfterViewInit,
 } from '@angular/core';
-import { Chart, registerables } from 'chart.js';
+import {
+  Chart,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Filler,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
-Chart.register(...registerables);
+Chart.register(
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Filler,
+  Tooltip,
+  Legend,
+);
 
 @Component({
   selector: 'app-time-series-chart',

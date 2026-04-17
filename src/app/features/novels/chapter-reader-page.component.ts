@@ -35,11 +35,12 @@ import { ErrorMessageComponent } from '../../shared/components/error-message/err
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../core/services/translation.service';
+import { ParagraphCommentsComponent } from './paragraph-comments.component';
 
 @Component({
   selector: 'app-chapter-reader-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, ErrorMessageComponent, LoadingSpinnerComponent, TranslatePipe],
+  imports: [FormsModule, RouterLink, ErrorMessageComponent, LoadingSpinnerComponent, TranslatePipe, ParagraphCommentsComponent],
   template: `
     @if (loading()) {
       <app-loading-spinner />
@@ -66,7 +67,10 @@ import { TranslationService } from '../../core/services/translation.service';
                 type="button"
                 class="icon-btn"
                 [attr.aria-label]="'reader.actions.bookmarkPosition' | translate"
-                [title]="'reader.actions.bookmarkPosition' | translate"
+                [title]="bookmarks().length >= MAX_BOOKMARKS_PER_CHAPTER
+                  ? 'Maximo ' + MAX_BOOKMARKS_PER_CHAPTER + ' marcadores por capitulo'
+                  : ('reader.actions.bookmarkPosition' | translate)"
+                [disabled]="bookmarks().length >= MAX_BOOKMARKS_PER_CHAPTER"
                 (click)="toggleBookmark()"
               >
                 <svg
@@ -141,11 +145,12 @@ import { TranslationService } from '../../core/services/translation.service';
           </div>
         </header>
 
-        @if (preferences().show_progress) {
+        <!-- TODO: Barra de progreso deshabilitada — ver nota en ngOnInit -->
+        <!-- @if (preferences().show_progress) {
           <div class="progress-strip" data-testid="progress-bar">
             <span [style.width.%]="progressPercent() * 100"></span>
           </div>
-        }
+        } -->
         </div>
 
         <header class="reader-header">
@@ -166,117 +171,120 @@ import { TranslationService } from '../../core/services/translation.service';
         }
 
         <div class="reader-layout">
-          @if (showPreferences()) {
-            <aside class="panel prefs-panel">
-              <div class="prefs-header">
-                <h3>{{ 'reader.preferences.title' | translate }}</h3>
-                <button
-                  type="button"
-                  class="prefs-close"
-                  aria-label="Cerrar"
-                  (click)="showPreferences.set(false)"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" aria-hidden="true">
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                </button>
-              </div>
-              <label>
-                {{ 'reader.preferences.font' | translate }}
-                <select
-                  [value]="preferences().font_family"
-                  (change)="onPreferenceChange('font_family', $any($event.target).value)"
-                >
-                  <option value="crimson">{{ 'reader.preferences.fonts.crimson' | translate }}</option>
-                  <option value="outfit">{{ 'reader.preferences.fonts.outfit' | translate }}</option>
-                  <option value="georgia">{{ 'reader.preferences.fonts.georgia' | translate }}</option>
-                  <option value="mono">{{ 'reader.preferences.fonts.mono' | translate }}</option>
-                </select>
-              </label>
-              <label>
-                {{ 'reader.preferences.fontSize' | translate }}
-                <input
-                  type="range"
-                  min="14"
-                  max="26"
-                  [value]="preferences().font_size"
-                  (input)="onPreferenceChange('font_size', +$any($event.target).value)"
-                  data-testid="font-size-slider"
-                />
-              </label>
-              <label>
-                {{ 'reader.preferences.lineHeight' | translate }}
-                <input
-                  type="range"
-                  min="1.4"
-                  max="2.4"
-                  step="0.1"
-                  [value]="preferences().line_height"
-                  (input)="onPreferenceChange('line_height', +$any($event.target).value)"
-                />
-              </label>
-              <label>
-                {{ 'reader.preferences.mode' | translate }}
-                <select
-                  [value]="preferences().reading_mode"
-                  (change)="onPreferenceChange('reading_mode', $any($event.target).value)"
-                >
-                  <option value="scroll">{{ 'reader.preferences.modeScroll' | translate }}</option>
-                  <option value="paginated">{{ 'reader.preferences.modePaginated' | translate }}</option>
-                </select>
-              </label>
-              <label class="toggle">
-                <input
-                  type="checkbox"
-                  [checked]="preferences().show_progress"
-                  (change)="onPreferenceChange('show_progress', $any($event.target).checked)"
-                />
-                {{ 'reader.preferences.showProgress' | translate }}
-              </label>
-            </aside>
+          @if (showPreferences() || showBookmarksPanel()) {
+            <div class="side-panels">
+              @if (showPreferences()) {
+                <aside class="panel prefs-panel">
+                  <div class="prefs-header">
+                    <h3>{{ 'reader.preferences.title' | translate }}</h3>
+                    <button
+                      type="button"
+                      class="prefs-close"
+                      aria-label="Cerrar"
+                      (click)="showPreferences.set(false)"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  </div>
+                  <label>
+                    {{ 'reader.preferences.font' | translate }}
+                    <select
+                      [value]="preferences().font_family"
+                      (change)="onPreferenceChange('font_family', $any($event.target).value)"
+                    >
+                      <option value="crimson">{{ 'reader.preferences.fonts.crimson' | translate }}</option>
+                      <option value="outfit">{{ 'reader.preferences.fonts.outfit' | translate }}</option>
+                      <option value="georgia">{{ 'reader.preferences.fonts.georgia' | translate }}</option>
+                      <option value="mono">{{ 'reader.preferences.fonts.mono' | translate }}</option>
+                    </select>
+                  </label>
+                  <label>
+                    {{ 'reader.preferences.fontSize' | translate }}
+                    <input
+                      type="range"
+                      min="14"
+                      max="26"
+                      [value]="preferences().font_size"
+                      (input)="onPreferenceChange('font_size', +$any($event.target).value)"
+                      data-testid="font-size-slider"
+                    />
+                  </label>
+                  <label>
+                    {{ 'reader.preferences.lineHeight' | translate }}
+                    <input
+                      type="range"
+                      min="1.4"
+                      max="2.4"
+                      step="0.1"
+                      [value]="preferences().line_height"
+                      (input)="onPreferenceChange('line_height', +$any($event.target).value)"
+                    />
+                  </label>
+                  <label>
+                    {{ 'reader.preferences.mode' | translate }}
+                    <select
+                      [value]="preferences().reading_mode"
+                      (change)="onPreferenceChange('reading_mode', $any($event.target).value)"
+                    >
+                      <option value="scroll">{{ 'reader.preferences.modeScroll' | translate }}</option>
+                      <option value="paginated">{{ 'reader.preferences.modePaginated' | translate }}</option>
+                    </select>
+                  </label>
+                  <label class="toggle">
+                    <input
+                      type="checkbox"
+                      [checked]="preferences().show_progress"
+                      (change)="onPreferenceChange('show_progress', $any($event.target).checked)"
+                    />
+                    {{ 'reader.preferences.showProgress' | translate }}
+                  </label>
+                </aside>
+              }
+              @if (showBookmarksPanel()) {
+                <aside class="panel bookmarks-panel" #bookmarksPanel>
+                  <div class="prefs-header">
+                    <h3>{{ 'reader.bookmarksPanel.title' | translate }}</h3>
+                    <button
+                      type="button"
+                      class="prefs-close"
+                      aria-label="Cerrar"
+                      (click)="showBookmarksPanel.set(false)"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  </div>
+                  @if (!bookmarks().length) {
+                    <p>{{ 'reader.bookmarksPanel.empty' | translate }}</p>
+                  } @else {
+                    @for (bookmark of bookmarks(); track bookmark.id) {
+                      <div class="panel-row">
+                        <button
+                          type="button"
+                          class="bookmark-link"
+                          (click)="scrollToBookmark(bookmark.anchor_id)"
+                        >
+                          {{ bookmark.label || bookmark.anchor_id || bookmark.chapter.title }}
+                        </button>
+                        <button type="button" (click)="removeBookmark(bookmark.id)">{{ 'reader.bookmarksPanel.remove' | translate }}</button>
+                      </div>
+                    }
+                  }
+                </aside>
+              }
+            </div>
           }
 
           <section class="reader-main">
-            @if (showBookmarksPanel()) {
-              <aside class="panel panel-inline bookmarks-panel" #bookmarksPanel>
-                <div class="prefs-header">
-                  <h3>{{ 'reader.bookmarksPanel.title' | translate }}</h3>
-                  <button
-                    type="button"
-                    class="prefs-close"
-                    aria-label="Cerrar"
-                    (click)="showBookmarksPanel.set(false)"
-                  >
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                      stroke-linejoin="round" aria-hidden="true">
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                  </button>
-                </div>
-                @if (!bookmarks().length) {
-                  <p>{{ 'reader.bookmarksPanel.empty' | translate }}</p>
-                } @else {
-                  @for (bookmark of bookmarks(); track bookmark.id) {
-                    <div class="panel-row">
-                      <button
-                        type="button"
-                        class="bookmark-link"
-                        (click)="scrollToBookmark(bookmark.anchor_id)"
-                      >
-                        {{ bookmark.label || bookmark.anchor_id || bookmark.chapter.title }}
-                      </button>
-                      <button type="button" (click)="removeBookmark(bookmark.id)">{{ 'reader.bookmarksPanel.remove' | translate }}</button>
-                    </div>
-                  }
-                }
-              </aside>
-            }
-
             @if (preferences().reading_mode === 'paginated') {
               <section class="reader-paginated" #readerContainer>
                 <div
@@ -317,9 +325,37 @@ import { TranslationService } from '../../core/services/translation.service';
                     {{ color }}
                   </button>
                 }
+                <button
+                  type="button"
+                  class="toolbar-comment-btn"
+                  (click)="openParagraphComment()"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </button>
               </div>
             }
+
+            @if (activeParagraphAnchor(); as anchor) {
+              <app-paragraph-comments
+                [novelSlug]="chapter()!.novel.slug"
+                [chapterSlug]="chapter()!.slug"
+                [anchorId]="anchor"
+                [isAuthenticated]="isAuthenticated()"
+                [currentUserId]="currentUser()?.id ?? null"
+                [currentUserUsername]="currentUser()?.username ?? null"
+                [novelAuthorUsername]="chapter()!.novel.author.username"
+                [commentsEnabled]="commentsEnabled()"
+                [quotedText]="pendingQuotedText()"
+                [startOffset]="pendingStartOffset()"
+                [endOffset]="pendingEndOffset()"
+                [initialComments]="commentsForAnchor(anchor)"
+                (closed)="activeParagraphAnchor.set(null)"
+                (commentAdded)="onParagraphCommentAdded()"
+                (commentRemoved)="onParagraphCommentRemoved()"
+              />
+            }
           </section>
+
         </div>
 
         <div class="chapter-vote-section">
@@ -532,6 +568,13 @@ import { TranslationService } from '../../core/services/translation.service';
         display: grid;
         gap: 1rem;
       }
+      .reader-header a {
+        color: var(--text-2);
+        text-decoration: none;
+      }
+      .reader-header a:hover {
+        color: var(--accent-text);
+      }
       .reader-body,
       .panel,
       .reader-paginated {
@@ -552,8 +595,19 @@ import { TranslationService } from '../../core/services/translation.service';
         display: grid;
         gap: 0.75rem;
       }
-      .panel-inline {
+      .side-panels {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: min(300px, 100%);
+        align-self: start;
+        position: sticky;
+        top: 5rem;
+      }
+      .side-panels .panel {
         width: 100%;
+      }
+      .bookmarks-panel {
         scroll-margin-top: 5rem;
       }
       .bookmark-link {
@@ -637,6 +691,27 @@ import { TranslationService } from '../../core/services/translation.service';
         border-radius: 999px;
         background: var(--bg-surface);
         width: fit-content;
+      }
+      .toolbar-comment-btn {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 2rem;
+        height: 2rem;
+        min-height: unset;
+        cursor: pointer;
+        font-size: 0.9rem;
+        display: grid;
+        place-items: center;
+        padding: 0;
+      }
+      .toolbar-comment-btn:hover {
+        opacity: 0.85;
+      }
+      :host ::ng-deep .comment-indicator:hover {
+        background: var(--accent) !important;
+        color: #fff !important;
       }
       .hint-banner {
         padding: 0.45rem 0.75rem;
@@ -941,9 +1016,10 @@ import { TranslationService } from '../../core/services/translation.service';
         .panel {
           width: 100%;
         }
-        .panel-inline {
-          border: 2px solid var(--accent-text);
-          box-shadow: 0 8px 24px -12px var(--shadow);
+        .side-panels {
+          position: static;
+          width: 100%;
+          display: contents;
         }
         /* Preferencias y marcadores como dialogs flotantes en mobile. */
         .prefs-overlay,
@@ -1045,6 +1121,13 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   readonly commentSending = signal(false);
   newComment = '';
 
+  // Paragraph comments state
+  readonly paragraphCommentCounts = signal<Map<string, number>>(new Map());
+  readonly activeParagraphAnchor = signal<string | null>(null);
+  readonly pendingQuotedText = signal<string | null>(null);
+  readonly pendingStartOffset = signal(0);
+  readonly pendingEndOffset = signal(0);
+
   readonly colors: HighlightColor[] = ['yellow', 'green', 'blue', 'pink'];
   readonly colorMap: Record<HighlightColor, string> = {
     yellow: '#f5d94a',
@@ -1059,12 +1142,15 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   private chapterSlug = '';
 
   ngOnInit() {
-    this.progressQueue
-      .pipe(
-        throttleTime(5000, undefined, { leading: false, trailing: true }),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((scrollPct) => this.persistProgress(scrollPct));
+    // TODO: Progreso de lectura deshabilitado temporalmente — genera demasiadas
+    // llamadas a POST /reader/progress. Rehabilitar cuando se optimice el endpoint
+    // (debounce 10-15s + eliminar queries de validación redundantes en el backend).
+    // this.progressQueue
+    //   .pipe(
+    //     throttleTime(5000, undefined, { leading: false, trailing: true }),
+    //     takeUntilDestroyed(this.destroyRef),
+    //   )
+    //   .subscribe((scrollPct) => this.persistProgress(scrollPct));
 
     this.preferencesQueue
       .pipe(
@@ -1093,6 +1179,10 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
 
   isAuthenticated() {
     return this.authService.isAuthenticated();
+  }
+
+  currentUser() {
+    return this.authService.getCurrentUserSnapshot();
   }
 
   toggleChapterVote() {
@@ -1139,7 +1229,8 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     const pct = maxDistance > 0 ? traveled / maxDistance : 1;
 
     this.progressPercent.set(pct);
-    this.progressQueue.next(pct);
+    // TODO: Progreso de lectura deshabilitado — ver nota en ngOnInit
+    // this.progressQueue.next(pct);
   }
 
   @HostListener('window:keydown.arrowright')
@@ -1169,9 +1260,16 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     }
   }
 
+  readonly MAX_BOOKMARKS_PER_CHAPTER = 10;
+
   toggleBookmark() {
     const chapter = this.chapter();
     if (!chapter || !this.isAuthenticated()) {
+      return;
+    }
+
+    if (this.bookmarks().length >= this.MAX_BOOKMARKS_PER_CHAPTER) {
+      this.showBookmarksPanel.set(true);
       return;
     }
 
@@ -1215,6 +1313,17 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       const bookmarkId = deleteBtn.getAttribute('data-bookmark-id');
       if (bookmarkId) {
         this.removeBookmark(bookmarkId);
+      }
+      return;
+    }
+
+    const commentIndicator = target?.closest('.comment-indicator') as HTMLElement | null;
+    if (commentIndicator) {
+      event.preventDefault();
+      event.stopPropagation();
+      const anchorId = commentIndicator.getAttribute('data-anchor-id');
+      if (anchorId) {
+        this.toggleParagraphComments(anchorId);
       }
     }
   }
@@ -1403,7 +1512,8 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
           .subscribe();
         this.loadChapterBookmarks(chapter.id);
         this.loadChapterHighlights(chapter.id);
-        this.restoreProgress(chapter.novel.id);
+        // TODO: Progreso de lectura deshabilitado — ver nota en ngOnInit
+        // this.restoreProgress(chapter.novel.id);
         this.loadVoteStatus(chapter.id);
       }
     };
@@ -1484,6 +1594,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       this.highlights(),
     );
     html = this.applyBookmarkMarkers(html, this.bookmarks());
+    html = this.applyCommentIndicators(html, this.paragraphCommentCounts());
 
     // Bypass Angular's innerHTML sanitizer (DOMPurify already sanitized the content)
     // so that id and data-anchor-id attributes survive for bookmarks/highlights.
@@ -1574,6 +1685,23 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     return doc.body.innerHTML;
   }
 
+  private applyCommentIndicators(html: string, counts: Map<string, number>): string {
+    if (!counts.size) return html;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    counts.forEach((count, anchorId) => {
+      const element = doc.body.querySelector(`#${anchorId}`);
+      if (!element) return;
+      element.insertAdjacentHTML(
+        'beforeend',
+        `<span class="comment-indicator" data-anchor-id="${anchorId}" title="${count} comentario${count > 1 ? 's' : ''}" style="display:inline-flex;align-items:center;gap:3px;color:var(--accent-text);background:var(--accent-glow);padding:3px 8px;border-radius:999px;cursor:pointer;user-select:none;float:right;margin-left:8px;line-height:1;font-size:0.72rem;font-weight:600"><svg style="flex-shrink:0" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>${count}</span>`,
+      );
+    });
+
+    return doc.body.innerHTML;
+  }
+
   private buildPages() {
     if (this.preferences().reading_mode !== 'paginated') {
       this.pages.set([]);
@@ -1636,25 +1764,26 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  private persistProgress(scrollPct: number) {
-    const chapter = this.chapter();
-    if (!chapter || !this.isAuthenticated()) {
-      return;
-    }
-
-    this.readerService
-      .saveProgress({
-        novel_id: chapter.novel.id,
-        chapter_id: chapter.id,
-        scroll_pct: scrollPct,
-      })
-      .subscribe();
-  }
+  // TODO: Progreso de lectura deshabilitado — ver nota en ngOnInit
+  // private persistProgress(scrollPct: number) {
+  //   const chapter = this.chapter();
+  //   if (!chapter || !this.isAuthenticated()) {
+  //     return;
+  //   }
+  //   this.readerService
+  //     .saveProgress({
+  //       novel_id: chapter.novel.id,
+  //       chapter_id: chapter.id,
+  //       scroll_pct: scrollPct,
+  //     })
+  //     .subscribe();
+  // }
 
   private updatePaginatedProgress() {
     const pct = this.pages().length > 1 ? this.currentPage() / (this.pages().length - 1) : 1;
     this.progressPercent.set(pct);
-    this.progressQueue.next(pct);
+    // TODO: Progreso de lectura deshabilitado — ver nota en ngOnInit
+    // this.progressQueue.next(pct);
   }
 
   private currentAnchorId() {
@@ -1708,11 +1837,22 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       )
       .subscribe({
         next: (res) => {
-          this.comments.update((prev) => (reset ? res.data : [...prev, ...res.data]));
+          const allComments = reset ? res.data : [...this.comments(), ...res.data];
+          this.comments.set(allComments);
           this.commentsCursor.set(res.pagination.nextCursor);
           this.commentsHasMore.set(res.pagination.hasMore);
           this.commentsEnabled.set(res.commentsEnabled);
           this.commentsLoading.set(false);
+
+          // Compute paragraph comment counts
+          const counts = new Map<string, number>();
+          for (const c of allComments) {
+            if (c.anchorId) {
+              counts.set(c.anchorId, (counts.get(c.anchorId) ?? 0) + 1);
+            }
+          }
+          this.paragraphCommentCounts.set(counts);
+          this.refreshRenderedContent();
         },
         error: () => this.commentsLoading.set(false),
       });
@@ -1748,6 +1888,64 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     const me = this.authService.getCurrentUserSnapshot();
     if (!me) return false;
     return comment.author.id === me.id || chapter.novel.author.username === me.username;
+  }
+
+  // ── Paragraph Comments ──
+
+  commentsForAnchor(anchorId: string): ChapterCommentModel[] {
+    return this.comments().filter((c) => c.anchorId === anchorId);
+  }
+
+  openParagraphComment() {
+    const anchor = this.selectionAnchorId();
+    if (!anchor) return;
+
+    const sel = window.getSelection();
+    const text = sel?.toString().trim() ?? '';
+
+    this.pendingQuotedText.set(text || null);
+    this.pendingStartOffset.set(this.selectionStart());
+    this.pendingEndOffset.set(this.selectionEnd());
+    this.activeParagraphAnchor.set(anchor);
+
+    // Clear selection toolbar
+    this.selectionAnchorId.set(null);
+    sel?.removeAllRanges();
+  }
+
+  toggleParagraphComments(anchorId: string) {
+    if (this.activeParagraphAnchor() === anchorId) {
+      this.activeParagraphAnchor.set(null);
+    } else {
+      this.pendingQuotedText.set(null);
+      this.pendingStartOffset.set(0);
+      this.pendingEndOffset.set(0);
+      this.activeParagraphAnchor.set(anchorId);
+    }
+  }
+
+  onParagraphCommentAdded() {
+    const anchor = this.activeParagraphAnchor();
+    if (!anchor) return;
+    this.paragraphCommentCounts.update((m) => {
+      const next = new Map(m);
+      next.set(anchor, (next.get(anchor) ?? 0) + 1);
+      return next;
+    });
+    this.refreshRenderedContent();
+  }
+
+  onParagraphCommentRemoved() {
+    const anchor = this.activeParagraphAnchor();
+    if (!anchor) return;
+    this.paragraphCommentCounts.update((m) => {
+      const next = new Map(m);
+      const count = (next.get(anchor) ?? 1) - 1;
+      if (count <= 0) next.delete(anchor);
+      else next.set(anchor, count);
+      return next;
+    });
+    this.refreshRenderedContent();
   }
 
   private readonly t = inject(TranslationService);

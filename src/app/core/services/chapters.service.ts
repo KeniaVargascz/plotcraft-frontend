@@ -171,11 +171,49 @@ export class ChaptersService {
       )
       .pipe(map((r) => r.data));
   }
+
+  createParagraphComment(
+    novelSlug: string,
+    chapterSlug: string,
+    payload: { content: string; anchor_id: string; quoted_text: string; start_offset: number; end_offset: number },
+  ) {
+    return this.http
+      .post<
+        ApiResponse<ChapterCommentModel>
+      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/comments/paragraph`, payload)
+      .pipe(map((r) => r.data));
+  }
+
+  listParagraphComments(
+    novelSlug: string,
+    chapterSlug: string,
+    anchorId: string,
+    cursor?: string | null,
+    limit = 20,
+  ) {
+    let params = new HttpParams().set('limit', limit);
+    if (cursor) params = params.set('cursor', cursor);
+    return this.http
+      .get<
+        ApiResponse<{
+          data: ChapterCommentModel[];
+          pagination: { nextCursor: string | null; hasMore: boolean; limit: number };
+        }>
+      >(
+        `${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/comments/paragraph/${anchorId}`,
+        { params },
+      )
+      .pipe(map((r) => r.data));
+  }
 }
 
 export interface ChapterCommentModel {
   id: string;
   content: string;
+  anchorId: string | null;
+  quotedText: string | null;
+  startOffset: number | null;
+  endOffset: number | null;
   createdAt: string;
   isDeleted: boolean;
   author: {

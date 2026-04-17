@@ -517,7 +517,10 @@
       "empty": "Aun no hay comentarios. Se el primero!",
       "deleteAria": "Eliminar comentario",
       "disabled": "El autor ha deshabilitado los comentarios.",
-      "loadMore": "Cargar mas"
+      "loadMore": "Cargar mas",
+      "commentSelection": "Comentar",
+      "paragraphComments": "Comentarios del parrafo",
+      "quoteStale": "Esta cita puede no coincidir con el texto actual"
     },
     "relativeTime": {
       "justNow": "hace unos segundos",

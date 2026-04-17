@@ -7,6 +7,7 @@ import { PostsService } from '../../../../core/services/posts.service';
 import { LightboxComponent } from '../../../../shared/components/lightbox/lightbox.component';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { MarkdownPipe } from '../../../../shared/pipes/markdown.pipe';
+import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
 import { SlicePipe } from '@angular/common';
 import { CommentListComponent } from '../comment-list/comment-list.component';
 import { ReactionBarComponent } from '../reaction-bar/reaction-bar.component';
@@ -19,6 +20,7 @@ import { ReactionBarComponent } from '../reaction-bar/reaction-bar.component';
     RouterLink,
     TranslatePipe,
     MarkdownPipe,
+    RelativeDatePipe,
     SlicePipe,
     CommentListComponent,
     ReactionBarComponent,
@@ -133,17 +135,4 @@ export class PostCardComponent {
     this.commentsOpen.update((value) => !value);
   }
 
-  relativeDate(dateValue: string) {
-    const seconds = Math.floor((Date.now() - new Date(dateValue).getTime()) / 1000);
-    if (seconds < 60) {
-      return 'ahora';
-    }
-    if (seconds < 3600) {
-      return `hace ${Math.floor(seconds / 60)}m`;
-    }
-    if (seconds < 86400) {
-      return `hace ${Math.floor(seconds / 3600)}h`;
-    }
-    return `hace ${Math.floor(seconds / 86400)}d`;
-  }
 }

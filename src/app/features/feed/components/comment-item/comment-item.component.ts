@@ -1,20 +1,23 @@
-import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommentModel } from '../../../../core/models/comment.model';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CommentsService } from '../../../../core/services/comments.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
 
 @Component({
   selector: 'app-comment-item',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe],
+  imports: [ReactiveFormsModule, TranslatePipe, RelativeDatePipe],
   templateUrl: './comment-item.component.html',
   styleUrl: './comment-item.component.scss',
 })
 export class CommentItemComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly commentsService = inject(CommentsService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly authService = inject(AuthService);
 
   @Input({ required: true }) comment!: CommentModel;
@@ -47,7 +50,7 @@ export class CommentItemComponent {
     }
 
     this.loading.set(true);
-    this.commentsService.update(this.postId, this.comment.id, this.form.getRawValue()).subscribe({
+    this.commentsService.update(this.postId, this.comment.id, this.form.getRawValue()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (comment) => {
         this.commentChange.emit(comment);
         this.editing.set(false);
@@ -65,7 +68,7 @@ export class CommentItemComponent {
     }
 
     this.loading.set(true);
-    this.commentsService.delete(this.postId, this.comment.id).subscribe({
+    this.commentsService.delete(this.postId, this.comment.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (comment) => {
         this.commentChange.emit(comment);
         this.loading.set(false);
@@ -76,17 +79,4 @@ export class CommentItemComponent {
     });
   }
 
-  relativeDate(dateValue: string) {
-    const seconds = Math.floor((Date.now() - new Date(dateValue).getTime()) / 1000);
-    if (seconds < 60) {
-      return 'ahora';
-    }
-    if (seconds < 3600) {
-      return `hace ${Math.floor(seconds / 60)}m`;
-    }
-    if (seconds < 86400) {
-      return `hace ${Math.floor(seconds / 3600)}h`;
-    }
-    return `hace ${Math.floor(seconds / 86400)}d`;
-  }
 }

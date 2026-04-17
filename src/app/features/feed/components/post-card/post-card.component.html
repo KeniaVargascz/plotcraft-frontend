@@ -25,7 +25,7 @@
         <a [routerLink]="['/perfil', post.author.username]">
           {{ post.author.displayName || post.author.username }}
         </a>
-        <p>@{{ post.author.username }} · {{ relativeDate(post.createdAt) }}</p>
+        <p>@{{ post.author.username }} · {{ post.createdAt | relativeDate }}</p>
       </div>
     </div>
   </header>

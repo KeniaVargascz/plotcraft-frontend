@@ -4,7 +4,7 @@
   <div class="comment-body">
     <header>
       <strong>{{ comment.author.displayName || comment.author.username }}</strong>
-      <span>@{{ comment.author.username }} · {{ relativeDate(comment.createdAt) }}</span>
+      <span>@{{ comment.author.username }} · {{ comment.createdAt | relativeDate }}</span>
       @if (isAuthor) {
         <div class="comment-actions desktop-actions">
           <button type="button" (click)="startEdit()">{{ 'comment.edit' | translate }}</button>

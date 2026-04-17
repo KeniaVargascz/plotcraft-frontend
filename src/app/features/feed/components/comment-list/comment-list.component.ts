@@ -1,4 +1,5 @@
-import { Component, Input, inject, signal } from '@angular/core';
+import { Component, DestroyRef, Input, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommentModel } from '../../../../core/models/comment.model';
 import { PostModel } from '../../../../core/models/post.model';
@@ -14,10 +15,11 @@ import { CommentItemComponent } from '../comment-item/comment-item.component';
   templateUrl: './comment-list.component.html',
   styleUrl: './comment-list.component.scss',
 })
-export class CommentListComponent {
+export class CommentListComponent implements OnInit {
   readonly authService = inject(AuthService);
   private readonly commentsService = inject(CommentsService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
 
   @Input({ required: true }) post!: PostModel;
 
@@ -29,8 +31,8 @@ export class CommentListComponent {
     content: ['', [Validators.required, Validators.maxLength(2000)]],
   });
 
-  constructor() {
-    queueMicrotask(() => this.load());
+  ngOnInit() {
+    this.load();
   }
 
   get contentLength() {
@@ -41,7 +43,7 @@ export class CommentListComponent {
     this.loading.set(true);
     this.error.set(false);
 
-    this.commentsService.list(this.post.id).subscribe({
+    this.commentsService.list(this.post.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.comments.set(response.data);
         this.loading.set(false);
@@ -59,7 +61,7 @@ export class CommentListComponent {
     }
 
     this.creating.set(true);
-    this.commentsService.create(this.post.id, this.form.getRawValue()).subscribe({
+    this.commentsService.create(this.post.id, this.form.getRawValue()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (comment) => {
         this.comments.update((items) => [...items, comment]);
         this.form.reset({ content: '' });

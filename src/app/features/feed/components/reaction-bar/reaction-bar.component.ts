@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ReactionsService } from '../../../../core/services/reactions.service';
 import { PostModel } from '../../../../core/models/post.model';
@@ -14,6 +15,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 })
 export class ReactionBarComponent {
   private readonly reactionsService = inject(ReactionsService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly authService = inject(AuthService);
 
   @Input({ required: true }) post!: PostModel;
@@ -34,39 +36,42 @@ export class ReactionBarComponent {
 
     this.loading.set(true);
 
-    this.reactionsService.toggle(this.post.id, reactionType).subscribe({
-      next: (response) => {
-        const previousType = this.post.viewerContext?.reactionType ?? null;
-        const summary = { ...this.post.stats.reactionsSummary };
+    this.reactionsService
+      .toggle(this.post.id, reactionType)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          const previousType = this.post.viewerContext?.reactionType ?? null;
+          const summary = { ...this.post.stats.reactionsSummary };
 
-        if (previousType) {
-          summary[previousType] = Math.max(0, summary[previousType] - 1);
-        }
+          if (previousType) {
+            summary[previousType] = Math.max(0, (summary[previousType] ?? 0) - 1);
+          }
 
-        if (response.reacted && response.reactionType) {
-          summary[response.reactionType] += 1;
-        }
+          if (response.reacted && response.reactionType) {
+            summary[response.reactionType] = (summary[response.reactionType] ?? 0) + 1;
+          }
 
-        this.postChange.emit({
-          ...this.post,
-          stats: {
-            ...this.post.stats,
-            reactionsCount: response.newCount,
-            reactionsSummary: summary,
-          },
-          viewerContext: this.post.viewerContext
-            ? {
-                ...this.post.viewerContext,
-                hasReacted: response.reacted,
-                reactionType: response.reactionType,
-              }
-            : null,
-        });
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-      },
-    });
+          this.postChange.emit({
+            ...this.post,
+            stats: {
+              ...this.post.stats,
+              reactionsCount: response.newCount,
+              reactionsSummary: summary,
+            },
+            viewerContext: this.post.viewerContext
+              ? {
+                  ...this.post.viewerContext,
+                  hasReacted: response.reacted,
+                  reactionType: response.reactionType,
+                }
+              : null,
+          });
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+        },
+      });
   }
 }

@@ -903,6 +903,12 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
         display: flex;
         gap: 0.75rem;
         align-items: flex-start;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .comment-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
       }
       .comment-avatar {
         flex-shrink: 0;
@@ -929,6 +935,8 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
         color: var(--text-1);
         font-weight: 600;
         text-decoration: none;
+        min-height: unset;
+        white-space: nowrap;
       }
       .comment-author:hover {
         color: var(--accent-text);
@@ -936,19 +944,23 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
       .comment-date {
         color: var(--text-2);
         font-size: 0.8rem;
+        white-space: nowrap;
+        flex-shrink: 0;
       }
       .comment-delete {
         margin-left: auto;
         background: transparent;
-        border: 0;
+        border: 1px solid var(--border);
         color: var(--text-2);
         padding: 0.15rem 0.4rem;
         cursor: pointer;
         border-radius: 0.4rem;
+        min-height: unset;
+        flex-shrink: 0;
       }
       .comment-delete:hover {
-        background: color-mix(in srgb, #8b2e2e 18%, var(--bg-surface));
-        color: #ffb3b3;
+        background: var(--bg);
+        color: var(--text-1);
       }
       .comment-text {
         margin: 0;

@@ -43,7 +43,7 @@ export interface NovelSummary {
   status: NovelStatus;
   rating: NovelRating;
   tags: string[];
-  warnings: string[];
+  warnings: { id: string; slug: string; label: string }[];
   isPublic: boolean;
   wordCount: number;
   viewsCount: number;

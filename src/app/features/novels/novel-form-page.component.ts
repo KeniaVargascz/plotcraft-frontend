@@ -8,6 +8,8 @@ import { LanguageCatalogItem } from '../../core/models/language.model';
 import { NovelRating, NovelStatus, NovelType } from '../../core/models/novel.model';
 import { RomanceGenreCatalogItem } from '../../core/models/romance-genre.model';
 import { RomanceGenresService } from '../../core/services/romance-genres.service';
+import { WarningsService } from '../../core/services/warnings.service';
+import { CatalogWarningItem } from '../../core/models/warning.model';
 import { Community } from '../communities/models/community.model';
 import { CommunityService } from '../communities/services/community.service';
 import { CommunityCharactersService } from '../communities/services/community-characters.service';
@@ -20,6 +22,7 @@ import { LanguagesService } from '../../core/services/languages.service';
 import { NovelsService } from '../../core/services/novels.service';
 import { WorldsService } from '../../core/services/worlds.service';
 import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/tag-chips-input.component';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SeriesService } from '../series/services/series.service';
 import { SeriesDetail, SeriesType } from '../series/models/series.model';
 import { forkJoin as rxForkJoin } from 'rxjs';
@@ -34,7 +37,7 @@ interface PairingDraft {
 @Component({
   selector: 'app-novel-form-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, TagChipsInputComponent, GenreLabelPipe],
+  imports: [FormsModule, RouterLink, TagChipsInputComponent, GenreLabelPipe, TranslatePipe],
   template: `
     <section class="form-shell">
       <h1>{{ isEdit() ? 'Editar novela' : 'Nueva novela' }}</h1>
@@ -175,19 +178,42 @@ interface PairingDraft {
           </select>
         </label>
 
-        <fieldset class="full">
-          <legend>Géneros del romance</legend>
-          <div class="romance-pills">
-            @for (g of romanceGenreOptions(); track g.id) {
-              <button
-                type="button"
-                class="pill"
-                [class.selected]="selectedRomanceGenreIds().includes(g.id)"
-                [disabled]="saving()"
-                (click)="toggleRomanceGenre(g.id)"
-              >
-                {{ g.label }}
-              </button>
+        <fieldset class="full genres">
+          <legend>Generos del romance</legend>
+          <div class="genre-picker">
+            <select
+              [disabled]="saving() || !availableRomanceGenres().length"
+              [ngModel]="''"
+              (ngModelChange)="toggleRomanceGenre($event)"
+            >
+              <option value="" disabled>
+                @if (!availableRomanceGenres().length) {
+                  No quedan generos por agregar
+                } @else {
+                  Seleccionar genero de romance
+                }
+              </option>
+              @for (g of availableRomanceGenres(); track g.id) {
+                <option [value]="g.id">{{ g.label }}</option>
+              }
+            </select>
+            @if (selectedRomanceGenreIds().length) {
+              <ul class="picked-list">
+                @for (id of selectedRomanceGenreIds(); track id) {
+                  <li>
+                    {{ getRomanceGenreLabel(id) }}
+                    <button
+                      type="button"
+                      class="icon"
+                      [disabled]="saving()"
+                      aria-label="Quitar genero"
+                      (click)="toggleRomanceGenre(id)"
+                    >
+                      ✕
+                    </button>
+                  </li>
+                }
+              </ul>
             }
           </div>
         </fieldset>
@@ -202,25 +228,57 @@ interface PairingDraft {
           ></textarea>
         </label>
 
-        <div class="full">
-          <label>Tags</label>
-          <app-tag-chips-input
-            [tags]="tagList()"
-            [maxTags]="20"
-            placeholder="Añadir tag y presionar Enter..."
-            (tagsChange)="onTagsChange($event)"
-          />
-        </div>
+        <fieldset class="full genres">
+          <legend>Tags</legend>
+          <div class="genre-picker">
+            <app-tag-chips-input
+              [tags]="tagList()"
+              [maxTags]="20"
+              placeholder="Escribir tag y presionar Enter"
+              (tagsChange)="onTagsChange($event)"
+            />
+          </div>
+        </fieldset>
 
-        <div class="full">
-          <label>Warnings</label>
-          <app-tag-chips-input
-            [tags]="warningList()"
-            [maxTags]="20"
-            placeholder="Añadir warning y presionar Enter..."
-            (tagsChange)="onWarningsChange($event)"
-          />
-        </div>
+        <fieldset class="full genres">
+          <legend>{{ 'novel.warnings.title' | translate }}</legend>
+          <div class="genre-picker">
+            <select
+              [disabled]="saving() || !availableFormWarnings().length"
+              [ngModel]="''"
+              (ngModelChange)="onWarningFormSelect($event)"
+            >
+              <option value="" disabled>
+                @if (!availableFormWarnings().length) {
+                  No quedan advertencias por agregar
+                } @else {
+                  Seleccionar advertencia
+                }
+              </option>
+              @for (w of availableFormWarnings(); track w.id) {
+                <option [value]="w.id">{{ w.label }}</option>
+              }
+            </select>
+            @if (selectedWarningIds().length) {
+              <ul class="picked-list warning-list">
+                @for (id of selectedWarningIds(); track id) {
+                  <li>
+                    {{ getWarningLabel(id) }}
+                    <button
+                      type="button"
+                      class="icon"
+                      [disabled]="saving()"
+                      aria-label="Quitar advertencia"
+                      (click)="toggleWarningId(id)"
+                    >
+                      ✕
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        </fieldset>
 
         <fieldset class="full genres">
           <legend>Generos</legend>
@@ -510,42 +568,47 @@ interface PairingDraft {
         }
 
         @if (canLinkWorlds()) {
-          <fieldset class="full linked-block">
+          <fieldset class="full genres">
             <legend>Mundos vinculados</legend>
             @if (!worlds().length) {
               <p class="hint">Aun no tienes mundos creados. Puedes gestionarlos en Mis mundos.</p>
             } @else {
-              <div class="linked-selector">
+              <div class="genre-picker">
                 <select
-                  [(ngModel)]="pendingWorldId"
-                  name="pendingWorldId"
-                  [disabled]="saving()"
+                  [disabled]="saving() || !availableWorlds().length"
+                  [ngModel]="''"
                   (ngModelChange)="selectWorld($event)"
                 >
-                  <option value="">Selecciona un mundo</option>
+                  <option value="" disabled>
+                    @if (!availableWorlds().length) {
+                      No quedan mundos por vincular
+                    } @else {
+                      Selecciona un mundo
+                    }
+                  </option>
                   @for (world of availableWorlds(); track world.id) {
                     <option [value]="world.id">{{ world.name }}</option>
                   }
                 </select>
+                @if (selectedWorlds().length) {
+                  <ul class="picked-list">
+                    @for (world of selectedWorlds(); track world.id) {
+                      <li>
+                        {{ world.name }}
+                        <button
+                          type="button"
+                          class="icon"
+                          [disabled]="saving()"
+                          aria-label="Quitar mundo"
+                          (click)="removeWorld(world.id)"
+                        >
+                          ✕
+                        </button>
+                      </li>
+                    }
+                  </ul>
+                }
               </div>
-
-              @if (selectedWorlds().length) {
-                <div class="selected-items">
-                  @for (world of selectedWorlds(); track world.id) {
-                    <button
-                      type="button"
-                      class="linked-pill"
-                      [disabled]="saving()"
-                      (click)="removeWorld(world.id)"
-                    >
-                      <span>{{ world.name }}</span>
-                      <strong>×</strong>
-                    </button>
-                  }
-                </div>
-              } @else {
-                <p class="hint">Todavia no has vinculado mundos a esta novela.</p>
-              }
             }
           </fieldset>
         }
@@ -730,13 +793,44 @@ interface PairingDraft {
         color: var(--text-1);
         padding: 0.75rem 0.9rem;
       }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      input::placeholder,
+      textarea::placeholder {
+        color: var(--text-3);
+      }
+      label {
+        color: var(--text-2);
+      }
+      h1 {
+        color: var(--text-1);
+      }
+      fieldset {
+        border: 1px solid var(--border);
+        border-radius: 0.85rem;
+        padding: 0.85rem;
+      }
+      legend {
+        color: var(--text-2);
+        font-size: 0.88rem;
+        font-weight: 600;
+        padding: 0 0.35rem;
+      }
 
       .genres .genre-picker {
-        display: grid;
+        display: flex;
+        flex-direction: column-reverse;
         gap: 0.5rem;
       }
       .genres .genre-picker select {
         width: 100%;
+      }
+      .genres .genre-picker .hint {
+        order: -1;
       }
       .selected-items {
         display: flex;
@@ -794,16 +888,18 @@ interface PairingDraft {
         padding: 0;
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 0.35rem;
       }
       .picked-list li {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.4rem 0.75rem;
+        gap: 0.3rem;
+        padding: 0.25rem 0.6rem;
         border-radius: 999px;
         background: var(--accent-glow);
+        border: 1px solid var(--border-s);
         color: var(--accent-text);
+        font-size: 0.78rem;
       }
       .picked-list .icon {
         background: transparent;
@@ -811,7 +907,12 @@ interface PairingDraft {
         padding: 0;
         cursor: pointer;
         color: inherit;
-        font-size: 0.85rem;
+        font-size: 0.78rem;
+        min-height: unset;
+        opacity: 0.7;
+      }
+      .picked-list .icon:hover {
+        opacity: 1;
       }
       .linked-pill {
         display: inline-flex;
@@ -854,7 +955,7 @@ interface PairingDraft {
 
       .error {
         margin: 0;
-        color: #ff8b8b;
+        color: var(--danger);
       }
 
       .status {
@@ -866,8 +967,8 @@ interface PairingDraft {
       }
 
       .status.success {
-        background: color-mix(in srgb, #2e8b57 22%, var(--bg-surface));
-        color: #b8ffd6;
+        background: var(--accent-glow);
+        color: var(--accent-text);
       }
 
       .pairing-section {
@@ -910,6 +1011,40 @@ interface PairingDraft {
       .romance-pills .pill:disabled {
         opacity: 0.5;
         cursor: not-allowed;
+      }
+      .warning-list li {
+        background: color-mix(in srgb, var(--danger) 12%, transparent);
+        border-color: color-mix(in srgb, var(--danger) 24%, transparent);
+        color: var(--danger);
+      }
+      .warning-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+      .warning-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--danger) 12%, transparent);
+        border: 1px solid color-mix(in srgb, var(--danger) 24%, transparent);
+        color: var(--danger);
+        font-size: 0.78rem;
+      }
+      .warning-chip button {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0;
+        font-size: 0.78rem;
+        min-height: unset;
+        opacity: 0.7;
+      }
+      .warning-chip button:hover {
+        opacity: 1;
       }
       .pairing-form {
         display: flex;
@@ -1006,7 +1141,7 @@ interface PairingDraft {
         font-weight: 600;
       }
       .pair-error {
-        color: #ff8b8b;
+        color: var(--danger);
         font-size: 0.8rem;
         margin: 0.4rem 0 0;
       }
@@ -1079,6 +1214,7 @@ export class NovelFormPageComponent implements OnInit {
   private readonly genresService = inject(GenresService);
   private readonly languagesService = inject(LanguagesService);
   private readonly romanceGenresService = inject(RomanceGenresService);
+  private readonly warningsService = inject(WarningsService);
   private readonly charactersService = inject(CharactersService);
   private readonly authService = inject(AuthService);
   private readonly worldsService = inject(WorldsService);
@@ -1241,6 +1377,8 @@ export class NovelFormPageComponent implements OnInit {
   isAlternateUniverse = false;
   readonly tagList = signal<string[]>([]);
   readonly warningList = signal<string[]>([]);
+  readonly warningsCatalog = signal<CatalogWarningItem[]>([]);
+  readonly selectedWarningIds = signal<string[]>([]);
 
   onTagsChange(tags: string[]) {
     this.tagList.set(tags);
@@ -1248,6 +1386,26 @@ export class NovelFormPageComponent implements OnInit {
 
   onWarningsChange(warnings: string[]) {
     this.warningList.set(warnings);
+  }
+
+  toggleWarningId(id: string) {
+    this.selectedWarningIds.update((ids) =>
+      ids.includes(id) ? ids.filter((v) => v !== id) : [...ids, id],
+    );
+  }
+
+  onWarningFormSelect(id: string) {
+    if (id && !this.selectedWarningIds().includes(id)) {
+      this.selectedWarningIds.update((ids) => [...ids, id]);
+    }
+  }
+
+  getWarningLabel(id: string): string {
+    return this.warningsCatalog().find((w) => w.id === id)?.label ?? id;
+  }
+
+  availableFormWarnings() {
+    return this.warningsCatalog().filter((w) => !this.selectedWarningIds().includes(w.id));
   }
   isPublic = false;
   pendingWorldId = '';
@@ -1259,6 +1417,15 @@ export class NovelFormPageComponent implements OnInit {
     this.selectedRomanceGenreIds.update((list) =>
       list.includes(id) ? list.filter((v) => v !== id) : [...list, id],
     );
+  }
+
+  availableRomanceGenres() {
+    const taken = new Set(this.selectedRomanceGenreIds());
+    return this.romanceGenreOptions().filter((g) => !taken.has(g.id));
+  }
+
+  getRomanceGenreLabel(id: string): string {
+    return this.romanceGenreOptions().find((g) => g.id === id)?.label ?? id;
   }
 
   readonly pairings = signal<PairingDraft[]>([]);
@@ -1438,6 +1605,10 @@ export class NovelFormPageComponent implements OnInit {
       next: (genres) => this.romanceGenreOptions.set(genres),
       error: () => this.romanceGenreOptions.set([]),
     });
+    this.warningsService.list().subscribe({
+      next: (items) => this.warningsCatalog.set(items),
+      error: () => this.warningsCatalog.set([]),
+    });
     this.charactersService.listMine({ limit: 50, sort: 'updated' }).subscribe({
       next: (response) => this.characters.set(response.data),
       error: () => this.characters.set([]),
@@ -1514,7 +1685,12 @@ export class NovelFormPageComponent implements OnInit {
         this.rating = novel.rating;
         this.languageId = novel.languageId;
         this.tagList.set(novel.tags ?? []);
-        this.warningList.set(novel.warnings ?? []);
+        this.warningList.set([]);
+        this.selectedWarningIds.set(
+          (novel.warnings ?? []).map((w: string | { id: string }) =>
+            typeof w === 'string' ? w : w.id,
+          ),
+        );
         this.isPublic = novel.isPublic;
         this.selectedGenreIds.set(novel.genres.map((genre) => genre.id));
         this.selectedCharacterIds.set(novel.characters.map((character) => character.id));
@@ -1653,6 +1829,7 @@ export class NovelFormPageComponent implements OnInit {
       languageId: this.languageId,
       tags,
       warnings: this.warningList(),
+      warning_ids: this.selectedWarningIds(),
       genreIds: this.selectedGenreIds(),
       isPublic: this.isEdit() ? this.isPublic : false,
       romanceGenreIds: this.selectedRomanceGenreIds(),

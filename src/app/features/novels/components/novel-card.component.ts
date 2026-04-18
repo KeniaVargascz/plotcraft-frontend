@@ -83,8 +83,8 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
 
             @if (warnings().length) {
               <span class="tag-type-label">Warnings</span>
-              @for (warning of warnings(); track warning) {
-                <span class="tag-pill tag-pill-warning">{{ warning }}</span>
+              @for (warning of warnings(); track warning.slug) {
+                <span class="tag-pill tag-pill-warning">{{ warning.label }}</span>
               }
             }
           </div>

@@ -315,6 +315,32 @@
       "T": "T",
       "R": "R",
       "EXPLICIT": "18+"
+    },
+    "warnings": {
+      "title": "Advertencias de contenido",
+      "rape_non_con": "Violacion / no consentimiento",
+      "underage": "Sexo con menores",
+      "major_character_death": "Muerte de protagonista",
+      "graphic_violence": "Violencia explicita",
+      "sexual_abuse": "Abuso sexual",
+      "child_abuse": "Abuso infantil",
+      "domestic_violence": "Violencia domestica",
+      "incest": "Incesto",
+      "grooming": "Manipulacion de menor",
+      "suicide": "Suicidio",
+      "self_harm": "Autolesion",
+      "torture": "Tortura",
+      "gore": "Gore / mutilacion",
+      "kidnapping": "Secuestro",
+      "eating_disorders": "Trastornos alimenticios",
+      "abusive_relationship": "Relacion abusiva",
+      "racism": "Racismo",
+      "homophobia_transphobia": "LGBTfobia",
+      "hate_speech": "Discurso de odio",
+      "panic_attacks": "Ataques de panico",
+      "psychological_trauma": "Trauma",
+      "substance_abuse": "Abuso de sustancias",
+      "serious_illness": "Enfermedad terminal"
     }
   },
   "comment": {

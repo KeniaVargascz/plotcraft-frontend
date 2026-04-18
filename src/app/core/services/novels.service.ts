@@ -28,6 +28,7 @@ export type NovelQuery = {
   tags?: string[];
   sortBy?: string | null;
   romanceGenreIds?: string[] | null;
+  warningIds?: string[] | null;
   pairings?: string[] | null;
   novelType?: NovelType | null;
   fandomSlug?: string | null;
@@ -41,6 +42,7 @@ export type NovelPayload = {
   rating?: NovelRating | null;
   tags?: string[];
   warnings?: string[];
+  warning_ids?: string[];
   genreIds?: string[];
   isPublic?: boolean;
   languageId?: string;
@@ -185,6 +187,11 @@ export class NovelsService {
     if (query.romanceGenreIds?.length) {
       for (const g of query.romanceGenreIds) {
         params = params.append('romanceGenreIds', g);
+      }
+    }
+    if (query.warningIds?.length) {
+      for (const w of query.warningIds) {
+        params = params.append('warningIds', w);
       }
     }
     if (query.pairings?.length) {

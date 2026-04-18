@@ -11,6 +11,8 @@ import { RomanceGenreCatalogItem } from '../../../../core/models/romance-genre.m
 import { RomanceGenresService } from '../../../../core/services/romance-genres.service';
 import { TagChipsInputComponent } from '../../../../shared/components/tag-chips-input/tag-chips-input.component';
 import { TranslationService } from '../../../../core/services/translation.service';
+import { CatalogWarningItem } from '../../../../core/models/warning.model';
+import { WarningsService } from '../../../../core/services/warnings.service';
 
 export interface NovelFilters {
   languageId?: string | null;
@@ -21,6 +23,7 @@ export interface NovelFilters {
   sortBy?: string | null;
   rating?: string | null;
   romanceGenreIds?: string[] | null;
+  warningIds?: string[] | null;
   pairings?: string[] | null;
   novelType?: 'ORIGINAL' | 'FANFIC' | '' | null;
   fandomSlug?: string | null;
@@ -116,6 +119,26 @@ export interface NovelFilters {
                 placeholder="Añadir etiqueta..."
               />
             </label>
+
+            <div class="field span-full">
+              <span class="field-label">Advertencias de contenido</span>
+              @if (selectedWarningIds.length) {
+                <div class="warning-chips">
+                  @for (id of selectedWarningIds; track id) {
+                    <span class="warning-chip">
+                      {{ getWarningLabel(id) }}
+                      <button type="button" (click)="toggleWarning(id)">✕</button>
+                    </span>
+                  }
+                </div>
+              }
+              <select (change)="onWarningSelect($event)">
+                <option value="">Seleccionar advertencia</option>
+                @for (w of availableWarnings(); track w.id) {
+                  <option [value]="w.id">{{ w.label }}</option>
+                }
+              </select>
+            </div>
 
             <div class="field span-full">
               <span class="field-label">Géneros del romance</span>
@@ -517,6 +540,35 @@ export interface NovelFilters {
         border-color: var(--accent);
         color: var(--accent-text);
       }
+      .warning-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+      }
+      .warning-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--danger) 12%, transparent);
+        border: 1px solid color-mix(in srgb, var(--danger) 24%, transparent);
+        color: var(--danger);
+        font-size: 0.72rem;
+      }
+      .warning-chip button {
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+        padding: 0;
+        font-size: 0.72rem;
+        min-height: unset;
+        opacity: 0.7;
+      }
+      .warning-chip button:hover {
+        opacity: 1;
+      }
       @media (max-width: 480px) {
         .actions {
           justify-content: stretch;
@@ -530,6 +582,7 @@ export interface NovelFilters {
 })
 export class AdvancedNovelFiltersComponent {
   private readonly languagesService = inject(LanguagesService);
+  private readonly warningsService = inject(WarningsService);
   private readonly t = inject(TranslationService);
   private readonly romanceGenresService = inject(RomanceGenresService);
   private readonly charactersService = inject(CharactersService);
@@ -572,6 +625,7 @@ export class AdvancedNovelFiltersComponent {
       })
       .filter((p) => p.a || p.b);
     this.selectedRomanceGenreIds = [...(value.romanceGenreIds ?? [])];
+    this.selectedWarningIds = [...(value.warningIds ?? [])];
     if (value.novelType === 'FANFIC' && this.fandomOptions().length === 0) {
       this.communityService.getCommunities({ type: 'FANDOM', limit: 100 }).subscribe({
         next: (res) => this.fandomOptions.set(res.data ?? []),
@@ -584,6 +638,7 @@ export class AdvancedNovelFiltersComponent {
   readonly expanded = signal(false);
   readonly languages = signal<LanguageCatalogItem[]>([]);
   readonly romanceGenres = signal<RomanceGenreCatalogItem[]>([]);
+  readonly warningsCatalog = signal<CatalogWarningItem[]>([]);
 
   filters: NovelFilters = {};
   tags: string[] = [];
@@ -593,6 +648,29 @@ export class AdvancedNovelFiltersComponent {
   pairingsList: { a: string; b: string }[] = [];
   pairingError: string | null = null;
   selectedRomanceGenreIds: string[] = [];
+  selectedWarningIds: string[] = [];
+
+  toggleWarning(id: string) {
+    this.selectedWarningIds = this.selectedWarningIds.includes(id)
+      ? this.selectedWarningIds.filter((v) => v !== id)
+      : [...this.selectedWarningIds, id];
+  }
+
+  onWarningSelect(event: Event) {
+    const id = (event.target as HTMLSelectElement).value;
+    if (id && !this.selectedWarningIds.includes(id)) {
+      this.selectedWarningIds = [...this.selectedWarningIds, id];
+    }
+    (event.target as HTMLSelectElement).value = '';
+  }
+
+  getWarningLabel(id: string): string {
+    return this.warningsCatalog().find((w) => w.id === id)?.label ?? id;
+  }
+
+  availableWarnings() {
+    return this.warningsCatalog().filter((w) => !this.selectedWarningIds.includes(w.id));
+  }
 
   toggleRomanceGenre(id: string) {
     this.selectedRomanceGenreIds = this.selectedRomanceGenreIds.includes(id)
@@ -683,6 +761,10 @@ export class AdvancedNovelFiltersComponent {
       next: (genres) => this.romanceGenres.set(genres),
       error: () => this.romanceGenres.set([]),
     });
+    this.warningsService.list().subscribe({
+      next: (items) => this.warningsCatalog.set(items),
+      error: () => this.warningsCatalog.set([]),
+    });
 
     this.pairingASearch$
       .pipe(
@@ -729,6 +811,7 @@ export class AdvancedNovelFiltersComponent {
     if (this.tags.length) count++;
     if (this.onlyCompleted) count++;
     if (this.selectedRomanceGenreIds.length) count++;
+    if (this.selectedWarningIds.length) count++;
     if (this.pairingsList.length) count++;
     if (this.filters.sortBy && this.filters.sortBy !== 'newest') count++;
     if (this.filters.rating) count++;
@@ -757,6 +840,7 @@ export class AdvancedNovelFiltersComponent {
       romanceGenreIds: this.selectedRomanceGenreIds.length
         ? [...this.selectedRomanceGenreIds]
         : undefined,
+      warningIds: this.selectedWarningIds.length ? [...this.selectedWarningIds] : undefined,
       pairings: pairings.length ? pairings : undefined,
       novelType: this.filters.novelType || undefined,
       fandomSlug:
@@ -774,6 +858,7 @@ export class AdvancedNovelFiltersComponent {
     this.pairingsList = [];
     this.pairingError = null;
     this.selectedRomanceGenreIds = [];
+    this.selectedWarningIds = [];
     this.filtersChange.emit({});
   }
 }

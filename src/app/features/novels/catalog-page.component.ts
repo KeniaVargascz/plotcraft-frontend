@@ -556,6 +556,7 @@ export class CatalogPageComponent implements OnInit {
           sortBy: queryParams.get('sortBy'),
           rating: queryParams.get('rating'),
           romanceGenreIds: queryParams.getAll('romanceGenreIds'),
+          warningIds: queryParams.getAll('warningIds'),
           pairings: queryParams.getAll('pairings'),
           novelType: (queryParams.get('novelType') as 'ORIGINAL' | 'FANFIC' | null) || '',
           fandomSlug: queryParams.get('fandomSlug'),
@@ -598,6 +599,7 @@ export class CatalogPageComponent implements OnInit {
       sortBy: adv.sortBy && adv.sortBy !== 'newest' ? adv.sortBy : null,
       rating: adv.rating || null,
       romanceGenreIds: adv.romanceGenreIds?.length ? adv.romanceGenreIds : null,
+      warningIds: adv.warningIds?.length ? adv.warningIds : null,
       pairings: adv.pairings?.length ? adv.pairings : null,
     };
 
@@ -627,6 +629,7 @@ export class CatalogPageComponent implements OnInit {
       sortBy: filters.sortBy && filters.sortBy !== 'newest' ? filters.sortBy : null,
       rating: filters.rating || null,
       romanceGenreIds: filters.romanceGenreIds?.length ? filters.romanceGenreIds : null,
+      warningIds: filters.warningIds?.length ? filters.warningIds : null,
       pairings: filters.pairings?.length ? filters.pairings : null,
       novelType: filters.novelType || null,
       fandomSlug: filters.fandomSlug || null,
@@ -657,6 +660,7 @@ export class CatalogPageComponent implements OnInit {
         sortBy: adv.sortBy,
         rating: (adv.rating as 'G' | 'PG' | 'T' | 'R' | 'EXPLICIT') || null,
         romanceGenreIds: adv.romanceGenreIds ?? null,
+        warningIds: adv.warningIds ?? null,
         pairings: adv.pairings ?? null,
         novelType: (adv.novelType as 'ORIGINAL' | 'FANFIC') || null,
         fandomSlug: adv.fandomSlug || null,

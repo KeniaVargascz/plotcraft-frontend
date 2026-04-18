@@ -2,7 +2,7 @@
   <h3>{{ 'feed.suggestions' | translate }}</h3>
   <div class="inline-suggestions-list">
     @for (suggestion of visibleSuggestions; track suggestion.id) {
-      <article class="inline-suggestion-item">
+      <article class="inline-suggestion-item" [class.followed]="isFollowed(suggestion.username)">
         <div class="inline-suggestion-avatar" [attr.aria-label]="'Avatar de ' + (suggestion.displayName || suggestion.username)">
           {{ getInitial(suggestion) }}
         </div>
@@ -10,9 +10,15 @@
           <strong>{{ suggestion.displayName || suggestion.username }}</strong>
           <span>@{{ suggestion.username }}</span>
         </div>
-        <button type="button" [attr.aria-label]="'Seguir a ' + suggestion.username" (click)="follow.emit(suggestion.username)">
-          {{ 'profile.follow' | translate }}
-        </button>
+        @if (isFollowed(suggestion.username)) {
+          <button type="button" class="undo-btn" (click)="onUndo(suggestion.username)">
+            Deshacer
+          </button>
+        } @else {
+          <button type="button" [attr.aria-label]="'Seguir a ' + suggestion.username" (click)="onFollow(suggestion.username)">
+            {{ 'profile.follow' | translate }}
+          </button>
+        }
       </article>
     }
   </div>

@@ -70,3 +70,13 @@
   white-space: nowrap;
   cursor: pointer;
 }
+
+.inline-suggestion-item.followed {
+  opacity: 0.6;
+}
+
+.undo-btn {
+  border: 1px solid var(--border) !important;
+  background: transparent !important;
+  color: var(--text-2) !important;
+}

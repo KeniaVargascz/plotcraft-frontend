@@ -1300,18 +1300,17 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   /** Scroll tracking runs outside Angular zone to avoid triggering CD on every frame. */
   private setupScrollTracking() {
     this.ngZone.runOutsideAngular(() => {
-      fromEvent(window, 'scroll', { passive: true }).pipe(
-        auditTime(16),
-        takeUntilDestroyed(this.destroyRef),
-      ).subscribe(() => {
-        if (this.preferences().reading_mode !== 'scroll' || !this.readerContainer) return;
-        const container = this.readerContainer.nativeElement;
-        const rect = container.getBoundingClientRect();
-        const maxDistance = container.offsetHeight - window.innerHeight;
-        const traveled = Math.min(Math.max(-rect.top, 0), Math.max(maxDistance, 1));
-        const pct = maxDistance > 0 ? traveled / maxDistance : 1;
-        this.progressPercent.set(pct);
-      });
+      fromEvent(window, 'scroll', { passive: true })
+        .pipe(auditTime(16), takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => {
+          if (this.preferences().reading_mode !== 'scroll' || !this.readerContainer) return;
+          const container = this.readerContainer.nativeElement;
+          const rect = container.getBoundingClientRect();
+          const maxDistance = container.offsetHeight - window.innerHeight;
+          const traveled = Math.min(Math.max(-rect.top, 0), Math.max(maxDistance, 1));
+          const pct = maxDistance > 0 ? traveled / maxDistance : 1;
+          this.progressPercent.set(pct);
+        });
     });
   }
 
@@ -1429,12 +1428,15 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   }
 
   removeBookmark(id: string) {
-    this.bookmarksService.remove(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      const chapter = this.chapter();
-      if (chapter) {
-        this.loadChapterBookmarks(chapter.id);
-      }
-    });
+    this.bookmarksService
+      .remove(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const chapter = this.chapter();
+        if (chapter) {
+          this.loadChapterBookmarks(chapter.id);
+        }
+      });
   }
 
   handleContextMenu(event: MouseEvent) {
@@ -1605,28 +1607,30 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
         this.loadVoteStatus(chapter.id);
       }
     };
-    this.chaptersService.getReaderChapter(this.slug, this.chapterSlug)
+    this.chaptersService
+      .getReaderChapter(this.slug, this.chapterSlug)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-      next: onLoaded,
-      error: () => {
-        // Fallback: si es draft del autor, usar el endpoint del editor.
-        if (this.isAuthenticated()) {
-          this.chaptersService.getEditorChapter(this.slug, this.chapterSlug)
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe({
-            next: onLoaded,
-            error: () => {
-              this.error.set(true);
-              this.loading.set(false);
-            },
-          });
-        } else {
-          this.error.set(true);
-          this.loading.set(false);
-        }
-      },
-    });
+        next: onLoaded,
+        error: () => {
+          // Fallback: si es draft del autor, usar el endpoint del editor.
+          if (this.isAuthenticated()) {
+            this.chaptersService
+              .getEditorChapter(this.slug, this.chapterSlug)
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe({
+                next: onLoaded,
+                error: () => {
+                  this.error.set(true);
+                  this.loading.set(false);
+                },
+              });
+          } else {
+            this.error.set(true);
+            this.loading.set(false);
+          }
+        },
+      });
   }
 
   private loadPreferences() {
@@ -1640,12 +1644,15 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.readerService.getPreferences().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((preferences) => {
-      this.preferences.set(preferences);
-      localStorage.setItem('plotcraft_reader_preferences', JSON.stringify(preferences));
-      this.applyReaderStyles();
-      this.buildPages();
-    });
+    this.readerService
+      .getPreferences()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((preferences) => {
+        this.preferences.set(preferences);
+        localStorage.setItem('plotcraft_reader_preferences', JSON.stringify(preferences));
+        this.applyReaderStyles();
+        this.buildPages();
+      });
   }
 
   private persistPreferences(payload: Partial<ReaderPreferences>) {
@@ -1655,24 +1662,33 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     );
 
     if (this.isAuthenticated()) {
-      this.readerService.updatePreferences(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+      this.readerService
+        .updatePreferences(payload)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe();
     }
   }
 
   private loadChapterBookmarks(chapterId: string) {
-    this.bookmarksService.listByChapter(chapterId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((bookmarks) => {
-      this.bookmarks.set(bookmarks);
-      this.refreshRenderedContent();
-      this.buildPages();
-    });
+    this.bookmarksService
+      .listByChapter(chapterId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((bookmarks) => {
+        this.bookmarks.set(bookmarks);
+        this.refreshRenderedContent();
+        this.buildPages();
+      });
   }
 
   private loadChapterHighlights(chapterId: string) {
-    this.highlightsService.listByChapter(chapterId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((highlights) => {
-      this.highlights.set(highlights);
-      this.refreshRenderedContent();
-      this.buildPages();
-    });
+    this.highlightsService
+      .listByChapter(chapterId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((highlights) => {
+        this.highlights.set(highlights);
+        this.refreshRenderedContent();
+        this.buildPages();
+      });
   }
 
   private refreshRenderedContent() {
@@ -1957,16 +1973,17 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     const text = this.newComment.trim();
     if (!text || this.commentSending() || !this.isAuthenticated()) return;
     this.commentSending.set(true);
-    this.chaptersService.createChapterComment(chapter.novel.slug, chapter.slug, text)
+    this.chaptersService
+      .createChapterComment(chapter.novel.slug, chapter.slug, text)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-      next: (created) => {
-        this.comments.update((prev) => [...prev, created]);
-        this.newComment = '';
-        this.commentSending.set(false);
-      },
-      error: () => this.commentSending.set(false),
-    });
+        next: (created) => {
+          this.comments.update((prev) => [...prev, created]);
+          this.newComment = '';
+          this.commentSending.set(false);
+        },
+        error: () => this.commentSending.set(false),
+      });
   }
 
   removeComment(chapter: ChapterDetail, commentId: string) {
@@ -2044,12 +2061,15 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   private readonly t = inject(TranslationService);
 
   private loadVoteStatus(chapterId: string) {
-    this.votesService.getVoteStatus(chapterId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (response) => {
-        this.chapterVotesCount.set(response.votesCount);
-        this.chapterHasVoted.set(response.hasVoted);
-      },
-    });
+    this.votesService
+      .getVoteStatus(chapterId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.chapterVotesCount.set(response.votesCount);
+          this.chapterHasVoted.set(response.hasVoted);
+        },
+      });
   }
 
   private escapeHtml(value: string) {

@@ -328,8 +328,8 @@
   },
   "profile": {
     "posts": "publicaciones",
-    "followers": "seguidores",
-    "following": "siguiendo",
+    "followers": "Seguidores",
+    "following": "Siguiendo",
     "follow": "Seguir",
     "unfollow": "Dejar de seguir",
     "following_you": "Te sigue",

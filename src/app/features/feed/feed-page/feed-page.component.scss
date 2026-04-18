@@ -117,7 +117,8 @@
   font-weight: 600;
 }
 
-app-suggestion-list {
+.feed-column > app-suggestion-list,
+.post-stack > app-suggestion-list {
   display: none;
 }
 
@@ -130,7 +131,8 @@ app-suggestion-list {
     display: none;
   }
 
-  app-suggestion-list {
+  .feed-column > app-suggestion-list,
+  .post-stack > app-suggestion-list {
     display: block;
   }
 }

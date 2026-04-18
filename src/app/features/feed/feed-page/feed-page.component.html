@@ -26,6 +26,7 @@
             <app-suggestion-list
               [suggestions]="suggestions()"
               (follow)="followSuggestion($event)"
+              (unfollow)="unfollowSuggestion($event)"
             />
           }
         }
@@ -47,24 +48,12 @@
   </div>
 
   <aside class="feed-sidebar">
-    <section class="sidebar-card">
-      <h3>{{ 'feed.suggestions' | translate }}</h3>
-      @if (suggestions().length === 0) {
-        <p>{{ 'feed.noSuggestions' | translate }}</p>
-      } @else {
-        @for (suggestion of suggestions(); track suggestion.id) {
-          <article class="suggestion-item">
-            <div>
-              <strong>{{ suggestion.displayName || suggestion.username }}</strong>
-              <p>@{{ suggestion.username }}</p>
-            </div>
-            <button type="button" (click)="followSuggestion(suggestion.username)">
-              {{ 'profile.follow' | translate }}
-            </button>
-          </article>
-        }
-      }
-    </section>
+    <app-suggestion-list
+      class="sidebar-suggestions"
+      [suggestions]="suggestions()"
+      (follow)="followSuggestion($event)"
+      (unfollow)="unfollowSuggestion($event)"
+    />
 
     <section class="sidebar-card highlight">
       <h3>{{ 'feed.discover' | translate }}</h3>

@@ -1,4 +1,12 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { PostModel } from '../../../../core/models/post.model';

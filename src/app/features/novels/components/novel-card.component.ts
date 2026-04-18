@@ -13,6 +13,16 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
   imports: [RouterLink, DatePipe, GenreLabelPipe],
   template: `
     <article class="novel-card">
+      <div class="status-row">
+        <span class="badge badge-status" [class]="statusClass()">
+          {{ statusLabel() }}
+        </span>
+        <span class="badge badge-rating">
+          <span class="rating-full">{{ ratingFullLabel() }}</span>
+          <span class="rating-short">{{ ratingLabel() }}</span>
+        </span>
+      </div>
+
       <div class="card-top">
         <a class="cover" [class]="coverClass()" (click)="onDetailClick()">
           <span class="cover-texture"></span>
@@ -20,13 +30,6 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         </a>
 
         <div class="body">
-          <div class="badges-row">
-            <span class="badge badge-status" [class]="statusClass()">
-              {{ statusLabel() }}
-            </span>
-            <span class="badge badge-rating">{{ ratingLabel() }}</span>
-          </div>
-
           <a class="title" (click)="onDetailClick()">{{ novel().title }}</a>
           <p class="author">
             <a [routerLink]="['/perfil', novel().author.username]">
@@ -194,18 +197,17 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
 
       .body {
         display: grid;
-        grid-template-rows: minmax(3.45rem, auto) auto auto minmax(0, 1fr) auto;
         gap: 0.38rem;
         min-width: 0;
         height: 100%;
+        align-content: start;
       }
 
-      .badges-row {
-        display: grid;
-        grid-template-rows: repeat(2, 1.52rem);
-        gap: 0.28rem;
-        align-content: start;
-        min-height: 3.45rem;
+      .status-row {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.75rem 0.95rem 0;
       }
 
       .badge {
@@ -241,6 +243,19 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         background: color-mix(in srgb, var(--bg) 86%, rgba(255, 255, 255, 0.03));
         border: 1px solid var(--border);
         color: var(--text-2);
+      }
+
+      .rating-short {
+        display: none;
+      }
+
+      @media (max-width: 400px) {
+        .rating-full {
+          display: none;
+        }
+        .rating-short {
+          display: inline;
+        }
       }
 
       .title {
@@ -534,6 +549,9 @@ export class NovelCardComponent {
   });
   readonly statusLabel = computed(() => this.formatStatusLabel(this.novel().status));
   readonly ratingLabel = computed(() => this.formatRatingLabel(this.novel().rating));
+  readonly ratingFullLabel = computed(
+    () => this.t.translate('novel.rating.' + this.novel().rating) || this.novel().rating,
+  );
   readonly statusClass = computed(
     () => `badge-status-${this.novel().status.toLowerCase().replace(/_/g, '-')}`,
   );

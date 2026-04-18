@@ -43,7 +43,12 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
           <h1>{{ t.title }}</h1>
           <div class="author">
             @if (t.author.avatarUrl) {
-              <img [src]="t.author.avatarUrl" [alt]="t.author.username" class="avatar" loading="lazy" />
+              <img
+                [src]="t.author.avatarUrl"
+                [alt]="t.author.username"
+                class="avatar"
+                loading="lazy"
+              />
             } @else {
               <span class="avatar ph">{{ t.author.username.charAt(0).toUpperCase() }}</span>
             }
@@ -73,7 +78,12 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
             <article class="reply">
               <div class="author">
                 @if (r.author.avatarUrl) {
-                  <img [src]="r.author.avatarUrl" [alt]="r.author.username" class="avatar" loading="lazy" />
+                  <img
+                    [src]="r.author.avatarUrl"
+                    [alt]="r.author.username"
+                    class="avatar"
+                    loading="lazy"
+                  />
                 } @else {
                   <span class="avatar ph">{{ r.author.username.charAt(0).toUpperCase() }}</span>
                 }

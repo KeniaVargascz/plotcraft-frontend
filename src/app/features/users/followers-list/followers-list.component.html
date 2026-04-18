@@ -1,7 +1,6 @@
 <section class="follow-list">
   <header>
     <h1>{{ 'profile.followers' | translate }}</h1>
-    <a [routerLink]="['/perfil', username()]">@{{ username() }}</a>
   </header>
 
   @if (loading()) {

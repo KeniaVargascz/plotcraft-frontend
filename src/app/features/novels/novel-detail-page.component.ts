@@ -422,7 +422,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
                 <div class="tl-events-list">
                   @for (evt of tl.events; track evt.id) {
                     <div class="tl-event-row">
-                      <span class="tl-event-icon">{{ eventTypeIcons[evt.type] || '\u{1F4CC}' }}</span>
+                      <span class="tl-event-icon">{{ eventTypeIcons[evt.type] || '📌' }}</span>
                       <div class="tl-event-info">
                         <strong>{{ evt.title }}</strong>
                         @if (evt.dateLabel) {

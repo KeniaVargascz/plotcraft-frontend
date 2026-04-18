@@ -1,17 +1,23 @@
 .follow-list {
   display: grid;
   gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .follow-list header {
+  grid-column: 1 / -1;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .follow-list h1 {
   margin: 0;
+  font-size: 1.15rem;
+  color: var(--text-1);
 }
 
 .follow-list header a,
@@ -45,4 +51,9 @@
   color: var(--text-1);
   border-radius: 999px;
   padding: 0.7rem 1rem;
+}
+
+.state-card,
+.load-more {
+  grid-column: 1 / -1;
 }

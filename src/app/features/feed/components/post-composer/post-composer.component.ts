@@ -211,43 +211,52 @@ export class PostComposerComponent {
 
   private loadContentData() {
     this.contentDataLoaded = true;
-    this.novelsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        const novels: ComposerNovel[] = res.data.map((n) => ({
-          id: n.id,
-          title: n.title,
-          slug: n.slug,
-          chapters:
-            n.chapters?.map((c) => ({
+    this.novelsService
+      .listMine({ limit: 50 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          const novels: ComposerNovel[] = res.data.map((n) => ({
+            id: n.id,
+            title: n.title,
+            slug: n.slug,
+            chapters:
+              n.chapters?.map((c) => ({
+                id: c.id,
+                title: c.title,
+                slug: c.slug,
+                order: c.order,
+              })) ?? [],
+          }));
+          this.myNovels.set(novels);
+        },
+      });
+    this.worldsService
+      .listMine({ limit: 50 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) =>
+          this.myWorlds.set(
+            res.data.map((w) => ({
+              id: w.id,
+              name: w.name,
+              slug: w.slug,
+            })),
+          ),
+      });
+    this.charactersService
+      .listMine({ limit: 50 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) =>
+          this.myCharacters.set(
+            res.data.map((c) => ({
               id: c.id,
-              title: c.title,
+              name: c.name,
               slug: c.slug,
-              order: c.order,
-            })) ?? [],
-        }));
-        this.myNovels.set(novels);
-      },
-    });
-    this.worldsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) =>
-        this.myWorlds.set(
-          res.data.map((w) => ({
-            id: w.id,
-            name: w.name,
-            slug: w.slug,
-          })),
-        ),
-    });
-    this.charactersService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) =>
-        this.myCharacters.set(
-          res.data.map((c) => ({
-            id: c.id,
-            name: c.name,
-            slug: c.slug,
-          })),
-        ),
-    });
+            })),
+          ),
+      });
   }
 
   insertBold() {

@@ -87,9 +87,9 @@ import { FollowsService } from '../../../core/services/follows.service';
         height: 100%;
         border-radius: 1.3rem;
         overflow: hidden;
-        border: 1px solid color-mix(in srgb, var(--border) 86%, rgba(255, 255, 255, 0.06));
-        background: color-mix(in srgb, var(--bg-card) 94%, #0d1117 6%);
-        box-shadow: 0 22px 42px rgba(7, 10, 16, 0.16);
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        box-shadow: 0 22px 42px var(--shadow);
       }
 
       .band {
@@ -100,29 +100,13 @@ import { FollowsService } from '../../../core/services/follows.service';
         overflow: visible;
       }
 
-      .band-tone-0 {
-        background: linear-gradient(180deg, #1f2737, #151b28);
-        color: #8ea3d7;
-      }
-
-      .band-tone-1 {
-        background: linear-gradient(180deg, #1d2f2a, #101d18);
-        color: #70ba9a;
-      }
-
-      .band-tone-2 {
-        background: linear-gradient(180deg, #2c2133, #1a121f);
-        color: #b18bd6;
-      }
-
-      .band-tone-3 {
-        background: linear-gradient(180deg, #32231d, #1d1511);
-        color: #d4a36f;
-      }
-
+      .band-tone-0,
+      .band-tone-1,
+      .band-tone-2,
+      .band-tone-3,
       .band-tone-4 {
-        background: linear-gradient(180deg, #2d2b1a, #1b190f);
-        color: #d2bf75;
+        background: linear-gradient(180deg, var(--bg-elevated), var(--bg-surface));
+        color: var(--accent-text);
       }
 
       .band-texture {
@@ -147,35 +131,19 @@ import { FollowsService } from '../../../core/services/follows.service';
         width: 2.9rem;
         height: 2.9rem;
         border-radius: 50%;
-        border: 2px solid color-mix(in srgb, var(--bg-card) 94%, #0d1117 6%);
+        border: 2px solid var(--bg-card);
         font:
           italic 400 1.35rem/1 'Playfair Display',
           serif;
       }
 
-      .avatar-tone-0 {
-        background: #1f2737;
-        color: #8ea3d7;
-      }
-
-      .avatar-tone-1 {
-        background: #1d2f2a;
-        color: #70ba9a;
-      }
-
-      .avatar-tone-2 {
-        background: #2c2133;
-        color: #b18bd6;
-      }
-
-      .avatar-tone-3 {
-        background: #32231d;
-        color: #d4a36f;
-      }
-
+      .avatar-tone-0,
+      .avatar-tone-1,
+      .avatar-tone-2,
+      .avatar-tone-3,
       .avatar-tone-4 {
-        background: #2d2b1a;
-        color: #d2bf75;
+        background: var(--accent-glow);
+        color: var(--accent-text);
       }
 
       .body {
@@ -247,7 +215,7 @@ import { FollowsService } from '../../../core/services/follows.service';
       .stat-divider {
         width: 1px;
         height: 0.8rem;
-        background: color-mix(in srgb, var(--border) 82%, rgba(255, 255, 255, 0.04));
+        background: var(--border);
       }
 
       .covers {
@@ -261,7 +229,7 @@ import { FollowsService } from '../../../core/services/follows.service';
         width: 0.42rem;
         height: 0.42rem;
         border-radius: 50%;
-        border: 1px solid color-mix(in srgb, var(--border) 86%, rgba(255, 255, 255, 0.06));
+        border: 1px solid var(--border);
         background: transparent;
       }
 
@@ -279,7 +247,7 @@ import { FollowsService } from '../../../core/services/follows.service';
         width: 100%;
         min-height: 2.35rem;
         border-radius: 0.9rem;
-        border: 1px solid color-mix(in srgb, var(--border) 86%, rgba(255, 255, 255, 0.06));
+        border: 1px solid var(--border);
         background: transparent;
         color: var(--text-1);
         display: inline-flex;

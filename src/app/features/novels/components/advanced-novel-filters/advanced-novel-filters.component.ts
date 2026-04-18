@@ -10,6 +10,7 @@ import { Community } from '../../../communities/models/community.model';
 import { RomanceGenreCatalogItem } from '../../../../core/models/romance-genre.model';
 import { RomanceGenresService } from '../../../../core/services/romance-genres.service';
 import { TagChipsInputComponent } from '../../../../shared/components/tag-chips-input/tag-chips-input.component';
+import { TranslationService } from '../../../../core/services/translation.service';
 
 export interface NovelFilters {
   languageId?: string | null;
@@ -18,6 +19,7 @@ export interface NovelFilters {
   tags?: string[];
   status?: string | null;
   sortBy?: string | null;
+  rating?: string | null;
   romanceGenreIds?: string[] | null;
   pairings?: string[] | null;
   novelType?: 'ORIGINAL' | 'FANFIC' | '' | null;
@@ -83,6 +85,15 @@ export interface NovelFilters {
               <select [(ngModel)]="filters.sortBy">
                 @for (s of sortOptions; track s.value) {
                   <option [ngValue]="s.value">{{ s.label }}</option>
+                }
+              </select>
+            </label>
+
+            <label class="field">
+              <span class="field-label">Clasificacion</span>
+              <select [(ngModel)]="filters.rating">
+                @for (r of ratingOptions; track r.value) {
+                  <option [ngValue]="r.value">{{ r.label }}</option>
                 }
               </select>
             </label>
@@ -186,7 +197,7 @@ export interface NovelFilters {
                 }
               </div>
             } @else {
-              <p class="hint span-full">
+              <p class="legend span-full">
                 Para filtrar por parejas, agrega el género <strong>Fanfiction</strong> en los
                 filtros generales.
               </p>
@@ -220,22 +231,27 @@ export interface NovelFilters {
       .toggle {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: 0.45rem;
         width: 100%;
-        padding: 0.75rem 1rem;
-        border-radius: 0.85rem;
+        padding: 0.55rem 0.75rem;
+        border-radius: 0.65rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
         cursor: pointer;
         font: inherit;
+        font-size: 0.82rem;
+        transition: border-color 0.15s;
+      }
+      .toggle:hover {
+        border-color: var(--border-s);
       }
       .badge {
         background: var(--accent-glow);
         color: var(--accent-text);
-        padding: 0.1rem 0.55rem;
+        padding: 0.08rem 0.45rem;
         border-radius: 999px;
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         font-weight: 700;
       }
       .chevron {
@@ -247,19 +263,19 @@ export interface NovelFilters {
       }
       .panel {
         display: grid;
-        gap: 1rem;
-        padding: 1rem;
-        border-radius: 1rem;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border-radius: 0.75rem;
         border: 1px solid var(--border);
-        background: var(--bg-card);
+        background: var(--bg-surface);
         width: 100%;
         min-width: 0;
         box-sizing: border-box;
       }
       .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 0.85rem;
+        grid-template-columns: 1fr;
+        gap: 0.65rem;
         min-width: 0;
       }
       .span-full {
@@ -267,13 +283,16 @@ export interface NovelFilters {
       }
       .field {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.25rem;
         color: var(--text-2);
-        font-size: 0.85rem;
+        font-size: 0.78rem;
         min-width: 0;
       }
       .field-label {
         font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 0.72rem;
       }
       .field input,
       .field select {
@@ -293,11 +312,17 @@ export interface NovelFilters {
       input,
       select,
       button {
-        padding: 0.6rem 0.8rem;
-        border-radius: 0.7rem;
+        padding: 0.5rem 0.65rem;
+        border-radius: 0.6rem;
         border: 1px solid var(--border);
-        background: var(--bg-surface);
+        background: var(--bg-card);
         color: var(--text-1);
+        font-size: 0.85rem;
+      }
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--accent);
       }
       .actions {
         display: flex;
@@ -305,11 +330,25 @@ export interface NovelFilters {
         gap: 0.5rem;
         justify-content: flex-end;
       }
-      .primary {
-        background: var(--accent-glow);
+      .legend {
+        margin: 0;
+        padding: 0.5rem 0.65rem;
+        border-radius: 0.5rem;
+        background: color-mix(in srgb, var(--accent-glow) 60%, transparent);
+        border-left: 3px solid var(--accent-dim);
+        color: var(--text-2);
+        font-size: 0.75rem;
+        line-height: 1.5;
+      }
+      .legend strong {
         color: var(--accent-text);
+      }
+      .primary {
+        background: var(--accent);
+        color: var(--bg-base);
         border-color: transparent;
         cursor: pointer;
+        font-weight: 600;
       }
       button {
         cursor: pointer;
@@ -491,6 +530,7 @@ export interface NovelFilters {
 })
 export class AdvancedNovelFiltersComponent {
   private readonly languagesService = inject(LanguagesService);
+  private readonly t = inject(TranslationService);
   private readonly romanceGenresService = inject(RomanceGenresService);
   private readonly charactersService = inject(CharactersService);
   private readonly communityService = inject(CommunityService);
@@ -624,6 +664,16 @@ export class AdvancedNovelFiltersComponent {
     { value: 'most_words', label: 'Más palabras' },
   ];
 
+  get ratingOptions() {
+    return [
+      { value: null, label: 'Todas' },
+      ...['G', 'PG', 'T', 'R', 'EXPLICIT'].map((r) => ({
+        value: r,
+        label: this.t.translate('novel.rating.' + r),
+      })),
+    ];
+  }
+
   constructor() {
     this.languagesService.list().subscribe({
       next: (languages) => this.languages.set(languages),
@@ -681,6 +731,7 @@ export class AdvancedNovelFiltersComponent {
     if (this.selectedRomanceGenreIds.length) count++;
     if (this.pairingsList.length) count++;
     if (this.filters.sortBy && this.filters.sortBy !== 'newest') count++;
+    if (this.filters.rating) count++;
     if (this.filters.novelType) count++;
     if (this.filters.fandomSlug) count++;
     return count;
@@ -702,6 +753,7 @@ export class AdvancedNovelFiltersComponent {
       ...this.filters,
       tags: this.tags.length ? this.tags : undefined,
       status: this.onlyCompleted ? 'COMPLETED' : this.filters.status || undefined,
+      rating: this.filters.rating || undefined,
       romanceGenreIds: this.selectedRomanceGenreIds.length
         ? [...this.selectedRomanceGenreIds]
         : undefined,

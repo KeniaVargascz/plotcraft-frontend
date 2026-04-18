@@ -294,6 +294,29 @@
     "edit": "Editar",
     "delete": "Eliminar"
   },
+  "novel": {
+    "status": {
+      "DRAFT": "Borrador",
+      "IN_PROGRESS": "En progreso",
+      "COMPLETED": "Completada",
+      "ARCHIVED": "Archivada",
+      "HIATUS": "En pausa"
+    },
+    "rating": {
+      "G": "G — Todo publico",
+      "PG": "PG — Contenido leve",
+      "T": "T — Adolescentes",
+      "R": "R — Contenido maduro",
+      "EXPLICIT": "Explicito"
+    },
+    "ratingShort": {
+      "G": "G",
+      "PG": "PG",
+      "T": "T",
+      "R": "R",
+      "EXPLICIT": "18+"
+    }
+  },
   "comment": {
     "placeholder": "Escribe un comentario...",
     "submit": "Comentar",

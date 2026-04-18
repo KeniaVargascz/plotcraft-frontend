@@ -1,4 +1,14 @@
-import { Component, DestroyRef, ElementRef, EventEmitter, HostListener, Input, Output, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommentModel } from '../../../../core/models/comment.model';
@@ -58,16 +68,19 @@ export class CommentItemComponent {
     }
 
     this.loading.set(true);
-    this.commentsService.update(this.postId, this.comment.id, this.form.getRawValue()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (comment) => {
-        this.commentChange.emit(comment);
-        this.editing.set(false);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-      },
-    });
+    this.commentsService
+      .update(this.postId, this.comment.id, this.form.getRawValue())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (comment) => {
+          this.commentChange.emit(comment);
+          this.editing.set(false);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+        },
+      });
   }
 
   remove() {
@@ -76,15 +89,17 @@ export class CommentItemComponent {
     }
 
     this.loading.set(true);
-    this.commentsService.delete(this.postId, this.comment.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (comment) => {
-        this.commentChange.emit(comment);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-      },
-    });
+    this.commentsService
+      .delete(this.postId, this.comment.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (comment) => {
+          this.commentChange.emit(comment);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+        },
+      });
   }
-
 }

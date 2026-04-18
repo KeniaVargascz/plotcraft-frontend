@@ -42,85 +42,122 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
   ],
   template: `
     <section class="catalog-shell">
-      <aside class="filters">
-        <h1>{{ title() }}</h1>
-        <p>{{ subtitle() }}</p>
-
-        <label>
-          Buscar
-          <input [(ngModel)]="search" placeholder="Buscar novelas..." />
-        </label>
-
-        <div class="genre-field" #genreField>
-          <span class="field-label">Géneros</span>
-
-          @if (selectedGenres().length) {
-            <ul class="picked-pills">
-              @for (g of selectedGenres(); track g.id) {
-                <li>
-                  <span>{{ g | genreLabel }}</span>
-                  <button type="button" (click)="removeGenre(g.slug)">✕</button>
-                </li>
-              }
-            </ul>
-          }
-
-          @if (
-            genres().length > 0 &&
-            availableGenresFiltered().length === 0 &&
-            !genreSearch.trim() &&
-            selectedGenreSlugs().length === genres().length
-          ) {
-            <p class="hint">Has seleccionado todos los géneros disponibles.</p>
-          } @else {
-            <div class="char-search">
-              <input
-                type="text"
-                [(ngModel)]="genreSearch"
-                (focus)="genreDropdownOpen.set(true)"
-                placeholder="Buscar género..."
-              />
-              @if (genreDropdownOpen() && availableGenresFiltered().length) {
-                <ul class="dropdown">
-                  @for (g of availableGenresFiltered(); track g.id) {
-                    <li>
-                      <button type="button" (click)="addGenre(g.slug)">
-                        {{ g | genreLabel }}
-                      </button>
-                    </li>
-                  }
-                </ul>
-              }
-              @if (
-                genreDropdownOpen() && availableGenresFiltered().length === 0 && genreSearch.trim()
-              ) {
-                <p class="hint">Sin resultados.</p>
-              }
-            </div>
-          }
+      <aside class="filters" [class.collapsed]="!filtersOpen()">
+        <div class="filters-header">
+          <div>
+            <h1>{{ title() }}</h1>
+            <p>{{ subtitle() }}</p>
+          </div>
+          <button type="button" class="filters-toggle" (click)="filtersOpen.set(!filtersOpen())">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="4" y1="21" x2="4" y2="14" />
+              <line x1="4" y1="10" x2="4" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12" y2="3" />
+              <line x1="20" y1="21" x2="20" y2="16" />
+              <line x1="20" y1="12" x2="20" y2="3" />
+              <line x1="1" y1="14" x2="7" y2="14" />
+              <line x1="9" y1="8" x2="15" y2="8" />
+              <line x1="17" y1="16" x2="23" y2="16" />
+            </svg>
+            {{ filtersOpen() ? 'Ocultar' : 'Filtros' }}
+          </button>
         </div>
 
-        <label>
-          Orden
-          <select [(ngModel)]="sort">
-            <option value="recent">Recientes</option>
-            <option value="popular">Populares</option>
-            <option value="views">Mas vistas</option>
-          </select>
-        </label>
+        <div class="filters-body" [class.hidden]="!filtersOpen()">
+          <div class="filter-section">
+            <label>
+              Buscar
+              <input [(ngModel)]="search" placeholder="Buscar novelas..." />
+            </label>
+          </div>
 
-        <app-advanced-novel-filters
-          #advancedFiltersRef
-          [initialFilters]="advancedFilters()"
-          [pairingsAllowed]="hasFanfictionGenre()"
-          (filtersChange)="onAdvancedFiltersChange($event)"
-        />
+          <div class="filter-section genre-field" #genreField>
+            <span class="field-label">Géneros</span>
 
-        <div class="apply-row">
-          <button type="button" (click)="clearAllFilters()">Limpiar filtros</button>
-          <button type="button" class="primary-apply" (click)="applyAllFilters()">
-            Aplicar filtros
-          </button>
+            @if (selectedGenres().length) {
+              <ul class="picked-pills">
+                @for (g of selectedGenres(); track g.id) {
+                  <li>
+                    <span>{{ g | genreLabel }}</span>
+                    <button type="button" (click)="removeGenre(g.slug)">✕</button>
+                  </li>
+                }
+              </ul>
+            }
+
+            @if (
+              genres().length > 0 &&
+              availableGenresFiltered().length === 0 &&
+              !genreSearch.trim() &&
+              selectedGenreSlugs().length === genres().length
+            ) {
+              <p class="hint">Has seleccionado todos los géneros disponibles.</p>
+            } @else {
+              <div class="char-search">
+                <input
+                  type="text"
+                  [(ngModel)]="genreSearch"
+                  (focus)="genreDropdownOpen.set(true)"
+                  placeholder="Buscar género..."
+                />
+                @if (genreDropdownOpen() && availableGenresFiltered().length) {
+                  <ul class="dropdown">
+                    @for (g of availableGenresFiltered(); track g.id) {
+                      <li>
+                        <button type="button" (click)="addGenre(g.slug)">
+                          {{ g | genreLabel }}
+                        </button>
+                      </li>
+                    }
+                  </ul>
+                }
+                @if (
+                  genreDropdownOpen() &&
+                  availableGenresFiltered().length === 0 &&
+                  genreSearch.trim()
+                ) {
+                  <p class="hint">Sin resultados.</p>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="filter-section">
+            <label>
+              Orden
+              <select [(ngModel)]="sort">
+                <option value="recent">Recientes</option>
+                <option value="popular">Populares</option>
+                <option value="views">Mas vistas</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="filter-section">
+            <app-advanced-novel-filters
+              #advancedFiltersRef
+              [initialFilters]="advancedFilters()"
+              [pairingsAllowed]="hasFanfictionGenre()"
+              (filtersChange)="onAdvancedFiltersChange($event)"
+            />
+          </div>
+
+          <div class="apply-row">
+            <button type="button" (click)="clearAllFilters()">Limpiar filtros</button>
+            <button type="button" class="primary-apply" (click)="applyAllFilters()">
+              Aplicar filtros
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -157,8 +194,8 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
         display: grid;
         grid-template-columns: 280px 1fr;
         gap: 1.5rem;
+        color: var(--text-1);
       }
-      .filters,
       .results {
         padding: 1.25rem;
         border-radius: 1.25rem;
@@ -168,21 +205,78 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
       .filters {
         display: grid;
         align-content: start;
-        gap: 1rem;
+        gap: 0;
+        padding: 0;
+        border-radius: 1.25rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .filters h1 {
+        font-size: 1.1rem;
+        margin: 0;
+        letter-spacing: -0.01em;
+        color: var(--text-1);
+      }
+      .filters p {
+        font-size: 0.78rem;
+        margin: 0;
+        color: var(--text-3);
+        line-height: 1.4;
+      }
+      .filters-header {
+        padding: 1.1rem 1rem 0.85rem;
+        border-bottom: 1px solid var(--border);
+        background: color-mix(in srgb, var(--bg-surface) 50%, var(--bg-card));
+      }
+      .filters-body {
+        display: grid;
+        gap: 0;
+      }
+      .filter-section {
+        display: grid;
+        gap: 0.5rem;
+        padding: 0.85rem 1rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .filter-section:last-child {
+        border-bottom: 0;
       }
       label {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.3rem;
         color: var(--text-2);
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
       }
       input,
-      select,
-      button {
-        border-radius: 0.85rem;
+      select {
+        border-radius: 0.65rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.75rem 0.9rem;
+        padding: 0.55rem 0.7rem;
+        font-size: 0.88rem;
+        transition: border-color 0.15s;
+      }
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      .filters button {
+        border-radius: 0.65rem;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        padding: 0.55rem 0.7rem;
+        font-size: 0.88rem;
+        cursor: pointer;
+      }
+      .filters button:hover {
+        border-color: var(--border-s);
       }
       .grid {
         display: grid;
@@ -193,10 +287,13 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
       .genre-field {
         display: grid;
         gap: 0.4rem;
-        color: var(--text-2);
       }
       .field-label {
-        font-size: 0.85rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-2);
       }
       .picked-pills {
         list-style: none;
@@ -204,17 +301,18 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
         padding: 0;
         display: flex;
         flex-wrap: wrap;
-        gap: 0.4rem;
+        gap: 0.3rem;
       }
       .picked-pills li {
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.35rem 0.7rem;
+        gap: 0.35rem;
+        padding: 0.25rem 0.55rem;
         border-radius: 999px;
         background: var(--accent-glow);
+        border: 1px solid var(--border-s);
         color: var(--accent-text);
-        font-size: 0.78rem;
+        font-size: 0.72rem;
       }
       .picked-pills button {
         background: transparent;
@@ -222,7 +320,12 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
         color: inherit;
         cursor: pointer;
         padding: 0;
-        font-size: 0.85rem;
+        font-size: 0.78rem;
+        min-height: unset;
+        opacity: 0.7;
+      }
+      .picked-pills button:hover {
+        opacity: 1;
       }
       .char-search {
         position: relative;
@@ -284,24 +387,76 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
       }
       .empty {
         margin-top: 1rem;
+        color: var(--text-2);
       }
       .apply-row {
         display: flex;
         gap: 0.5rem;
-        flex-wrap: wrap;
+        padding: 0.85rem 1rem;
+        background: color-mix(in srgb, var(--bg-surface) 50%, var(--bg-card));
       }
       .apply-row button {
         flex: 1;
+        font-size: 0.8rem;
+        padding: 0.55rem 0.7rem;
+        cursor: pointer;
+        font-weight: 600;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+      }
+      .apply-row button:hover {
+        border-color: var(--border-s);
       }
       .apply-row .primary-apply {
-        background: var(--accent-glow);
-        color: var(--accent-text);
+        background: var(--accent);
+        color: var(--bg-base);
         border-color: transparent;
-        font-weight: 600;
+      }
+      .apply-row .primary-apply:hover {
+        opacity: 0.9;
+      }
+      .filters-toggle {
+        display: none;
+      }
+      .filters-body.hidden {
+        display: grid;
       }
       @media (max-width: 900px) {
         .catalog-shell {
           grid-template-columns: 1fr;
+        }
+        .filters-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 0.75rem;
+        }
+        .filters-header > div {
+          display: grid;
+          gap: 0.15rem;
+        }
+        .filters-toggle {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+          padding: 0.5rem 0.85rem;
+          border-radius: 999px;
+          border: 1px solid var(--border-s);
+          background: var(--accent-glow);
+          color: var(--accent-text);
+          font-size: 0.82rem;
+          font-weight: 600;
+          white-space: nowrap;
+          cursor: pointer;
+          min-height: unset;
+        }
+        .filters-body {
+          display: grid;
+          gap: 1rem;
+        }
+        .filters-body.hidden {
+          display: none;
         }
       }
     `,
@@ -323,6 +478,7 @@ export class CatalogPageComponent implements OnInit {
   readonly totalPages = signal(1);
   readonly title = signal('Novelas');
   readonly subtitle = signal('Explora historias publicadas por la comunidad.');
+  readonly filtersOpen = signal(false);
 
   @ViewChild('advancedFiltersRef') advancedFiltersRef?: AdvancedNovelFiltersComponent;
 
@@ -393,6 +549,7 @@ export class CatalogPageComponent implements OnInit {
           tags: queryParams.getAll('tags'),
           status: queryParams.get('status'),
           sortBy: queryParams.get('sortBy'),
+          rating: queryParams.get('rating'),
           romanceGenreIds: queryParams.getAll('romanceGenreIds'),
           pairings: queryParams.getAll('pairings'),
           novelType: (queryParams.get('novelType') as 'ORIGINAL' | 'FANFIC' | null) || '',
@@ -434,6 +591,7 @@ export class CatalogPageComponent implements OnInit {
       tags: adv.tags?.length ? adv.tags : null,
       status: adv.status || null,
       sortBy: adv.sortBy && adv.sortBy !== 'newest' ? adv.sortBy : null,
+      rating: adv.rating || null,
       romanceGenreIds: adv.romanceGenreIds?.length ? adv.romanceGenreIds : null,
       pairings: adv.pairings?.length ? adv.pairings : null,
     };
@@ -462,6 +620,7 @@ export class CatalogPageComponent implements OnInit {
       tags: filters.tags?.length ? filters.tags : null,
       status: filters.status || null,
       sortBy: filters.sortBy && filters.sortBy !== 'newest' ? filters.sortBy : null,
+      rating: filters.rating || null,
       romanceGenreIds: filters.romanceGenreIds?.length ? filters.romanceGenreIds : null,
       pairings: filters.pairings?.length ? filters.pairings : null,
       novelType: filters.novelType || null,
@@ -491,6 +650,7 @@ export class CatalogPageComponent implements OnInit {
         tags: adv.tags,
         status: (adv.status as 'COMPLETED' | null) || null,
         sortBy: adv.sortBy,
+        rating: (adv.rating as 'G' | 'PG' | 'T' | 'R' | 'EXPLICIT') || null,
         romanceGenreIds: adv.romanceGenreIds ?? null,
         pairings: adv.pairings ?? null,
         novelType: (adv.novelType as 'ORIGINAL' | 'FANFIC') || null,

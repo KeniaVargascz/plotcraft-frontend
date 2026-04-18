@@ -1,127 +1,136 @@
 <section class="composer-card" data-testid="post-composer">
-  <header>
-    <h2>{{ 'feed.new' | translate }}</h2>
-    <span>{{ 'post.charCount' | translate: { current: contentLength, max: 5000 } }}</span>
-  </header>
-
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <div class="rich-toolbar">
-      <button type="button" (click)="insertBold()" title="Negrita"><strong>B</strong></button>
-      <button type="button" (click)="insertItalic()" title="Cursiva"><em>I</em></button>
-      <button type="button" (click)="insertLink()" title="Enlace">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-      </button>
+  @if (!expanded()) {
+    <div class="compact-view" (click)="expanded.set(true)">
+      <h2>{{ 'feed.new' | translate }}</h2>
+      <div class="compact-input">
+        <span class="compact-placeholder">{{ 'post.placeholder' | translate }}</span>
+      </div>
     </div>
+  } @else {
+    <header>
+      <h2>{{ 'feed.new' | translate }}</h2>
+      <span>{{ 'post.charCount' | translate: { current: contentLength, max: 5000 } }}</span>
+    </header>
 
-    <textarea
-      #contentTextarea
-      formControlName="content"
-      rows="5"
-      [placeholder]="'post.placeholder' | translate"
-    ></textarea>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="rich-toolbar">
+        <button type="button" (click)="insertBold()" title="Negrita"><strong>B</strong></button>
+        <button type="button" (click)="insertItalic()" title="Cursiva"><em>I</em></button>
+        <button type="button" (click)="insertLink()" title="Enlace">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </button>
+      </div>
 
-    <app-tag-chips-input
-      [tags]="tags()"
-      [maxTags]="10"
-      [placeholder]="'feed.composer.tagsPlaceholder' | translate"
-      (tagsChange)="onTagsChange($event)"
-    />
+      <textarea
+        #contentTextarea
+        formControlName="content"
+        rows="5"
+        [placeholder]="'post.placeholder' | translate"
+      ></textarea>
 
-    <div class="image-section">
-      @if (imageUrls().length) {
-        <div class="image-previews">
-          @for (url of imageUrls(); track url; let i = $index) {
-            <div class="image-preview">
-              <img [src]="url" alt="Preview" loading="lazy" />
-              <button type="button" class="remove-image" (click)="removeImage(i)">&times;</button>
+      <app-tag-chips-input
+        [tags]="tags()"
+        [maxTags]="10"
+        [placeholder]="'feed.composer.tagsPlaceholder' | translate"
+        (tagsChange)="onTagsChange($event)"
+      />
+
+      <div class="image-section">
+        @if (imageUrls().length) {
+          <div class="image-previews">
+            @for (url of imageUrls(); track url; let i = $index) {
+              <div class="image-preview">
+                <img [src]="url" alt="Preview" loading="lazy" />
+                <button type="button" class="remove-image" (click)="removeImage(i)">&times;</button>
+              </div>
+            }
+          </div>
+        }
+
+        @if (canAddImages) {
+          <div class="image-url-row">
+            <button type="button" class="add-image-btn" (click)="toggleImageInput()">
+              {{ showImageInput() ? 'Ocultar' : 'Adjuntar imagen (URL)' }}
+            </button>
+          </div>
+        }
+
+        @if (showImageInput() && canAddImages) {
+          <div class="image-url-input-row">
+            <input
+              type="text"
+              [(ngModel)]="imageUrlInput"
+              [ngModelOptions]="{ standalone: true }"
+              (keydown.enter)="$event.preventDefault(); addImageUrl()"
+              placeholder="https://ejemplo.com/imagen.jpg"
+              class="image-url-input"
+            />
+            <button type="button" class="add-url-btn" (click)="addImageUrl()">Agregar</button>
+          </div>
+        }
+      </div>
+
+      @if (needsContentLinker()) {
+        <div class="content-linker">
+          @if (form.controls.type.value === 'NEW_NOVEL' || form.controls.type.value === 'NEW_CHAPTER') {
+            <app-custom-select
+              [options]="novelOptions"
+              [value]="selectedNovelId() || ''"
+              [placeholder]="'Selecciona novela'"
+              (valueChange)="selectNovel($event)"
+            />
+          }
+          @if (form.controls.type.value === 'NEW_CHAPTER' && selectedNovelChapters().length) {
+            <app-custom-select
+              [options]="chapterOptions"
+              [value]="selectedChapterId() || ''"
+              [placeholder]="'Selecciona capitulo'"
+              (valueChange)="selectChapter($event)"
+            />
+          }
+          @if (form.controls.type.value === 'WORLD_UPDATE') {
+            <app-custom-select
+              [options]="worldOptions"
+              [value]="selectedWorldId() || ''"
+              [placeholder]="'Selecciona mundo'"
+              (valueChange)="selectWorld($event)"
+            />
+          }
+          @if (form.controls.type.value === 'NEW_CHARACTER') {
+            <div class="character-picker">
+              @for (char of myCharacters(); track char.id) {
+                <label class="char-option">
+                  <input
+                    type="checkbox"
+                    [checked]="selectedCharacterIds().includes(char.id)"
+                    (change)="toggleCharacter(char.id)"
+                  />
+                  {{ char.name }}
+                </label>
+              }
             </div>
           }
         </div>
       }
 
-      @if (canAddImages) {
-        <div class="image-url-row">
-          <button type="button" class="add-image-btn" (click)="toggleImageInput()">
-            {{ showImageInput() ? 'Ocultar' : 'Adjuntar imagen (URL)' }}
-          </button>
-        </div>
-      }
+      <div class="composer-actions">
+        <label>
+          <span>{{ 'feed.title' | translate }}</span>
+          <app-custom-select
+            [options]="postTypeOptions"
+            [value]="form.controls.type.value"
+            (valueChange)="selectPostType($event)"
+          />
+        </label>
 
-      @if (showImageInput() && canAddImages) {
-        <div class="image-url-input-row">
-          <input
-            type="text"
-            [(ngModel)]="imageUrlInput"
-            [ngModelOptions]="{ standalone: true }"
-            (keydown.enter)="$event.preventDefault(); addImageUrl()"
-            placeholder="https://ejemplo.com/imagen.jpg"
-            class="image-url-input"
-          />
-          <button type="button" class="add-url-btn" (click)="addImageUrl()">Agregar</button>
-        </div>
-      }
-    </div>
-
-    @if (needsContentLinker()) {
-      <div class="content-linker">
-        @if (form.controls.type.value === 'NEW_NOVEL' || form.controls.type.value === 'NEW_CHAPTER') {
-          <app-custom-select
-            [options]="novelOptions"
-            [value]="selectedNovelId() || ''"
-            [placeholder]="'Selecciona novela'"
-            (valueChange)="selectNovel($event)"
-          />
-        }
-        @if (form.controls.type.value === 'NEW_CHAPTER' && selectedNovelChapters().length) {
-          <app-custom-select
-            [options]="chapterOptions"
-            [value]="selectedChapterId() || ''"
-            [placeholder]="'Selecciona capitulo'"
-            (valueChange)="selectChapter($event)"
-          />
-        }
-        @if (form.controls.type.value === 'WORLD_UPDATE') {
-          <app-custom-select
-            [options]="worldOptions"
-            [value]="selectedWorldId() || ''"
-            [placeholder]="'Selecciona mundo'"
-            (valueChange)="selectWorld($event)"
-          />
-        }
-        @if (form.controls.type.value === 'NEW_CHARACTER') {
-          <div class="character-picker">
-            @for (char of myCharacters(); track char.id) {
-              <label class="char-option">
-                <input
-                  type="checkbox"
-                  [checked]="selectedCharacterIds().includes(char.id)"
-                  (change)="toggleCharacter(char.id)"
-                />
-                {{ char.name }}
-              </label>
-            }
-          </div>
-        }
+        <button type="submit" [disabled]="form.invalid || publishing()" data-testid="publish-post">
+          {{ publishing() ? ('post.publishing' | translate) : ('post.publish' | translate) }}
+        </button>
       </div>
+    </form>
+
+    @if (error()) {
+      <app-error-message [message]="error()! | translate" />
     }
-
-    <div class="composer-actions">
-      <label>
-        <span>{{ 'feed.title' | translate }}</span>
-        <app-custom-select
-          [options]="postTypeOptions"
-          [value]="form.controls.type.value"
-          (valueChange)="selectPostType($event)"
-        />
-      </label>
-
-      <button type="submit" [disabled]="form.invalid || publishing()" data-testid="publish-post">
-        {{ publishing() ? ('post.publishing' | translate) : ('post.publish' | translate) }}
-      </button>
-    </div>
-  </form>
-
-  @if (error()) {
-    <app-error-message [message]="error()! | translate" />
   }
 </section>

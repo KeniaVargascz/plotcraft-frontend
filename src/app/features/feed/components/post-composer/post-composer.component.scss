@@ -8,6 +8,33 @@
   box-shadow: 0 24px 60px -36px var(--shadow);
 }
 
+.compact-view {
+  display: grid;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.compact-view h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.compact-input {
+  padding: 0.85rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  transition: border-color 0.15s;
+}
+
+.compact-input:hover {
+  border-color: var(--border-s);
+}
+
+.compact-placeholder {
+  color: var(--text-3);
+}
+
 .composer-card header {
   display: flex;
   justify-content: space-between;

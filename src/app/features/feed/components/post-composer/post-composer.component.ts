@@ -15,7 +15,10 @@ import { NovelsService } from '../../../../core/services/novels.service';
 import { WorldsService } from '../../../../core/services/worlds.service';
 import { CharactersService } from '../../../../core/services/characters.service';
 import { TagChipsInputComponent } from '../../../../shared/components/tag-chips-input/tag-chips-input.component';
-import { CustomSelectComponent, SelectOption } from '../../../../shared/components/custom-select/custom-select.component';
+import {
+  CustomSelectComponent,
+  SelectOption,
+} from '../../../../shared/components/custom-select/custom-select.component';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../../../core/services/translation.service';
 import { ErrorMessageComponent } from '../../../../shared/components/error-message/error-message.component';
@@ -64,6 +67,7 @@ export class PostComposerComponent {
   @Output() postCreated = new EventEmitter<PostModel>();
   @ViewChild('contentTextarea') contentTextarea!: ElementRef<HTMLTextAreaElement>;
 
+  readonly expanded = signal(false);
   readonly publishing = signal(false);
   readonly error = signal<string | null>(null);
   readonly postTypes: PostType[] = [
@@ -133,7 +137,10 @@ export class PostComposerComponent {
   get chapterOptions(): SelectOption[] {
     return [
       { value: '', label: 'Selecciona capitulo' },
-      ...this.selectedNovelChapters().map((c) => ({ value: c.id, label: `Cap. ${c.order}: ${c.title}` })),
+      ...this.selectedNovelChapters().map((c) => ({
+        value: c.id,
+        label: `Cap. ${c.order}: ${c.title}`,
+      })),
     ];
   }
 
@@ -310,6 +317,7 @@ export class PostComposerComponent {
           this.selectedChapterId.set(null);
           this.selectedWorldId.set(null);
           this.selectedCharacterIds.set([]);
+          this.expanded.set(false);
           this.postCreated.emit(post);
           this.publishing.set(false);
         },

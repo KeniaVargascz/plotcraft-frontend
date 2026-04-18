@@ -401,7 +401,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
       .discovery-page::-webkit-scrollbar-thumb {
         background: linear-gradient(
           180deg,
-          color-mix(in srgb, var(--accent) 52%, #f4d29b),
+          var(--accent-dim),
           color-mix(in srgb, var(--accent) 34%, var(--border))
         );
         border: 2px solid color-mix(in srgb, var(--bg-surface) 84%, transparent);
@@ -411,7 +411,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
       .discovery-page::-webkit-scrollbar-thumb:hover {
         background: linear-gradient(
           180deg,
-          color-mix(in srgb, var(--accent) 68%, #f6ddb3),
+          var(--accent),
           color-mix(in srgb, var(--accent) 46%, var(--border-s))
         );
       }
@@ -535,7 +535,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
       .rail::-webkit-scrollbar-thumb {
         background: linear-gradient(
           90deg,
-          color-mix(in srgb, var(--accent) 50%, #f3c98e),
+          var(--accent-dim),
           color-mix(in srgb, var(--accent) 30%, var(--border))
         );
         border: 2px solid color-mix(in srgb, var(--bg-surface) 86%, transparent);
@@ -545,7 +545,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
       .rail::-webkit-scrollbar-thumb:hover {
         background: linear-gradient(
           90deg,
-          color-mix(in srgb, var(--accent) 66%, #f5ddb7),
+          var(--accent),
           color-mix(in srgb, var(--accent) 42%, var(--border-s))
         );
       }
@@ -591,29 +591,20 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
         padding: 0;
         overflow: hidden;
         border-radius: 1.25rem;
-        border: 1px solid color-mix(in srgb, var(--border) 86%, rgba(255, 255, 255, 0.06));
-        background: color-mix(in srgb, var(--bg-card) 94%, #0c1218 6%);
-        box-shadow: 0 18px 36px rgba(7, 10, 16, 0.14);
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        box-shadow: 0 18px 36px var(--shadow);
       }
 
       .release-strip {
         height: 0.35rem;
       }
 
-      .release-tone-0 {
-        background: linear-gradient(90deg, #6b7cff, #8ea6ff);
-      }
-
-      .release-tone-1 {
-        background: linear-gradient(90deg, #bc7f5a, #dfaf7f);
-      }
-
-      .release-tone-2 {
-        background: linear-gradient(90deg, #4f9d76, #79c89e);
-      }
-
+      .release-tone-0,
+      .release-tone-1,
+      .release-tone-2,
       .release-tone-3 {
-        background: linear-gradient(90deg, #8e5bbd, #b98cdf);
+        background: linear-gradient(90deg, var(--accent-dim), var(--accent));
       }
 
       .release-head,
@@ -663,9 +654,9 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
         min-height: 1.65rem;
         padding: 0.18rem 0.6rem;
         border-radius: 999px;
-        border: 1px solid rgba(93, 184, 122, 0.3);
-        background: rgba(39, 74, 51, 0.24);
-        color: #7ed39b;
+        border: 1px solid var(--border-s);
+        background: var(--accent-glow);
+        color: var(--accent-text);
         font-size: 0.72rem;
         font-weight: 700;
         line-height: 1.3;
@@ -684,8 +675,8 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
         margin: 0 1rem 1rem;
         padding: 0.9rem 0.95rem;
         border-radius: 1rem;
-        background: color-mix(in srgb, var(--bg-surface) 82%, #0c1218 18%);
-        border: 1px solid color-mix(in srgb, var(--border) 82%, rgba(255, 255, 255, 0.04));
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
       }
 
       .release-label {
@@ -719,7 +710,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
         gap: 0.9rem;
         padding-top: 0.78rem;
         padding-bottom: 0.9rem;
-        border-top: 1px solid color-mix(in srgb, var(--border) 82%, rgba(255, 255, 255, 0.04));
+        border-top: 1px solid var(--border);
       }
 
       .release-meta {

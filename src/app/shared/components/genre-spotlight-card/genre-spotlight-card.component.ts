@@ -57,20 +57,11 @@ import { GenreLabelPipe } from '../../pipes/genre-label.pipe';
         background: color-mix(in srgb, var(--bg-card) 82%, var(--accent-glow));
       }
 
-      .genre-tone-0 .genre-accent {
-        background: linear-gradient(180deg, #6b7cff, #8ea6ff);
-      }
-
-      .genre-tone-1 .genre-accent {
-        background: linear-gradient(180deg, #4f9d76, #79c89e);
-      }
-
-      .genre-tone-2 .genre-accent {
-        background: linear-gradient(180deg, #8e5bbd, #b98cdf);
-      }
-
+      .genre-tone-0 .genre-accent,
+      .genre-tone-1 .genre-accent,
+      .genre-tone-2 .genre-accent,
       .genre-tone-3 .genre-accent {
-        background: linear-gradient(180deg, #bc7f5a, #dfaf7f);
+        background: linear-gradient(180deg, var(--accent-dim), var(--accent));
       }
 
       .genre-accent {

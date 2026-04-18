@@ -83,9 +83,9 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
         height: 100%;
         border-radius: 1.3rem;
         overflow: hidden;
-        border: 1px solid color-mix(in srgb, var(--border) 86%, rgba(255, 255, 255, 0.06));
-        background: color-mix(in srgb, var(--bg-card) 94%, #0d1117 6%);
-        box-shadow: 0 22px 42px rgba(7, 10, 16, 0.16);
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        box-shadow: 0 22px 42px var(--shadow);
       }
 
       .cover {
@@ -105,20 +105,11 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
         display: block;
       }
 
-      .cover-tone-0 {
-        background: #181e2e;
-      }
-
-      .cover-tone-1 {
-        background: #181e1c;
-      }
-
-      .cover-tone-2 {
-        background: #20181e;
-      }
-
+      .cover-tone-0,
+      .cover-tone-1,
+      .cover-tone-2,
       .cover-tone-3 {
-        background: #1e1a10;
+        background: var(--bg-elevated);
       }
 
       .cover-lines {
@@ -134,20 +125,11 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
         opacity: 0.04;
       }
 
-      .cover-tone-0 .cover-lines {
-        color: #7b8fc2;
-      }
-
-      .cover-tone-1 .cover-lines {
-        color: #5da88c;
-      }
-
-      .cover-tone-2 .cover-lines {
-        color: #9b72c0;
-      }
-
+      .cover-tone-0 .cover-lines,
+      .cover-tone-1 .cover-lines,
+      .cover-tone-2 .cover-lines,
       .cover-tone-3 .cover-lines {
-        color: #c2b45a;
+        color: var(--accent-text);
       }
 
       .cover-pattern {
@@ -169,20 +151,11 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
           serif;
       }
 
-      .cover-tone-0 .cover-initial {
-        color: #7b8fc2;
-      }
-
-      .cover-tone-1 .cover-initial {
-        color: #5da88c;
-      }
-
-      .cover-tone-2 .cover-initial {
-        color: #9b72c0;
-      }
-
+      .cover-tone-0 .cover-initial,
+      .cover-tone-1 .cover-initial,
+      .cover-tone-2 .cover-initial,
       .cover-tone-3 .cover-initial {
-        color: #c2b45a;
+        color: var(--accent-text);
       }
 
       .type-badge {
@@ -192,9 +165,9 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
         z-index: 2;
         padding: 0.22rem 0.55rem;
         border-radius: 0.4rem;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: rgba(0, 0, 0, 0.4);
-        color: rgba(255, 255, 255, 0.64);
+        border: 1px solid var(--border);
+        background: var(--bg-base);
+        color: var(--text-2);
         font-size: 0.6rem;
         font-weight: 700;
         letter-spacing: 0.08em;
@@ -275,7 +248,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
       .tag-pill {
         padding: 0.22rem 0.58rem;
         border-radius: 999px;
-        border: 1px solid color-mix(in srgb, var(--border) 86%, rgba(255, 255, 255, 0.06));
+        border: 1px solid var(--border);
         background: color-mix(in srgb, var(--bg-surface) 78%, transparent);
         color: var(--text-2);
         font-size: 0.7rem;
@@ -288,7 +261,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
         gap: 0.8rem;
         padding: 0.9rem 1rem 1rem;
         margin-top: 0.9rem;
-        border-top: 1px solid color-mix(in srgb, var(--border) 82%, rgba(255, 255, 255, 0.04));
+        border-top: 1px solid var(--border);
         flex-wrap: wrap;
       }
 
@@ -312,7 +285,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
       .divider {
         width: 1px;
         height: 0.8rem;
-        background: color-mix(in srgb, var(--border) 82%, rgba(255, 255, 255, 0.04));
+        background: var(--border);
       }
 
       .stat-icon {
@@ -375,10 +348,10 @@ export class WorldCardComponent {
 
   patternSvg = computed(() => {
     const patterns = [
-      `<svg viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><circle cx="80" cy="65" r="55" stroke="#7B8FC2" stroke-width="0.5"/><circle cx="80" cy="65" r="35" stroke="#7B8FC2" stroke-width="0.5"/><circle cx="320" cy="65" r="70" stroke="#7B8FC2" stroke-width="0.5"/><circle cx="320" cy="65" r="40" stroke="#7B8FC2" stroke-width="0.5"/><line x1="0" y1="65" x2="400" y2="65" stroke="#7B8FC2" stroke-width="0.5"/><line x1="200" y1="0" x2="200" y2="130" stroke="#7B8FC2" stroke-width="0.5"/></svg>`,
-      `<svg viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><polygon points="200,10 380,120 20,120" stroke="#5DA88C" stroke-width="0.5" fill="none"/><polygon points="200,35 340,110 60,110" stroke="#5DA88C" stroke-width="0.5" fill="none"/><polygon points="200,60 300,110 100,110" stroke="#5DA88C" stroke-width="0.5" fill="none"/><line x1="20" y1="0" x2="200" y2="130" stroke="#5DA88C" stroke-width="0.4"/><line x1="380" y1="0" x2="200" y2="130" stroke="#5DA88C" stroke-width="0.4"/></svg>`,
-      `<svg viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect x="60" y="20" width="80" height="90" stroke="#9B72C0" stroke-width="0.5" fill="none"/><rect x="80" y="35" width="40" height="60" stroke="#9B72C0" stroke-width="0.5" fill="none"/><rect x="260" y="15" width="80" height="90" stroke="#9B72C0" stroke-width="0.5" fill="none"/><rect x="275" y="30" width="50" height="65" stroke="#9B72C0" stroke-width="0.5" fill="none"/><line x1="140" y1="65" x2="260" y2="65" stroke="#9B72C0" stroke-width="0.5"/></svg>`,
-      `<svg viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><line x1="0" y1="0" x2="400" y2="130" stroke="#C2B45A" stroke-width="0.5"/><line x1="0" y1="65" x2="400" y2="65" stroke="#C2B45A" stroke-width="0.5"/><line x1="400" y1="0" x2="0" y2="130" stroke="#C2B45A" stroke-width="0.5"/><line x1="133" y1="0" x2="133" y2="130" stroke="#C2B45A" stroke-width="0.4"/><line x1="266" y1="0" x2="266" y2="130" stroke="#C2B45A" stroke-width="0.4"/><circle cx="200" cy="65" r="40" stroke="#C2B45A" stroke-width="0.5"/></svg>`,
+      `<svg viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><circle cx="80" cy="65" r="55" stroke="currentColor" stroke-width="0.5"/><circle cx="80" cy="65" r="35" stroke="currentColor" stroke-width="0.5"/><circle cx="320" cy="65" r="70" stroke="currentColor" stroke-width="0.5"/><circle cx="320" cy="65" r="40" stroke="currentColor" stroke-width="0.5"/><line x1="0" y1="65" x2="400" y2="65" stroke="currentColor" stroke-width="0.5"/><line x1="200" y1="0" x2="200" y2="130" stroke="currentColor" stroke-width="0.5"/></svg>`,
+      `<svg viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><polygon points="200,10 380,120 20,120" stroke="currentColor" stroke-width="0.5" fill="none"/><polygon points="200,35 340,110 60,110" stroke="currentColor" stroke-width="0.5" fill="none"/><polygon points="200,60 300,110 100,110" stroke="currentColor" stroke-width="0.5" fill="none"/><line x1="20" y1="0" x2="200" y2="130" stroke="currentColor" stroke-width="0.4"/><line x1="380" y1="0" x2="200" y2="130" stroke="currentColor" stroke-width="0.4"/></svg>`,
+      `<svg viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><rect x="60" y="20" width="80" height="90" stroke="currentColor" stroke-width="0.5" fill="none"/><rect x="80" y="35" width="40" height="60" stroke="currentColor" stroke-width="0.5" fill="none"/><rect x="260" y="15" width="80" height="90" stroke="currentColor" stroke-width="0.5" fill="none"/><rect x="275" y="30" width="50" height="65" stroke="currentColor" stroke-width="0.5" fill="none"/><line x1="140" y1="65" x2="260" y2="65" stroke="currentColor" stroke-width="0.5"/></svg>`,
+      `<svg viewBox="0 0 400 130" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice"><line x1="0" y1="0" x2="400" y2="130" stroke="currentColor" stroke-width="0.5"/><line x1="0" y1="65" x2="400" y2="65" stroke="currentColor" stroke-width="0.5"/><line x1="400" y1="0" x2="0" y2="130" stroke="currentColor" stroke-width="0.5"/><line x1="133" y1="0" x2="133" y2="130" stroke="currentColor" stroke-width="0.4"/><line x1="266" y1="0" x2="266" y2="130" stroke="currentColor" stroke-width="0.4"/><circle cx="200" cy="65" r="40" stroke="currentColor" stroke-width="0.5"/></svg>`,
     ];
 
     return patterns[this.toneIndex()];

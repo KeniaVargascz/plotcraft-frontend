@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { NovelSummary } from '../../../core/models/novel.model';
 import { AuthGateService } from '../../../core/services/auth-gate.service';
 import { GenreLocalizationService } from '../../../core/services/genre-localization.service';
+import { TranslationService } from '../../../core/services/translation.service';
 import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
 
 @Component({
@@ -16,9 +17,6 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         <a class="cover" [class]="coverClass()" (click)="onDetailClick()">
           <span class="cover-texture"></span>
           <span class="cover-letter">{{ novel().title.charAt(0) }}</span>
-          @if (novel().language?.code && novel().language?.code !== 'es') {
-            <span class="lang-badge">{{ novel().language?.code?.toUpperCase() }}</span>
-          }
         </a>
 
         <div class="body">
@@ -35,15 +33,25 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
               @{{ novel().author.username }}
             </a>
           </p>
-          <p class="synopsis">{{ novel().synopsis || 'Sin sinopsis.' }}</p>
-
-          <div class="tags-row">
-            @for (label of visibleGenreLabels(); track label) {
-              <span class="tag-chip">{{ label }}</span>
-            }
-          </div>
+          @if (novel().language) {
+            <span class="lang-label">{{ novel().language!.name }}</span>
+          }
+          @if (!synopsisOpen()) {
+            <p class="synopsis">{{ novel().synopsis || 'Sin sinopsis.' }}</p>
+          }
         </div>
       </div>
+
+      @if (synopsisOpen()) {
+        <div class="synopsis-full">
+          <p>{{ novel().synopsis }}</p>
+        </div>
+      }
+      @if (novel().synopsis && novel().synopsis!.length > 120) {
+        <button type="button" class="synopsis-toggle" (click)="synopsisOpen.set(!synopsisOpen())">
+          {{ synopsisOpen() ? 'Ver menos' : 'Ver mas' }}
+        </button>
+      }
 
       @if (hasExpandableTags()) {
         <button class="tags-toggle" type="button" (click)="toggleTags()">
@@ -81,7 +89,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
       }
 
       <footer class="card-footer">
-        <div class="stats-group">
+        <div class="footer-row footer-stats">
           <span class="stat-item">
             <span class="stat-value">{{ publishedChaptersCount() }}</span>
             <span class="stat-label">caps</span>
@@ -89,7 +97,12 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
           <span class="divider"></span>
           <span class="stat-item">
             <span class="stat-value">{{ novel().stats.likesCount }}</span>
-            <span class="stat-label">likes</span>
+            <span class="stat-label">me gusta</span>
+          </span>
+          <span class="divider"></span>
+          <span class="stat-item">
+            <span class="stat-value">{{ novel().stats.votesCount }}</span>
+            <span class="stat-label">votos</span>
           </span>
           <span class="divider"></span>
           <span class="stat-item">
@@ -97,7 +110,10 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
             <span class="stat-label">vistas</span>
           </span>
         </div>
-        <span class="card-date">{{ novel().updatedAt | date: 'shortDate' }}</span>
+        <div class="footer-row footer-dates">
+          <span class="card-date">Publicada: {{ novel().createdAt | date: 'MM/dd/yyyy' }}</span>
+          <span class="card-date">Actualizada: {{ novel().updatedAt | date: 'MM/dd/yyyy' }}</span>
+        </div>
       </footer>
     </article>
   `,
@@ -113,10 +129,10 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         grid-template-rows: minmax(0, 1fr) auto auto;
         height: 100%;
         border-radius: 1.35rem;
-        background: color-mix(in srgb, var(--bg-card) 92%, #0b0f14 8%);
-        border: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        background: var(--bg-card);
+        border: 1px solid var(--border);
         overflow: hidden;
-        box-shadow: 0 24px 44px rgba(7, 10, 16, 0.18);
+        box-shadow: 0 24px 44px var(--shadow);
       }
 
       .card-top {
@@ -142,24 +158,12 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         cursor: pointer;
       }
 
-      .cover-tone-0 {
-        background: linear-gradient(180deg, #1e2535, #121927);
-        color: #89a0db;
-      }
-
-      .cover-tone-1 {
-        background: linear-gradient(180deg, #1d2f2a, #101c18);
-        color: #67ba98;
-      }
-
-      .cover-tone-2 {
-        background: linear-gradient(180deg, #2d2033, #1a111f);
-        color: #b589d7;
-      }
-
+      .cover-tone-0,
+      .cover-tone-1,
+      .cover-tone-2,
       .cover-tone-3 {
-        background: linear-gradient(180deg, #30261d, #1d1510);
-        color: #d2a56a;
+        background: linear-gradient(180deg, var(--bg-elevated), var(--bg-surface));
+        color: var(--accent-text);
       }
 
       .cover-texture {
@@ -175,18 +179,9 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         );
       }
 
-      .lang-badge {
-        position: absolute;
-        top: 0.35rem;
-        right: 0.35rem;
-        z-index: 2;
-        padding: 0.12rem 0.4rem;
-        border-radius: 0.35rem;
-        background: rgba(0, 0, 0, 0.65);
-        color: #fff;
-        font-size: 0.6rem;
-        font-weight: 700;
-        letter-spacing: 0.05em;
+      .lang-label {
+        color: var(--text-3);
+        font-size: 0.72rem;
       }
 
       .cover-letter {
@@ -232,33 +227,19 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         border: 1px solid transparent;
       }
 
-      .badge-status-draft {
-        background: rgba(176, 138, 82, 0.12);
-        border-color: rgba(176, 138, 82, 0.28);
-        color: #d4ac6b;
-      }
-
-      .badge-status-in-progress {
-        background: rgba(91, 175, 214, 0.12);
-        border-color: rgba(91, 175, 214, 0.28);
-        color: #77c4ea;
-      }
-
-      .badge-status-completed {
-        background: rgba(77, 184, 138, 0.12);
-        border-color: rgba(77, 184, 138, 0.28);
-        color: #63d4a2;
-      }
-
-      .badge-status-archived {
-        background: rgba(148, 161, 189, 0.12);
-        border-color: rgba(148, 161, 189, 0.28);
-        color: #bac6dc;
+      .badge-status-draft,
+      .badge-status-in-progress,
+      .badge-status-completed,
+      .badge-status-archived,
+      .badge-status-hiatus {
+        background: var(--accent-glow);
+        border-color: var(--border-s);
+        color: var(--accent-text);
       }
 
       .badge-rating {
         background: color-mix(in srgb, var(--bg) 86%, rgba(255, 255, 255, 0.03));
-        border: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        border: 1px solid var(--border);
         color: var(--text-2);
       }
 
@@ -306,6 +287,30 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         min-height: calc(1.45em * 2);
       }
 
+      .synopsis-full {
+        padding: 8px 2rem;
+      }
+
+      .synopsis-full p {
+        margin: 0;
+        color: var(--text-2);
+        font-size: 0.84rem;
+        line-height: 1.55;
+        text-align: justify;
+      }
+
+      .synopsis-toggle {
+        background: none;
+        border: none;
+        color: var(--accent-text);
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 0 2rem 1rem;
+        min-height: unset;
+        justify-self: end;
+      }
+
       .tags-row {
         display: flex;
         flex-wrap: wrap;
@@ -322,7 +327,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         max-width: 100%;
         padding: 0.2rem 0.6rem;
         border-radius: 999px;
-        border: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        border: 1px solid var(--border);
         background: color-mix(in srgb, var(--bg) 76%, transparent);
         color: var(--text-2);
         font-size: 0.72rem;
@@ -341,7 +346,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         padding: 0.75rem 0.95rem;
         background: transparent;
         border: 0;
-        border-top: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        border-top: 1px solid var(--border);
         color: var(--text-2);
         cursor: pointer;
       }
@@ -367,7 +372,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         padding: 0 0.35rem;
         border-radius: 999px;
         background: color-mix(in srgb, var(--bg) 82%, transparent);
-        border: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        border: 1px solid var(--border);
         font-size: 0.68rem;
       }
 
@@ -387,7 +392,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         flex-wrap: wrap;
         gap: 0.45rem;
         padding: 0.85rem 0.95rem 1rem;
-        border-top: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        border-top: 1px solid var(--border);
         background: color-mix(in srgb, var(--bg) 78%, transparent);
       }
 
@@ -415,68 +420,69 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         white-space: nowrap;
       }
 
-      .tag-pill-genre {
-        background: rgba(91, 175, 214, 0.12);
-        border-color: rgba(91, 175, 214, 0.24);
-        color: #77c4ea;
-      }
-
+      .tag-pill-genre,
       .tag-pill-tag {
-        background: rgba(181, 137, 215, 0.12);
-        border-color: rgba(181, 137, 215, 0.24);
-        color: #c29be0;
+        background: var(--accent-glow);
+        border-color: var(--border-s);
+        color: var(--accent-text);
       }
 
       .tag-pill-warning {
-        background: rgba(214, 120, 120, 0.12);
-        border-color: rgba(214, 120, 120, 0.24);
-        color: #e49d9d;
+        background: color-mix(in srgb, var(--danger) 12%, transparent);
+        border-color: color-mix(in srgb, var(--danger) 24%, transparent);
+        color: var(--danger);
       }
 
       .card-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.65rem;
-        min-height: 3.1rem;
-        padding: 0.8rem 0.95rem 0.9rem;
-        border-top: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        display: grid;
+        gap: 0;
+        border-top: 1px solid var(--border);
       }
 
-      .stats-group {
+      .footer-row {
         display: flex;
         align-items: center;
+        padding: 0.6rem 0.95rem;
+      }
+
+      .footer-stats {
         gap: 0.55rem;
-        min-width: 0;
+        flex-wrap: wrap;
+      }
+
+      .footer-dates {
+        gap: 0.75rem;
+        border-top: 1px solid var(--border);
       }
 
       .stat-item {
         display: inline-flex;
         align-items: baseline;
-        gap: 0.28rem;
+        gap: 0.22rem;
         min-width: 0;
       }
 
       .stat-value {
         color: var(--text-1);
-        font-size: 0.83rem;
+        font-size: 0.8rem;
         font-weight: 700;
       }
 
-      .stat-label,
-      .card-date {
+      .stat-label {
         color: var(--text-3);
         font-size: 0.72rem;
       }
 
       .divider {
         width: 1px;
-        height: 0.9rem;
-        background: color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
+        height: 0.75rem;
+        background: var(--border);
         flex-shrink: 0;
       }
 
       .card-date {
+        color: var(--text-3);
+        font-size: 0.68rem;
         white-space: nowrap;
       }
 
@@ -506,8 +512,10 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
 export class NovelCardComponent {
   private readonly authGate = inject(AuthGateService);
   private readonly genreLocalization = inject(GenreLocalizationService);
+  private readonly t = inject(TranslationService);
   readonly novel = input.required<NovelSummary>();
   readonly tagsOpen = signal(false);
+  readonly synopsisOpen = signal(false);
 
   readonly genres = computed(() => this.novel().genres ?? []);
   readonly tags = computed(() => this.novel().tags ?? []);
@@ -543,28 +551,11 @@ export class NovelCardComponent {
   }
 
   private formatStatusLabel(status: NovelSummary['status']): string {
-    switch (status) {
-      case 'IN_PROGRESS':
-        return 'En progreso';
-      case 'COMPLETED':
-        return 'Completada';
-      case 'ARCHIVED':
-        return 'Archivada';
-      case 'DRAFT':
-      default:
-        return 'Borrador';
-    }
+    return this.t.translate('novel.status.' + status) || status;
   }
 
   private formatRatingLabel(rating: NovelSummary['rating']): string {
-    switch (rating) {
-      case 'T':
-        return 'T';
-      case 'EXPLICIT':
-        return '18+';
-      default:
-        return rating;
-    }
+    return this.t.translate('novel.ratingShort.' + rating) || rating;
   }
 
   private coverToneIndex(seed: string): number {

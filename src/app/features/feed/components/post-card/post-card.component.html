@@ -142,7 +142,7 @@
 
   @if (commentsOpen()) {
     @if (post.commentsEnabled) {
-      <app-comment-list [post]="post" />
+      <app-comment-list [post]="post" (commentCountChange)="onCommentCountChange($event)" />
     } @else {
       <p class="comments-disabled">{{ 'post.commentsDisabled' | translate }}</p>
     }

@@ -4,7 +4,7 @@ import { RomanceGenreCatalogItem } from './romance-genre.model';
 import { CharacterSummary } from './character.model';
 import { WorldSummary } from './world.model';
 
-export type NovelStatus = 'DRAFT' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED';
+export type NovelStatus = 'DRAFT' | 'IN_PROGRESS' | 'COMPLETED' | 'ARCHIVED' | 'HIATUS';
 export type NovelRating = 'G' | 'PG' | 'T' | 'R' | 'EXPLICIT';
 export type NovelType = 'ORIGINAL' | 'FANFIC';
 

@@ -1,4 +1,13 @@
-import { Component, DestroyRef, Input, OnInit, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommentModel } from '../../../../core/models/comment.model';
@@ -22,6 +31,7 @@ export class CommentListComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   @Input({ required: true }) post!: PostModel;
+  @Output() commentCountChange = new EventEmitter<number>();
 
   readonly loading = signal(true);
   readonly error = signal(false);
@@ -43,16 +53,19 @@ export class CommentListComponent implements OnInit {
     this.loading.set(true);
     this.error.set(false);
 
-    this.commentsService.list(this.post.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (response) => {
-        this.comments.set(response.data);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.error.set(true);
-        this.loading.set(false);
-      },
-    });
+    this.commentsService
+      .list(this.post.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.comments.set(response.data);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.error.set(true);
+          this.loading.set(false);
+        },
+      });
   }
 
   createComment() {
@@ -61,21 +74,30 @@ export class CommentListComponent implements OnInit {
     }
 
     this.creating.set(true);
-    this.commentsService.create(this.post.id, this.form.getRawValue()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (comment) => {
-        this.comments.update((items) => [...items, comment]);
-        this.form.reset({ content: '' });
-        this.creating.set(false);
-      },
-      error: () => {
-        this.creating.set(false);
-      },
-    });
+    this.commentsService
+      .create(this.post.id, this.form.getRawValue())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (comment) => {
+          this.comments.update((items) => [...items, comment]);
+          this.commentCountChange.emit(1);
+          this.form.reset({ content: '' });
+          this.creating.set(false);
+        },
+        error: () => {
+          this.creating.set(false);
+        },
+      });
   }
 
   updateComment(updatedComment: CommentModel) {
-    this.comments.update((items) =>
-      items.map((comment) => (comment.id === updatedComment.id ? updatedComment : comment)),
-    );
+    if (updatedComment.isDeleted) {
+      this.comments.update((items) => items.filter((c) => c.id !== updatedComment.id));
+      this.commentCountChange.emit(-1);
+    } else {
+      this.comments.update((items) =>
+        items.map((comment) => (comment.id === updatedComment.id ? updatedComment : comment)),
+      );
+    }
   }
 }

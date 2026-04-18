@@ -135,4 +135,13 @@ export class PostCardComponent {
     this.commentsOpen.update((value) => !value);
   }
 
+  onCommentCountChange(delta: number) {
+    this.postChange.emit({
+      ...this.post,
+      stats: {
+        ...this.post.stats,
+        commentsCount: Math.max(0, this.post.stats.commentsCount + delta),
+      },
+    });
+  }
 }

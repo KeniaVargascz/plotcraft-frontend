@@ -71,17 +71,12 @@ import { COMMUNITY_TYPE_LABELS, Community } from '../../models/community.model';
         font-weight: 700;
         text-transform: uppercase;
       }
-      .type-private {
-        background: rgba(120, 120, 120, 0.85);
-        color: #fff;
-      }
-      .type-public {
-        background: rgba(80, 140, 220, 0.9);
-        color: #fff;
-      }
+      .type-private,
+      .type-public,
       .type-fandom {
-        background: rgba(150, 90, 200, 0.9);
-        color: #fff;
+        background: var(--accent-glow);
+        border: 1px solid var(--border-s);
+        color: var(--accent-text);
       }
       .body {
         padding: 0.85rem;

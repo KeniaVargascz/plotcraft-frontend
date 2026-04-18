@@ -5,7 +5,7 @@ import { Genre } from '../../core/models/genre.model';
 @Pipe({
   name: 'genreLabel',
   standalone: true,
-  pure: false,
+  pure: true,
 })
 export class GenreLabelPipe implements PipeTransform {
   private readonly genreLocalization = inject(GenreLocalizationService);

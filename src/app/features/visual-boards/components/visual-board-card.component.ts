@@ -11,11 +11,11 @@ import { VisualBoardSummary } from '../models/visual-board.model';
     <article class="card" [class.mini]="mini">
       <a class="cover" [routerLink]="['/referencias-visuales', board.id]">
         @if (board.coverUrl) {
-          <img [src]="board.coverUrl" [alt]="board.title" />
+          <img [src]="board.coverUrl" [alt]="board.title" loading="lazy" />
         } @else if (board.previewImages?.length) {
           <div class="collage">
             @for (image of visiblePreviewImages(); track image) {
-              <img [src]="image" alt="" />
+              <img [src]="image" alt="" loading="lazy" />
             }
           </div>
         } @else {

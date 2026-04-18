@@ -11,7 +11,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
     <article class="world-card">
       <a class="cover" [class]="world().coverUrl ? '' : coverClass()" (click)="onDetailClick()">
         @if (world().coverUrl) {
-          <img [src]="world().coverUrl" [alt]="world().name" class="cover-img" />
+          <img [src]="world().coverUrl" [alt]="world().name" class="cover-img" loading="lazy" />
         } @else {
           <span class="cover-lines"></span>
           <span class="cover-pattern" [innerHTML]="patternSvg()"></span>

@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
@@ -37,6 +38,7 @@ import { SuggestionListComponent } from '../components/suggestion-list/suggestio
   ],
   templateUrl: './feed-page.component.html',
   styleUrl: './feed-page.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FeedPageComponent implements AfterViewInit, OnDestroy {
   private readonly feedService = inject(FeedService);
@@ -134,9 +136,17 @@ export class FeedPageComponent implements AfterViewInit, OnDestroy {
       .follow(username)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
-          this.suggestions.update((items) => items.filter((item) => item.username !== username));
+        error: () => {
+          this.error.set(true);
         },
+      });
+  }
+
+  unfollowSuggestion(username: string) {
+    this.followsService
+      .unfollow(username)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         error: () => {
           this.error.set(true);
         },

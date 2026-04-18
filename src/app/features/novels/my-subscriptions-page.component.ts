@@ -31,7 +31,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
             <li class="row">
               <div class="cover">
                 @if (n.coverUrl) {
-                  <img [src]="n.coverUrl" [alt]="n.title" />
+                  <img [src]="n.coverUrl" [alt]="n.title" loading="lazy" />
                 } @else {
                   <span>{{ n.title.charAt(0) }}</span>
                 }

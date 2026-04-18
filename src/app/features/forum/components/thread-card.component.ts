@@ -93,6 +93,7 @@ import { CategoryBadgeComponent } from './category-badge.component';
               [src]="thread().author.avatarUrl"
               [alt]="thread().author.username"
               class="avatar"
+              loading="lazy"
             />
           } @else {
             <span class="avatar placeholder">{{ thread().author.username[0] | uppercase }}</span>

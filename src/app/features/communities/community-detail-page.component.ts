@@ -45,7 +45,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         <div class="banner" [style.background-image]="bannerBg()">
           <div class="cover">
             @if (c.coverUrl) {
-              <img [src]="c.coverUrl" [alt]="c.name" />
+              <img [src]="c.coverUrl" [alt]="c.name" loading="lazy" />
             } @else {
               <span>{{ c.name.charAt(0) }}</span>
             }
@@ -122,7 +122,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
                         <a [routerLink]="['/novelas', n.slug]" class="rl-link">
                           <div class="rl-cover">
                             @if (n.coverUrl) {
-                              <img [src]="n.coverUrl" [alt]="n.title" />
+                              <img [src]="n.coverUrl" [alt]="n.title" loading="lazy" />
                             } @else {
                               <span>{{ n.title.charAt(0) }}</span>
                             }
@@ -210,7 +210,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
                           <li class="suggestion-row">
                             <div class="avatar">
                               @if (s.avatarUrl) {
-                                <img [src]="s.avatarUrl" [alt]="s.name" />
+                                <img [src]="s.avatarUrl" [alt]="s.name" loading="lazy" />
                               } @else {
                                 <span>{{ s.name.charAt(0) }}</span>
                               }
@@ -313,7 +313,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
                 <a class="owner-link" [routerLink]="['/perfil', c.owner.username]">
                   <div class="avatar">
                     @if (c.owner.avatarUrl) {
-                      <img [src]="c.owner.avatarUrl" [alt]="c.owner.displayName" />
+                      <img [src]="c.owner.avatarUrl" [alt]="c.owner.displayName" loading="lazy" />
                     } @else {
                       <span>{{ c.owner.displayName.charAt(0) }}</span>
                     }
@@ -332,7 +332,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
                 <a class="novel-link" [routerLink]="['/novelas', c.linkedNovel.slug]">
                   <div class="novel-cover">
                     @if (c.linkedNovel.coverUrl) {
-                      <img [src]="c.linkedNovel.coverUrl" [alt]="c.linkedNovel.title" />
+                      <img [src]="c.linkedNovel.coverUrl" [alt]="c.linkedNovel.title" loading="lazy" />
                     } @else {
                       <span>{{ c.linkedNovel.title.charAt(0) }}</span>
                     }

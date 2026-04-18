@@ -21,7 +21,7 @@ import { SeriesService } from './services/series.service';
         <header class="hero">
           <div class="cover">
             @if (s.coverUrl) {
-              <img [src]="s.coverUrl" [alt]="s.title" />
+              <img [src]="s.coverUrl" [alt]="s.title" loading="lazy" />
             } @else {
               <span>{{ s.title.charAt(0) }}</span>
             }
@@ -62,7 +62,7 @@ import { SeriesService } from './services/series.service';
                   <span class="order-label">Libro {{ n.orderIndex }}</span>
                   <div class="novel-cover">
                     @if (n.coverUrl) {
-                      <img [src]="n.coverUrl" [alt]="n.title" />
+                      <img [src]="n.coverUrl" [alt]="n.title" loading="lazy" />
                     } @else {
                       <span>{{ n.title.charAt(0) }}</span>
                     }

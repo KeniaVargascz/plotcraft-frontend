@@ -1,5 +1,6 @@
 import {
   Component,
+  DestroyRef,
   ElementRef,
   EventEmitter,
   Output,
@@ -8,6 +9,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PostModel, PostType } from '../../../../core/models/post.model';
 import { PostsService } from '../../../../core/services/posts.service';
@@ -63,6 +65,7 @@ export class PostComposerComponent {
   private readonly novelsService = inject(NovelsService);
   private readonly worldsService = inject(WorldsService);
   private readonly charactersService = inject(CharactersService);
+  private readonly destroyRef = inject(DestroyRef);
 
   @Output() postCreated = new EventEmitter<PostModel>();
   @ViewChild('contentTextarea') contentTextarea!: ElementRef<HTMLTextAreaElement>;
@@ -208,7 +211,7 @@ export class PostComposerComponent {
 
   private loadContentData() {
     this.contentDataLoaded = true;
-    this.novelsService.listMine({ limit: 50 }).subscribe({
+    this.novelsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         const novels: ComposerNovel[] = res.data.map((n) => ({
           id: n.id,
@@ -225,7 +228,7 @@ export class PostComposerComponent {
         this.myNovels.set(novels);
       },
     });
-    this.worldsService.listMine({ limit: 50 }).subscribe({
+    this.worldsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) =>
         this.myWorlds.set(
           res.data.map((w) => ({
@@ -235,7 +238,7 @@ export class PostComposerComponent {
           })),
         ),
     });
-    this.charactersService.listMine({ limit: 50 }).subscribe({
+    this.charactersService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) =>
         this.myCharacters.set(
           res.data.map((c) => ({
@@ -306,6 +309,7 @@ export class PostComposerComponent {
         world_id: this.selectedWorldId() ?? undefined,
         character_ids: this.selectedCharacterIds().length ? this.selectedCharacterIds() : undefined,
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (post) => {
           this.form.reset({ content: '', type: 'TEXT' });

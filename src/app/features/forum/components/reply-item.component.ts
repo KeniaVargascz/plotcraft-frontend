@@ -33,6 +33,7 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
                 [src]="reply().author.avatarUrl"
                 [alt]="reply().author.username"
                 class="avatar"
+                loading="lazy"
               />
             } @else {
               <span class="avatar placeholder">{{ reply().author.username[0].toUpperCase() }}</span>

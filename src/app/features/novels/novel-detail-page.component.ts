@@ -1,6 +1,6 @@
 import { DatePipe, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -20,7 +20,17 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
 import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/linked-visual-boards-section.component';
 import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { RelativeDatePipe } from '../../shared/pipes/relative-date.pipe';
 import { PostsService } from '../../core/services/posts.service';
+
+const EVENT_TYPE_ICONS: Record<string, string> = {
+  WORLD_EVENT: '\u{1F30D}',
+  STORY_EVENT: '\u{1F4D6}',
+  CHARACTER_ARC: '\u{1F3AD}',
+  CHAPTER_EVENT: '\u{1F4C4}',
+  LORE_EVENT: '\u{1F4DC}',
+  NOTE: '\u{1F4DD}',
+};
 
 @Component({
   selector: 'app-novel-detail-page',
@@ -37,6 +47,7 @@ import { PostsService } from '../../core/services/posts.service';
     LinkedVisualBoardsSectionComponent,
     GenreLabelPipe,
     TranslatePipe,
+    RelativeDatePipe,
   ],
   template: `
     @if (loading()) {
@@ -269,7 +280,7 @@ import { PostsService } from '../../core/services/posts.service';
               </div>
             }
 
-            @if (currentNovel.pairings?.length || pairingTags(currentNovel).length) {
+            @if (currentNovel.pairings?.length || pairingTagsList().length) {
               <div class="detail-row">
                 <span class="detail-label">Parejas</span>
                 <div class="pairings-block">
@@ -281,18 +292,18 @@ import { PostsService } from '../../core/services/posts.service';
                       {{ p.characterA.name }} × {{ p.characterB.name }}
                     </span>
                   }
-                  @for (pt of pairingTags(currentNovel); track pt) {
+                  @for (pt of pairingTagsList(); track pt) {
                     <span class="pairing-pill">{{ pt }}</span>
                   }
                 </div>
               </div>
             }
 
-            @if (nonPairingTags(currentNovel).length) {
+            @if (nonPairingTagsList().length) {
               <div class="detail-row">
                 <span class="detail-label">Etiquetas</span>
                 <div class="chips-block">
-                  @for (t of nonPairingTags(currentNovel); track t) {
+                  @for (t of nonPairingTagsList(); track t) {
                     <span class="chip chip-tag">#{{ t }}</span>
                   }
                 </div>
@@ -359,7 +370,7 @@ import { PostsService } from '../../core/services/posts.service';
                   <article class="cc-mini">
                     <div class="avatar">
                       @if (cc.avatarUrl) {
-                        <img [src]="cc.avatarUrl" [alt]="cc.name" />
+                        <img [src]="cc.avatarUrl" [alt]="cc.name" loading="lazy" />
                       } @else {
                         <span>{{ cc.name.charAt(0) }}</span>
                       }
@@ -411,7 +422,7 @@ import { PostsService } from '../../core/services/posts.service';
                 <div class="tl-events-list">
                   @for (evt of tl.events; track evt.id) {
                     <div class="tl-event-row">
-                      <span class="tl-event-icon">{{ eventTypeIcon(evt.type) }}</span>
+                      <span class="tl-event-icon">{{ eventTypeIcons[evt.type] || '\u{1F4CC}' }}</span>
                       <div class="tl-event-info">
                         <strong>{{ evt.title }}</strong>
                         @if (evt.dateLabel) {
@@ -487,7 +498,7 @@ import { PostsService } from '../../core/services/posts.service';
                         <a class="comment-author" [routerLink]="['/@' + c.author.username]">
                           {{ c.author.displayName || '@' + c.author.username }}
                         </a>
-                        <span class="comment-date">{{ relativeDate(c.createdAt) }}</span>
+                        <span class="comment-date">{{ c.createdAt | relativeDate }}</span>
                         @if (currentNovel.viewerContext?.isAuthor) {
                           <button
                             class="comment-delete"
@@ -528,7 +539,7 @@ import { PostsService } from '../../core/services/posts.service';
 
           <div class="recommend-novel-preview">
             @if (novel()?.coverUrl) {
-              <img [src]="novel()!.coverUrl!" [alt]="novel()!.title" />
+              <img [src]="novel()!.coverUrl!" [alt]="novel()!.title" loading="lazy" />
             } @else {
               <div class="preview-cover-placeholder">{{ novel()!.title.charAt(0) }}</div>
             }
@@ -1305,6 +1316,22 @@ export class NovelDetailPageComponent implements OnInit {
   readonly commentSending = signal(false);
   newComment = '';
   readonly subscribeLoading = signal(false);
+  readonly eventTypeIcons = EVENT_TYPE_ICONS;
+
+  readonly pairingTagsList = computed(() => {
+    const novel = this.novel();
+    return (novel?.tags ?? [])
+      .filter((t) => this.isPairingTag(t))
+      .map((t) => {
+        const [a, b] = t.split('/');
+        return `${this.prettifyName(a)} × ${this.prettifyName(b)}`;
+      });
+  });
+
+  readonly nonPairingTagsList = computed(() => {
+    const novel = this.novel();
+    return (novel?.tags ?? []).filter((t) => !this.isPairingTag(t));
+  });
 
   toggleSubscription() {
     const novel = this.novel();
@@ -1502,17 +1529,7 @@ export class NovelDetailPageComponent implements OnInit {
       });
   }
 
-  eventTypeIcon(type: string): string {
-    const icons: Record<string, string> = {
-      WORLD_EVENT: '\u{1F30D}',
-      STORY_EVENT: '\u{1F4D6}',
-      CHARACTER_ARC: '\u{1F3AD}',
-      CHAPTER_EVENT: '\u{1F4C4}',
-      LORE_EVENT: '\u{1F4DC}',
-      NOTE: '\u{1F4DD}',
-    };
-    return icons[type] || '\u{1F4CC}';
-  }
+  // eventTypeIcon migrado a constante EVENT_TYPE_ICONS accedida directamente en el template.
 
   romanceGenreLabel(value: string | null): string {
     return value ?? '';
@@ -1532,18 +1549,8 @@ export class NovelDetailPageComponent implements OnInit {
       .join(' ');
   }
 
-  pairingTags(novel: { tags?: string[] | null }): string[] {
-    return (novel.tags ?? [])
-      .filter((t) => this.isPairingTag(t))
-      .map((t) => {
-        const [a, b] = t.split('/');
-        return `${this.prettifyName(a)} × ${this.prettifyName(b)}`;
-      });
-  }
-
-  nonPairingTags(novel: { tags?: string[] | null }): string[] {
-    return (novel.tags ?? []).filter((t) => !this.isPairingTag(t));
-  }
+  // pairingTags / nonPairingTags migrados a computed signals (pairingTagsList, nonPairingTagsList)
+  // para evitar re-ejecución en cada ciclo de change detection.
 
   createTimeline(novelSlug: string) {
     this.timelineService.getByNovelSlug(novelSlug).subscribe({
@@ -1657,14 +1664,5 @@ export class NovelDetailPageComponent implements OnInit {
     });
   }
 
-  relativeDate(dateStr: string): string {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'ahora';
-    if (mins < 60) return `hace ${mins}m`;
-    const hours = Math.floor(mins / 60);
-    if (hours < 24) return `hace ${hours}h`;
-    const days = Math.floor(hours / 24);
-    return `hace ${days}d`;
-  }
+  // relativeDate migrado a RelativeDatePipe (pure) en el template.
 }

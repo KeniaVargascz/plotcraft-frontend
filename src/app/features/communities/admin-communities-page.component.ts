@@ -33,7 +33,7 @@ import { CommunityService } from './services/community.service';
                 <div class="owner">
                   <div class="avatar">
                     @if (c.owner.avatarUrl) {
-                      <img [src]="c.owner.avatarUrl" [alt]="c.owner.displayName" />
+                      <img [src]="c.owner.avatarUrl" [alt]="c.owner.displayName" loading="lazy" />
                     } @else {
                       <span>{{ c.owner.displayName.charAt(0) }}</span>
                     }

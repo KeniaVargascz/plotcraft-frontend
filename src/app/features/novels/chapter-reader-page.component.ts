@@ -4,15 +4,17 @@ import {
   DestroyRef,
   ElementRef,
   HostListener,
+  NgZone,
   OnInit,
   ViewChild,
+  computed,
   inject,
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
-import { throttleTime, Subject } from 'rxjs';
+import { throttleTime, Subject, fromEvent, auditTime } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ChapterDetail } from '../../core/models/chapter.model';
 import { ReaderBookmark } from '../../core/models/bookmark.model';
@@ -35,6 +37,7 @@ import { ErrorMessageComponent } from '../../shared/components/error-message/err
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../core/services/translation.service';
+import { RelativeDatePipe } from '../../shared/pipes/relative-date.pipe';
 import { ParagraphCommentsComponent } from './paragraph-comments.component';
 
 @Component({
@@ -46,6 +49,7 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
     ErrorMessageComponent,
     LoadingSpinnerComponent,
     TranslatePipe,
+    RelativeDatePipe,
     ParagraphCommentsComponent,
   ],
   template: `
@@ -499,8 +503,8 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
                         <a [routerLink]="['/perfil', c.author.username]" class="comment-author">
                           {{ c.author.displayName || c.author.username }}
                         </a>
-                        <span class="comment-date">{{ relativeDate(c.createdAt) }}</span>
-                        @if (canDeleteComment(c, currentChapter)) {
+                        <span class="comment-date">{{ c.createdAt | relativeDate }}</span>
+                        @if (deletableCommentIds().has(c.id)) {
                           <button
                             type="button"
                             class="comment-delete"
@@ -1139,6 +1143,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   private readonly dialog = inject(MatDialog);
   private readonly votesService = inject(VotesService);
   private readonly sanitizer = inject(DomSanitizer);
+  private readonly ngZone = inject(NgZone);
 
   @ViewChild('readerContainer') readerContainer?: ElementRef<HTMLElement>;
   @ViewChild('bookmarksPanel') bookmarksPanel?: ElementRef<HTMLElement>;
@@ -1189,6 +1194,20 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   readonly pendingStartOffset = signal(0);
   readonly pendingEndOffset = signal(0);
 
+  /** Pre-computed set of comment IDs the current user can delete.
+   *  Avoids calling a method per comment in the @for loop on every CD cycle. */
+  readonly deletableCommentIds = computed(() => {
+    const me = this.authService.getCurrentUserSnapshot();
+    const chapter = this.chapter();
+    if (!me || !chapter) return new Set<string>();
+    const isNovelAuthor = chapter.novel.author.username === me.username;
+    return new Set(
+      this.comments()
+        .filter((c) => c.author.id === me.id || isNovelAuthor)
+        .map((c) => c.id),
+    );
+  });
+
   readonly colors: HighlightColor[] = ['yellow', 'green', 'blue', 'pink'];
   readonly colorMap: Record<HighlightColor, string> = {
     yellow: '#f5d94a',
@@ -1199,7 +1218,6 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
 
   private readonly progressQueue = new Subject<number>();
   private readonly preferencesQueue = new Subject<Partial<ReaderPreferences>>();
-  private scrollRafPending = false;
   private slug = '';
   private chapterSlug = '';
 
@@ -1221,7 +1239,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       )
       .subscribe((payload) => this.persistPreferences(payload));
 
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const slug = params.get('slug');
       const chapterSlug = params.get('chSlug');
 
@@ -1237,6 +1255,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.applyReaderStyles();
+    this.setupScrollTracking();
   }
 
   isAuthenticated() {
@@ -1266,7 +1285,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       ? this.votesService.removeVote(chapter.id)
       : this.votesService.castVote(chapter.id);
 
-    action.subscribe({
+    action.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.chapterVotesCount.set(response.votesCount);
         this.chapterHasVoted.set(response.hasVoted);
@@ -1278,19 +1297,21 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     });
   }
 
-  @HostListener('window:scroll')
-  onWindowScroll() {
-    if (this.scrollRafPending) return;
-    this.scrollRafPending = true;
-    requestAnimationFrame(() => {
-      this.scrollRafPending = false;
-      if (this.preferences().reading_mode !== 'scroll' || !this.readerContainer) return;
-      const container = this.readerContainer.nativeElement;
-      const rect = container.getBoundingClientRect();
-      const maxDistance = container.offsetHeight - window.innerHeight;
-      const traveled = Math.min(Math.max(-rect.top, 0), Math.max(maxDistance, 1));
-      const pct = maxDistance > 0 ? traveled / maxDistance : 1;
-      this.progressPercent.set(pct);
+  /** Scroll tracking runs outside Angular zone to avoid triggering CD on every frame. */
+  private setupScrollTracking() {
+    this.ngZone.runOutsideAngular(() => {
+      fromEvent(window, 'scroll', { passive: true }).pipe(
+        auditTime(16),
+        takeUntilDestroyed(this.destroyRef),
+      ).subscribe(() => {
+        if (this.preferences().reading_mode !== 'scroll' || !this.readerContainer) return;
+        const container = this.readerContainer.nativeElement;
+        const rect = container.getBoundingClientRect();
+        const maxDistance = container.offsetHeight - window.innerHeight;
+        const traveled = Math.min(Math.max(-rect.top, 0), Math.max(maxDistance, 1));
+        const pct = maxDistance > 0 ? traveled / maxDistance : 1;
+        this.progressPercent.set(pct);
+      });
     });
   }
 
@@ -1346,6 +1367,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
         } as PromptDialogData,
       })
       .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((label: string | null) => {
         if (label === null) return;
         this.bookmarksService
@@ -1355,6 +1377,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
             anchor_id: anchorId,
             label: label || undefined,
           })
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => {
             this.loadChapterBookmarks(chapter.id);
             this.showBookmarksPanel.set(true);
@@ -1406,7 +1429,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   }
 
   removeBookmark(id: string) {
-    this.bookmarksService.remove(id).subscribe(() => {
+    this.bookmarksService.remove(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
       const chapter = this.chapter();
       if (chapter) {
         this.loadChapterBookmarks(chapter.id);
@@ -1440,6 +1463,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
         } as PromptDialogData,
       })
       .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((label: string | null) => {
         if (label === null) return;
         this.bookmarksService
@@ -1449,6 +1473,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
             anchor_id: paragraph.getAttribute('data-anchor-id'),
             label,
           })
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe(() => this.loadChapterBookmarks(chapter.id));
       });
   }
@@ -1503,6 +1528,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
         end_offset: this.selectionEnd(),
         color,
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.selectionAnchorId.set(null);
         this.loadChapterHighlights(chapter.id);
@@ -1570,6 +1596,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       if (this.isAuthenticated()) {
         this.readerService
           .addHistory({ novel_id: chapter.novel.id, chapter_id: chapter.id })
+          .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe();
         this.loadChapterBookmarks(chapter.id);
         this.loadChapterHighlights(chapter.id);
@@ -1578,12 +1605,16 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
         this.loadVoteStatus(chapter.id);
       }
     };
-    this.chaptersService.getReaderChapter(this.slug, this.chapterSlug).subscribe({
+    this.chaptersService.getReaderChapter(this.slug, this.chapterSlug)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: onLoaded,
       error: () => {
         // Fallback: si es draft del autor, usar el endpoint del editor.
         if (this.isAuthenticated()) {
-          this.chaptersService.getEditorChapter(this.slug, this.chapterSlug).subscribe({
+          this.chaptersService.getEditorChapter(this.slug, this.chapterSlug)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
             next: onLoaded,
             error: () => {
               this.error.set(true);
@@ -1609,7 +1640,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    this.readerService.getPreferences().subscribe((preferences) => {
+    this.readerService.getPreferences().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((preferences) => {
       this.preferences.set(preferences);
       localStorage.setItem('plotcraft_reader_preferences', JSON.stringify(preferences));
       this.applyReaderStyles();
@@ -1624,12 +1655,12 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     );
 
     if (this.isAuthenticated()) {
-      this.readerService.updatePreferences(payload).subscribe();
+      this.readerService.updatePreferences(payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     }
   }
 
   private loadChapterBookmarks(chapterId: string) {
-    this.bookmarksService.listByChapter(chapterId).subscribe((bookmarks) => {
+    this.bookmarksService.listByChapter(chapterId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((bookmarks) => {
       this.bookmarks.set(bookmarks);
       this.refreshRenderedContent();
       this.buildPages();
@@ -1637,7 +1668,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   }
 
   private loadChapterHighlights(chapterId: string) {
-    this.highlightsService.listByChapter(chapterId).subscribe((highlights) => {
+    this.highlightsService.listByChapter(chapterId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((highlights) => {
       this.highlights.set(highlights);
       this.refreshRenderedContent();
       this.buildPages();
@@ -1894,6 +1925,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
         reset ? null : this.commentsCursor(),
         20,
       )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
           const allComments = reset ? res.data : [...this.comments(), ...res.data];
@@ -1925,7 +1957,9 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     const text = this.newComment.trim();
     if (!text || this.commentSending() || !this.isAuthenticated()) return;
     this.commentSending.set(true);
-    this.chaptersService.createChapterComment(chapter.novel.slug, chapter.slug, text).subscribe({
+    this.chaptersService.createChapterComment(chapter.novel.slug, chapter.slug, text)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (created) => {
         this.comments.update((prev) => [...prev, created]);
         this.newComment = '';
@@ -1938,16 +1972,14 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   removeComment(chapter: ChapterDetail, commentId: string) {
     this.chaptersService
       .deleteChapterComment(chapter.novel.slug, chapter.slug, commentId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => this.comments.update((prev) => prev.filter((c) => c.id !== commentId)),
       });
   }
 
-  canDeleteComment(comment: ChapterCommentModel, chapter: ChapterDetail): boolean {
-    const me = this.authService.getCurrentUserSnapshot();
-    if (!me) return false;
-    return comment.author.id === me.id || chapter.novel.author.username === me.username;
-  }
+  // canDeleteComment migrado a computed signal (deletableCommentIds)
+  // para evitar re-ejecución en cada ciclo de CD dentro del @for.
 
   // ── Paragraph Comments ──
 
@@ -2007,23 +2039,12 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     this.refreshRenderedContent();
   }
 
+  // relativeDate migrado a RelativeDatePipe (pure) en el template.
+  // El pipe existente (shared/pipes/relative-date.pipe.ts) cubre la misma lógica.
   private readonly t = inject(TranslationService);
 
-  relativeDate(iso: string): string {
-    const then = new Date(iso).getTime();
-    const diffSec = Math.max(0, Math.floor((Date.now() - then) / 1000));
-    if (diffSec < 60) return this.t.translate('reader.relativeTime.justNow');
-    if (diffSec < 3600)
-      return this.t.translate('reader.relativeTime.minutes', { n: Math.floor(diffSec / 60) });
-    if (diffSec < 86400)
-      return this.t.translate('reader.relativeTime.hours', { n: Math.floor(diffSec / 3600) });
-    if (diffSec < 604800)
-      return this.t.translate('reader.relativeTime.days', { n: Math.floor(diffSec / 86400) });
-    return new Date(iso).toLocaleDateString();
-  }
-
   private loadVoteStatus(chapterId: string) {
-    this.votesService.getVoteStatus(chapterId).subscribe({
+    this.votesService.getVoteStatus(chapterId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.chapterVotesCount.set(response.votesCount);
         this.chapterHasVoted.set(response.hasVoted);

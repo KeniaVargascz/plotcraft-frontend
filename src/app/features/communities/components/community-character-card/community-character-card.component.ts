@@ -9,7 +9,7 @@ import { CommunityCharacter } from '../../models/community-character.model';
       <article class="cc-card">
         <div class="avatar">
           @if (character.avatarUrl) {
-            <img [src]="character.avatarUrl" [alt]="character.name" />
+            <img [src]="character.avatarUrl" [alt]="character.name" loading="lazy" />
           } @else {
             <span>{{ character.name.charAt(0) }}</span>
           }

@@ -10,12 +10,12 @@ import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../m
     <article class="series-card">
       <a class="cover-wrap" [routerLink]="['/sagas', series().slug]">
         @if (series().coverUrl) {
-          <img [src]="series().coverUrl" [alt]="series().title" />
+          <img [src]="series().coverUrl" [alt]="series().title" loading="lazy" />
         } @else if (collageCovers().length) {
           <div class="collage" [class.collage-3]="collageCovers().length >= 3">
             @for (c of collageCovers(); track $index) {
               @if (c) {
-                <img [src]="c" [alt]="''" />
+                <img [src]="c" [alt]="''" loading="lazy" />
               } @else {
                 <span class="collage-placeholder"></span>
               }
@@ -30,7 +30,7 @@ import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../m
         <a class="title" [routerLink]="['/sagas', series().slug]">{{ series().title }}</a>
         <a class="author" [routerLink]="['/perfil', series().author.username]">
           @if (series().author.avatarUrl) {
-            <img class="avatar" [src]="series().author.avatarUrl" alt="" />
+            <img class="avatar" [src]="series().author.avatarUrl" alt="" loading="lazy" />
           } @else {
             <span class="avatar avatar-fallback">{{ series().author.displayName.charAt(0) }}</span>
           }

@@ -27,6 +27,7 @@ const TYPE_ICONS: Record<NotificationType, string> = {
             [src]="n.actor!.avatarUrl"
             [alt]="n.actor!.displayName || n.actor!.username"
             class="avatar"
+            loading="lazy"
           />
         } @else {
           <span class="type-icon">{{ iconFor(n.type) }}</span>

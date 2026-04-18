@@ -282,7 +282,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         line-height: 1.45;
         display: -webkit-box;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 7;
         overflow: hidden;
         min-height: calc(1.45em * 2);
       }

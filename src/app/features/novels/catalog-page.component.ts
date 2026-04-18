@@ -77,7 +77,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
           <div class="filter-section">
             <label>
               Buscar
-              <input [(ngModel)]="search" placeholder="Buscar novelas..." />
+              <input [(ngModel)]="search" placeholder="Buscar novelas" />
             </label>
           </div>
 
@@ -108,7 +108,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
                   type="text"
                   [(ngModel)]="genreSearch"
                   (focus)="genreDropdownOpen.set(true)"
-                  placeholder="Buscar género..."
+                  placeholder="Buscar genero"
                 />
                 @if (genreDropdownOpen() && availableGenresFiltered().length) {
                   <ul class="dropdown">
@@ -259,7 +259,12 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
         color: var(--text-1);
         padding: 0.55rem 0.7rem;
         font-size: 0.88rem;
+        font-weight: 400;
         transition: border-color 0.15s;
+      }
+      input::placeholder {
+        color: var(--text-3);
+        font-weight: 400;
       }
       input:focus,
       select:focus {

@@ -44,15 +44,6 @@
   grid-row: 1;
   grid-column: 2;
   align-self: start;
-}
-
-.desktop-actions {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.mobile-actions {
-  display: none;
   position: relative;
 }
 
@@ -96,16 +87,6 @@
       background: var(--accent-glow);
       color: var(--accent-text);
     }
-  }
-}
-
-@media (max-width: 1080px) {
-  .desktop-actions {
-    display: none;
-  }
-
-  .mobile-actions {
-    display: block;
   }
 }
 

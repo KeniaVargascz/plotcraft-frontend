@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { PostModel } from '../../../../core/models/post.model';
@@ -33,6 +33,7 @@ export class PostCardComponent {
   private readonly authService = inject(AuthService);
   private readonly postsService = inject(PostsService);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   @Input({ required: true }) post!: PostModel;
   @Output() postChange = new EventEmitter<PostModel>();
@@ -68,7 +69,7 @@ export class PostCardComponent {
     this.loading.set(true);
     this.postsService.update(this.post.id, this.form.getRawValue()).subscribe({
       next: (post) => {
-        this.postChange.emit(post);
+        this.onPostChange(post);
         this.editing.set(false);
         this.loading.set(false);
       },
@@ -90,7 +91,7 @@ export class PostCardComponent {
 
     action.subscribe({
       next: () => {
-        this.postChange.emit({
+        this.onPostChange({
           ...this.post,
           viewerContext: {
             ...this.post.viewerContext!,
@@ -138,6 +139,7 @@ export class PostCardComponent {
   onPostChange(updated: PostModel) {
     this.post = updated;
     this.postChange.emit(updated);
+    this.cdr.markForCheck();
   }
 
   onCommentCountChange(delta: number) {
@@ -150,5 +152,6 @@ export class PostCardComponent {
     };
     this.post = updated;
     this.postChange.emit(updated);
+    this.cdr.markForCheck();
   }
 }

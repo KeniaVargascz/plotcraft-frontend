@@ -284,7 +284,6 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 7;
         overflow: hidden;
-        min-height: calc(1.45em * 2);
       }
 
       .synopsis-full {

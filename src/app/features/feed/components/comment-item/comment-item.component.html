@@ -6,11 +6,7 @@
       <strong>{{ comment.author.displayName || comment.author.username }}</strong>
       <span>@{{ comment.author.username }} · <time [attr.datetime]="comment.createdAt">{{ comment.createdAt | relativeDate }}</time></span>
       @if (isAuthor) {
-        <div class="comment-actions desktop-actions">
-          <button type="button" (click)="startEdit()">{{ 'comment.edit' | translate }}</button>
-          <button type="button" (click)="remove()">{{ 'comment.delete' | translate }}</button>
-        </div>
-        <div class="comment-actions mobile-actions">
+        <div class="comment-actions">
           <button type="button" class="menu-trigger" [attr.aria-expanded]="menuOpen()" aria-label="Menu" (click)="menuOpen.set(!menuOpen())">...</button>
           @if (menuOpen()) {
             <div class="dropdown-menu" role="menu">

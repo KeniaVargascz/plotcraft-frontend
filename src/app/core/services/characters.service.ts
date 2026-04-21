@@ -1,8 +1,5 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
 import {
   CharacterDetail,
   CharacterKinshipType,
@@ -13,6 +10,7 @@ import {
   CharacterSummary,
 } from '../models/character.model';
 import { PagedResponse, PaginatedResponse } from '../models/feed-pagination.model';
+import { HttpApiService } from './http-api.service';
 
 export type CharacterQuery = {
   cursor?: string | null;
@@ -47,94 +45,70 @@ export type CharacterPayload = {
 
 @Injectable({ providedIn: 'root' })
 export class CharactersService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   listPublic(query: CharacterQuery = {}) {
-    return this.http
-      .get<ApiResponse<PagedResponse<CharacterSummary>>>(`${environment.apiUrl}/characters`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PagedResponse<CharacterSummary>>('/characters', {
+      params: this.buildParams(query),
+    });
   }
 
   listMine(query: CharacterQuery = {}) {
-    return this.http
-      .get<ApiResponse<PagedResponse<CharacterSummary>>>(`${environment.apiUrl}/characters/me`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PagedResponse<CharacterSummary>>('/characters/me', {
+      params: this.buildParams(query),
+    });
   }
 
   listByUser(username: string, query: CharacterQuery = {}) {
-    return this.http
-      .get<ApiResponse<PagedResponse<CharacterSummary>>>(
-        `${environment.apiUrl}/characters/user/${username}`,
-        {
-          params: this.buildParams(query),
-        },
-      )
-      .pipe(map((response) => response.data));
+    return this.api.get<PagedResponse<CharacterSummary>>(
+      `/characters/user/${username}`,
+      {
+        params: this.buildParams(query),
+      },
+    );
   }
 
   listByWorld(worldSlug: string, query: CharacterQuery = {}) {
-    return this.http
-      .get<ApiResponse<PagedResponse<CharacterSummary>>>(
-        `${environment.apiUrl}/characters/world/${worldSlug}`,
-        {
-          params: this.buildParams(query),
-        },
-      )
-      .pipe(map((response) => response.data));
+    return this.api.get<PagedResponse<CharacterSummary>>(
+      `/characters/world/${worldSlug}`,
+      {
+        params: this.buildParams(query),
+      },
+    );
   }
 
   getBySlug(username: string, slug: string) {
-    return this.http
-      .get<ApiResponse<CharacterDetail>>(`${environment.apiUrl}/characters/${username}/${slug}`)
-      .pipe(map((response) => response.data));
+    return this.api.get<CharacterDetail>(`/characters/${username}/${slug}`);
   }
 
   listRelationships(username: string, slug: string, query: CharacterQuery = {}) {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<CharacterRelationship>>>(
-        `${environment.apiUrl}/characters/${username}/${slug}/relationships`,
-        {
-          params: this.buildParams(query),
-        },
-      )
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<CharacterRelationship>>(
+      `/characters/${username}/${slug}/relationships`,
+      {
+        params: this.buildParams(query),
+      },
+    );
   }
 
   listNovels(username: string, slug: string, query: CharacterQuery = {}) {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<unknown>>>(
-        `${environment.apiUrl}/characters/${username}/${slug}/novels`,
-        {
-          params: this.buildParams(query),
-        },
-      )
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<unknown>>(
+      `/characters/${username}/${slug}/novels`,
+      {
+        params: this.buildParams(query),
+      },
+    );
   }
 
   create(payload: CharacterPayload) {
-    return this.http
-      .post<ApiResponse<CharacterDetail>>(`${environment.apiUrl}/characters`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.post<CharacterDetail>('/characters', payload);
   }
 
   update(username: string, slug: string, payload: Partial<CharacterPayload>) {
-    return this.http
-      .patch<
-        ApiResponse<CharacterDetail>
-      >(`${environment.apiUrl}/characters/${username}/${slug}`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.patch<CharacterDetail>(`/characters/${username}/${slug}`, payload);
   }
 
   remove(username: string, slug: string) {
-    return this.http
-      .delete<
-        ApiResponse<{ message: string }>
-      >(`${environment.apiUrl}/characters/${username}/${slug}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ message: string }>(`/characters/${username}/${slug}`);
   }
 
   createRelationship(
@@ -149,35 +123,29 @@ export class CharactersService {
       isMutual?: boolean;
     },
   ) {
-    return this.http
-      .post<
-        ApiResponse<CharacterRelationship>
-      >(`${environment.apiUrl}/characters/${username}/${slug}/relationships`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.post<CharacterRelationship>(
+      `/characters/${username}/${slug}/relationships`,
+      payload,
+    );
   }
 
   removeRelationship(username: string, slug: string, relationshipId: string) {
-    return this.http
-      .delete<
-        ApiResponse<{ message: string }>
-      >(`${environment.apiUrl}/characters/${username}/${slug}/relationships/${relationshipId}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ message: string }>(
+      `/characters/${username}/${slug}/relationships/${relationshipId}`,
+    );
   }
 
   linkNovel(username: string, slug: string, novelSlug: string) {
-    return this.http
-      .post<
-        ApiResponse<{ linked: boolean }>
-      >(`${environment.apiUrl}/characters/${username}/${slug}/novels/${novelSlug}`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<{ linked: boolean }>(
+      `/characters/${username}/${slug}/novels/${novelSlug}`,
+      {},
+    );
   }
 
   unlinkNovel(username: string, slug: string, novelSlug: string) {
-    return this.http
-      .delete<
-        ApiResponse<{ linked: boolean }>
-      >(`${environment.apiUrl}/characters/${username}/${slug}/novels/${novelSlug}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ linked: boolean }>(
+      `/characters/${username}/${slug}/novels/${novelSlug}`,
+    );
   }
 
   private buildParams(query: CharacterQuery) {

@@ -1,25 +1,22 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { map } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { HttpApiService } from './http-api.service';
 
 type UploadResponse = { url?: string; fileUrl?: string; location?: string; path?: string } | string;
 
 @Injectable({ providedIn: 'root' })
 export class MediaService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   upload(file: File, purpose = 'visual_ref') {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('purpose', purpose);
 
-    return this.http
-      .post<ApiResponse<UploadResponse>>(`${environment.apiUrl}/media/upload`, formData)
+    return this.api
+      .post<UploadResponse>('/media/upload', formData)
       .pipe(
-        map((response) => {
-          const payload = response.data;
+        map((payload) => {
           if (typeof payload === 'string') {
             return payload;
           }

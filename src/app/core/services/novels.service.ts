@@ -1,8 +1,6 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable } from 'rxjs';
 import { PagedResponse } from '../models/feed-pagination.model';
 import {
   NovelDetail,
@@ -11,6 +9,7 @@ import {
   NovelSummary,
   NovelType,
 } from '../models/novel.model';
+import { HttpApiService } from './http-api.service';
 
 export type NovelQuery = {
   cursor?: string | null;
@@ -55,87 +54,59 @@ export type NovelPayload = {
 
 @Injectable({ providedIn: 'root' })
 export class NovelsService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   listPublic(query: NovelQuery = {}): Observable<PagedResponse<NovelSummary>> {
-    return this.http
-      .get<ApiResponse<PagedResponse<NovelSummary>>>(`${environment.apiUrl}/novels`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PagedResponse<NovelSummary>>('/novels', {
+      params: this.buildParams(query),
+    });
   }
 
   listMine(query: NovelQuery = {}): Observable<PagedResponse<NovelSummary>> {
-    return this.http
-      .get<ApiResponse<PagedResponse<NovelSummary>>>(`${environment.apiUrl}/novels/me`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PagedResponse<NovelSummary>>('/novels/me', {
+      params: this.buildParams(query),
+    });
   }
 
   listByUser(username: string, query: NovelQuery = {}): Observable<PagedResponse<NovelSummary>> {
-    return this.http
-      .get<ApiResponse<PagedResponse<NovelSummary>>>(
-        `${environment.apiUrl}/novels/user/${username}`,
-        {
-          params: this.buildParams(query),
-        },
-      )
-      .pipe(map((response) => response.data));
+    return this.api.get<PagedResponse<NovelSummary>>(
+      `/novels/user/${username}`,
+      {
+        params: this.buildParams(query),
+      },
+    );
   }
 
   getBySlug(slug: string): Observable<NovelDetail> {
-    return this.http
-      .get<ApiResponse<NovelDetail>>(`${environment.apiUrl}/novels/${slug}`)
-      .pipe(map((response) => response.data));
+    return this.api.get<NovelDetail>(`/novels/${slug}`);
   }
 
   create(payload: NovelPayload): Observable<NovelSummary> {
-    return this.http
-      .post<ApiResponse<NovelSummary>>(`${environment.apiUrl}/novels`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.post<NovelSummary>('/novels', payload);
   }
 
   update(slug: string, payload: NovelPayload): Observable<NovelSummary> {
-    return this.http
-      .patch<ApiResponse<NovelSummary>>(`${environment.apiUrl}/novels/${slug}`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.patch<NovelSummary>(`/novels/${slug}`, payload);
   }
 
   delete(slug: string): Observable<{ message: string }> {
-    return this.http
-      .delete<ApiResponse<{ message: string }>>(`${environment.apiUrl}/novels/${slug}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ message: string }>(`/novels/${slug}`);
   }
 
   toggleLike(slug: string): Observable<{ hasLiked: boolean }> {
-    return this.http
-      .post<ApiResponse<{ hasLiked: boolean }>>(`${environment.apiUrl}/novels/${slug}/like`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<{ hasLiked: boolean }>(`/novels/${slug}/like`, {});
   }
 
   linkCommunityCharacter(slug: string, communityCharacterId: string): Observable<unknown> {
-    return this.http
-      .post<
-        ApiResponse<unknown>
-      >(`${environment.apiUrl}/novels/${slug}/characters`, { communityCharacterId })
-      .pipe(map((response) => response.data));
+    return this.api.post<unknown>(`/novels/${slug}/characters`, { communityCharacterId });
   }
 
   unlinkCommunityCharacter(slug: string, communityCharacterId: string): Observable<unknown> {
-    return this.http
-      .delete<
-        ApiResponse<unknown>
-      >(`${environment.apiUrl}/novels/${slug}/characters/${communityCharacterId}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<unknown>(`/novels/${slug}/characters/${communityCharacterId}`);
   }
 
   toggleBookmark(slug: string): Observable<{ hasBookmarked: boolean }> {
-    return this.http
-      .post<
-        ApiResponse<{ hasBookmarked: boolean }>
-      >(`${environment.apiUrl}/novels/${slug}/bookmark`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<{ hasBookmarked: boolean }>(`/novels/${slug}/bookmark`, {});
   }
 
   private buildParams(query: NovelQuery) {
@@ -215,31 +186,19 @@ export class NovelsService {
   listComments(slug: string, cursor?: string | null, limit = 20) {
     let params = new HttpParams().set('limit', limit);
     if (cursor) params = params.set('cursor', cursor);
-    return this.http
-      .get<
-        ApiResponse<{
-          commentsEnabled: boolean;
-          data: NovelCommentModel[];
-          pagination: { nextCursor: string | null; hasMore: boolean; limit: number };
-        }>
-      >(`${environment.apiUrl}/novels/${slug}/comments`, { params })
-      .pipe(map((r) => r.data));
+    return this.api.get<{
+      commentsEnabled: boolean;
+      data: NovelCommentModel[];
+      pagination: { nextCursor: string | null; hasMore: boolean; limit: number };
+    }>(`/novels/${slug}/comments`, { params });
   }
 
   createComment(slug: string, content: string) {
-    return this.http
-      .post<
-        ApiResponse<NovelCommentModel>
-      >(`${environment.apiUrl}/novels/${slug}/comments`, { content })
-      .pipe(map((r) => r.data));
+    return this.api.post<NovelCommentModel>(`/novels/${slug}/comments`, { content });
   }
 
   deleteComment(slug: string, commentId: string) {
-    return this.http
-      .delete<
-        ApiResponse<{ message: string }>
-      >(`${environment.apiUrl}/novels/${slug}/comments/${commentId}`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<{ message: string }>(`/novels/${slug}/comments/${commentId}`);
   }
 }
 

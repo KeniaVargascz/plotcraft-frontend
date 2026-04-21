@@ -1,19 +1,15 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
 import { PaginatedResponse } from '../models/feed-pagination.model';
 import { Highlight, HighlightColor } from '../models/highlight.model';
+import { HttpApiService } from './http-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class HighlightsService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   listByChapter(chapterId: string) {
-    return this.http
-      .get<ApiResponse<Highlight[]>>(`${environment.apiUrl}/highlights/chapter/${chapterId}`)
-      .pipe(map((response) => response.data));
+    return this.api.get<Highlight[]>(`/highlights/chapter/${chapterId}`);
   }
 
   listAll(query: { cursor?: string | null; limit?: number; novel_id?: string } = {}) {
@@ -21,11 +17,7 @@ export class HighlightsService {
     if (query.cursor) params = params.set('cursor', query.cursor);
     if (query.limit) params = params.set('limit', query.limit);
     if (query.novel_id) params = params.set('novel_id', query.novel_id);
-    return this.http
-      .get<
-        ApiResponse<PaginatedResponse<Highlight>>
-      >(`${environment.apiUrl}/highlights`, { params })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<Highlight>>('/highlights', { params });
   }
 
   create(payload: {
@@ -37,20 +29,14 @@ export class HighlightsService {
     color?: HighlightColor;
     note?: string | null;
   }) {
-    return this.http
-      .post<ApiResponse<Highlight>>(`${environment.apiUrl}/highlights`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.post<Highlight>('/highlights', payload);
   }
 
   update(id: string, payload: { color?: HighlightColor; note?: string | null }) {
-    return this.http
-      .patch<ApiResponse<Highlight>>(`${environment.apiUrl}/highlights/${id}`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.patch<Highlight>(`/highlights/${id}`, payload);
   }
 
   remove(id: string) {
-    return this.http.delete<ApiResponse<{ message: string }>>(
-      `${environment.apiUrl}/highlights/${id}`,
-    );
+    return this.api.delete<{ message: string }>(`/highlights/${id}`);
   }
 }

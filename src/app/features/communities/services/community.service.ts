@@ -1,8 +1,7 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { ApiResponse } from '../../../core/models/api-response.model';
+import { Observable } from 'rxjs';
+import { HttpApiService } from '../../../core/services/http-api.service';
 import { PagedResponse } from '../../../core/models/feed-pagination.model';
 import {
   Community,
@@ -27,8 +26,7 @@ export interface MembershipResult {
 
 @Injectable({ providedIn: 'root' })
 export class CommunityService {
-  private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/communities`;
+  private readonly api = inject(HttpApiService);
 
   getCommunities(query: CommunityQuery = {}): Observable<PagedResponse<Community>> {
     let params = new HttpParams();
@@ -37,116 +35,81 @@ export class CommunityService {
     if (query.type) params = params.set('type', query.type);
     if (query.search) params = params.set('search', query.search);
     if (query.page) params = params.set('page', query.page);
-    return this.http
-      .get<ApiResponse<PagedResponse<Community>>>(this.baseUrl, { params })
-      .pipe(map((r) => r.data));
+    return this.api.get<PagedResponse<Community>>('/communities', { params });
   }
 
   getCommunityBySlug(slug: string): Observable<Community> {
-    return this.http
-      .get<ApiResponse<Community>>(`${this.baseUrl}/${slug}`)
-      .pipe(map((r) => r.data));
+    return this.api.get<Community>(`/communities/${slug}`);
   }
 
   create(payload: CreateCommunityPayload): Observable<Community> {
-    return this.http.post<ApiResponse<Community>>(this.baseUrl, payload).pipe(map((r) => r.data));
+    return this.api.post<Community>('/communities', payload);
   }
 
   update(slug: string, payload: UpdateCommunityPayload): Observable<Community> {
-    return this.http
-      .patch<ApiResponse<Community>>(`${this.baseUrl}/${slug}`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.patch<Community>(`/communities/${slug}`, payload);
   }
 
   delete(slug: string, force = false): Observable<{ message: string }> {
     let params = new HttpParams();
     if (force) params = params.set('force', 'true');
-    return this.http
-      .delete<ApiResponse<{ message: string }>>(`${this.baseUrl}/${slug}`, { params })
-      .pipe(map((r) => r.data));
+    return this.api.delete<{ message: string }>(`/communities/${slug}`, { params });
   }
 
   join(slug: string): Observable<MembershipResult> {
-    return this.http
-      .post<ApiResponse<MembershipResult>>(`${this.baseUrl}/${slug}/join`, {})
-      .pipe(map((r) => r.data));
+    return this.api.post<MembershipResult>(`/communities/${slug}/join`, {});
   }
 
   leave(slug: string): Observable<MembershipResult> {
-    return this.http
-      .delete<ApiResponse<MembershipResult>>(`${this.baseUrl}/${slug}/leave`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<MembershipResult>(`/communities/${slug}/leave`);
   }
 
   getMembers(slug: string): Observable<CommunityMemberProfile[]> {
-    return this.http
-      .get<ApiResponse<CommunityMemberProfile[]>>(`${this.baseUrl}/${slug}/members`)
-      .pipe(map((r) => r.data));
+    return this.api.get<CommunityMemberProfile[]>(`/communities/${slug}/members`);
   }
 
   follow(slug: string): Observable<{ followersCount: number; isFollowing: boolean }> {
-    return this.http
-      .post<
-        ApiResponse<{ followersCount: number; isFollowing: boolean }>
-      >(`${this.baseUrl}/${slug}/follow`, {})
-      .pipe(map((r) => r.data));
+    return this.api.post<{ followersCount: number; isFollowing: boolean }>(
+      `/communities/${slug}/follow`,
+      {},
+    );
   }
 
   unfollow(slug: string): Observable<{ followersCount: number; isFollowing: boolean }> {
-    return this.http
-      .delete<
-        ApiResponse<{ followersCount: number; isFollowing: boolean }>
-      >(`${this.baseUrl}/${slug}/follow`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<{ followersCount: number; isFollowing: boolean }>(
+      `/communities/${slug}/follow`,
+    );
   }
 
   getMyCommunities(): Observable<Community[]> {
-    return this.http
-      .get<ApiResponse<Community[]>>(`${environment.apiUrl}/me/communities`)
-      .pipe(map((r) => r.data));
+    return this.api.get<Community[]>('/me/communities');
   }
 
   getMyFollowedCommunities(): Observable<Community[]> {
-    return this.http
-      .get<ApiResponse<Community[]>>(`${environment.apiUrl}/me/communities/following`)
-      .pipe(map((r) => r.data));
+    return this.api.get<Community[]>('/me/communities/following');
   }
 
   getMyOwnedCommunities(): Observable<Community[]> {
-    return this.http
-      .get<ApiResponse<Community[]>>(`${environment.apiUrl}/me/communities/owned`)
-      .pipe(map((r) => r.data));
+    return this.api.get<Community[]>('/me/communities/owned');
   }
 
   addRelatedNovel(slug: string, novelId: string): Observable<Community> {
-    return this.http
-      .post<ApiResponse<Community>>(`${this.baseUrl}/${slug}/related-novels`, { novelId })
-      .pipe(map((r) => r.data));
+    return this.api.post<Community>(`/communities/${slug}/related-novels`, { novelId });
   }
 
   removeRelatedNovel(slug: string, novelId: string): Observable<Community> {
-    return this.http
-      .delete<ApiResponse<Community>>(`${this.baseUrl}/${slug}/related-novels/${novelId}`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<Community>(`/communities/${slug}/related-novels/${novelId}`);
   }
 
   getPendingCommunities(): Observable<Community[]> {
-    return this.http
-      .get<ApiResponse<Community[]>>(`${environment.apiUrl}/admin/communities/pending`)
-      .pipe(map((r) => r.data));
+    return this.api.get<Community[]>('/admin/communities/pending');
   }
 
   approveCommunity(slug: string): Observable<Community> {
-    return this.http
-      .post<ApiResponse<Community>>(`${environment.apiUrl}/admin/communities/${slug}/approve`, {})
-      .pipe(map((r) => r.data));
+    return this.api.post<Community>(`/admin/communities/${slug}/approve`, {});
   }
 
   rejectCommunity(slug: string, reason: string): Observable<Community> {
-    return this.http
-      .post<
-        ApiResponse<Community>
-      >(`${environment.apiUrl}/admin/communities/${slug}/reject`, { reason })
-      .pipe(map((r) => r.data));
+    return this.api.post<Community>(`/admin/communities/${slug}/reject`, { reason });
   }
 }

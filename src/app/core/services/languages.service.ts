@@ -1,20 +1,15 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable, shareReplay } from 'rxjs';
 import { LanguageCatalogItem } from '../models/language.model';
+import { HttpApiService } from './http-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class LanguagesService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
-  private readonly languages$ = this.http
-    .get<ApiResponse<LanguageCatalogItem[]>>(`${environment.apiUrl}/catalogs/languages`)
-    .pipe(
-      map((response) => response.data),
-      shareReplay({ bufferSize: 1, refCount: true }),
-    );
+  private readonly languages$ = this.api
+    .get<LanguageCatalogItem[]>('/catalogs/languages')
+    .pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
   list(): Observable<LanguageCatalogItem[]> {
     return this.languages$;

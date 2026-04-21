@@ -1,8 +1,6 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable } from 'rxjs';
 import {
   MixedSearchResponse,
   SearchCharactersResponse,
@@ -14,6 +12,7 @@ import {
   SearchWorldsResponse,
   SearchNovelsResponse,
 } from '../models/search.model';
+import { HttpApiService } from './http-api.service';
 
 type BaseQuery = {
   q: string;
@@ -24,14 +23,12 @@ type BaseQuery = {
 
 @Injectable({ providedIn: 'root' })
 export class SearchService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   searchAll(query: BaseQuery): Observable<SearchResponse> {
-    return this.http
-      .get<ApiResponse<SearchResponse>>(`${environment.apiUrl}/search`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<SearchResponse>('/search', {
+      params: this.buildParams(query),
+    });
   }
 
   searchMixed(query: BaseQuery & { types?: string[] }): Observable<MixedSearchResponse> {
@@ -40,9 +37,7 @@ export class SearchService {
     for (const t of types) {
       params = params.append('types[]', t);
     }
-    return this.http
-      .get<ApiResponse<MixedSearchResponse>>(`${environment.apiUrl}/search/unified`, { params })
-      .pipe(map((response) => response.data));
+    return this.api.get<MixedSearchResponse>('/search/unified', { params });
   }
 
   searchNovels(
@@ -53,11 +48,9 @@ export class SearchService {
       sort?: string | null;
     },
   ): Observable<SearchNovelsResponse> {
-    return this.http
-      .get<ApiResponse<SearchNovelsResponse>>(`${environment.apiUrl}/search/novels`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<SearchNovelsResponse>('/search/novels', {
+      params: this.buildParams(query),
+    });
   }
 
   searchWorlds(
@@ -65,11 +58,9 @@ export class SearchService {
       sort?: string | null;
     },
   ): Observable<SearchWorldsResponse> {
-    return this.http
-      .get<ApiResponse<SearchWorldsResponse>>(`${environment.apiUrl}/search/worlds`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<SearchWorldsResponse>('/search/worlds', {
+      params: this.buildParams(query),
+    });
   }
 
   searchCharacters(
@@ -79,11 +70,9 @@ export class SearchService {
       world_id?: string | null;
     },
   ): Observable<SearchCharactersResponse> {
-    return this.http
-      .get<ApiResponse<SearchCharactersResponse>>(`${environment.apiUrl}/search/characters`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<SearchCharactersResponse>('/search/characters', {
+      params: this.buildParams(query),
+    });
   }
 
   searchUsers(
@@ -91,11 +80,9 @@ export class SearchService {
       sort?: string | null;
     },
   ): Observable<SearchUsersResponse> {
-    return this.http
-      .get<ApiResponse<SearchUsersResponse>>(`${environment.apiUrl}/search/users`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<SearchUsersResponse>('/search/users', {
+      params: this.buildParams(query),
+    });
   }
 
   searchPosts(
@@ -104,37 +91,27 @@ export class SearchService {
       sort?: string | null;
     },
   ): Observable<SearchPostsResponse> {
-    return this.http
-      .get<ApiResponse<SearchPostsResponse>>(`${environment.apiUrl}/search/posts`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<SearchPostsResponse>('/search/posts', {
+      params: this.buildParams(query),
+    });
   }
 
   getSuggestions(q: string): Observable<SearchSuggestionsResponse> {
-    return this.http
-      .get<ApiResponse<SearchSuggestionsResponse>>(`${environment.apiUrl}/search/suggestions`, {
-        params: new HttpParams().set('q', q),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<SearchSuggestionsResponse>('/search/suggestions', {
+      params: new HttpParams().set('q', q),
+    });
   }
 
   getHistory(): Observable<SearchHistoryResponse> {
-    return this.http
-      .get<ApiResponse<SearchHistoryResponse>>(`${environment.apiUrl}/search/history`)
-      .pipe(map((response) => response.data));
+    return this.api.get<SearchHistoryResponse>('/search/history');
   }
 
   clearHistory(): Observable<{ cleared: boolean }> {
-    return this.http
-      .delete<ApiResponse<{ cleared: boolean }>>(`${environment.apiUrl}/search/history`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ cleared: boolean }>('/search/history');
   }
 
   deleteHistoryItem(id: string): Observable<{ deleted: boolean }> {
-    return this.http
-      .delete<ApiResponse<{ deleted: boolean }>>(`${environment.apiUrl}/search/history/${id}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ deleted: boolean }>(`/search/history/${id}`);
   }
 
   private buildParams(query: Record<string, string | number | null | undefined>) {

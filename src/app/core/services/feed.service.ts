@@ -1,10 +1,9 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../models/feed-pagination.model';
 import { PostModel, PostType } from '../models/post.model';
+import { HttpApiService } from './http-api.service';
 
 type FeedQuery = {
   cursor?: string | null;
@@ -19,38 +18,30 @@ type FeedSearchQuery = FeedQuery & {
 
 @Injectable({ providedIn: 'root' })
 export class FeedService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   getFeed(query: FeedQuery = {}): Observable<PaginatedResponse<PostModel>> {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<PostModel>>>(`${environment.apiUrl}/feed`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<PostModel>>('/feed', {
+      params: this.buildParams(query),
+    });
   }
 
   getExploreFeed(query: FeedQuery = {}): Observable<PaginatedResponse<PostModel>> {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<PostModel>>>(`${environment.apiUrl}/feed/explore`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<PostModel>>('/feed/explore', {
+      params: this.buildParams(query),
+    });
   }
 
   searchFeed(query: FeedSearchQuery): Observable<PaginatedResponse<PostModel>> {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<PostModel>>>(`${environment.apiUrl}/feed/search`, {
-        params: this.buildSearchParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<PostModel>>('/feed/search', {
+      params: this.buildSearchParams(query),
+    });
   }
 
   searchExplore(query: FeedSearchQuery): Observable<PaginatedResponse<PostModel>> {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<PostModel>>>(`${environment.apiUrl}/feed/explore/search`, {
-        params: this.buildSearchParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<PostModel>>('/feed/explore/search', {
+      params: this.buildSearchParams(query),
+    });
   }
 
   private buildSearchParams(query: FeedSearchQuery) {

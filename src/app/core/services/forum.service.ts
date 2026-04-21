@@ -1,12 +1,11 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../models/feed-pagination.model';
 import { ForumCategory, ThreadDetail, ThreadSummary } from '../models/forum-thread.model';
 import { ForumReply } from '../models/forum-reply.model';
 import { ForumPoll } from '../models/forum-poll.model';
+import { HttpApiService } from './http-api.service';
 
 type ThreadQuery = {
   cursor?: string | null;
@@ -20,38 +19,29 @@ type ThreadQuery = {
 
 @Injectable({ providedIn: 'root' })
 export class ForumService {
-  private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/forum`;
+  private readonly api = inject(HttpApiService);
 
   listThreads(query: ThreadQuery = {}): Observable<PaginatedResponse<ThreadSummary>> {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<ThreadSummary>>>(this.baseUrl, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<ThreadSummary>>('/forum', {
+      params: this.buildParams(query),
+    });
   }
 
   getCategories(): Observable<ForumCategory[]> {
-    return this.http
-      .get<ApiResponse<ForumCategory[]>>(`${this.baseUrl}/categories`)
-      .pipe(map((response) => response.data));
+    return this.api.get<ForumCategory[]>('/forum/categories');
   }
 
   getThread(slug: string): Observable<ThreadDetail> {
-    return this.http
-      .get<ApiResponse<ThreadDetail>>(`${this.baseUrl}/${slug}`)
-      .pipe(map((response) => response.data));
+    return this.api.get<ThreadDetail>(`/forum/${slug}`);
   }
 
   listUserThreads(
     username: string,
     query: ThreadQuery = {},
   ): Observable<PaginatedResponse<ThreadSummary>> {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<ThreadSummary>>>(`${this.baseUrl}/user/${username}`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<ThreadSummary>>(`/forum/user/${username}`, {
+      params: this.buildParams(query),
+    });
   }
 
   createThread(payload: {
@@ -61,54 +51,40 @@ export class ForumService {
     tags?: string[];
     poll?: { question: string; options: string[]; closesAt?: string };
   }): Observable<ThreadDetail> {
-    return this.http
-      .post<ApiResponse<ThreadDetail>>(this.baseUrl, payload)
-      .pipe(map((response) => response.data));
+    return this.api.post<ThreadDetail>('/forum', payload);
   }
 
   updateThread(
     slug: string,
     payload: { title?: string; content?: string; category?: ForumCategory; tags?: string[] },
   ): Observable<ThreadDetail> {
-    return this.http
-      .patch<ApiResponse<ThreadDetail>>(`${this.baseUrl}/${slug}`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.patch<ThreadDetail>(`/forum/${slug}`, payload);
   }
 
   deleteThread(slug: string): Observable<{ message: string }> {
-    return this.http
-      .delete<ApiResponse<{ message: string }>>(`${this.baseUrl}/${slug}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ message: string }>(`/forum/${slug}`);
   }
 
   createReply(
     slug: string,
     payload: { content: string; parentReplyId?: string },
   ): Observable<ForumReply> {
-    return this.http
-      .post<ApiResponse<ForumReply>>(`${this.baseUrl}/${slug}/replies`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.post<ForumReply>(`/forum/${slug}/replies`, payload);
   }
 
   updateReply(slug: string, replyId: string, payload: { content: string }): Observable<ForumReply> {
-    return this.http
-      .patch<ApiResponse<ForumReply>>(`${this.baseUrl}/${slug}/replies/${replyId}`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.patch<ForumReply>(`/forum/${slug}/replies/${replyId}`, payload);
   }
 
   deleteReply(slug: string, replyId: string): Observable<{ message: string }> {
-    return this.http
-      .delete<ApiResponse<{ message: string }>>(`${this.baseUrl}/${slug}/replies/${replyId}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ message: string }>(`/forum/${slug}/replies/${replyId}`);
   }
 
   toggleThreadReaction(
     slug: string,
     payload?: { reactionType: string },
   ): Observable<{ reacted: boolean }> {
-    return this.http
-      .post<ApiResponse<{ reacted: boolean }>>(`${this.baseUrl}/${slug}/reactions`, payload ?? {})
-      .pipe(map((response) => response.data));
+    return this.api.post<{ reacted: boolean }>(`/forum/${slug}/reactions`, payload ?? {});
   }
 
   toggleReplyReaction(
@@ -116,75 +92,54 @@ export class ForumService {
     replyId: string,
     payload?: { reactionType: string },
   ): Observable<{ reacted: boolean }> {
-    return this.http
-      .post<
-        ApiResponse<{ reacted: boolean }>
-      >(`${this.baseUrl}/${slug}/replies/${replyId}/reactions`, payload ?? {})
-      .pipe(map((response) => response.data));
+    return this.api.post<{ reacted: boolean }>(
+      `/forum/${slug}/replies/${replyId}/reactions`,
+      payload ?? {},
+    );
   }
 
   markSolution(slug: string, replyId: string): Observable<ForumReply> {
-    return this.http
-      .post<ApiResponse<ForumReply>>(`${this.baseUrl}/${slug}/replies/${replyId}/solution`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<ForumReply>(`/forum/${slug}/replies/${replyId}/solution`, {});
   }
 
   unmarkSolution(slug: string, replyId: string): Observable<ForumReply> {
-    return this.http
-      .delete<ApiResponse<ForumReply>>(`${this.baseUrl}/${slug}/replies/${replyId}/solution`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<ForumReply>(`/forum/${slug}/replies/${replyId}/solution`);
   }
 
   votePoll(slug: string, optionId: string): Observable<ForumPoll> {
-    return this.http
-      .post<ApiResponse<ForumPoll>>(`${this.baseUrl}/${slug}/vote`, { optionId })
-      .pipe(map((response) => response.data));
+    return this.api.post<ForumPoll>(`/forum/${slug}/vote`, { optionId });
   }
 
   removeVote(slug: string): Observable<ForumPoll> {
-    return this.http
-      .delete<ApiResponse<ForumPoll>>(`${this.baseUrl}/${slug}/vote`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<ForumPoll>(`/forum/${slug}/vote`);
   }
 
   closeThread(slug: string): Observable<ThreadDetail> {
-    return this.http
-      .post<ApiResponse<ThreadDetail>>(`${this.baseUrl}/${slug}/close`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<ThreadDetail>(`/forum/${slug}/close`, {});
   }
 
   openThread(slug: string): Observable<ThreadDetail> {
-    return this.http
-      .post<ApiResponse<ThreadDetail>>(`${this.baseUrl}/${slug}/open`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<ThreadDetail>(`/forum/${slug}/open`, {});
   }
 
   archiveThread(slug: string) {
-    return this.http
-      .post<ApiResponse<ThreadDetail>>(`${this.baseUrl}/${slug}/archive`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<ThreadDetail>(`/forum/${slug}/archive`, {});
   }
 
   getTrendingTags(): Observable<{ tag: string; count: number }[]> {
-    return this.http
-      .get<ApiResponse<{ tag: string; count: number }[]>>(`${this.baseUrl}/tags/trending`)
-      .pipe(map((response) => response.data));
+    return this.api.get<{ tag: string; count: number }[]>('/forum/tags/trending');
   }
 
   getMyStats(): Observable<{ threadsCount: number; repliesCount: number; solutionsCount: number }> {
-    return this.http
-      .get<
-        ApiResponse<{ threadsCount: number; repliesCount: number; solutionsCount: number }>
-      >(`${this.baseUrl}/stats/me`)
-      .pipe(map((response) => response.data));
+    return this.api.get<{ threadsCount: number; repliesCount: number; solutionsCount: number }>(
+      '/forum/stats/me',
+    );
   }
 
   listMyThreads(query: ThreadQuery = {}): Observable<PaginatedResponse<ThreadSummary>> {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<ThreadSummary>>>(`${this.baseUrl}/mine`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<ThreadSummary>>('/forum/mine', {
+      params: this.buildParams(query),
+    });
   }
 
   private buildParams(query: ThreadQuery): HttpParams {

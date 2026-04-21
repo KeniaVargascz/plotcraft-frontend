@@ -1,36 +1,40 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { environment } from '../../../environments/environment';
+import { HttpApiService } from './http-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class ExportsService {
-  private readonly http = inject(HttpClient);
-  private readonly base = `${environment.apiUrl}/exports`;
+  private readonly api = inject(HttpApiService);
 
   exportNovelTxt(slug: string) {
-    return this.http.get(`${this.base}/novels/${slug}/txt`, { responseType: 'blob' });
+    const { http, baseUrl } = this.api.raw();
+    return http.get(`${baseUrl}/exports/novels/${slug}/txt`, { responseType: 'blob' });
   }
 
   exportNovelMd(slug: string) {
-    return this.http.get(`${this.base}/novels/${slug}/md`, { responseType: 'blob' });
+    const { http, baseUrl } = this.api.raw();
+    return http.get(`${baseUrl}/exports/novels/${slug}/md`, { responseType: 'blob' });
   }
 
   exportNovelJson(slug: string) {
-    return this.http.get(`${this.base}/novels/${slug}/json`, { responseType: 'blob' });
+    const { http, baseUrl } = this.api.raw();
+    return http.get(`${baseUrl}/exports/novels/${slug}/json`, { responseType: 'blob' });
   }
 
   exportChapterMd(slug: string, chSlug: string) {
-    return this.http.get(`${this.base}/novels/${slug}/chapters/${chSlug}/md`, {
+    const { http, baseUrl } = this.api.raw();
+    return http.get(`${baseUrl}/exports/novels/${slug}/chapters/${chSlug}/md`, {
       responseType: 'blob',
     });
   }
 
   exportWorldJson(slug: string) {
-    return this.http.get(`${this.base}/worlds/${slug}/json`, { responseType: 'blob' });
+    const { http, baseUrl } = this.api.raw();
+    return http.get(`${baseUrl}/exports/worlds/${slug}/json`, { responseType: 'blob' });
   }
 
   exportCharacterJson(username: string, slug: string) {
-    return this.http.get(`${this.base}/characters/${username}/${slug}/json`, {
+    const { http, baseUrl } = this.api.raw();
+    return http.get(`${baseUrl}/exports/characters/${username}/${slug}/json`, {
       responseType: 'blob',
     });
   }

@@ -1,56 +1,41 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
 import { ReaderPreferences, ReadingHistoryItem, ReadingProgress } from '../models/reader.model';
 import { PaginatedResponse } from '../models/feed-pagination.model';
+import { HttpApiService } from './http-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class ReaderService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   getPreferences() {
-    return this.http
-      .get<ApiResponse<ReaderPreferences>>(`${environment.apiUrl}/reader/preferences`)
-      .pipe(map((response) => response.data));
+    return this.api.get<ReaderPreferences>('/reader/preferences');
   }
 
   updatePreferences(payload: Partial<ReaderPreferences>) {
-    return this.http
-      .patch<ApiResponse<ReaderPreferences>>(`${environment.apiUrl}/reader/preferences`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.patch<ReaderPreferences>('/reader/preferences', payload);
   }
 
   getProgress(novelId: string) {
-    return this.http
-      .get<ApiResponse<ReadingProgress | null>>(`${environment.apiUrl}/reader/progress/${novelId}`)
-      .pipe(map((response) => response.data));
+    return this.api.get<ReadingProgress | null>(`/reader/progress/${novelId}`);
   }
 
   saveProgress(payload: { novel_id: string; chapter_id: string; scroll_pct: number }) {
-    return this.http
-      .post<ApiResponse<ReadingProgress>>(`${environment.apiUrl}/reader/progress`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.post<ReadingProgress>('/reader/progress', payload);
   }
 
   addHistory(payload: { novel_id: string; chapter_id: string }) {
-    return this.http
-      .post<ApiResponse<ReadingHistoryItem>>(`${environment.apiUrl}/reader/history`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.post<ReadingHistoryItem>('/reader/history', payload);
   }
 
   listHistory(cursor?: string | null, limit = 12) {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<ReadingHistoryItem>>>(
-        `${environment.apiUrl}/reader/history`,
-        {
-          params: {
-            ...(cursor ? { cursor } : {}),
-            limit,
-          },
+    return this.api.get<PaginatedResponse<ReadingHistoryItem>>(
+      '/reader/history',
+      {
+        params: {
+          ...(cursor ? { cursor } : {}),
+          limit,
         },
-      )
-      .pipe(map((response) => response.data));
+      },
+    );
   }
 }

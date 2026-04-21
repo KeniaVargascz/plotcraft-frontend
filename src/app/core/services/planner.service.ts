@@ -1,12 +1,11 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable } from 'rxjs';
 import { PlannerStats } from '../models/planner-stats.model';
 import { TaskStatus } from '../models/writing-project.model';
 import { WritingProjectSummary } from '../models/writing-project.model';
 import { WritingTask } from '../models/writing-task.model';
+import { HttpApiService } from './http-api.service';
 
 type PlannerTaskQuery = Partial<{
   status: TaskStatus;
@@ -18,27 +17,20 @@ type PlannerTaskQuery = Partial<{
 
 @Injectable({ providedIn: 'root' })
 export class PlannerService {
-  private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/planner`;
+  private readonly api = inject(HttpApiService);
 
   /* ─── Projects ─── */
 
   listProjects(): Observable<WritingProjectSummary[]> {
-    return this.http
-      .get<ApiResponse<WritingProjectSummary[]>>(`${this.baseUrl}/projects`)
-      .pipe(map((r) => r.data));
+    return this.api.get<WritingProjectSummary[]>('/planner/projects');
   }
 
   createProject(payload: { name: string; description?: string; color?: string; novelId?: string }) {
-    return this.http
-      .post<ApiResponse<WritingProjectSummary>>(`${this.baseUrl}/projects`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.post<WritingProjectSummary>('/planner/projects', payload);
   }
 
   getProject(id: string) {
-    return this.http
-      .get<ApiResponse<WritingProjectSummary>>(`${this.baseUrl}/projects/${id}`)
-      .pipe(map((r) => r.data));
+    return this.api.get<WritingProjectSummary>(`/planner/projects/${id}`);
   }
 
   updateProject(
@@ -50,33 +42,23 @@ export class PlannerService {
       isActive: boolean;
     }>,
   ) {
-    return this.http
-      .patch<ApiResponse<WritingProjectSummary>>(`${this.baseUrl}/projects/${id}`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.patch<WritingProjectSummary>(`/planner/projects/${id}`, payload);
   }
 
   deleteProject(id: string) {
-    return this.http
-      .delete<ApiResponse<{ message: string }>>(`${this.baseUrl}/projects/${id}`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<{ message: string }>(`/planner/projects/${id}`);
   }
 
   archiveProject(id: string) {
-    return this.http
-      .patch<ApiResponse<WritingProjectSummary>>(`${this.baseUrl}/projects/${id}/archive`, {})
-      .pipe(map((r) => r.data));
+    return this.api.patch<WritingProjectSummary>(`/planner/projects/${id}/archive`, {});
   }
 
   restoreProject(id: string) {
-    return this.http
-      .patch<ApiResponse<WritingProjectSummary>>(`${this.baseUrl}/projects/${id}/restore`, {})
-      .pipe(map((r) => r.data));
+    return this.api.patch<WritingProjectSummary>(`/planner/projects/${id}/restore`, {});
   }
 
   getByNovelSlug(slug: string) {
-    return this.http
-      .get<ApiResponse<WritingProjectSummary>>(`${environment.apiUrl}/novels/${slug}/planner`)
-      .pipe(map((r) => r.data));
+    return this.api.get<WritingProjectSummary>(`/novels/${slug}/planner`);
   }
 
   /* ─── Tasks ─── */
@@ -90,70 +72,55 @@ export class PlannerService {
         }
       });
     }
-    return this.http
-      .get<ApiResponse<WritingTask[]>>(`${this.baseUrl}/projects/${projectId}/tasks`, { params })
-      .pipe(map((r) => r.data));
+    return this.api.get<WritingTask[]>(`/planner/projects/${projectId}/tasks`, { params });
   }
 
   createTask(projectId: string, payload: Partial<WritingTask>) {
-    return this.http
-      .post<ApiResponse<WritingTask>>(`${this.baseUrl}/projects/${projectId}/tasks`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.post<WritingTask>(`/planner/projects/${projectId}/tasks`, payload);
   }
 
   updateTask(projectId: string, taskId: string, payload: Partial<WritingTask>) {
-    return this.http
-      .patch<
-        ApiResponse<WritingTask>
-      >(`${this.baseUrl}/projects/${projectId}/tasks/${taskId}`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.patch<WritingTask>(
+      `/planner/projects/${projectId}/tasks/${taskId}`,
+      payload,
+    );
   }
 
   deleteTask(projectId: string, taskId: string) {
-    return this.http
-      .delete<
-        ApiResponse<{ message: string }>
-      >(`${this.baseUrl}/projects/${projectId}/tasks/${taskId}`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<{ message: string }>(
+      `/planner/projects/${projectId}/tasks/${taskId}`,
+    );
   }
 
   moveTask(projectId: string, taskId: string, payload: { status: string; sortOrder?: number }) {
-    return this.http
-      .post<
-        ApiResponse<WritingTask>
-      >(`${this.baseUrl}/projects/${projectId}/tasks/${taskId}/move`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.post<WritingTask>(
+      `/planner/projects/${projectId}/tasks/${taskId}/move`,
+      payload,
+    );
   }
 
   reorderTasks(
     projectId: string,
     payload: { tasks: Array<{ id: string; sortOrder: number }>; status: string },
   ) {
-    return this.http
-      .patch<
-        ApiResponse<{ message: string }>
-      >(`${this.baseUrl}/projects/${projectId}/tasks/reorder`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.patch<{ message: string }>(
+      `/planner/projects/${projectId}/tasks/reorder`,
+      payload,
+    );
   }
 
   /* ─── Board / Calendar / Stats ─── */
 
   getBoard(projectId: string) {
-    return this.http
-      .get<ApiResponse<Record<string, WritingTask[]>>>(`${this.baseUrl}/board/${projectId}`)
-      .pipe(map((r) => r.data));
+    return this.api.get<Record<string, WritingTask[]>>(`/planner/board/${projectId}`);
   }
 
   getCalendar(from: string, to: string) {
     const params = new HttpParams().set('from', from).set('to', to);
-    return this.http
-      .get<ApiResponse<WritingTask[]>>(`${this.baseUrl}/calendar`, { params })
-      .pipe(map((r) => r.data));
+    return this.api.get<WritingTask[]>('/planner/calendar', { params });
   }
 
   getStats(): Observable<PlannerStats> {
-    return this.http
-      .get<ApiResponse<PlannerStats>>(`${this.baseUrl}/stats`)
-      .pipe(map((r) => r.data));
+    return this.api.get<PlannerStats>('/planner/stats');
   }
 }

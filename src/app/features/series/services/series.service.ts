@@ -1,8 +1,7 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { ApiResponse } from '../../../core/models/api-response.model';
+import { HttpApiService } from '../../../core/services/http-api.service';
 import { PagedResponse } from '../../../core/models/feed-pagination.model';
 import {
   CreateSeriesPayload,
@@ -31,8 +30,7 @@ export interface SeriesQuery {
 
 @Injectable({ providedIn: 'root' })
 export class SeriesService {
-  private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/series`;
+  private readonly api = inject(HttpApiService);
 
   list(query: SeriesQuery = {}): Observable<PagedResponse<SeriesSummary>> {
     let params = new HttpParams();
@@ -44,49 +42,34 @@ export class SeriesService {
     if (query.status) params = params.set('status', query.status);
     if (query.search) params = params.set('search', query.search);
 
-    return this.http
-      .get<ApiResponse<PagedResponse<SeriesSummary>>>(this.baseUrl, { params })
-      .pipe(map((r) => r.data));
+    return this.api.get<PagedResponse<SeriesSummary>>('/series', { params });
   }
 
   getBySlug(slug: string): Observable<SeriesDetail> {
-    return this.http
-      .get<ApiResponse<SeriesDetail>>(`${this.baseUrl}/${slug}`)
-      .pipe(map((r) => r.data));
+    return this.api.get<SeriesDetail>(`/series/${slug}`);
   }
 
   create(payload: CreateSeriesPayload): Observable<SeriesDetail> {
-    return this.http
-      .post<ApiResponse<SeriesDetail>>(this.baseUrl, payload)
-      .pipe(map((r) => r.data));
+    return this.api.post<SeriesDetail>('/series', payload);
   }
 
   update(slug: string, payload: UpdateSeriesPayload): Observable<SeriesDetail> {
-    return this.http
-      .patch<ApiResponse<SeriesDetail>>(`${this.baseUrl}/${slug}`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.patch<SeriesDetail>(`/series/${slug}`, payload);
   }
 
   delete(slug: string): Observable<{ message: string }> {
-    return this.http
-      .delete<ApiResponse<{ message: string }>>(`${this.baseUrl}/${slug}`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<{ message: string }>(`/series/${slug}`);
   }
 
   addNovel(slug: string, novelId: string, orderIndex: number): Observable<SeriesDetail> {
-    return this.http
-      .post<ApiResponse<SeriesDetail>>(`${this.baseUrl}/${slug}/novels`, { novelId, orderIndex })
-      .pipe(map((r) => r.data));
+    return this.api.post<SeriesDetail>(`/series/${slug}/novels`, { novelId, orderIndex });
   }
 
   removeNovel(slug: string, novelId: string): Observable<RemoveNovelResult> {
-    return this.http
-      .delete<
-        ApiResponse<RemoveNovelResult | SeriesDetail>
-      >(`${this.baseUrl}/${slug}/novels/${novelId}`)
+    return this.api
+      .delete<RemoveNovelResult | SeriesDetail>(`/series/${slug}/novels/${novelId}`)
       .pipe(
-        map((r) => {
-          const data = r.data;
+        map((data) => {
           if (data && 'deleted' in data && data.deleted === true) {
             return { deleted: true, series: null, message: (data as RemoveNovelResult).message };
           }
@@ -103,23 +86,17 @@ export class SeriesService {
   }
 
   updateParent(slug: string, parentId: string | null): Observable<SeriesDetail> {
-    return this.http
-      .patch<ApiResponse<SeriesDetail>>(`${this.baseUrl}/${slug}`, { parentId })
-      .pipe(map((r) => r.data));
+    return this.api.patch<SeriesDetail>(`/series/${slug}`, { parentId });
   }
 
   reorderNovels(
     slug: string,
     novels: { novelId: string; orderIndex: number }[],
   ): Observable<SeriesDetail> {
-    return this.http
-      .patch<ApiResponse<SeriesDetail>>(`${this.baseUrl}/${slug}/novels/reorder`, { novels })
-      .pipe(map((r) => r.data));
+    return this.api.patch<SeriesDetail>(`/series/${slug}/novels/reorder`, { novels });
   }
 
   updateStatus(slug: string, status: SeriesStatus): Observable<SeriesDetail> {
-    return this.http
-      .patch<ApiResponse<SeriesDetail>>(`${this.baseUrl}/${slug}/status`, { status })
-      .pipe(map((r) => r.data));
+    return this.api.patch<SeriesDetail>(`/series/${slug}/status`, { status });
   }
 }

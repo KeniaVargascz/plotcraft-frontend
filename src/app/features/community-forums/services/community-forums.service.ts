@@ -1,8 +1,7 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
-import { environment } from '../../../../environments/environment';
-import { ApiResponse } from '../../../core/models/api-response.model';
+import { Observable } from 'rxjs';
+import { HttpApiService } from '../../../core/services/http-api.service';
 import {
   CommunityForum,
   CreateForumPayload,
@@ -27,25 +26,23 @@ export interface ReplyListResponse {
 
 @Injectable({ providedIn: 'root' })
 export class CommunityForumsService {
-  private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/communities`;
+  private readonly api = inject(HttpApiService);
 
   listForums(communitySlug: string): Observable<CommunityForum[]> {
-    return this.http
-      .get<ApiResponse<CommunityForum[]>>(`${this.baseUrl}/${communitySlug}/forums`)
-      .pipe(map((r) => r.data));
+    return this.api.get<CommunityForum[]>(`/communities/${communitySlug}/forums`);
   }
 
   getForum(communitySlug: string, forumSlug: string): Observable<CommunityForum> {
-    return this.http
-      .get<ApiResponse<CommunityForum>>(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}`)
-      .pipe(map((r) => r.data));
+    return this.api.get<CommunityForum>(
+      `/communities/${communitySlug}/forums/${forumSlug}`,
+    );
   }
 
   createForum(communitySlug: string, payload: CreateForumPayload): Observable<CommunityForum> {
-    return this.http
-      .post<ApiResponse<CommunityForum>>(`${this.baseUrl}/${communitySlug}/forums`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.post<CommunityForum>(
+      `/communities/${communitySlug}/forums`,
+      payload,
+    );
   }
 
   updateForum(
@@ -53,33 +50,29 @@ export class CommunityForumsService {
     forumSlug: string,
     payload: UpdateForumPayload,
   ): Observable<CommunityForum> {
-    return this.http
-      .patch<
-        ApiResponse<CommunityForum>
-      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.patch<CommunityForum>(
+      `/communities/${communitySlug}/forums/${forumSlug}`,
+      payload,
+    );
   }
 
   deleteForum(communitySlug: string, forumSlug: string): Observable<void> {
-    return this.http
-      .delete<ApiResponse<void>>(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}`)
-      .pipe(map(() => undefined));
+    return this.api.delete<void>(
+      `/communities/${communitySlug}/forums/${forumSlug}`,
+    );
   }
 
   joinForum(communitySlug: string, forumSlug: string): Observable<ForumMembershipResult> {
-    return this.http
-      .post<
-        ApiResponse<ForumMembershipResult>
-      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/join`, {})
-      .pipe(map((r) => r.data));
+    return this.api.post<ForumMembershipResult>(
+      `/communities/${communitySlug}/forums/${forumSlug}/join`,
+      {},
+    );
   }
 
   leaveForum(communitySlug: string, forumSlug: string): Observable<ForumMembershipResult> {
-    return this.http
-      .delete<
-        ApiResponse<ForumMembershipResult>
-      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/leave`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<ForumMembershipResult>(
+      `/communities/${communitySlug}/forums/${forumSlug}/leave`,
+    );
   }
 
   listThreads(
@@ -90,19 +83,16 @@ export class CommunityForumsService {
     let params = new HttpParams();
     if (options.sortBy) params = params.set('sortBy', options.sortBy);
     if (options.cursor) params = params.set('cursor', options.cursor);
-    return this.http
-      .get<
-        ApiResponse<ThreadListResponse>
-      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads`, { params })
-      .pipe(map((r) => r.data));
+    return this.api.get<ThreadListResponse>(
+      `/communities/${communitySlug}/forums/${forumSlug}/threads`,
+      { params },
+    );
   }
 
   getThread(communitySlug: string, forumSlug: string, threadSlug: string): Observable<ForumThread> {
-    return this.http
-      .get<
-        ApiResponse<ForumThread>
-      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}`)
-      .pipe(map((r) => r.data));
+    return this.api.get<ForumThread>(
+      `/communities/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}`,
+    );
   }
 
   listReplies(
@@ -114,19 +104,17 @@ export class CommunityForumsService {
     let params = new HttpParams();
     if (options.cursor) params = params.set('cursor', options.cursor);
     if (options.limit) params = params.set('limit', options.limit);
-    return this.http
-      .get<
-        ApiResponse<ReplyListResponse>
-      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}/replies`, { params })
-      .pipe(map((r) => r.data));
+    return this.api.get<ReplyListResponse>(
+      `/communities/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}/replies`,
+      { params },
+    );
   }
 
   listDiscussedThreads(communitySlug: string, limit = 5): Observable<DiscussedThread[]> {
-    return this.http
-      .get<
-        ApiResponse<DiscussedThread[]>
-      >(`${this.baseUrl}/${communitySlug}/discussed-threads`, { params: { limit } })
-      .pipe(map((r) => r.data));
+    return this.api.get<DiscussedThread[]>(
+      `/communities/${communitySlug}/discussed-threads`,
+      { params: { limit } },
+    );
   }
 
   createThread(
@@ -134,11 +122,10 @@ export class CommunityForumsService {
     forumSlug: string,
     payload: CreateThreadPayload,
   ): Observable<ForumThread> {
-    return this.http
-      .post<
-        ApiResponse<ForumThread>
-      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.post<ForumThread>(
+      `/communities/${communitySlug}/forums/${forumSlug}/threads`,
+      payload,
+    );
   }
 
   postReply(
@@ -147,10 +134,9 @@ export class CommunityForumsService {
     threadSlug: string,
     content: string,
   ): Observable<ForumReply> {
-    return this.http
-      .post<
-        ApiResponse<ForumReply>
-      >(`${this.baseUrl}/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}/replies`, { content })
-      .pipe(map((r) => r.data));
+    return this.api.post<ForumReply>(
+      `/communities/${communitySlug}/forums/${forumSlug}/threads/${threadSlug}/replies`,
+      { content },
+    );
   }
 }

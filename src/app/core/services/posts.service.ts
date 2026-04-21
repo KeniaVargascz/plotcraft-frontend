@@ -1,10 +1,9 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../models/feed-pagination.model';
 import { PostModel, PostType } from '../models/post.model';
+import { HttpApiService } from './http-api.service';
 
 type PostQuery = {
   cursor?: string | null;
@@ -16,7 +15,7 @@ type PostQuery = {
 
 @Injectable({ providedIn: 'root' })
 export class PostsService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   create(payload: {
     content: string;
@@ -28,57 +27,42 @@ export class PostsService {
     world_id?: string;
     character_ids?: string[];
   }): Observable<PostModel> {
-    return this.http
-      .post<ApiResponse<PostModel>>(`${environment.apiUrl}/posts`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.post<PostModel>('/posts', payload);
   }
 
   update(postId: string, payload: { content: string }): Observable<PostModel> {
-    return this.http
-      .patch<ApiResponse<PostModel>>(`${environment.apiUrl}/posts/${postId}`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.patch<PostModel>(`/posts/${postId}`, payload);
   }
 
   delete(postId: string): Observable<{ message: string }> {
-    return this.http
-      .delete<ApiResponse<{ message: string }>>(`${environment.apiUrl}/posts/${postId}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ message: string }>(`/posts/${postId}`);
   }
 
   getUserPosts(username: string, query: PostQuery = {}): Observable<PaginatedResponse<PostModel>> {
-    return this.http
-      .get<
-        ApiResponse<PaginatedResponse<PostModel>>
-      >(`${environment.apiUrl}/posts/user/${username}`, { params: this.buildParams(query) })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<PostModel>>(
+      `/posts/user/${username}`,
+      { params: this.buildParams(query) },
+    );
   }
 
   getSavedPosts(query: PostQuery = {}): Observable<PaginatedResponse<PostModel>> {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<PostModel>>>(`${environment.apiUrl}/posts/saved`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<PostModel>>('/posts/saved', {
+      params: this.buildParams(query),
+    });
   }
 
   list(query: PostQuery = {}): Observable<PaginatedResponse<PostModel>> {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<PostModel>>>(`${environment.apiUrl}/posts`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<PostModel>>('/posts', {
+      params: this.buildParams(query),
+    });
   }
 
   save(postId: string): Observable<{ saved: boolean }> {
-    return this.http
-      .post<ApiResponse<{ saved: boolean }>>(`${environment.apiUrl}/posts/${postId}/save`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<{ saved: boolean }>(`/posts/${postId}/save`, {});
   }
 
   unsave(postId: string): Observable<{ saved: boolean }> {
-    return this.http
-      .delete<ApiResponse<{ saved: boolean }>>(`${environment.apiUrl}/posts/${postId}/save`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ saved: boolean }>(`/posts/${postId}/save`);
   }
 
   private buildParams(query: PostQuery) {

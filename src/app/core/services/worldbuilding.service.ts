@@ -1,12 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
 import { PaginatedResponse } from '../models/feed-pagination.model';
 import { FieldDefinition, FieldValue } from '../models/field-definition.model';
 import { WbCategory, WbCategorySummary, CategoryTemplate } from '../models/wb-category.model';
 import { WbEntryDetail, WbEntrySummary, WbEntryLink } from '../models/wb-entry.model';
+import { HttpApiService } from './http-api.service';
 
 export type EntryQuery = {
   cursor?: string | null;
@@ -56,125 +54,93 @@ type UpdateEntryPayload = Partial<{
 
 @Injectable({ providedIn: 'root' })
 export class WorldbuildingService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   /* ─── Categories ─── */
 
   listCategories(worldSlug: string) {
-    return this.http
-      .get<
-        ApiResponse<WbCategorySummary[]>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/categories`)
-      .pipe(map((r) => r.data));
+    return this.api.get<WbCategorySummary[]>(`/worlds/${worldSlug}/wb/categories`);
   }
 
   getCategory(worldSlug: string, catSlug: string) {
-    return this.http
-      .get<
-        ApiResponse<WbCategory>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/categories/${catSlug}`)
-      .pipe(map((r) => r.data));
+    return this.api.get<WbCategory>(`/worlds/${worldSlug}/wb/categories/${catSlug}`);
   }
 
   createCategory(worldSlug: string, payload: CategoryPayload) {
-    return this.http
-      .post<
-        ApiResponse<WbCategory>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/categories`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.post<WbCategory>(`/worlds/${worldSlug}/wb/categories`, payload);
   }
 
   updateCategory(worldSlug: string, catSlug: string, payload: UpdateCategoryPayload) {
-    return this.http
-      .patch<
-        ApiResponse<WbCategory>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/categories/${catSlug}`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.patch<WbCategory>(
+      `/worlds/${worldSlug}/wb/categories/${catSlug}`,
+      payload,
+    );
   }
 
   deleteCategory(worldSlug: string, catSlug: string) {
-    return this.http
-      .delete<
-        ApiResponse<{ message: string }>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/categories/${catSlug}`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<{ message: string }>(
+      `/worlds/${worldSlug}/wb/categories/${catSlug}`,
+    );
   }
 
   reorderCategories(worldSlug: string, items: Array<{ id: string; sortOrder: number }>) {
-    return this.http
-      .patch<
-        ApiResponse<{ message: string }>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/categories/reorder`, { items })
-      .pipe(map((r) => r.data));
+    return this.api.patch<{ message: string }>(
+      `/worlds/${worldSlug}/wb/categories/reorder`,
+      { items },
+    );
   }
 
   /* ─── Templates ─── */
 
   listTemplates() {
-    return this.http
-      .get<ApiResponse<CategoryTemplate[]>>(`${environment.apiUrl}/worlds/wb/templates`)
-      .pipe(map((r) => r.data));
+    return this.api.get<CategoryTemplate[]>('/worlds/wb/templates');
   }
 
   instantiateTemplate(
     worldSlug: string,
     payload: { templateKey: string; name?: string; icon?: string; color?: string },
   ) {
-    return this.http
-      .post<
-        ApiResponse<WbCategory>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/categories/from-template`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.post<WbCategory>(
+      `/worlds/${worldSlug}/wb/categories/from-template`,
+      payload,
+    );
   }
 
   /* ─── Entries ─── */
 
   listEntries(worldSlug: string, query: EntryQuery = {}) {
-    return this.http
-      .get<
-        ApiResponse<PaginatedResponse<WbEntrySummary>>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/entries`, { params: this.buildParams(query) })
-      .pipe(map((r) => r.data));
+    return this.api.get<PaginatedResponse<WbEntrySummary>>(
+      `/worlds/${worldSlug}/wb/entries`,
+      { params: this.buildParams(query) },
+    );
   }
 
   listCategoryEntries(worldSlug: string, catSlug: string, query: EntryQuery = {}) {
-    return this.http
-      .get<
-        ApiResponse<PaginatedResponse<WbEntrySummary>>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/categories/${catSlug}/entries`, { params: this.buildParams(query) })
-      .pipe(map((r) => r.data));
+    return this.api.get<PaginatedResponse<WbEntrySummary>>(
+      `/worlds/${worldSlug}/wb/categories/${catSlug}/entries`,
+      { params: this.buildParams(query) },
+    );
   }
 
   getEntry(worldSlug: string, entrySlug: string) {
-    return this.http
-      .get<
-        ApiResponse<WbEntryDetail>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/entries/${entrySlug}`)
-      .pipe(map((r) => r.data));
+    return this.api.get<WbEntryDetail>(`/worlds/${worldSlug}/wb/entries/${entrySlug}`);
   }
 
   createEntry(worldSlug: string, payload: EntryPayload) {
-    return this.http
-      .post<
-        ApiResponse<WbEntryDetail>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/entries`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.post<WbEntryDetail>(`/worlds/${worldSlug}/wb/entries`, payload);
   }
 
   updateEntry(worldSlug: string, entrySlug: string, payload: UpdateEntryPayload) {
-    return this.http
-      .patch<
-        ApiResponse<WbEntryDetail>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/entries/${entrySlug}`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.patch<WbEntryDetail>(
+      `/worlds/${worldSlug}/wb/entries/${entrySlug}`,
+      payload,
+    );
   }
 
   deleteEntry(worldSlug: string, entrySlug: string) {
-    return this.http
-      .delete<
-        ApiResponse<{ message: string }>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/entries/${entrySlug}`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<{ message: string }>(
+      `/worlds/${worldSlug}/wb/entries/${entrySlug}`,
+    );
   }
 
   reorderEntries(
@@ -182,11 +148,10 @@ export class WorldbuildingService {
     catSlug: string,
     items: Array<{ id: string; sortOrder: number }>,
   ) {
-    return this.http
-      .patch<
-        ApiResponse<{ message: string }>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/categories/${catSlug}/entries/reorder`, { items })
-      .pipe(map((r) => r.data));
+    return this.api.patch<{ message: string }>(
+      `/worlds/${worldSlug}/wb/categories/${catSlug}/entries/reorder`,
+      { items },
+    );
   }
 
   /* ─── Links ─── */
@@ -196,37 +161,31 @@ export class WorldbuildingService {
     entrySlug: string,
     payload: { targetEntryId: string; relation: string; isMutual?: boolean },
   ) {
-    return this.http
-      .post<
-        ApiResponse<WbEntryLink>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/entries/${entrySlug}/links`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.post<WbEntryLink>(
+      `/worlds/${worldSlug}/wb/entries/${entrySlug}/links`,
+      payload,
+    );
   }
 
   deleteLink(worldSlug: string, entrySlug: string, linkId: string) {
-    return this.http
-      .delete<
-        ApiResponse<{ message: string }>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/entries/${entrySlug}/links/${linkId}`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<{ message: string }>(
+      `/worlds/${worldSlug}/wb/entries/${entrySlug}/links/${linkId}`,
+    );
   }
 
   listLinks(worldSlug: string, entrySlug: string) {
-    return this.http
-      .get<
-        ApiResponse<WbEntryLink[]>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/entries/${entrySlug}/links`)
-      .pipe(map((r) => r.data));
+    return this.api.get<WbEntryLink[]>(
+      `/worlds/${worldSlug}/wb/entries/${entrySlug}/links`,
+    );
   }
 
   /* ─── Search ─── */
 
   searchEntries(worldSlug: string, query: string) {
-    return this.http
-      .get<
-        ApiResponse<PaginatedResponse<WbEntrySummary>>
-      >(`${environment.apiUrl}/worlds/${worldSlug}/wb/search`, { params: new HttpParams().set('q', query) })
-      .pipe(map((r) => r.data));
+    return this.api.get<PaginatedResponse<WbEntrySummary>>(
+      `/worlds/${worldSlug}/wb/search`,
+      { params: new HttpParams().set('q', query) },
+    );
   }
 
   /* ─── Helpers ─── */

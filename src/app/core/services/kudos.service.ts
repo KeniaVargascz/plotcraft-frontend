@@ -1,8 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable } from 'rxjs';
+import { HttpApiService } from './http-api.service';
 
 export interface KudoResponse {
   kudosCount: number;
@@ -11,41 +9,29 @@ export interface KudoResponse {
 
 @Injectable({ providedIn: 'root' })
 export class KudosService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   addKudo(slug: string): Observable<KudoResponse> {
-    return this.http
-      .post<ApiResponse<KudoResponse>>(`${environment.apiUrl}/novels/${slug}/kudos`, {})
-      .pipe(map((r) => r.data));
+    return this.api.post<KudoResponse>(`/novels/${slug}/kudos`, {});
   }
 
   removeKudo(slug: string): Observable<KudoResponse> {
-    return this.http
-      .delete<ApiResponse<KudoResponse>>(`${environment.apiUrl}/novels/${slug}/kudos`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<KudoResponse>(`/novels/${slug}/kudos`);
   }
 
   addCharacterKudo(characterId: string): Observable<KudoResponse> {
-    return this.http
-      .post<ApiResponse<KudoResponse>>(`${environment.apiUrl}/kudos/characters/${characterId}`, {})
-      .pipe(map((r) => r.data));
+    return this.api.post<KudoResponse>(`/kudos/characters/${characterId}`, {});
   }
 
   removeCharacterKudo(characterId: string): Observable<KudoResponse> {
-    return this.http
-      .delete<ApiResponse<KudoResponse>>(`${environment.apiUrl}/kudos/characters/${characterId}`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<KudoResponse>(`/kudos/characters/${characterId}`);
   }
 
   addWorldKudo(worldId: string): Observable<KudoResponse> {
-    return this.http
-      .post<ApiResponse<KudoResponse>>(`${environment.apiUrl}/kudos/worlds/${worldId}`, {})
-      .pipe(map((r) => r.data));
+    return this.api.post<KudoResponse>(`/kudos/worlds/${worldId}`, {});
   }
 
   removeWorldKudo(worldId: string): Observable<KudoResponse> {
-    return this.http
-      .delete<ApiResponse<KudoResponse>>(`${environment.apiUrl}/kudos/worlds/${worldId}`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<KudoResponse>(`/kudos/worlds/${worldId}`);
   }
 }

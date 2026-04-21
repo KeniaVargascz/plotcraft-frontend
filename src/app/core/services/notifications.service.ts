@@ -1,10 +1,9 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../models/feed-pagination.model';
 import { AppNotification } from '../models/notification.model';
+import { HttpApiService } from './http-api.service';
 
 type NotificationQuery = {
   cursor?: string | null;
@@ -14,45 +13,32 @@ type NotificationQuery = {
 
 @Injectable({ providedIn: 'root' })
 export class NotificationsService {
-  private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/notifications`;
+  private readonly api = inject(HttpApiService);
 
   list(query: NotificationQuery = {}): Observable<PaginatedResponse<AppNotification>> {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<AppNotification>>>(this.baseUrl, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<AppNotification>>('/notifications', {
+      params: this.buildParams(query),
+    });
   }
 
   getUnreadCount(): Observable<{ count: number }> {
-    return this.http
-      .get<ApiResponse<{ count: number }>>(`${this.baseUrl}/unread-count`)
-      .pipe(map((response) => response.data));
+    return this.api.get<{ count: number }>('/notifications/unread-count');
   }
 
   markAsRead(id: string): Observable<AppNotification> {
-    return this.http
-      .post<ApiResponse<AppNotification>>(`${this.baseUrl}/${id}/read`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<AppNotification>(`/notifications/${id}/read`, {});
   }
 
   markAllAsRead(): Observable<{ message: string }> {
-    return this.http
-      .post<ApiResponse<{ message: string }>>(`${this.baseUrl}/read-all`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<{ message: string }>('/notifications/read-all', {});
   }
 
   remove(id: string): Observable<{ message: string }> {
-    return this.http
-      .delete<ApiResponse<{ message: string }>>(`${this.baseUrl}/${id}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ message: string }>(`/notifications/${id}`);
   }
 
   removeAll(): Observable<{ message: string }> {
-    return this.http
-      .delete<ApiResponse<{ message: string }>>(this.baseUrl)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ message: string }>('/notifications');
   }
 
   private buildParams(query: NotificationQuery): HttpParams {

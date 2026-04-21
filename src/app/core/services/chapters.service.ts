@@ -1,10 +1,9 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable } from 'rxjs';
 import { ChapterDetail, ChapterSummary } from '../models/chapter.model';
 import { PaginatedResponse } from '../models/feed-pagination.model';
+import { HttpApiService } from './http-api.service';
 
 type ChapterQuery = {
   cursor?: string | null;
@@ -13,55 +12,41 @@ type ChapterQuery = {
 
 @Injectable({ providedIn: 'root' })
 export class ChaptersService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   listPublished(
     novelSlug: string,
     query: ChapterQuery = {},
   ): Observable<PaginatedResponse<ChapterSummary>> {
-    return this.http
-      .get<
-        ApiResponse<PaginatedResponse<ChapterSummary>>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters`, { params: this.buildParams(query) })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<ChapterSummary>>(
+      `/novels/${novelSlug}/chapters`,
+      { params: this.buildParams(query) },
+    );
   }
 
   listDrafts(
     novelSlug: string,
     query: ChapterQuery = {},
   ): Observable<PaginatedResponse<ChapterSummary>> {
-    return this.http
-      .get<
-        ApiResponse<PaginatedResponse<ChapterSummary>>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/drafts`, { params: this.buildParams(query) })
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<ChapterSummary>>(
+      `/novels/${novelSlug}/chapters/drafts`,
+      { params: this.buildParams(query) },
+    );
   }
 
   getReaderChapter(novelSlug: string, chapterSlug: string): Observable<ChapterDetail> {
-    return this.http
-      .get<
-        ApiResponse<ChapterDetail>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}`)
-      .pipe(map((response) => response.data));
+    return this.api.get<ChapterDetail>(`/novels/${novelSlug}/chapters/${chapterSlug}`);
   }
 
   getEditorChapter(novelSlug: string, chapterSlug: string): Observable<ChapterDetail> {
-    return this.http
-      .get<
-        ApiResponse<ChapterDetail>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/edit`)
-      .pipe(map((response) => response.data));
+    return this.api.get<ChapterDetail>(`/novels/${novelSlug}/chapters/${chapterSlug}/edit`);
   }
 
   create(
     novelSlug: string,
     payload: { title: string; content: string },
   ): Observable<ChapterDetail> {
-    return this.http
-      .post<
-        ApiResponse<ChapterDetail>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.post<ChapterDetail>(`/novels/${novelSlug}/chapters`, payload);
   }
 
   update(
@@ -69,11 +54,10 @@ export class ChaptersService {
     chapterSlug: string,
     payload: { title?: string; content?: string },
   ): Observable<ChapterDetail> {
-    return this.http
-      .patch<
-        ApiResponse<ChapterDetail>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.patch<ChapterDetail>(
+      `/novels/${novelSlug}/chapters/${chapterSlug}`,
+      payload,
+    );
   }
 
   autosave(
@@ -81,43 +65,37 @@ export class ChaptersService {
     chapterSlug: string,
     payload: { title?: string; content?: string },
   ): Observable<{ savedAt: string; wordCount: number }> {
-    return this.http
-      .patch<
-        ApiResponse<{ savedAt: string; wordCount: number }>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/autosave`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.patch<{ savedAt: string; wordCount: number }>(
+      `/novels/${novelSlug}/chapters/${chapterSlug}/autosave`,
+      payload,
+    );
   }
 
   delete(novelSlug: string, chapterSlug: string): Observable<{ message: string }> {
-    return this.http
-      .delete<
-        ApiResponse<{ message: string }>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ message: string }>(
+      `/novels/${novelSlug}/chapters/${chapterSlug}`,
+    );
   }
 
   publish(novelSlug: string, chapterSlug: string): Observable<ChapterDetail> {
-    return this.http
-      .post<
-        ApiResponse<ChapterDetail>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/publish`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<ChapterDetail>(
+      `/novels/${novelSlug}/chapters/${chapterSlug}/publish`,
+      {},
+    );
   }
 
   unpublish(novelSlug: string, chapterSlug: string): Observable<ChapterDetail> {
-    return this.http
-      .post<
-        ApiResponse<ChapterDetail>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/unpublish`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<ChapterDetail>(
+      `/novels/${novelSlug}/chapters/${chapterSlug}/unpublish`,
+      {},
+    );
   }
 
   schedule(novelSlug: string, chapterSlug: string, scheduledAt: string): Observable<ChapterDetail> {
-    return this.http
-      .post<
-        ApiResponse<ChapterDetail>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/schedule`, { scheduledAt })
-      .pipe(map((response) => response.data));
+    return this.api.post<ChapterDetail>(
+      `/novels/${novelSlug}/chapters/${chapterSlug}/schedule`,
+      { scheduledAt },
+    );
   }
 
   private buildParams(query: ChapterQuery) {
@@ -138,31 +116,24 @@ export class ChaptersService {
   listChapterComments(novelSlug: string, chapterSlug: string, cursor?: string | null, limit = 20) {
     let params = new HttpParams().set('limit', limit);
     if (cursor) params = params.set('cursor', cursor);
-    return this.http
-      .get<
-        ApiResponse<{
-          commentsEnabled: boolean;
-          data: ChapterCommentModel[];
-          pagination: { nextCursor: string | null; hasMore: boolean; limit: number };
-        }>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/comments`, { params })
-      .pipe(map((r) => r.data));
+    return this.api.get<{
+      commentsEnabled: boolean;
+      data: ChapterCommentModel[];
+      pagination: { nextCursor: string | null; hasMore: boolean; limit: number };
+    }>(`/novels/${novelSlug}/chapters/${chapterSlug}/comments`, { params });
   }
 
   createChapterComment(novelSlug: string, chapterSlug: string, content: string) {
-    return this.http
-      .post<
-        ApiResponse<ChapterCommentModel>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/comments`, { content })
-      .pipe(map((r) => r.data));
+    return this.api.post<ChapterCommentModel>(
+      `/novels/${novelSlug}/chapters/${chapterSlug}/comments`,
+      { content },
+    );
   }
 
   deleteChapterComment(novelSlug: string, chapterSlug: string, commentId: string) {
-    return this.http
-      .delete<
-        ApiResponse<{ message: string }>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/comments/${commentId}`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<{ message: string }>(
+      `/novels/${novelSlug}/chapters/${chapterSlug}/comments/${commentId}`,
+    );
   }
 
   createParagraphComment(
@@ -176,11 +147,10 @@ export class ChaptersService {
       end_offset: number;
     },
   ) {
-    return this.http
-      .post<
-        ApiResponse<ChapterCommentModel>
-      >(`${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/comments/paragraph`, payload)
-      .pipe(map((r) => r.data));
+    return this.api.post<ChapterCommentModel>(
+      `/novels/${novelSlug}/chapters/${chapterSlug}/comments/paragraph`,
+      payload,
+    );
   }
 
   listParagraphComments(
@@ -192,17 +162,13 @@ export class ChaptersService {
   ) {
     let params = new HttpParams().set('limit', limit);
     if (cursor) params = params.set('cursor', cursor);
-    return this.http
-      .get<
-        ApiResponse<{
-          data: ChapterCommentModel[];
-          pagination: { nextCursor: string | null; hasMore: boolean; limit: number };
-        }>
-      >(
-        `${environment.apiUrl}/novels/${novelSlug}/chapters/${chapterSlug}/comments/paragraph/${anchorId}`,
-        { params },
-      )
-      .pipe(map((r) => r.data));
+    return this.api.get<{
+      data: ChapterCommentModel[];
+      pagination: { nextCursor: string | null; hasMore: boolean; limit: number };
+    }>(
+      `/novels/${novelSlug}/chapters/${chapterSlug}/comments/paragraph/${anchorId}`,
+      { params },
+    );
   }
 }
 

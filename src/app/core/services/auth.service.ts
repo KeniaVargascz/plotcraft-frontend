@@ -7,6 +7,7 @@ import { ApiResponse } from '../models/api-response.model';
 import { AuthResponse } from '../models/auth-response.model';
 import { User } from '../models/user.model';
 import { TokenService } from './token.service';
+import { HttpApiService } from './http-api.service';
 
 type LoginPayload = { identifier: string; password: string };
 type RegisterPayload = { email: string; username: string; password: string };
@@ -14,6 +15,7 @@ type RegisterPayload = { email: string; username: string; password: string };
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
   private readonly router = inject(Router);
   private readonly tokenService = inject(TokenService);
   private readonly currentUserSubject = new BehaviorSubject<User | null>(null);
@@ -51,11 +53,11 @@ export class AuthService {
   }
 
   resendOtp(email: string): Observable<unknown> {
-    return this.http.post(`${environment.apiUrl}/auth/register/resend`, { email });
+    return this.api.post<unknown>('/auth/register/resend', { email });
   }
 
   forgotPassword(email: string): Observable<unknown> {
-    return this.http.post(`${environment.apiUrl}/auth/forgot-password`, { email });
+    return this.api.post<unknown>('/auth/forgot-password', { email });
   }
 
   resetPassword(payload: {
@@ -63,7 +65,7 @@ export class AuthService {
     code: string;
     newPassword: string;
   }): Observable<unknown> {
-    return this.http.post(`${environment.apiUrl}/auth/reset-password`, payload);
+    return this.api.post<unknown>('/auth/reset-password', payload);
   }
 
   login(payload: LoginPayload): Observable<User> {
@@ -73,8 +75,7 @@ export class AuthService {
   }
 
   me(): Observable<User> {
-    return this.http.get<ApiResponse<User>>(`${environment.apiUrl}/auth/me`).pipe(
-      map((response) => response.data),
+    return this.api.get<User>('/auth/me').pipe(
       map((user) => this.enrichWithJwtClaims(user)),
       tap((user) => this.currentUserSubject.next(user)),
     );

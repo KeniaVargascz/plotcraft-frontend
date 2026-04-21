@@ -1,25 +1,20 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../models/feed-pagination.model';
 import { FollowModel } from '../models/follow.model';
+import { HttpApiService } from './http-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class FollowsService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   follow(username: string): Observable<{ followed: boolean }> {
-    return this.http
-      .post<ApiResponse<{ followed: boolean }>>(`${environment.apiUrl}/follows/${username}`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<{ followed: boolean }>(`/follows/${username}`, {});
   }
 
   unfollow(username: string): Observable<{ followed: boolean }> {
-    return this.http
-      .delete<ApiResponse<{ followed: boolean }>>(`${environment.apiUrl}/follows/${username}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ followed: boolean }>(`/follows/${username}`);
   }
 
   getFollowers(
@@ -27,14 +22,12 @@ export class FollowsService {
     cursor?: string | null,
     limit = 20,
   ): Observable<PaginatedResponse<FollowModel>> {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<FollowModel>>>(
-        `${environment.apiUrl}/follows/${username}/followers`,
-        {
-          params: this.buildParams(cursor, limit),
-        },
-      )
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<FollowModel>>(
+      `/follows/${username}/followers`,
+      {
+        params: this.buildParams(cursor, limit),
+      },
+    );
   }
 
   getFollowing(
@@ -42,20 +35,16 @@ export class FollowsService {
     cursor?: string | null,
     limit = 20,
   ): Observable<PaginatedResponse<FollowModel>> {
-    return this.http
-      .get<ApiResponse<PaginatedResponse<FollowModel>>>(
-        `${environment.apiUrl}/follows/${username}/following`,
-        {
-          params: this.buildParams(cursor, limit),
-        },
-      )
-      .pipe(map((response) => response.data));
+    return this.api.get<PaginatedResponse<FollowModel>>(
+      `/follows/${username}/following`,
+      {
+        params: this.buildParams(cursor, limit),
+      },
+    );
   }
 
   getSuggestions(): Observable<FollowModel[]> {
-    return this.http
-      .get<ApiResponse<FollowModel[]>>(`${environment.apiUrl}/follows/me/suggestions`)
-      .pipe(map((response) => response.data));
+    return this.api.get<FollowModel[]>('/follows/me/suggestions');
   }
 
   private buildParams(cursor?: string | null, limit = 20) {

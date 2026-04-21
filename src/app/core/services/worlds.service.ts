@@ -1,10 +1,8 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { map } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
 import { PagedResponse } from '../models/feed-pagination.model';
 import { WorldDetail, WorldGenre, WorldSummary, WorldVisibility } from '../models/world.model';
+import { HttpApiService } from './http-api.service';
 
 export type WorldQuery = {
   cursor?: string | null;
@@ -32,72 +30,54 @@ export type WorldPayload = {
 
 @Injectable({ providedIn: 'root' })
 export class WorldsService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   listPublic(query: WorldQuery = {}) {
-    return this.http
-      .get<ApiResponse<PagedResponse<WorldSummary>>>(`${environment.apiUrl}/worlds`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PagedResponse<WorldSummary>>('/worlds', {
+      params: this.buildParams(query),
+    });
   }
 
   listMine(query: WorldQuery = {}) {
-    return this.http
-      .get<ApiResponse<PagedResponse<WorldSummary>>>(`${environment.apiUrl}/worlds/me`, {
-        params: this.buildParams(query),
-      })
-      .pipe(map((response) => response.data));
+    return this.api.get<PagedResponse<WorldSummary>>('/worlds/me', {
+      params: this.buildParams(query),
+    });
   }
 
   listByUser(username: string, query: WorldQuery = {}) {
-    return this.http
-      .get<ApiResponse<PagedResponse<WorldSummary>>>(
-        `${environment.apiUrl}/worlds/user/${username}`,
-        {
-          params: this.buildParams(query),
-        },
-      )
-      .pipe(map((response) => response.data));
+    return this.api.get<PagedResponse<WorldSummary>>(
+      `/worlds/user/${username}`,
+      {
+        params: this.buildParams(query),
+      },
+    );
   }
 
   getBySlug(slug: string) {
-    return this.http
-      .get<ApiResponse<WorldDetail>>(`${environment.apiUrl}/worlds/${slug}`)
-      .pipe(map((response) => response.data));
+    return this.api.get<WorldDetail>(`/worlds/${slug}`);
   }
 
   listWorldNovels(slug: string) {
-    return this.http
-      .get<ApiResponse<unknown[]>>(`${environment.apiUrl}/worlds/${slug}/novels`)
-      .pipe(map((response) => response.data));
+    return this.api.get<unknown[]>(`/worlds/${slug}/novels`);
   }
 
   create(payload: WorldPayload) {
-    return this.http
-      .post<ApiResponse<WorldDetail>>(`${environment.apiUrl}/worlds`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.post<WorldDetail>('/worlds', payload);
   }
 
   update(slug: string, payload: Partial<WorldPayload>) {
-    return this.http
-      .patch<ApiResponse<WorldDetail>>(`${environment.apiUrl}/worlds/${slug}`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.patch<WorldDetail>(`/worlds/${slug}`, payload);
   }
 
   remove(slug: string) {
-    return this.http
-      .delete<ApiResponse<{ message: string }>>(`${environment.apiUrl}/worlds/${slug}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ message: string }>(`/worlds/${slug}`);
   }
 
   createLocation(
     slug: string,
     payload: { name: string; type: string; description?: string | null; isNotable?: boolean },
   ) {
-    return this.http
-      .post<ApiResponse<unknown>>(`${environment.apiUrl}/worlds/${slug}/locations`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.post<unknown>(`/worlds/${slug}/locations`, payload);
   }
 
   updateLocation(
@@ -110,35 +90,19 @@ export class WorldsService {
       isNotable: boolean;
     }>,
   ) {
-    return this.http
-      .patch<
-        ApiResponse<unknown>
-      >(`${environment.apiUrl}/worlds/${slug}/locations/${locationId}`, payload)
-      .pipe(map((response) => response.data));
+    return this.api.patch<unknown>(`/worlds/${slug}/locations/${locationId}`, payload);
   }
 
   removeLocation(slug: string, locationId: string) {
-    return this.http
-      .delete<
-        ApiResponse<{ message: string }>
-      >(`${environment.apiUrl}/worlds/${slug}/locations/${locationId}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ message: string }>(`/worlds/${slug}/locations/${locationId}`);
   }
 
   linkNovel(slug: string, novelSlug: string) {
-    return this.http
-      .post<
-        ApiResponse<{ linked: boolean }>
-      >(`${environment.apiUrl}/worlds/${slug}/novels/${novelSlug}`, {})
-      .pipe(map((response) => response.data));
+    return this.api.post<{ linked: boolean }>(`/worlds/${slug}/novels/${novelSlug}`, {});
   }
 
   unlinkNovel(slug: string, novelSlug: string) {
-    return this.http
-      .delete<
-        ApiResponse<{ linked: boolean }>
-      >(`${environment.apiUrl}/worlds/${slug}/novels/${novelSlug}`)
-      .pipe(map((response) => response.data));
+    return this.api.delete<{ linked: boolean }>(`/worlds/${slug}/novels/${novelSlug}`);
   }
 
   private buildParams(query: WorldQuery) {

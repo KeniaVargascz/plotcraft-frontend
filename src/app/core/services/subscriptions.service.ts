@@ -1,9 +1,8 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
+import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../models/feed-pagination.model';
+import { HttpApiService } from './http-api.service';
 
 export interface SubscriptionResponse {
   subscribersCount: number;
@@ -22,18 +21,14 @@ export interface SubscribedNovel {
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionsService {
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
 
   subscribe(slug: string): Observable<SubscriptionResponse> {
-    return this.http
-      .post<ApiResponse<SubscriptionResponse>>(`${environment.apiUrl}/novels/${slug}/subscribe`, {})
-      .pipe(map((r) => r.data));
+    return this.api.post<SubscriptionResponse>(`/novels/${slug}/subscribe`, {});
   }
 
   unsubscribe(slug: string): Observable<SubscriptionResponse> {
-    return this.http
-      .delete<ApiResponse<SubscriptionResponse>>(`${environment.apiUrl}/novels/${slug}/subscribe`)
-      .pipe(map((r) => r.data));
+    return this.api.delete<SubscriptionResponse>(`/novels/${slug}/subscribe`);
   }
 
   getMySubscriptions(
@@ -42,10 +37,9 @@ export class SubscriptionsService {
   ): Observable<PaginatedResponse<SubscribedNovel>> {
     let params = new HttpParams().set('limit', limit);
     if (cursor) params = params.set('cursor', cursor);
-    return this.http
-      .get<
-        ApiResponse<PaginatedResponse<SubscribedNovel>>
-      >(`${environment.apiUrl}/novels/me/subscriptions`, { params })
-      .pipe(map((r) => r.data));
+    return this.api.get<PaginatedResponse<SubscribedNovel>>(
+      '/novels/me/subscriptions',
+      { params },
+    );
   }
 }

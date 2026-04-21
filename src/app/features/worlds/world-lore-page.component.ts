@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { WbCategorySummary } from '../../core/models/wb-category.model';
@@ -182,6 +183,7 @@ export class WorldLorePageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly worldsService = inject(WorldsService);
   private readonly wbService = inject(WorldbuildingService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly worldSlug = signal('');
   readonly worldName = signal('');
@@ -194,7 +196,7 @@ export class WorldLorePageComponent {
   private nextCursor: string | null = null;
 
   constructor() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const slug = params.get('slug');
       if (!slug) return;
       this.worldSlug.set(slug);

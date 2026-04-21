@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, ElementRef, HostListener, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -482,6 +483,7 @@ export class CreateBoardDialogComponent {
   private readonly charactersService = inject(CharactersService);
   private readonly seriesService = inject(SeriesService);
   private readonly mediaService = inject(MediaService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly isEdit = this.data.mode === 'edit';
   readonly loadingOptions = signal(false);
@@ -640,7 +642,7 @@ export class CreateBoardDialogComponent {
 
     switch (type) {
       case 'novel':
-        this.novelsService.listMine({ limit: 50 }).subscribe({
+        this.novelsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (response) => {
             this.entityOptions.set(
               response.data.map((novel) => ({
@@ -659,7 +661,7 @@ export class CreateBoardDialogComponent {
         });
         break;
       case 'world':
-        this.worldsService.listMine({ limit: 50 }).subscribe({
+        this.worldsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (response) => {
             this.entityOptions.set(
               response.data.map((world) => ({
@@ -678,7 +680,7 @@ export class CreateBoardDialogComponent {
         });
         break;
       case 'character':
-        this.charactersService.listMine({ limit: 50 }).subscribe({
+        this.charactersService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (response) => {
             this.entityOptions.set(
               response.data.map((character) => ({
@@ -697,7 +699,7 @@ export class CreateBoardDialogComponent {
         });
         break;
       case 'series':
-        this.seriesService.listByAuthor(username, { limit: 50 }).subscribe({
+        this.seriesService.listByAuthor(username, { limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (response) => {
             this.entityOptions.set(
               response.data.map((series) => ({

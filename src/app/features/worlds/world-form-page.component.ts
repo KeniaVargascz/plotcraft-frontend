@@ -1,4 +1,5 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin, of, switchMap } from 'rxjs';
@@ -376,6 +377,7 @@ export class WorldFormPageComponent {
   private readonly worldsService = inject(WorldsService);
   private readonly novelsService = inject(NovelsService);
   private readonly markdownService = inject(MarkdownService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly isEdit = signal(false);
   readonly saving = signal(false);
@@ -434,12 +436,12 @@ export class WorldFormPageComponent {
   pendingNovelSlug = '';
 
   constructor() {
-    this.novelsService.listMine({ limit: 50, sort: 'recent' }).subscribe({
+    this.novelsService.listMine({ limit: 50, sort: 'recent' }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => this.novels.set(response.data),
       error: () => this.novels.set([]),
     });
 
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const slug = params.get('slug');
       this.isEdit.set(Boolean(slug));
       this.currentSlug = slug;

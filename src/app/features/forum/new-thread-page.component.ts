@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/tag-chips-input.component';
 import { Router } from '@angular/router';
@@ -433,6 +434,7 @@ export class NewThreadPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly md = inject(MarkdownService);
   private readonly communitiesService = inject(CommunityService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly categories = CATEGORIES;
   readonly myCommunities = signal<Community[]>([]);
@@ -452,7 +454,7 @@ export class NewThreadPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.communitiesService.getMyCommunities().subscribe({
+    this.communitiesService.getMyCommunities().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (list) => this.myCommunities.set(list),
       error: () => this.myCommunities.set([]),
     });

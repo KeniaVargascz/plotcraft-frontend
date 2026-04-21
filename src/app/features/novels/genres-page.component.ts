@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { Genre } from '../../core/models/genre.model';
 import { GenresService } from '../../core/services/genres.service';
@@ -99,12 +100,13 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
 })
 export class GenresPageComponent {
   private readonly genresService = inject(GenresService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly genres = signal<Genre[]>([]);
 
   constructor() {
-    this.genresService.list().subscribe({
+    this.genresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (genres) => {
         this.genres.set(genres);
         this.loading.set(false);

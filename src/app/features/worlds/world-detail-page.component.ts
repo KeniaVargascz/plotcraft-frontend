@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { WorldsService } from '../../core/services/worlds.service';
@@ -349,6 +350,7 @@ export class WorldDetailPageComponent {
   private readonly kudosService = inject(KudosService);
   private readonly authService = inject(AuthService);
   readonly markdownService = inject(MarkdownService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly world = signal<WorldDetail | null>(null);
   readonly kudoLoading = signal(false);
@@ -364,11 +366,11 @@ export class WorldDetailPageComponent {
   }
 
   constructor() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const slug = params.get('slug');
       if (!slug) return;
       this.loading.set(true);
-      this.worldsService.getBySlug(slug).subscribe({
+      this.worldsService.getBySlug(slug).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (world) => {
           this.world.set(world);
           this.charactersService.listByWorld(slug, { limit: 8 }).subscribe({

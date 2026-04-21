@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -494,6 +495,7 @@ export class OrganizeCollectionsPageComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly novelsService = inject(NovelsService);
   private readonly dialog = inject(MatDialog);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly collections = signal<SeriesDetail[]>([]);
   readonly myNovels = signal<NovelSummary[]>([]);
@@ -694,7 +696,7 @@ export class OrganizeCollectionsPageComponent implements OnInit {
     const username = this.authService.getCurrentUserSnapshot()?.username;
     if (!username) return;
     this.loading.set(true);
-    this.seriesService.listByAuthor(username, { limit: 50 }).subscribe({
+    this.seriesService.listByAuthor(username, { limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         const summaries = response.data;
         if (!summaries.length) {
@@ -702,7 +704,7 @@ export class OrganizeCollectionsPageComponent implements OnInit {
           this.loading.set(false);
           return;
         }
-        forkJoin(summaries.map((s) => this.seriesService.getBySlug(s.slug))).subscribe({
+        forkJoin(summaries.map((s) => this.seriesService.getBySlug(s.slug))).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (details) => {
             this.collections.set(details);
             this.loading.set(false);
@@ -718,7 +720,7 @@ export class OrganizeCollectionsPageComponent implements OnInit {
   }
 
   loadMyNovels(): void {
-    this.novelsService.listMine({ limit: 50 }).subscribe({
+    this.novelsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => this.myNovels.set(response.data),
       error: () => this.myNovels.set([]),
     });

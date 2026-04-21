@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { CharactersService } from '../../core/services/characters.service';
 import { CharacterSummary } from '../../core/models/character.model';
@@ -100,6 +101,7 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
 })
 export class CharactersCatalogPageComponent {
   private readonly charactersService = inject(CharactersService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly characters = signal<CharacterSummary[]>([]);
   readonly loading = signal(true);
@@ -130,6 +132,7 @@ export class CharactersCatalogPageComponent {
         search: this.search || null,
         sort: 'updated',
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
           this.characters.set(response.data);

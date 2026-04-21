@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   HostListener,
   ViewChild,
@@ -9,6 +10,7 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Subject, catchError, debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
@@ -219,6 +221,7 @@ export class SearchBarComponent {
   private readonly searchService = inject(SearchService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly compact = input(false);
 
@@ -239,6 +242,7 @@ export class SearchBarComponent {
   constructor() {
     this.searchChanges
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         debounceTime(180),
         distinctUntilChanged(),
         switchMap((value) => {
@@ -296,7 +300,7 @@ export class SearchBarComponent {
     if (this.canShowHistory()) {
       this.searchService
         .getHistory()
-        .pipe(catchError(() => of({ history: [] })))
+        .pipe(takeUntilDestroyed(this.destroyRef), catchError(() => of({ history: [] })))
         .subscribe((response) => this.history.set(response.history));
     }
   }

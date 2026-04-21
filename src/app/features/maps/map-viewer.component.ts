@@ -1,4 +1,5 @@
-import { Component, inject, input, signal, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, input, signal, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WorldMap } from '../../core/models/world-map.model';
 import { MapsService } from '../../core/services/maps.service';
 import { MapCanvasComponent } from './components/map-canvas.component';
@@ -56,12 +57,13 @@ export class MapViewerComponent implements OnInit {
   readonly worldSlug = input.required<string>();
 
   private readonly mapsService = inject(MapsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly mapData = signal<WorldMap | null>(null);
 
   ngOnInit(): void {
-    this.mapsService.getMap(this.worldSlug()).subscribe({
+    this.mapsService.getMap(this.worldSlug()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (map) => {
         this.mapData.set(map);
         this.loading.set(false);

@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { WorldSummary } from '../../core/models/world.model';
 import { WorldsService } from '../../core/services/worlds.service';
@@ -107,6 +108,7 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
 })
 export class WorldsCatalogPageComponent {
   private readonly worldsService = inject(WorldsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly worlds = signal<WorldSummary[]>([]);
   readonly loading = signal(true);
@@ -137,6 +139,7 @@ export class WorldsCatalogPageComponent {
         search: this.search || null,
         sort: 'updated',
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response) => {
           this.worlds.set(response.data);

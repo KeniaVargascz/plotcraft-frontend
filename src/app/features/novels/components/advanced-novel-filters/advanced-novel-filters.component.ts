@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
 import { CharacterSummary } from '../../../../core/models/character.model';
@@ -587,6 +588,7 @@ export class AdvancedNovelFiltersComponent {
   private readonly romanceGenresService = inject(RomanceGenresService);
   private readonly charactersService = inject(CharactersService);
   private readonly communityService = inject(CommunityService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly fandomOptions = signal<Community[]>([]);
 
@@ -753,15 +755,15 @@ export class AdvancedNovelFiltersComponent {
   }
 
   constructor() {
-    this.languagesService.list().subscribe({
+    this.languagesService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (languages) => this.languages.set(languages),
       error: () => this.languages.set([]),
     });
-    this.romanceGenresService.list().subscribe({
+    this.romanceGenresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (genres) => this.romanceGenres.set(genres),
       error: () => this.romanceGenres.set([]),
     });
-    this.warningsService.list().subscribe({
+    this.warningsService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (items) => this.warningsCatalog.set(items),
       error: () => this.warningsCatalog.set([]),
     });
@@ -778,6 +780,7 @@ export class AdvancedNovelFiltersComponent {
           }
           return this.charactersService.listPublic({ search: t, limit: 10 });
         }),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (response) => this.pairingASuggestions.set(response.data ?? []),
@@ -796,6 +799,7 @@ export class AdvancedNovelFiltersComponent {
           }
           return this.charactersService.listPublic({ search: t, limit: 10 });
         }),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (response) => this.pairingBSuggestions.set(response.data ?? []),

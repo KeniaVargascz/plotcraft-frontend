@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { LibraryNovelCard } from '../../core/models/library.model';
 import { LibraryService } from '../../core/services/library.service';
@@ -137,9 +138,10 @@ import { LibraryService } from '../../core/services/library.service';
 })
 export class InProgressPageComponent {
   private readonly libraryService = inject(LibraryService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly items = signal<LibraryNovelCard[]>([]);
 
   constructor() {
-    this.libraryService.listInProgress().subscribe((response) => this.items.set(response.data));
+    this.libraryService.listInProgress().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((response) => this.items.set(response.data));
   }
 }

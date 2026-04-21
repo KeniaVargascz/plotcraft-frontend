@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ThreadSummary } from '../../core/models/forum-thread.model';
 import { ForumService } from '../../core/services/forum.service';
@@ -97,12 +98,13 @@ import { ThreadCardComponent } from './components/thread-card.component';
 })
 export class ArchivedThreadsPageComponent implements OnInit {
   private readonly forumService = inject(ForumService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly archivedThreads = signal<ThreadSummary[]>([]);
 
   ngOnInit() {
-    this.forumService.listMyThreads({ limit: 50 }).subscribe({
+    this.forumService.listMyThreads({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.archivedThreads.set(res.data.filter((t) => t.status === 'ARCHIVED'));
         this.loading.set(false);

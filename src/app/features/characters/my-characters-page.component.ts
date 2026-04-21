@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { CharacterSummary } from '../../core/models/character.model';
@@ -103,6 +104,7 @@ import { CharacterCardComponent } from './components/character-card.component';
 export class MyCharactersPageComponent {
   private readonly charactersService = inject(CharactersService);
   private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly characters = signal<CharacterSummary[]>([]);
   readonly loading = signal(true);
@@ -128,7 +130,7 @@ export class MyCharactersPageComponent {
     this.loading.set(true);
     this.charactersService
       .listMine({ limit: 40, sort: 'updated' })
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false)))
       .subscribe({
         next: (response) => this.characters.set(response.data),
         error: () => this.characters.set([]),

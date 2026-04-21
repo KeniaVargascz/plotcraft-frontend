@@ -1,4 +1,5 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { AppNotification } from '../../core/models/notification.model';
 import { NotificationsService } from '../../core/services/notifications.service';
@@ -147,6 +148,7 @@ type FilterChip = 'all' | 'unread' | 'read';
 export class NotificationsPageComponent implements OnInit {
   private readonly notificationsService = inject(NotificationsService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly chips: { value: FilterChip; label: string }[] = [
     { value: 'all', label: 'Todas' },
@@ -213,6 +215,7 @@ export class NotificationsPageComponent implements OnInit {
 
     this.notificationsService
       .list({ cursor: reset ? null : this.cursor, limit: 20, isRead })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (res) => {
           if (reset) {

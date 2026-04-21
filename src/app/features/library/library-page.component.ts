@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { LibrarySummary } from '../../core/models/library.model';
@@ -151,6 +152,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 })
 export class LibraryPageComponent {
   private readonly libraryService = inject(LibraryService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly summary = signal<LibrarySummary | null>(null);
@@ -158,7 +160,7 @@ export class LibraryPageComponent {
   constructor() {
     this.libraryService
       .getSummary()
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false)))
       .subscribe((summary) => this.summary.set(summary));
   }
 }

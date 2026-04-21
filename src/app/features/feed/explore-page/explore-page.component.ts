@@ -1,12 +1,14 @@
 import {
   AfterViewInit,
   Component,
+  DestroyRef,
   ElementRef,
   OnDestroy,
   ViewChild,
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { PostModel, PostType } from '../../../core/models/post.model';
@@ -37,6 +39,7 @@ export class ExplorePageComponent implements AfterViewInit, OnDestroy {
 
   private readonly postsService = inject(PostsService);
   private readonly feedService = inject(FeedService);
+  private readonly destroyRef = inject(DestroyRef);
   private observer?: IntersectionObserver;
 
   @ViewChild('sentinel') sentinel?: ElementRef<HTMLDivElement>;
@@ -119,7 +122,7 @@ export class ExplorePageComponent implements AfterViewInit, OnDestroy {
           search: this.search || null,
         });
 
-    source$.subscribe({
+    source$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.posts.set(reset ? response.data : [...this.posts(), ...response.data]);
         this.nextCursor.set(response.pagination.nextCursor);

@@ -1,4 +1,5 @@
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -487,6 +488,7 @@ export class TimelineCanvasPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly timelineService = inject(TimelineService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly timeline = signal<TimelineDetail | null>(null);
@@ -674,7 +676,7 @@ export class TimelineCanvasPageComponent implements OnInit {
     this.loading.set(true);
     this.timelineService
       .getById(id)
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false)))
       .subscribe({
         next: (detail) => {
           this.timeline.set(detail);

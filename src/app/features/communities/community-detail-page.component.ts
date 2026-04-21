@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -451,6 +452,7 @@ export class CommunityDetailPageComponent implements OnInit {
   private readonly forumsService = inject(CommunityForumsService);
   private readonly charactersService = inject(CommunityCharactersService);
   private readonly novelsService = inject(NovelsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly community = signal<Community | null>(null);
   readonly myNovels = signal<NovelSummary[]>([]);
@@ -499,7 +501,7 @@ export class CommunityDetailPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const slug = params.get('slug');
       if (!slug) return;
       this.loading.set(true);

@@ -1,4 +1,5 @@
-import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin, of, switchMap } from 'rxjs';
@@ -961,6 +962,7 @@ export class NovelFormPageComponent implements OnInit {
   private readonly seriesService = inject(SeriesService);
   private readonly communityService = inject(CommunityService);
   private readonly communityCharactersService = inject(CommunityCharactersService);
+  private readonly destroyRef = inject(DestroyRef);
 
   novelType: NovelType = 'ORIGINAL';
   linkedCommunityId = '';
@@ -1213,8 +1215,9 @@ export class NovelFormPageComponent implements OnInit {
   ngOnInit() {
     this.genresService
       .list()
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((genres) => this.genres.set(genres.filter((g) => g.slug !== 'fanfiction')));
-    this.languagesService.list().subscribe({
+    this.languagesService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (languages) => {
         this.languages.set(languages);
         if (!this.languageId) {
@@ -1224,23 +1227,23 @@ export class NovelFormPageComponent implements OnInit {
       },
       error: () => this.languages.set([]),
     });
-    this.romanceGenresService.list().subscribe({
+    this.romanceGenresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (genres) => this.romanceGenreOptions.set(genres),
       error: () => this.romanceGenreOptions.set([]),
     });
-    this.warningsService.list().subscribe({
+    this.warningsService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (items) => this.warningsCatalog.set(items),
       error: () => this.warningsCatalog.set([]),
     });
-    this.charactersService.listMine({ limit: 50, sort: 'updated' }).subscribe({
+    this.charactersService.listMine({ limit: 50, sort: 'updated' }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => this.characters.set(response.data),
       error: () => this.characters.set([]),
     });
-    this.worldsService.listMine({ limit: 50, sort: 'updated' }).subscribe({
+    this.worldsService.listMine({ limit: 50, sort: 'updated' }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => this.worlds.set(response.data),
       error: () => this.worlds.set([]),
     });
-    this.communityService.getMyCommunities().subscribe({
+    this.communityService.getMyCommunities().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (list) => {
         const fandoms = list.filter((c) => c.type === 'FANDOM' && c.status === 'ACTIVE');
         this.myFandoms.set(fandoms);
@@ -1248,7 +1251,7 @@ export class NovelFormPageComponent implements OnInit {
       error: () => this.myFandoms.set([]),
     });
 
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.slug = params.get('slug');
       this.isEdit.set(Boolean(this.slug));
 

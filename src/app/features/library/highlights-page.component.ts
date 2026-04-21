@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { Highlight } from '../../core/models/highlight.model';
 import { HighlightsService } from '../../core/services/highlights.service';
@@ -171,6 +172,7 @@ import { HighlightsService } from '../../core/services/highlights.service';
 })
 export class HighlightsPageComponent {
   private readonly highlightsService = inject(HighlightsService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly items = signal<Highlight[]>([]);
   readonly loading = signal(false);
   readonly hasMore = signal(false);
@@ -192,7 +194,7 @@ export class HighlightsPageComponent {
 
   private fetch(reset: boolean) {
     this.loading.set(true);
-    this.highlightsService.listAll({ cursor: reset ? null : this.cursor, limit: 20 }).subscribe({
+    this.highlightsService.listAll({ cursor: reset ? null : this.cursor, limit: 20 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.items.update((list) => (reset ? res.data : [...list, ...res.data]));
         this.cursor = res.pagination.nextCursor;

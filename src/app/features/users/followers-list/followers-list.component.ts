@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FollowModel } from '../../../core/models/follow.model';
 import { FollowsService } from '../../../core/services/follows.service';
@@ -14,6 +15,7 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 export class FollowersListComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly followsService = inject(FollowsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly username = signal('');
@@ -22,7 +24,7 @@ export class FollowersListComponent implements OnInit {
   readonly hasMore = signal(false);
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const username = params.get('username');
       if (!username) {
         return;
@@ -60,6 +62,7 @@ export class FollowersListComponent implements OnInit {
 
     this.followsService
       .getFollowers(this.username(), reset ? null : this.nextCursor())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((response) => {
         this.users.set(reset ? response.data : [...this.users(), ...response.data]);
         this.nextCursor.set(response.pagination.nextCursor);

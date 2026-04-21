@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal, computed } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ChapterSummary } from '../../../core/models/chapter.model';
@@ -296,6 +297,7 @@ export class TaskFormDialogComponent implements OnInit {
   private readonly dialogRef = inject(MatDialogRef<TaskFormDialogComponent>);
   private readonly chaptersService = inject(ChaptersService);
   private readonly charactersService = inject(CharactersService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly chapters = signal<{ id: string; title: string; order: number }[]>([]);
   readonly charactersList = signal<{ id: string; name: string }[]>([]);
@@ -347,7 +349,7 @@ export class TaskFormDialogComponent implements OnInit {
   loadChapters(): void {
     if (this.chaptersLoaded || !this.data.novelSlug) return;
     this.chaptersLoaded = true;
-    this.chaptersService.listDrafts(this.data.novelSlug, { limit: 50 }).subscribe({
+    this.chaptersService.listDrafts(this.data.novelSlug, { limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) =>
         this.chapters.set(
           res.data.map((chapter: ChapterSummary) => ({
@@ -363,7 +365,7 @@ export class TaskFormDialogComponent implements OnInit {
   loadCharacters(): void {
     if (this.charactersLoaded) return;
     this.charactersLoaded = true;
-    this.charactersService.listMine({ limit: 50 }).subscribe({
+    this.charactersService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) =>
         this.charactersList.set(
           res.data.map((character: CharacterSummary) => ({

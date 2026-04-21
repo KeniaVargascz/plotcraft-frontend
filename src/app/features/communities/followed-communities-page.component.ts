@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -94,6 +95,7 @@ import { CommunityService } from './services/community.service';
 export class FollowedCommunitiesPageComponent implements OnInit {
   private readonly service = inject(CommunityService);
   private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly items = signal<Community[]>([]);
   readonly loading = signal(true);
@@ -112,7 +114,7 @@ export class FollowedCommunitiesPageComponent implements OnInit {
       followed: this.service
         .getMyFollowedCommunities()
         .pipe(catchError(() => of([] as Community[]))),
-    }).subscribe(({ member, followed }) => {
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(({ member, followed }) => {
       const map = new Map<string, Community>();
       for (const c of [...member, ...followed]) {
         if (c.status !== 'ACTIVE') continue;

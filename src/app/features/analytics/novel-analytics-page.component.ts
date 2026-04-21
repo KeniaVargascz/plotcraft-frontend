@@ -1,5 +1,6 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, signal, computed, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { AnalyticsService } from '../../core/services/analytics.service';
 import { ExportsService } from '../../core/services/exports.service';
@@ -316,6 +317,7 @@ export class NovelAnalyticsPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly analyticsService = inject(AnalyticsService);
   private readonly exportsService = inject(ExportsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly period = signal('30d');
   readonly loading = signal(false);
@@ -415,7 +417,7 @@ export class NovelAnalyticsPageComponent implements OnInit {
     this.loading.set(true);
     const p = this.period();
 
-    this.analyticsService.getNovelAnalytics(this.slug, p).subscribe({
+    this.analyticsService.getNovelAnalytics(this.slug, p).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (d) => {
         this.data.set(d);
         this.loading.set(false);
@@ -423,7 +425,7 @@ export class NovelAnalyticsPageComponent implements OnInit {
       error: () => this.loading.set(false),
     });
 
-    this.analyticsService.getNovelTimeline(this.slug, p).subscribe({
+    this.analyticsService.getNovelTimeline(this.slug, p).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (tl) => this.timeline.set(tl),
     });
   }

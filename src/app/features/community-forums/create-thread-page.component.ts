@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormArray,
   FormBuilder,
@@ -319,6 +320,7 @@ export class CreateThreadPageComponent implements OnInit {
   private readonly service = inject(CommunityForumsService);
   private readonly communitiesService = inject(CommunityService);
   private readonly snackbar = inject(MatSnackBar);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly communitySlug = signal('');
   readonly forumSlug = signal('');
@@ -362,11 +364,11 @@ export class CreateThreadPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.communitiesService.getMyCommunities().subscribe({
+    this.communitiesService.getMyCommunities().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (list) => this.joinedCommunities.set(list),
       error: () => this.joinedCommunities.set([]),
     });
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const cs = params.get('slug') ?? '';
       const fs = params.get('forumSlug') ?? '';
       this.communitySlug.set(cs);

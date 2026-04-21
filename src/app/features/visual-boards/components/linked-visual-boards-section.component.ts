@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, Input, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
@@ -88,6 +89,7 @@ export class LinkedVisualBoardsSectionComponent implements OnInit {
   private readonly visualBoardsService = inject(VisualBoardsService);
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly boards = signal<VisualBoardSummary[]>([]);
@@ -128,7 +130,7 @@ export class LinkedVisualBoardsSectionComponent implements OnInit {
     };
 
     if (this.isOwner) {
-      this.visualBoardsService.getMyBoards(query).subscribe({
+      this.visualBoardsService.getMyBoards(query).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (response) => {
           this.boards.set(response);
           this.loading.set(false);
@@ -141,7 +143,7 @@ export class LinkedVisualBoardsSectionComponent implements OnInit {
       return;
     }
 
-    this.visualBoardsService.getPublicBoards(this.authorUsername, query).subscribe({
+    this.visualBoardsService.getPublicBoards(this.authorUsername, query).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.boards.set(response.data);
         this.loading.set(false);

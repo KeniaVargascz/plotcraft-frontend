@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReadingStats } from '../../core/models/library.model';
 import { LibraryService } from '../../core/services/library.service';
 
@@ -50,11 +51,12 @@ import { LibraryService } from '../../core/services/library.service';
 })
 export class StatsPageComponent {
   private readonly libraryService = inject(LibraryService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly stats = signal<ReadingStats | null>(null);
   readonly maxWords = signal(0);
 
   constructor() {
-    this.libraryService.getStats().subscribe((stats) => {
+    this.libraryService.getStats().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((stats) => {
       this.stats.set(stats);
       this.maxWords.set(Math.max(...stats.monthly_breakdown.map((item) => item.words_read), 0));
     });

@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { WbEntryDetail } from '../../../core/models/wb-entry.model';
 import { FieldDefinition, FieldValue } from '../../../core/models/field-definition.model';
@@ -313,6 +314,7 @@ export class WbEntryDetailPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly wbService = inject(WorldbuildingService);
   readonly markdownService = inject(MarkdownService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly entry = signal<WbEntryDetail | null>(null);
   readonly loading = signal(true);
@@ -336,7 +338,7 @@ export class WbEntryDetailPageComponent {
   }
 
   constructor() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const worldSlug = params.get('slug');
       const entrySlug = params.get('entrySlug');
       if (!worldSlug || !entrySlug) return;

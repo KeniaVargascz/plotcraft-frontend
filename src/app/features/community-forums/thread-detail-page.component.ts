@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
@@ -292,6 +293,7 @@ export class CommunityThreadDetailPageComponent implements OnInit {
   private readonly service = inject(CommunityForumsService);
   private readonly authService = inject(AuthService);
   private readonly md = inject(MarkdownService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly notFound = signal(false);
@@ -327,7 +329,7 @@ export class CommunityThreadDetailPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const cs = params.get('slug') ?? '';
       const fs = params.get('forumSlug') ?? '';
       const ts = params.get('threadSlug') ?? '';
@@ -341,11 +343,11 @@ export class CommunityThreadDetailPageComponent implements OnInit {
   load() {
     this.loading.set(true);
     this.notFound.set(false);
-    this.service.getForum(this.communitySlug(), this.forumSlug()).subscribe({
+    this.service.getForum(this.communitySlug(), this.forumSlug()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (f) => this.forum.set(f),
       error: () => {},
     });
-    this.service.getThread(this.communitySlug(), this.forumSlug(), this.threadSlug()).subscribe({
+    this.service.getThread(this.communitySlug(), this.forumSlug(), this.threadSlug()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (t) => {
         this.thread.set(t);
         this.loading.set(false);

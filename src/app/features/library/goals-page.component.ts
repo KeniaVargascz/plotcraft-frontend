@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { ReadingGoal } from '../../core/models/library.model';
@@ -205,6 +206,7 @@ import { LibraryService } from '../../core/services/library.service';
 })
 export class GoalsPageComponent {
   private readonly libraryService = inject(LibraryService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly goals = signal<ReadingGoal[]>([]);
   readonly saving = signal(false);
   readonly message = signal<string | null>(null);
@@ -238,6 +240,6 @@ export class GoalsPageComponent {
   }
 
   private load() {
-    this.libraryService.listGoals().subscribe((goals) => this.goals.set(goals));
+    this.libraryService.listGoals().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((goals) => this.goals.set(goals));
   }
 }

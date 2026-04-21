@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { WorldSummary } from '../../core/models/world.model';
@@ -122,6 +123,7 @@ import { WorldCardComponent } from './components/world-card.component';
 })
 export class MyWorldsPageComponent {
   private readonly worldsService = inject(WorldsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly worlds = signal<WorldSummary[]>([]);
   readonly loading = signal(true);
@@ -146,7 +148,7 @@ export class MyWorldsPageComponent {
     this.loading.set(true);
     this.worldsService
       .listMine({ limit: 40, sort: 'updated' })
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false)))
       .subscribe({
         next: (response) => this.worlds.set(response.data),
         error: () => this.worlds.set([]),

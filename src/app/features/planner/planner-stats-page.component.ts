@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { PlannerStats } from '../../core/models/planner-stats.model';
 import { PlannerService } from '../../core/services/planner.service';
@@ -413,6 +414,7 @@ const TYPE_LABELS: Record<string, string> = {
 })
 export class PlannerStatsPageComponent implements OnInit {
   private readonly plannerService = inject(PlannerService);
+  private readonly destroyRef = inject(DestroyRef);
 
   loading = signal(true);
   stats = signal<PlannerStats | null>(null);
@@ -467,7 +469,7 @@ export class PlannerStatsPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.plannerService.getStats().subscribe({
+    this.plannerService.getStats().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.stats.set(data);
         this.loading.set(false);

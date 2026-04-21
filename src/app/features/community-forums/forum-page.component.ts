@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
@@ -271,6 +272,7 @@ export class ForumPageComponent implements OnInit {
   private readonly forumsService = inject(CommunityForumsService);
   private readonly authService = inject(AuthService);
   private readonly md = inject(MarkdownService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly forum = signal<CommunityForum | null>(null);
   readonly threads = signal<ForumThread[]>([]);
@@ -294,7 +296,7 @@ export class ForumPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const cs = params.get('slug') ?? '';
       const fs = params.get('forumSlug') ?? '';
       this.communitySlug.set(cs);
@@ -306,7 +308,7 @@ export class ForumPageComponent implements OnInit {
   load() {
     this.loading.set(true);
     this.notFound.set(false);
-    this.forumsService.getForum(this.communitySlug(), this.forumSlug()).subscribe({
+    this.forumsService.getForum(this.communitySlug(), this.forumSlug()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (f) => {
         this.forum.set(f);
         this.loading.set(false);
@@ -324,6 +326,7 @@ export class ForumPageComponent implements OnInit {
     const cursor = reset ? null : this.nextCursor();
     this.forumsService
       .listThreads(this.communitySlug(), this.forumSlug(), { sortBy: this.sortBy, cursor })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (resp) => {
           this.threads.set(reset ? resp.data : [...this.threads(), ...resp.data]);

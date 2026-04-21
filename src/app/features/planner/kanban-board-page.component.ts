@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -346,6 +347,7 @@ export class KanbanBoardPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly plannerService = inject(PlannerService);
   private readonly dialog = inject(MatDialog);
+  private readonly destroyRef = inject(DestroyRef);
 
   loading = signal(true);
   projectId = '';
@@ -397,14 +399,14 @@ export class KanbanBoardPageComponent implements OnInit {
   private loadBoard(): void {
     this.loading.set(true);
 
-    this.plannerService.getProject(this.projectId).subscribe({
+    this.plannerService.getProject(this.projectId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (p) => {
         this.project.set(p);
         this.projectName = p.name;
       },
     });
 
-    this.plannerService.getBoard(this.projectId).subscribe({
+    this.plannerService.getBoard(this.projectId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (data) => {
         this.board.set(this.normalizeBoard(data));
         this.loading.set(false);

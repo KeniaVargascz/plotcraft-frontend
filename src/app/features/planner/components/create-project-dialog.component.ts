@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { NovelSummary } from '../../../core/models/novel.model';
@@ -187,6 +188,7 @@ const COLOR_SWATCHES = [
 export class CreateProjectDialogComponent implements OnInit {
   private readonly dialogRef = inject(MatDialogRef<CreateProjectDialogComponent>);
   private readonly novelsService = inject(NovelsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   colors = COLOR_SWATCHES;
   novels = signal<NovelSummary[]>([]);
@@ -197,7 +199,7 @@ export class CreateProjectDialogComponent implements OnInit {
   novelId = '';
 
   ngOnInit(): void {
-    this.novelsService.listMine({ limit: 50 }).subscribe({
+    this.novelsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => this.novels.set(res.data),
     });
   }

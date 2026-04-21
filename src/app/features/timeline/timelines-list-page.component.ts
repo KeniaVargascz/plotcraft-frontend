@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -452,6 +453,7 @@ export class CreateTimelineDialogComponent {
 export class TimelinesListPageComponent {
   private readonly timelineService = inject(TimelineService);
   private readonly dialog = inject(MatDialog);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly timelines = signal<TimelineSummary[]>([]);
   readonly loading = signal(true);
@@ -569,7 +571,7 @@ export class TimelinesListPageComponent {
     this.loading.set(true);
     this.timelineService
       .listMine()
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false)))
       .subscribe({
         next: (list) => this.timelines.set(list),
         error: () => this.timelines.set([]),

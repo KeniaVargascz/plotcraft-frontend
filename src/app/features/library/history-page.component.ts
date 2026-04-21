@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ReadingHistoryItem } from '../../core/models/reader.model';
 import { LibraryService } from '../../core/services/library.service';
@@ -116,9 +117,10 @@ import { LibraryService } from '../../core/services/library.service';
 })
 export class HistoryPageComponent {
   private readonly libraryService = inject(LibraryService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly items = signal<ReadingHistoryItem[]>([]);
 
   constructor() {
-    this.libraryService.listHistory().subscribe((response) => this.items.set(response.data));
+    this.libraryService.listHistory().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((response) => this.items.set(response.data));
   }
 }

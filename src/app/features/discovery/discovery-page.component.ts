@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { DiscoverySnapshot } from '../../core/models/discovery.model';
 import { Genre } from '../../core/models/genre.model';
@@ -817,6 +818,7 @@ export class DiscoveryPageComponent {
   private readonly communitiesService = inject(CommunityService);
   private readonly postsService = inject(PostsService);
   private readonly authGate = inject(AuthGateService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly snapshot = signal<DiscoverySnapshot | null>(null);
   readonly loading = signal(true);
@@ -826,15 +828,15 @@ export class DiscoveryPageComponent {
   readonly visibleGenres = computed(() => this.genres().slice(0, 4));
 
   constructor() {
-    this.genresService.list().subscribe({
+    this.genresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (genres) => this.genres.set(genres),
       error: () => this.genres.set([]),
     });
-    this.communitiesService.getCommunities({ limit: 6 }).subscribe({
+    this.communitiesService.getCommunities({ limit: 6 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => this.popularCommunities.set(res.data),
       error: () => this.popularCommunities.set([]),
     });
-    this.postsService.list({ limit: 5 }).subscribe({
+    this.postsService.list({ limit: 5 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => this.recentPosts.set(res.data),
       error: () => this.recentPosts.set([]),
     });
@@ -843,7 +845,7 @@ export class DiscoveryPageComponent {
 
   load(refresh = false) {
     this.loading.set(true);
-    this.discoveryService.getSnapshot(refresh).subscribe({
+    this.discoveryService.getSnapshot(refresh).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (snapshot) => {
         this.snapshot.set(snapshot);
         this.loading.set(false);

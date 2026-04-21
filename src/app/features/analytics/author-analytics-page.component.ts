@@ -1,5 +1,6 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, signal, computed, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AnalyticsService } from '../../core/services/analytics.service';
 import { AuthorAnalytics, AudienceStats } from '../../core/models/author-analytics.model';
 import { AuthorSnapshot, SnapshotTimeline } from '../../core/models/snapshot.model';
@@ -323,6 +324,7 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
 })
 export class AuthorAnalyticsPageComponent implements OnInit {
   private readonly analyticsService = inject(AnalyticsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly period = signal('30d');
   readonly loading = signal(false);
@@ -384,7 +386,7 @@ export class AuthorAnalyticsPageComponent implements OnInit {
     this.loading.set(true);
     const p = this.period();
 
-    this.analyticsService.getAuthorAnalytics(p).subscribe({
+    this.analyticsService.getAuthorAnalytics(p).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (d) => {
         this.data.set(d);
         this.loading.set(false);
@@ -392,13 +394,13 @@ export class AuthorAnalyticsPageComponent implements OnInit {
       error: () => this.loading.set(false),
     });
 
-    this.analyticsService.getAuthorTimeline(p).subscribe({
+    this.analyticsService.getAuthorTimeline(p).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (tl) => this.timeline.set(tl),
     });
   }
 
   private loadAudience(): void {
-    this.analyticsService.getAudience().subscribe({
+    this.analyticsService.getAudience().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (a) => this.audience.set(a),
     });
   }

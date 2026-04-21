@@ -1,5 +1,6 @@
 import { DatePipe, NgClass, TitleCasePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ReadingList } from '../../core/models/reading-list.model';
@@ -239,13 +240,14 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
 export class ReadingListDetailPageComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly readingListsService = inject(ReadingListsService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly list = signal<ReadingList | null>(null);
   readonly removingNovelId = signal<string | null>(null);
   readonly message = signal<string | null>(null);
   readonly error = signal<string | null>(null);
 
   constructor() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const id = params.get('id');
       if (!id) {
         return;
@@ -280,6 +282,6 @@ export class ReadingListDetailPageComponent {
   }
 
   private load(id: string) {
-    this.readingListsService.getById(id).subscribe((list) => this.list.set(list));
+    this.readingListsService.getById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((list) => this.list.set(list));
   }
 }

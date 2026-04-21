@@ -1,4 +1,5 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {
@@ -309,6 +310,7 @@ export class TimelineEventFormDialogComponent implements OnInit {
   private readonly charactersService = inject(CharactersService);
   private readonly worldsService = inject(WorldsService);
   private readonly wbService = inject(WorldbuildingService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly eventTypes = EVENT_TYPES;
   readonly relevances = RELEVANCES;
@@ -365,7 +367,7 @@ export class TimelineEventFormDialogComponent implements OnInit {
   loadChapters() {
     if (this.chaptersLoaded || !this.data.novelSlug) return;
     this.chaptersLoaded = true;
-    this.chaptersService.listDrafts(this.data.novelSlug, { limit: 100 }).subscribe({
+    this.chaptersService.listDrafts(this.data.novelSlug, { limit: 100 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) =>
         this.chapters.set(res.data.map((c) => ({ id: c.id, title: c.title, order: c.order }))),
     });
@@ -374,7 +376,7 @@ export class TimelineEventFormDialogComponent implements OnInit {
   loadCharacters() {
     if (this.charactersLoaded) return;
     this.charactersLoaded = true;
-    this.charactersService.listMine({ limit: 100 }).subscribe({
+    this.charactersService.listMine({ limit: 100 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => this.characters.set(res.data.map((c) => ({ id: c.id, name: c.name }))),
     });
   }
@@ -382,7 +384,7 @@ export class TimelineEventFormDialogComponent implements OnInit {
   loadWorlds() {
     if (this.worldsLoaded) return;
     this.worldsLoaded = true;
-    this.worldsService.listMine({ limit: 50 }).subscribe({
+    this.worldsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) =>
         this.worlds.set(res.data.map((w) => ({ id: w.id, slug: w.slug, name: w.name }))),
     });
@@ -398,7 +400,7 @@ export class TimelineEventFormDialogComponent implements OnInit {
     const selected = this.worlds().find((w) => w.id === this.worldId);
     if (!selected || this.wbSlug === selected.slug) return;
     this.wbSlug = selected.slug;
-    this.wbService.listEntries(selected.slug, { limit: 100 }).subscribe({
+    this.wbService.listEntries(selected.slug, { limit: 100 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => this.wbEntries.set(res.data.map((e) => ({ id: e.id, name: e.name }))),
     });
   }

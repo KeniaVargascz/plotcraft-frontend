@@ -1,5 +1,6 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { COMMUNITY_TYPE_LABELS, Community } from './models/community.model';
@@ -212,6 +213,7 @@ import { CommunityService } from './services/community.service';
 })
 export class AdminCommunitiesPageComponent implements OnInit {
   private readonly service = inject(CommunityService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly items = signal<Community[]>([]);
   readonly loading = signal(true);
@@ -223,7 +225,7 @@ export class AdminCommunitiesPageComponent implements OnInit {
   }
 
   private load(): void {
-    this.service.getPendingCommunities().subscribe({
+    this.service.getPendingCommunities().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (list) => {
         this.items.set(list);
         this.loading.set(false);

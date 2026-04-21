@@ -1,4 +1,5 @@
-import { Component, input, output, signal, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, input, output, signal, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { AppNotification } from '../../core/models/notification.model';
 import { NotificationsService } from '../../core/services/notifications.service';
@@ -134,6 +135,7 @@ import { NotificationItemComponent } from './components/notification-item.compon
 })
 export class NotificationsPanelComponent implements OnInit {
   private readonly notificationsService = inject(NotificationsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly visible = input<boolean>(false);
   readonly close = output<void>();
@@ -148,7 +150,7 @@ export class NotificationsPanelComponent implements OnInit {
 
   private loadNotifications(): void {
     this.loading.set(true);
-    this.notificationsService.list({ limit: 10 }).subscribe({
+    this.notificationsService.list({ limit: 10 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.notifications.set(res.data);
         this.loading.set(false);

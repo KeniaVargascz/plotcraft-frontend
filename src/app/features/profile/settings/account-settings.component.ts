@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
   FormBuilder,
@@ -39,6 +40,7 @@ export class AccountSettingsComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly settingsService = inject(SettingsService);
   readonly themeService = inject(ThemeService);
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly privacyDebounce$ = new Subject<Partial<PrivacySettings>>();
 
@@ -109,7 +111,7 @@ export class AccountSettingsComponent implements OnInit {
   ngOnInit(): void {
     this.loadPrivacy();
     this.loadNotificationPrefs();
-    this.privacyDebounce$.pipe(debounceTime(500)).subscribe((patch) => {
+    this.privacyDebounce$.pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef)).subscribe((patch) => {
       this.settingsService.updatePrivacy(patch).subscribe({
         next: (res) => this.privacy.set(res),
       });
@@ -118,7 +120,7 @@ export class AccountSettingsComponent implements OnInit {
 
   loadPrivacy(): void {
     this.privacyLoading.set(true);
-    this.settingsService.getPrivacy().subscribe({
+    this.settingsService.getPrivacy().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.privacy.set(res);
         this.privacyLoading.set(false);
@@ -129,7 +131,7 @@ export class AccountSettingsComponent implements OnInit {
 
   loadNotificationPrefs(): void {
     this.notifLoading.set(true);
-    this.settingsService.getNotificationPrefs().subscribe({
+    this.settingsService.getNotificationPrefs().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.notifPrefs.set(res);
         this.notifLoading.set(false);

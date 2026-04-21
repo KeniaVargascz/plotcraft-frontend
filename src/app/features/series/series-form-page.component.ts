@@ -1,5 +1,6 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NovelSummary } from '../../core/models/novel.model';
@@ -220,6 +221,7 @@ export class SeriesFormPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly seriesService = inject(SeriesService);
   private readonly novelsService = inject(NovelsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly typeLabels = SERIES_TYPE_LABELS;
   readonly typeDescriptions = SERIES_TYPE_DESCRIPTIONS;
@@ -254,11 +256,11 @@ export class SeriesFormPageComponent implements OnInit {
   statusValue: SeriesStatus = 'IN_PROGRESS';
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.slug = params.get('slug');
       this.isEdit.set(!!this.slug);
 
-      this.novelsService.listMine({ limit: 100 }).subscribe({
+      this.novelsService.listMine({ limit: 100 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (r) => this.userNovels.set(r.data),
       });
 
@@ -270,7 +272,7 @@ export class SeriesFormPageComponent implements OnInit {
 
   private loadSeries(slug: string): void {
     this.loading.set(true);
-    this.seriesService.getBySlug(slug).subscribe({
+    this.seriesService.getBySlug(slug).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (s) => {
         this.applySeries(s);
         this.loading.set(false);

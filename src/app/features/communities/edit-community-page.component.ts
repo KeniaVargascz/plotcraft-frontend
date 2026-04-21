@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NovelsService } from '../../core/services/novels.service';
@@ -222,6 +223,7 @@ export class EditCommunityPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly novelsService = inject(NovelsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly community = signal<Community | null>(null);
   readonly loading = signal(true);
@@ -243,7 +245,7 @@ export class EditCommunityPageComponent implements OnInit {
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
     if (!slug) return;
-    this.service.getCommunityBySlug(slug).subscribe({
+    this.service.getCommunityBySlug(slug).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (c) => {
         this.community.set(c);
         this.form.patchValue({

@@ -1,4 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ReaderBookmark } from '../../core/models/bookmark.model';
 import { BookmarksService } from '../../core/services/bookmarks.service';
@@ -143,6 +144,7 @@ import { LibraryService } from '../../core/services/library.service';
 export class BookmarksPageComponent {
   private readonly libraryService = inject(LibraryService);
   private readonly bookmarksService = inject(BookmarksService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly bookmarkedNovels = signal<LibraryNovelCard[]>([]);
   readonly bookmarks = signal<ReaderBookmark[]>([]);
   readonly loadingBookmarks = signal(false);
@@ -164,7 +166,7 @@ export class BookmarksPageComponent {
   }
 
   private load() {
-    this.libraryService.listBookmarked().subscribe((res) => {
+    this.libraryService.listBookmarked().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
       this.bookmarkedNovels.set(res.data);
     });
     this.fetchBookmarks(true);
@@ -172,7 +174,7 @@ export class BookmarksPageComponent {
 
   private fetchBookmarks(reset: boolean) {
     this.loadingBookmarks.set(true);
-    this.bookmarksService.listAll(reset ? null : this.bookmarksCursor, 20).subscribe({
+    this.bookmarksService.listAll(reset ? null : this.bookmarksCursor, 20).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.bookmarks.update((list) => (reset ? res.data : [...list, ...res.data]));
         this.bookmarksCursor = res.pagination.nextCursor;

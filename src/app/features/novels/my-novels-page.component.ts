@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { NovelSummary } from '../../core/models/novel.model';
 import { NovelsService } from '../../core/services/novels.service';
@@ -76,13 +77,14 @@ import { NovelCardComponent } from './components/novel-card.component';
 })
 export class MyNovelsPageComponent implements OnInit {
   private readonly novelsService = inject(NovelsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly error = signal(false);
   readonly novels = signal<NovelSummary[]>([]);
 
   ngOnInit() {
-    this.novelsService.listMine({ limit: 50 }).subscribe({
+    this.novelsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.novels.set(response.data);
         this.loading.set(false);

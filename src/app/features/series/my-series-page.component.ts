@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../core/services/auth.service';
@@ -106,6 +107,7 @@ export class MySeriesPageComponent implements OnInit {
   private readonly seriesService = inject(SeriesService);
   private readonly authService = inject(AuthService);
   private readonly dialog = inject(MatDialog);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly error = signal(false);
@@ -121,7 +123,7 @@ export class MySeriesPageComponent implements OnInit {
       this.loading.set(false);
       return;
     }
-    this.seriesService.list({ authorUsername: username, limit: 50 }).subscribe({
+    this.seriesService.list({ authorUsername: username, limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res) => {
         this.items.set(res.data);
         this.loading.set(false);

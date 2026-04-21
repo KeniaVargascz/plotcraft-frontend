@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -117,6 +118,7 @@ export class MyVisualBoardsPageComponent implements OnInit {
   private readonly visualBoardsService = inject(VisualBoardsService);
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly boards = signal<VisualBoardSummary[]>([]);
@@ -132,6 +134,7 @@ export class MyVisualBoardsPageComponent implements OnInit {
     this.loading.set(true);
     this.visualBoardsService
       .getMyBoards({
+
         linkedType: (this.linkedType || null) as
           | 'novel'
           | 'world'
@@ -142,6 +145,7 @@ export class MyVisualBoardsPageComponent implements OnInit {
         isPublic:
           this.visibility === 'public' ? true : this.visibility === 'private' ? false : null,
       })
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (boards) => {
           this.boards.set(boards);

@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -395,6 +396,7 @@ export class MyCommunitiesPageComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly items = signal<Community[]>([]);
   readonly loading = signal(true);
@@ -424,7 +426,7 @@ export class MyCommunitiesPageComponent implements OnInit {
 
   private loadCommunities(): void {
     this.loading.set(true);
-    this.service.getMyOwnedCommunities().subscribe({
+    this.service.getMyOwnedCommunities().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (list) => {
         this.items.set(list);
         this.loading.set(false);

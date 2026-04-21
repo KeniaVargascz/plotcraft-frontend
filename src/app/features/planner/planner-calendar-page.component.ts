@@ -1,4 +1,5 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { WritingTask } from '../../core/models/writing-task.model';
 import { PlannerService } from '../../core/services/planner.service';
@@ -373,6 +374,7 @@ const PRIORITY_COLORS: Record<string, string> = {
 })
 export class PlannerCalendarPageComponent implements OnInit {
   private readonly plannerService = inject(PlannerService);
+  private readonly destroyRef = inject(DestroyRef);
 
   dayNames = DAY_NAMES;
   loading = signal(true);
@@ -458,7 +460,7 @@ export class PlannerCalendarPageComponent implements OnInit {
     const from = new Date(year, month, 1).toISOString().substring(0, 10);
     const to = new Date(year, month + 1, 0).toISOString().substring(0, 10);
 
-    this.plannerService.getCalendar(from, to).subscribe({
+    this.plannerService.getCalendar(from, to).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response: WritingTask[]) => {
         this.tasks.set(response);
         this.loading.set(false);

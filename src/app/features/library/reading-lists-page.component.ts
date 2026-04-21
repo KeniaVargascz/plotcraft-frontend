@@ -1,5 +1,6 @@
 import { DatePipe, NgClass, TitleCasePipe } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -413,6 +414,7 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
 })
 export class ReadingListsPageComponent {
   private readonly readingListsService = inject(ReadingListsService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly lists = signal<ReadingList[]>([]);
   readonly creating = signal(false);
   readonly saving = signal(false);
@@ -548,6 +550,6 @@ export class ReadingListsPageComponent {
   }
 
   private load() {
-    this.readingListsService.listMine().subscribe((lists) => this.lists.set(lists));
+    this.readingListsService.listMine().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((lists) => this.lists.set(lists));
   }
 }

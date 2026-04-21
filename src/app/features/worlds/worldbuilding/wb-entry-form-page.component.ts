@@ -1,4 +1,5 @@
-import { Component, HostListener, inject, signal, computed, OnDestroy } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, signal, computed, OnDestroy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -412,6 +413,7 @@ export class WbEntryFormPageComponent implements OnDestroy {
   private readonly dialog = inject(MatDialog);
   private readonly wbService = inject(WorldbuildingService);
   readonly markdownService = inject(MarkdownService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly worldSlug = signal('');
   readonly isEdit = signal(false);
@@ -450,7 +452,7 @@ export class WbEntryFormPageComponent implements OnDestroy {
   }
 
   constructor() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const slug = params.get('slug');
       const catSlug = params.get('catSlug');
       const entrySlug = params.get('entrySlug');

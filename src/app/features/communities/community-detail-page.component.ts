@@ -16,13 +16,14 @@ import { ForumCardComponent } from '../community-forums/components/forum-card/fo
 import { CreateForumDialogComponent } from '../community-forums/components/create-forum-dialog/create-forum-dialog.component';
 import { CommunityCharactersService } from './services/community-characters.service';
 import { CommunityCharacter } from './models/community-character.model';
-import { CommunityCharacterCardComponent } from './components/community-character-card/community-character-card.component';
 import {
   SuggestCharacterDialogComponent,
   SuggestCharacterDialogResult,
 } from './components/suggest-character-dialog/suggest-character-dialog.component';
 import { RejectCharacterDialogComponent } from './components/reject-character-dialog/reject-character-dialog.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { CommunityHeaderComponent } from './components/community-header/community-header.component';
+import { CommunityCharactersSectionComponent } from './components/community-characters-section/community-characters-section.component';
 
 @Component({
   selector: 'app-community-detail-page',
@@ -32,8 +33,9 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
     FormsModule,
     LoadingSpinnerComponent,
     ForumCardComponent,
-    CommunityCharacterCardComponent,
     TranslatePipe,
+    CommunityHeaderComponent,
+    CommunityCharactersSectionComponent,
   ],
   template: `
     @if (loading()) {
@@ -60,10 +62,10 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         </div>
 
         @if (c.status === 'PENDING' && c.isOwner) {
-          <div class="alert warn">⏳ Esta comunidad está pendiente de aprobación.</div>
+          <div class="alert warn">&#x23F3; Esta comunidad está pendiente de aprobación.</div>
         }
         @if (c.status === 'SUSPENDED') {
-          <div class="alert danger">⚠ Esta comunidad está suspendida.</div>
+          <div class="alert danger">&#x26A0; Esta comunidad está suspendida.</div>
         }
         @if (c.status === 'REJECTED' && c.isOwner && c.rejectionReason) {
           <div class="alert danger"><strong>Rechazada:</strong> {{ c.rejectionReason }}</div>
@@ -163,82 +165,19 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
             }
 
             @if (c.type === 'FANDOM') {
-              <section class="block">
-                <div class="catalog-head">
-                  <h2>Catálogo de personajes</h2>
-                  @if (canSuggest()) {
-                    <button type="button" class="new-forum-btn" (click)="openSuggestCharacter()">
-                      + Sugerir personaje
-                    </button>
-                  }
-                  @if (canModerateCatalog()) {
-                    <button type="button" class="new-forum-btn" (click)="openCreateCharacter()">
-                      + Nuevo personaje
-                    </button>
-                  }
-                </div>
-                @if (catalogLoading()) {
-                  <p class="muted">Cargando catálogo...</p>
-                } @else if (!catalog().length) {
-                  <p class="muted">Este fandom aún no tiene personajes en su catálogo.</p>
-                } @else {
-                  <div class="catalog-grid">
-                    @for (cc of catalog(); track cc.id) {
-                      <app-community-character-card
-                        [character]="cc"
-                        [canManage]="canModerateCatalog()"
-                        (edit)="editCharacter($event)"
-                        (remove)="deleteCharacter($event)"
-                      />
-                    }
-                  </div>
-                }
-
-                @if (canModerateCatalog()) {
-                  <div class="suggestions-block">
-                    <h3>
-                      Sugerencias pendientes
-                      @if (suggestions().length) {
-                        <span class="badge">{{ suggestions().length }}</span>
-                      }
-                    </h3>
-                    @if (!suggestions().length) {
-                      <p class="muted">No hay sugerencias pendientes.</p>
-                    } @else {
-                      <ul class="suggestions-list">
-                        @for (s of suggestions(); track s.id) {
-                          <li class="suggestion-row">
-                            <div class="avatar">
-                              @if (s.avatarUrl) {
-                                <img [src]="s.avatarUrl" [alt]="s.name" loading="lazy" />
-                              } @else {
-                                <span>{{ s.name.charAt(0) }}</span>
-                              }
-                            </div>
-                            <div class="sg-info">
-                              <strong>{{ s.name }}</strong>
-                              @if (s.description) {
-                                <p>{{ s.description }}</p>
-                              }
-                              @if (s.suggestedBy) {
-                                <small>Sugerido por &#64;{{ s.suggestedBy.username }}</small>
-                              }
-                            </div>
-                            <div class="sg-actions">
-                              <button type="button" class="ok" (click)="approveSuggestion(s)">
-                                ✓ Aprobar
-                              </button>
-                              <button type="button" class="ko" (click)="rejectSuggestion(s)">
-                                ✗ Rechazar
-                              </button>
-                            </div>
-                          </li>
-                        }
-                      </ul>
-                    }
-                  </div>
-                }
-              </section>
+              <app-community-characters-section
+                [characters]="catalog()"
+                [suggestions]="suggestions()"
+                [loading]="catalogLoading()"
+                [canModerate]="canModerateCatalog()"
+                [canSuggest]="canSuggest()"
+                (suggestClick)="openSuggestCharacter()"
+                (createClick)="openCreateCharacter()"
+                (editClick)="editCharacter($event)"
+                (deleteClick)="deleteCharacter($event)"
+                (approveClick)="approveSuggestion($event)"
+                (rejectClick)="rejectSuggestion($event)"
+              />
             }
 
             @if (discussedThreads().length) {
@@ -268,94 +207,14 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
           </main>
 
           <aside class="side">
-            @if (c.status === 'ACTIVE') {
-              @if (isAuth()) {
-                <div class="actions">
-                  @if (!c.isMember && !c.isOwner) {
-                    @if (c.type === 'PRIVATE' && !c.isFollowingOwner) {
-                      <button class="primary" type="button" disabled>Unirse</button>
-                      <p class="join-hint">Sigue al autor para poder unirte a su comunidad.</p>
-                    } @else {
-                      <button class="primary" type="button" (click)="join()">Unirse</button>
-                    }
-                  }
-                  @if (c.isMember && !c.isOwner) {
-                    <button type="button" (click)="confirmLeave()">✓ Miembro</button>
-                  }
-                  @if (c.isOwner) {
-                    <p class="owner-note">Eres el creador</p>
-                  }
-                  @if (!c.isFollowing) {
-                    <button type="button" (click)="follow()">Seguir</button>
-                  } @else {
-                    <button type="button" (click)="unfollow()">Siguiendo</button>
-                  }
-                  @if (c.isOwner) {
-                    <a class="manage" [routerLink]="['/mis-comunidades', c.slug, 'editar']">
-                      Gestionar comunidad
-                    </a>
-                  }
-                </div>
-              } @else {
-                <a
-                  class="primary"
-                  [routerLink]="['/login']"
-                  [queryParams]="{ returnUrl: '/comunidades/' + c.slug }"
-                >
-                  Inicia sesión para unirte
-                </a>
-              }
-            }
-
-            @if (c.owner) {
-              <div class="card">
-                <h3>Creador</h3>
-                <a class="owner-link" [routerLink]="['/perfil', c.owner.username]">
-                  <div class="avatar">
-                    @if (c.owner.avatarUrl) {
-                      <img [src]="c.owner.avatarUrl" [alt]="c.owner.displayName" loading="lazy" />
-                    } @else {
-                      <span>{{ c.owner.displayName.charAt(0) }}</span>
-                    }
-                  </div>
-                  <div>
-                    <strong>{{ c.owner.displayName }}</strong>
-                    <span>&#64;{{ c.owner.username }}</span>
-                  </div>
-                </a>
-              </div>
-            }
-
-            @if (c.linkedNovel) {
-              <div class="card">
-                <h3>Novela vinculada</h3>
-                <a class="novel-link" [routerLink]="['/novelas', c.linkedNovel.slug]">
-                  <div class="novel-cover">
-                    @if (c.linkedNovel.coverUrl) {
-                      <img
-                        [src]="c.linkedNovel.coverUrl"
-                        [alt]="c.linkedNovel.title"
-                        loading="lazy"
-                      />
-                    } @else {
-                      <span>{{ c.linkedNovel.title.charAt(0) }}</span>
-                    }
-                  </div>
-                  <span>{{ c.linkedNovel.title }}</span>
-                </a>
-              </div>
-            }
-
-            <div class="card stats">
-              <div>
-                <strong>{{ c.membersCount }}</strong
-                ><span>Miembros</span>
-              </div>
-              <div>
-                <strong>{{ c.followersCount }}</strong
-                ><span>Seguidores</span>
-              </div>
-            </div>
+            <app-community-header
+              [community]="c"
+              [viewerContext]="{ isAuth: isAuth() }"
+              (joinClick)="join()"
+              (leaveClick)="confirmLeave()"
+              (followClick)="follow()"
+              (unfollowClick)="unfollow()"
+            />
           </aside>
         </div>
       </section>
@@ -509,103 +368,6 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         gap: 1rem;
         align-content: start;
       }
-      .actions {
-        display: grid;
-        gap: 0.5rem;
-      }
-      .actions button,
-      .actions .manage,
-      .actions .primary {
-        padding: 0.65rem 1rem;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--bg-card);
-        color: var(--text-1);
-        cursor: pointer;
-        text-decoration: none;
-        text-align: center;
-        font-weight: 600;
-      }
-      .actions .primary {
-        background: var(--accent-glow);
-        color: var(--accent-text);
-        border-color: transparent;
-      }
-      .owner-note {
-        margin: 0;
-        text-align: center;
-        color: var(--text-2);
-      }
-      .join-hint {
-        margin: 0;
-        font-size: 0.78rem;
-        color: var(--text-3);
-        text-align: center;
-      }
-      button.primary[disabled] {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-      .card {
-        padding: 1rem;
-        border-radius: 1rem;
-        border: 1px solid var(--border);
-        background: var(--bg-card);
-      }
-      .card h3 {
-        margin: 0 0 0.5rem;
-        font-size: 0.9rem;
-        color: var(--text-2);
-      }
-      .owner-link,
-      .novel-link {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        text-decoration: none;
-        color: var(--text-1);
-      }
-      .owner-link span {
-        display: block;
-        font-size: 0.8rem;
-        color: var(--text-3);
-      }
-      .avatar,
-      .novel-cover {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: var(--bg-surface);
-        overflow: hidden;
-        display: grid;
-        place-items: center;
-      }
-      .novel-cover {
-        border-radius: 0.5rem;
-        width: 44px;
-        height: 60px;
-      }
-      .avatar img,
-      .novel-cover img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-      .stats {
-        display: flex;
-        justify-content: space-around;
-      }
-      .stats div {
-        text-align: center;
-      }
-      .stats strong {
-        display: block;
-        font-size: 1.25rem;
-      }
-      .stats span {
-        font-size: 0.78rem;
-        color: var(--text-3);
-      }
       .empty {
         text-align: center;
         color: var(--text-2);
@@ -614,100 +376,6 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         .grid {
           grid-template-columns: 1fr;
         }
-      }
-      .catalog-head {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-      }
-      .catalog-head h2 {
-        margin: 0;
-        flex: 1;
-      }
-      .catalog-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 0.75rem;
-        margin-top: 0.75rem;
-      }
-      .suggestions-block {
-        margin-top: 1.25rem;
-        padding-top: 1rem;
-        border-top: 1px dashed var(--border);
-      }
-      .suggestions-block h3 {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.95rem;
-      }
-      .suggestions-block .badge {
-        background: var(--accent-glow);
-        color: var(--accent-text);
-        padding: 0.1rem 0.55rem;
-        border-radius: 999px;
-        font-size: 0.75rem;
-      }
-      .suggestions-list {
-        list-style: none;
-        margin: 0.5rem 0 0;
-        padding: 0;
-        display: grid;
-        gap: 0.5rem;
-      }
-      .suggestion-row {
-        display: grid;
-        grid-template-columns: 48px 1fr auto;
-        gap: 0.6rem;
-        padding: 0.6rem;
-        border: 1px solid var(--border);
-        border-radius: 0.85rem;
-        background: var(--bg-surface);
-        align-items: center;
-      }
-      .suggestion-row .avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        overflow: hidden;
-        background: var(--bg-card);
-        display: grid;
-        place-items: center;
-      }
-      .suggestion-row .avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-      .sg-info p {
-        margin: 0.15rem 0;
-        color: var(--text-2);
-        font-size: 0.85rem;
-      }
-      .sg-info small {
-        color: var(--text-3);
-        font-size: 0.75rem;
-      }
-      .sg-actions {
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
-      }
-      .sg-actions button {
-        padding: 0.35rem 0.7rem;
-        border-radius: 0.5rem;
-        border: 1px solid var(--border);
-        background: var(--bg-card);
-        color: var(--text-1);
-        cursor: pointer;
-        font-size: 0.78rem;
-      }
-      .sg-actions .ok {
-        color: #6fcf97;
-      }
-      .sg-actions .ko {
-        color: #ff8b8b;
       }
       .related-list {
         list-style: none;

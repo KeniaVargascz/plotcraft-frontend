@@ -1,7 +1,8 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { MarkdownService } from '../../core/services/markdown.service';
+import { TemplateCardComponent, TemplateCardData } from './components/template-card.component';
+import { TemplatePreviewComponent } from './components/template-preview.component';
 
 type MarkdownTool = {
   title: string;
@@ -15,16 +16,6 @@ type AppArea = {
   route: string;
   note: string;
   fields: string[];
-};
-
-type TemplateCard = {
-  id: string;
-  title: string;
-  category: string;
-  summary: string;
-  bestFor: string;
-  content: string;
-  routes: Array<{ label: string; to: string }>;
 };
 
 const MARKDOWN_TOOLS: MarkdownTool[] = [
@@ -141,7 +132,7 @@ const APP_AREAS: AppArea[] = [
   },
 ];
 
-const TEMPLATE_CARDS: TemplateCard[] = [
+const TEMPLATE_CARDS: TemplateCardData[] = [
   {
     id: 'personaje-fandom',
     title: 'Perfil de personaje estilo fandom',
@@ -500,7 +491,8 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
 @Component({
   selector: 'app-templates-page',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, TemplateCardComponent, TemplatePreviewComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <section class="templates-shell">
       <header class="hero">
@@ -617,37 +609,14 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
         </div>
 
         <div class="template-grid">
-          @for (template of filteredTemplates(); track template.id) {
-            <article class="template-card card">
-              <div class="template-meta">
-                <span class="template-category">{{ template.category }}</span>
-                <h3>{{ template.title }}</h3>
-                <p>{{ template.summary }}</p>
-                <small>Mejor para: {{ template.bestFor }}</small>
-              </div>
-
-              <div class="template-actions">
-                <button
-                  type="button"
-                  class="copy-btn strong"
-                  (click)="copy(template.content, template.id)"
-                >
-                  {{ copyLabel(template.id) }}
-                </button>
-                <button
-                  type="button"
-                  class="ghost-btn"
-                  (click)="selectedTemplateId.set(template.id)"
-                >
-                  {{ selectedTemplateId() === template.id ? 'Vista activa' : 'Ver preview' }}
-                </button>
-                @for (route of template.routes; track route.label + route.to) {
-                  <a class="ghost-btn" [routerLink]="route.to">{{ route.label }}</a>
-                }
-              </div>
-
-              <pre class="template-source">{{ template.content }}</pre>
-            </article>
+          @for (tpl of filteredTemplates(); track tpl.id) {
+            <app-template-card
+              [template]="tpl"
+              [selected]="selectedTemplateId() === tpl.id"
+              [copied]="copiedKey() === tpl.id"
+              (preview)="selectedTemplateId.set($event.id)"
+              (copy)="copy($event.content, $event.id)"
+            />
           }
         </div>
 
@@ -659,36 +628,11 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
         }
       </section>
 
-      <section class="preview-section card">
-        <div class="block-head">
-          <div>
-            <p class="mini-label">Preview</p>
-            <h2>{{ activeTemplate().title }}</h2>
-          </div>
-          <div class="preview-actions">
-            <span class="template-category">{{ activeTemplate().category }}</span>
-            <button
-              type="button"
-              class="copy-btn strong"
-              (click)="copy(activeTemplate().content, activeTemplate().id)"
-            >
-              {{ copyLabel(activeTemplate().id) }}
-            </button>
-          </div>
-        </div>
-
-        <div class="preview-grid">
-          <article class="preview-pane">
-            <h3>Markdown</h3>
-            <pre>{{ activeTemplate().content }}</pre>
-          </article>
-
-          <article class="preview-pane rendered">
-            <h3>Resultado</h3>
-            <div class="md" [innerHTML]="renderTemplate(activeTemplate().content)"></div>
-          </article>
-        </div>
-      </section>
+      <app-template-preview
+        [template]="activeTemplate()"
+        [copied]="copiedKey() === activeTemplate().id"
+        (useTemplate)="copy($event.content, $event.id)"
+      />
     </section>
   `,
   styles: [
@@ -919,48 +863,11 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
       .template-meta small {
         color: var(--text-3);
       }
-      .template-source {
-        max-height: 340px;
-        overflow: auto;
-      }
       .empty-state {
         text-align: center;
       }
       .empty-state p {
         margin-bottom: 0;
-      }
-      .preview-grid {
-        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-      }
-      .preview-pane h3 {
-        margin-bottom: 0.75rem;
-      }
-      .rendered .md {
-        line-height: 1.7;
-      }
-      .rendered .md :global(p) {
-        margin: 0 0 0.8rem;
-      }
-      .rendered .md :global(table) {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 1rem;
-      }
-      .rendered .md :global(th),
-      .rendered .md :global(td) {
-        border: 1px solid var(--border);
-        padding: 0.55rem 0.7rem;
-        text-align: left;
-      }
-      .rendered .md :global(blockquote) {
-        margin: 0 0 1rem;
-        padding: 0.8rem 1rem;
-        border-left: 4px solid #c88136;
-        background: color-mix(in srgb, var(--bg-surface) 78%, #f6ead7 22%);
-      }
-      .rendered .md :global(img) {
-        max-width: 100%;
-        border-radius: 0.8rem;
       }
       @media (max-width: 1040px) {
         .hero,
@@ -975,8 +882,6 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
   ],
 })
 export class TemplatesPageComponent {
-  private readonly markdownService = inject(MarkdownService);
-
   readonly markdownTools = MARKDOWN_TOOLS;
   readonly appAreas = APP_AREAS;
   readonly templates = TEMPLATE_CARDS;
@@ -1010,10 +915,6 @@ export class TemplatesPageComponent {
       this.filteredTemplates()[0] ??
       this.templates[0],
   );
-
-  renderTemplate(content: string): string {
-    return this.markdownService.render(content);
-  }
 
   copy(content: string, key: string): void {
     void navigator.clipboard.writeText(content).then(() => {

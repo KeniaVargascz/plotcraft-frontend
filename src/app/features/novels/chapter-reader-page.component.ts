@@ -39,6 +39,10 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { TranslationService } from '../../core/services/translation.service';
 import { RelativeDatePipe } from '../../shared/pipes/relative-date.pipe';
 import { ParagraphCommentsComponent } from './paragraph-comments.component';
+import { ReaderBookmarksPanelComponent } from './components/reader/reader-bookmarks-panel.component';
+import { ReaderPreferencesPanelComponent } from './components/reader/reader-preferences-panel.component';
+import { ReaderCommentsSectionComponent } from './components/reader/reader-comments-section.component';
+import { ReaderChapterNavComponent } from './components/reader/reader-chapter-nav.component';
 
 @Component({
   selector: 'app-chapter-reader-page',
@@ -51,6 +55,10 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
     TranslatePipe,
     RelativeDatePipe,
     ParagraphCommentsComponent,
+    ReaderBookmarksPanelComponent,
+    ReaderPreferencesPanelComponent,
+    ReaderCommentsSectionComponent,
+    ReaderChapterNavComponent,
   ],
   template: `
     @if (loading()) {
@@ -187,142 +195,19 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
           @if (showPreferences() || showBookmarksPanel()) {
             <div class="side-panels">
               @if (showPreferences()) {
-                <aside class="panel prefs-panel">
-                  <div class="prefs-header">
-                    <h3>{{ 'reader.preferences.title' | translate }}</h3>
-                    <button
-                      type="button"
-                      class="prefs-close"
-                      aria-label="Cerrar"
-                      (click)="showPreferences.set(false)"
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                      </svg>
-                    </button>
-                  </div>
-                  <label>
-                    {{ 'reader.preferences.font' | translate }}
-                    <select
-                      [value]="preferences().font_family"
-                      (change)="onPreferenceChange('font_family', $any($event.target).value)"
-                    >
-                      <option value="crimson">
-                        {{ 'reader.preferences.fonts.crimson' | translate }}
-                      </option>
-                      <option value="outfit">
-                        {{ 'reader.preferences.fonts.outfit' | translate }}
-                      </option>
-                      <option value="georgia">
-                        {{ 'reader.preferences.fonts.georgia' | translate }}
-                      </option>
-                      <option value="mono">
-                        {{ 'reader.preferences.fonts.mono' | translate }}
-                      </option>
-                    </select>
-                  </label>
-                  <label>
-                    {{ 'reader.preferences.fontSize' | translate }}
-                    <input
-                      type="range"
-                      min="14"
-                      max="26"
-                      [value]="preferences().font_size"
-                      (input)="onPreferenceChange('font_size', +$any($event.target).value)"
-                      data-testid="font-size-slider"
-                    />
-                  </label>
-                  <label>
-                    {{ 'reader.preferences.lineHeight' | translate }}
-                    <input
-                      type="range"
-                      min="1.4"
-                      max="2.4"
-                      step="0.1"
-                      [value]="preferences().line_height"
-                      (input)="onPreferenceChange('line_height', +$any($event.target).value)"
-                    />
-                  </label>
-                  <label>
-                    {{ 'reader.preferences.mode' | translate }}
-                    <select
-                      [value]="preferences().reading_mode"
-                      (change)="onPreferenceChange('reading_mode', $any($event.target).value)"
-                    >
-                      <option value="scroll">
-                        {{ 'reader.preferences.modeScroll' | translate }}
-                      </option>
-                      <option value="paginated">
-                        {{ 'reader.preferences.modePaginated' | translate }}
-                      </option>
-                    </select>
-                  </label>
-                  <label class="toggle">
-                    <input
-                      type="checkbox"
-                      [checked]="preferences().show_progress"
-                      (change)="onPreferenceChange('show_progress', $any($event.target).checked)"
-                    />
-                    {{ 'reader.preferences.showProgress' | translate }}
-                  </label>
-                </aside>
+                <app-reader-preferences-panel
+                  [preferences]="preferences()"
+                  (closed)="showPreferences.set(false)"
+                  (preferencesChange)="onPreferencesPartialChange($event)"
+                />
               }
               @if (showBookmarksPanel()) {
-                <aside class="panel bookmarks-panel" #bookmarksPanel>
-                  <div class="prefs-header">
-                    <h3>{{ 'reader.bookmarksPanel.title' | translate }}</h3>
-                    <button
-                      type="button"
-                      class="prefs-close"
-                      aria-label="Cerrar"
-                      (click)="showBookmarksPanel.set(false)"
-                    >
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                      </svg>
-                    </button>
-                  </div>
-                  @if (!bookmarks().length) {
-                    <p>{{ 'reader.bookmarksPanel.empty' | translate }}</p>
-                  } @else {
-                    @for (bookmark of bookmarks(); track bookmark.id) {
-                      <div class="panel-row">
-                        <button
-                          type="button"
-                          class="bookmark-link"
-                          (click)="scrollToBookmark(bookmark.anchor_id)"
-                        >
-                          {{ bookmark.label || bookmark.anchor_id || bookmark.chapter.title }}
-                        </button>
-                        <button type="button" (click)="removeBookmark(bookmark.id)">
-                          {{ 'reader.bookmarksPanel.remove' | translate }}
-                        </button>
-                      </div>
-                    }
-                  }
-                </aside>
+                <app-reader-bookmarks-panel
+                  [bookmarks]="bookmarks()"
+                  (closed)="showBookmarksPanel.set(false)"
+                  (scrollToBookmark)="scrollToBookmark($event)"
+                  (removeBookmark)="removeBookmark($event)"
+                />
               }
             </div>
           }
@@ -441,100 +326,20 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
           }}</span>
         </div>
 
-        <footer class="reader-nav">
-          @if (currentChapter.navigation?.previous; as previous) {
-            <a
-              [routerLink]="['/novelas', currentChapter.novel.slug, previous.slug]"
-              data-testid="prev-chapter"
-              >← {{ previous.title }}</a
-            >
-          }
-          @if (currentChapter.navigation?.next; as next) {
-            <a
-              [routerLink]="['/novelas', currentChapter.novel.slug, next.slug]"
-              data-testid="next-chapter"
-              >{{ next.title }} →</a
-            >
-          }
-        </footer>
+        <app-reader-chapter-nav [currentChapter]="currentChapter" />
 
-        <section class="chapter-comments card" data-testid="chapter-comments">
-          <h2>{{ 'reader.comments.title' | translate }}</h2>
-
-          @if (commentsEnabled()) {
-            @if (isAuthenticated()) {
-              <div class="comment-form">
-                <textarea
-                  [(ngModel)]="newComment"
-                  rows="3"
-                  [placeholder]="'reader.comments.placeholder' | translate"
-                  maxlength="2000"
-                ></textarea>
-                <button
-                  type="button"
-                  class="btn-send"
-                  [disabled]="!newComment.trim() || commentSending()"
-                  (click)="submitComment(currentChapter)"
-                >
-                  {{
-                    commentSending()
-                      ? ('reader.comments.submitting' | translate)
-                      : ('reader.comments.submit' | translate)
-                  }}
-                </button>
-              </div>
-            } @else {
-              <a class="comment-login" routerLink="/login">
-                {{ 'reader.comments.loginCta' | translate }}
-              </a>
-            }
-
-            @if (commentsLoading() && !comments().length) {
-              <p class="comment-hint">{{ 'reader.comments.loading' | translate }}</p>
-            } @else if (!comments().length) {
-              <p class="comment-hint">{{ 'reader.comments.empty' | translate }}</p>
-            } @else {
-              <div class="comments-list">
-                @for (c of comments(); track c.id) {
-                  <div class="comment-item">
-                    <div class="comment-avatar">{{ c.author.username[0].toUpperCase() }}</div>
-                    <div class="comment-body">
-                      <div class="comment-header">
-                        <a [routerLink]="['/perfil', c.author.username]" class="comment-author">
-                          {{ c.author.displayName || c.author.username }}
-                        </a>
-                        <span class="comment-date">{{ c.createdAt | relativeDate }}</span>
-                        @if (deletableCommentIds().has(c.id)) {
-                          <button
-                            type="button"
-                            class="comment-delete"
-                            (click)="removeComment(currentChapter, c.id)"
-                            [attr.aria-label]="'reader.comments.deleteAria' | translate"
-                          >
-                            ✕
-                          </button>
-                        }
-                      </div>
-                      <p class="comment-text">{{ c.content }}</p>
-                    </div>
-                  </div>
-                }
-              </div>
-
-              @if (commentsHasMore()) {
-                <button
-                  type="button"
-                  class="btn-load-more"
-                  (click)="loadMoreComments(currentChapter)"
-                >
-                  {{ 'reader.comments.loadMore' | translate }}
-                </button>
-              }
-            }
-          } @else {
-            <p class="comment-hint">{{ 'reader.comments.disabled' | translate }}</p>
-          }
-        </section>
+        <app-reader-comments-section
+          [comments]="comments()"
+          [commentsLoading]="commentsLoading()"
+          [loading]="commentSending()"
+          [hasMore]="commentsHasMore()"
+          [isAuthenticated]="isAuthenticated()"
+          [commentsEnabled]="commentsEnabled()"
+          [deletableIds]="deletableCommentIds()"
+          (addComment)="submitCommentText(currentChapter, $event)"
+          (deleteComment)="removeComment(currentChapter, $event)"
+          (loadMore)="loadMoreComments(currentChapter)"
+        />
       </article>
     }
   `,
@@ -663,20 +468,7 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
       .bookmarks-panel {
         scroll-margin-top: 5rem;
       }
-      .bookmark-link {
-        background: transparent;
-        border: 0;
-        color: var(--accent-text);
-        padding: 0;
-        cursor: pointer;
-        text-align: left;
-        font-size: inherit;
-        min-height: auto;
-      }
-      .bookmark-link:hover {
-        color: var(--accent);
-        text-decoration: underline;
-      }
+      /* .bookmark-link styles moved to reader-bookmarks-panel component */
       :host ::ng-deep .bookmark-flash {
         background: color-mix(in srgb, var(--accent) 25%, transparent) !important;
         border-radius: 0.25rem;
@@ -791,67 +583,14 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
       .icon-btn svg {
         flex-shrink: 0;
       }
-      button,
-      select,
-      input {
+      button {
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
         padding: 0.5rem 0.8rem;
       }
-      /* Quita el azul de controles nativos (range, checkbox, select focus). */
-      select,
-      input[type='range'],
-      input[type='checkbox'] {
-        accent-color: var(--accent-text);
-      }
-      select:focus,
-      input:focus {
-        outline: 2px solid var(--accent-text);
-        outline-offset: 2px;
-      }
-      input[type='range'] {
-        padding: 0;
-        border: 0;
-        background: transparent;
-      }
-      input[type='range']::-webkit-slider-runnable-track {
-        height: 4px;
-        border-radius: 2px;
-        background: var(--border);
-      }
-      input[type='range']::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background: var(--accent-text);
-        margin-top: -6px;
-        cursor: pointer;
-      }
-      input[type='range']::-moz-range-track {
-        height: 4px;
-        border-radius: 2px;
-        background: var(--border);
-        border: 0;
-      }
-      input[type='range']::-moz-range-thumb {
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background: var(--accent-text);
-        border: 0;
-        cursor: pointer;
-      }
-      label {
-        display: grid;
-        gap: 0.35rem;
-      }
-      .toggle {
-        display: flex;
-        align-items: center;
-      }
+      /* Select, input range/checkbox, label and toggle styles moved to child components */
       a {
         color: var(--accent-text);
       }
@@ -891,184 +630,12 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
         color: var(--accent);
       }
 
-      /* === Chapter comments === */
-      .chapter-comments.card {
-        padding: 1.25rem;
-        display: grid;
-        gap: 1rem;
-      }
-      .chapter-comments h2 {
-        margin: 0;
-        font-size: 1.15rem;
-      }
-      .comment-form {
-        display: grid;
-        gap: 0.5rem;
-      }
-      .comment-form textarea {
-        width: 100%;
-        border-radius: 0.75rem;
-        border: 1px solid var(--border);
-        background: var(--bg-surface);
-        color: var(--text-1);
-        padding: 0.75rem 0.9rem;
-        resize: vertical;
-        font: inherit;
-      }
-      .comment-form .btn-send {
-        justify-self: end;
-        padding: 0.55rem 1rem;
-        border-radius: 999px;
-        background: var(--accent-glow);
-        color: var(--accent-text);
-        border: 1px solid var(--accent-text);
-        cursor: pointer;
-        font-weight: 600;
-      }
-      .comment-form .btn-send:disabled {
-        opacity: 0.55;
-        cursor: not-allowed;
-      }
-      .comment-login {
-        display: inline-block;
-        align-self: start;
-        padding: 0.5rem 0.9rem;
-        border-radius: 999px;
-        background: var(--accent-glow);
-        color: var(--accent-text);
-        font-size: 0.85rem;
-        text-decoration: none;
-        width: fit-content;
-      }
-      .comment-login:hover {
-        color: var(--accent);
-      }
-      .comment-hint {
-        margin: 0;
-        color: var(--text-2);
-        font-size: 0.9rem;
-      }
-      .comments-list {
-        display: grid;
-        gap: 0.85rem;
-      }
-      .comment-item {
-        display: flex;
-        gap: 0.75rem;
-        align-items: flex-start;
-        padding-bottom: 0.75rem;
-        border-bottom: 1px solid var(--border);
-      }
-      .comment-item:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-      }
-      .comment-avatar {
-        flex-shrink: 0;
-        width: 2.25rem;
-        height: 2.25rem;
-        border-radius: 999px;
-        background: var(--accent-glow);
-        color: var(--accent-text);
-        display: grid;
-        place-items: center;
-        font-weight: 600;
-      }
-      .comment-body {
-        flex: 1;
-        min-width: 0;
-      }
-      .comment-header {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.2rem;
-      }
-      .comment-author {
-        color: var(--text-1);
-        font-weight: 600;
-        text-decoration: none;
-        min-height: unset;
-        white-space: nowrap;
-      }
-      .comment-author:hover {
-        color: var(--accent-text);
-      }
-      .comment-date {
-        color: var(--text-2);
-        font-size: 0.8rem;
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-      .comment-delete {
-        margin-left: auto;
-        background: transparent;
-        border: 1px solid var(--border);
-        color: var(--text-2);
-        padding: 0.15rem 0.4rem;
-        cursor: pointer;
-        border-radius: 0.4rem;
-        min-height: unset;
-        flex-shrink: 0;
-      }
-      .comment-delete:hover {
-        background: var(--bg);
-        color: var(--text-1);
-      }
-      .comment-text {
-        margin: 0;
-        color: var(--text-1);
-        white-space: pre-wrap;
-        overflow-wrap: anywhere;
-      }
-      .btn-load-more {
-        justify-self: center;
-        padding: 0.45rem 0.9rem;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--bg-surface);
-        color: var(--text-1);
-        cursor: pointer;
-      }
-      .btn-load-more:hover {
-        border-color: var(--accent-text);
-        color: var(--accent-text);
-      }
-      .chapter-comments.card {
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        border-radius: 1.25rem;
-      }
+      /* Comment and bookmark panel styles moved to child components */
       .vote-label {
         color: var(--text-2);
         font-size: 0.85rem;
       }
-      .prefs-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .prefs-header h3 {
-        margin: 0;
-      }
-      .prefs-close {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 32px;
-        height: 32px;
-        min-height: 32px;
-        padding: 0;
-        border-radius: 50%;
-        border: 1px solid var(--border);
-        background: var(--bg-surface);
-        color: var(--text-2);
-        cursor: pointer;
-      }
-      .prefs-close:hover {
-        color: var(--accent-text);
-        border-color: var(--accent-text);
-      }
+      /* .prefs-header and .prefs-close styles moved to child components */
       /* Overlays ocultos en desktop, visibles en mobile. */
       .prefs-overlay,
       .bookmarks-overlay {
@@ -1077,9 +644,6 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
       @media (max-width: 960px) {
         .reader-layout {
           display: grid;
-        }
-        .panel {
-          width: 100%;
         }
         .side-panels {
           position: static;
@@ -1096,14 +660,17 @@ import { ParagraphCommentsComponent } from './paragraph-comments.component';
           background: rgba(0, 0, 0, 0.55);
           backdrop-filter: blur(3px);
         }
-        .prefs-panel,
-        .bookmarks-panel {
+      }
+      @media (max-width: 960px) {
+        :host ::ng-deep .panel,
+        :host ::ng-deep .prefs-panel,
+        :host ::ng-deep .bookmarks-panel {
           position: fixed;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
           z-index: 91;
-          width: min(360px, calc(100vw - 2rem));
+          width: min(360px, calc(100vw - 2rem)) !important;
           max-height: 85vh;
           overflow-y: auto;
           border: 1px solid var(--border);
@@ -1583,6 +1150,13 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onPreferencesPartialChange(partial: Partial<ReaderPreferences>) {
+    const keys = Object.keys(partial) as (keyof ReaderPreferences)[];
+    if (keys.length === 1) {
+      this.onPreferenceChange(keys[0], partial[keys[0]] as string | number | boolean);
+    }
+  }
+
   private loadChapter() {
     this.loading.set(true);
     this.selectionAnchorId.set(null);
@@ -1980,6 +1554,21 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
         next: (created) => {
           this.comments.update((prev) => [...prev, created]);
           this.newComment = '';
+          this.commentSending.set(false);
+        },
+        error: () => this.commentSending.set(false),
+      });
+  }
+
+  submitCommentText(chapter: ChapterDetail, text: string) {
+    if (!text.trim() || this.commentSending() || !this.isAuthenticated()) return;
+    this.commentSending.set(true);
+    this.chaptersService
+      .createChapterComment(chapter.novel.slug, chapter.slug, text.trim())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (created) => {
+          this.comments.update((prev) => [...prev, created]);
           this.commentSending.set(false);
         },
         error: () => this.commentSending.set(false),

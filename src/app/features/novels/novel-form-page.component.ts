@@ -1,4 +1,4 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { forkJoin, of, switchMap } from 'rxjs';
@@ -22,22 +22,29 @@ import { LanguagesService } from '../../core/services/languages.service';
 import { NovelsService } from '../../core/services/novels.service';
 import { WorldsService } from '../../core/services/worlds.service';
 import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/tag-chips-input.component';
-import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { SeriesService } from '../series/services/series.service';
 import { SeriesDetail, SeriesType } from '../series/models/series.model';
 import { forkJoin as rxForkJoin } from 'rxjs';
-import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
-
-interface PairingDraft {
-  characterAId: string;
-  characterBId: string;
-  isMain: boolean;
-}
+import { NovelFormGenreSelectorComponent } from './components/novel-form/novel-form-genre-selector.component';
+import { NovelFormWarningsSelectorComponent } from './components/novel-form/novel-form-warnings-selector.component';
+import {
+  NovelFormCharacterPairingsComponent,
+  PairingDraft,
+} from './components/novel-form/novel-form-character-pairings.component';
+import { NovelFormFanficSectionComponent } from './components/novel-form/novel-form-fanfic-section.component';
 
 @Component({
   selector: 'app-novel-form-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, TagChipsInputComponent, GenreLabelPipe, TranslatePipe],
+  imports: [
+    FormsModule,
+    RouterLink,
+    TagChipsInputComponent,
+    NovelFormGenreSelectorComponent,
+    NovelFormWarningsSelectorComponent,
+    NovelFormCharacterPairingsComponent,
+    NovelFormFanficSectionComponent,
+  ],
   template: `
     <section class="form-shell">
       <h1>{{ isEdit() ? 'Editar novela' : 'Nueva novela' }}</h1>
@@ -85,65 +92,18 @@ interface PairingDraft {
         </fieldset>
 
         @if (novelType === 'FANFIC') {
-          <fieldset class="full">
-            <legend>Comunidad fandom</legend>
-            @if (isEdit()) {
-              <p class="hint">
-                {{ linkedCommunityName() || 'Sin comunidad' }} ·
-                <em>La comunidad no se puede cambiar tras la creación.</em>
-              </p>
-            } @else {
-              @if (myFandoms().length > 0) {
-                <select
-                  [ngModel]="linkedCommunityId"
-                  (ngModelChange)="onLinkedCommunityChange($event)"
-                  [disabled]="saving() || !!customFandom.trim()"
-                >
-                  <option [ngValue]="''">Selecciona una comunidad Fandom</option>
-                  @for (com of myFandoms(); track com.id) {
-                    <option [ngValue]="com.id">{{ com.name }}</option>
-                  }
-                </select>
-              }
-              @if (!linkedCommunityId) {
-                <label class="custom-fandom">
-                  <span>O escribe el nombre del fandom (se guardará como tag):</span>
-                  <input
-                    type="text"
-                    [(ngModel)]="customFandom"
-                    [disabled]="saving()"
-                    maxlength="80"
-                    placeholder="Ejemplo: Jujutsu Kaisen"
-                  />
-                </label>
-              }
-              <p class="hint">
-                ¿No se encuentra el fandom al que pertenece tu fanfiction?
-                <a routerLink="/mis-comunidades" [queryParams]="{ nueva: 1 }"
-                  >Agrégalo en Comunidades</a
-                >.
-              </p>
-              @if (fanficValidationError()) {
-                <p class="error">{{ fanficValidationError() }}</p>
-              }
-            }
-          </fieldset>
-
-          <fieldset class="full">
-            <legend>Relacion con mundos</legend>
-            <label class="check-row">
-              <input
-                type="checkbox"
-                [checked]="isAlternateUniverse"
-                [disabled]="saving()"
-                (change)="isAlternateUniverse = !isAlternateUniverse"
-              />
-              Esta novela es un AU (Universo Alternativo)
-            </label>
-            <p class="hint">
-              Si activas esta opcion, podras vincular este fanfic a uno de tus mundos propios.
-            </p>
-          </fieldset>
+          <app-novel-form-fanfic-section
+            #fanficSection
+            [myFandoms]="myFandoms()"
+            [linkedCommunityId]="linkedCommunityId"
+            [linkedCommunityName]="linkedCommunityName()"
+            [isEdit]="isEdit()"
+            [isAlternateUniverse]="isAlternateUniverse"
+            [validationError]="fanficValidationError()"
+            [disabled]="saving()"
+            (communityChange)="onLinkedCommunityChange($event)"
+            (alternateUniverseChange)="isAlternateUniverse = $event"
+          />
         }
 
         <label>
@@ -240,250 +200,31 @@ interface PairingDraft {
           </div>
         </fieldset>
 
-        <fieldset class="full genres">
-          <legend>{{ 'novel.warnings.title' | translate }}</legend>
-          <div class="genre-picker">
-            <select
-              [disabled]="saving() || !availableFormWarnings().length"
-              [ngModel]="''"
-              (ngModelChange)="onWarningFormSelect($event)"
-            >
-              <option value="" disabled>
-                @if (!availableFormWarnings().length) {
-                  No quedan advertencias por agregar
-                } @else {
-                  Seleccionar advertencia
-                }
-              </option>
-              @for (w of availableFormWarnings(); track w.id) {
-                <option [value]="w.id">{{ w.label }}</option>
-              }
-            </select>
-            @if (selectedWarningIds().length) {
-              <ul class="picked-list warning-list">
-                @for (id of selectedWarningIds(); track id) {
-                  <li>
-                    {{ getWarningLabel(id) }}
-                    <button
-                      type="button"
-                      class="icon"
-                      [disabled]="saving()"
-                      aria-label="Quitar advertencia"
-                      (click)="toggleWarningId(id)"
-                    >
-                      ✕
-                    </button>
-                  </li>
-                }
-              </ul>
-            }
-          </div>
-        </fieldset>
+        <app-novel-form-warnings-selector
+          [allWarnings]="warningsCatalog()"
+          [selectedWarningIds]="selectedWarningIds()"
+          [disabled]="saving()"
+          (warningsChange)="selectedWarningIds.set($event)"
+        />
 
-        <fieldset class="full genres">
-          <legend>Generos</legend>
-          <div class="genre-picker">
-            <select
-              [disabled]="saving() || selectedGenreIds().length >= 5 || !availableGenres().length"
-              [ngModel]="''"
-              (ngModelChange)="addGenreById($event)"
-            >
-              <option value="" disabled>
-                @if (selectedGenreIds().length >= 5) {
-                  Maximo 5 generos
-                } @else if (!availableGenres().length) {
-                  No quedan generos por agregar
-                } @else {
-                  Selecciona un genero...
-                }
-              </option>
-              @for (genre of availableGenres(); track genre.id) {
-                <option [value]="genre.id">{{ genre | genreLabel }}</option>
-              }
-            </select>
-            @if (selectedGenres().length) {
-              <ul class="picked-list">
-                @for (genre of selectedGenres(); track genre.id) {
-                  <li>
-                    {{ genre | genreLabel }}
-                    <button
-                      type="button"
-                      class="icon"
-                      [disabled]="saving()"
-                      aria-label="Quitar genero"
-                      (click)="removeGenre(genre.id)"
-                    >
-                      ✕
-                    </button>
-                  </li>
-                }
-              </ul>
-            } @else {
-              <p class="hint">Puedes elegir hasta 5 generos.</p>
-            }
-          </div>
-        </fieldset>
+        <app-novel-form-genre-selector
+          [allGenres]="genres()"
+          [selectedGenreIds]="selectedGenreIds()"
+          [maxGenres]="5"
+          [disabled]="saving()"
+          (genresChange)="selectedGenreIds.set($event)"
+        />
 
         @if (novelType !== 'FANFIC') {
-          <fieldset class="full linked-block">
-            <legend>Personajes vinculados</legend>
-            @if (!characters().length) {
-              <p class="hint">
-                Aun no tienes personajes creados. Puedes gestionarlos en
-                <a routerLink="/mis-personajes">Mis personajes</a>.
-              </p>
-            } @else {
-              <div class="char-search">
-                <input
-                  type="text"
-                  [(ngModel)]="characterSearch"
-                  [disabled]="saving()"
-                  placeholder="Buscar personaje por nombre..."
-                  (focus)="charDropdownOpen.set(true)"
-                />
-                @if (charDropdownOpen() && filteredCharacters().length) {
-                  <ul class="char-dropdown">
-                    @for (character of filteredCharacters(); track character.id) {
-                      <li>
-                        <button
-                          type="button"
-                          [disabled]="saving() || selectedCharacterIds().includes(character.id)"
-                          (click)="addCharacter(character)"
-                        >
-                          {{ character.name }} · {{ character.role }}
-                          @if (selectedCharacterIds().includes(character.id)) {
-                            <span class="picked">✓</span>
-                          }
-                        </button>
-                      </li>
-                    }
-                  </ul>
-                }
-                @if (charDropdownOpen() && !filteredCharacters().length && characterSearch.trim()) {
-                  <p class="hint">Sin resultados.</p>
-                }
-              </div>
-
-              @if (selectedCharacterIds().length) {
-                <ul class="picked-list">
-                  @for (id of selectedCharacterIds(); track id) {
-                    @if (characterById(id); as character) {
-                      <li>
-                        <span>{{ character.name }} · {{ character.role }}</span>
-                        <button
-                          type="button"
-                          class="icon"
-                          [disabled]="saving()"
-                          (click)="toggleCharacter(character)"
-                        >
-                          ✕
-                        </button>
-                      </li>
-                    }
-                  }
-                </ul>
-              } @else {
-                <p class="hint">No hay personajes seleccionados.</p>
-              }
-            }
-          </fieldset>
-        }
-
-        @if (novelType !== 'FANFIC') {
-          <fieldset class="full linked-block">
-            <legend>Parejas</legend>
-            @if (selectedCharacterIds().length < 2) {
-              <p class="hint">Vincula al menos 2 personajes para crear parejas.</p>
-            } @else {
-              <div class="pairing-section">
-                <h4>Parejas principales (protagonistas)</h4>
-                @if (mainPairings().length) {
-                  <ul class="pairings-list">
-                    @for (p of mainPairings(); track $index) {
-                      <li>
-                        <span class="pair-label"
-                          >{{ characterById(p.characterAId)?.name || '?' }} ×
-                          {{ characterById(p.characterBId)?.name || '?' }}</span
-                        >
-                        <button type="button" class="icon" (click)="removePairing(p)">✕</button>
-                      </li>
-                    }
-                  </ul>
-                }
-                <div class="pairing-form">
-                  <select
-                    [ngModel]="mainPairCharA"
-                    (ngModelChange)="mainPairCharA = $event"
-                    name="mainPairCharA"
-                  >
-                    <option [ngValue]="null">Personaje 1</option>
-                    @for (c of pairableCharacters(); track c.id) {
-                      <option [ngValue]="c.id">{{ c.name }}</option>
-                    }
-                  </select>
-                  <span>×</span>
-                  <select
-                    [ngModel]="mainPairCharB"
-                    (ngModelChange)="mainPairCharB = $event"
-                    name="mainPairCharB"
-                  >
-                    <option [ngValue]="null">Personaje 2</option>
-                    @for (c of pairableCharacters(); track c.id) {
-                      <option [ngValue]="c.id">{{ c.name }}</option>
-                    }
-                  </select>
-                  <button type="button" (click)="addMainPairing()">Añadir</button>
-                </div>
-                @if (mainPairError()) {
-                  <p class="pair-error">{{ mainPairError() }}</p>
-                }
-              </div>
-
-              <div class="pairing-section">
-                <h4>Parejas secundarias</h4>
-                @if (secondaryPairings().length) {
-                  <ul class="pairings-list">
-                    @for (p of secondaryPairings(); track $index) {
-                      <li>
-                        <span class="pair-label"
-                          >{{ characterById(p.characterAId)?.name || '?' }} ×
-                          {{ characterById(p.characterBId)?.name || '?' }}</span
-                        >
-                        <button type="button" class="icon" (click)="removePairing(p)">✕</button>
-                      </li>
-                    }
-                  </ul>
-                }
-                <div class="pairing-form">
-                  <select
-                    [ngModel]="secondaryPairCharA"
-                    (ngModelChange)="secondaryPairCharA = $event"
-                    name="secondaryPairCharA"
-                  >
-                    <option [ngValue]="null">Personaje 1</option>
-                    @for (c of pairableCharacters(); track c.id) {
-                      <option [ngValue]="c.id">{{ c.name }}</option>
-                    }
-                  </select>
-                  <span>×</span>
-                  <select
-                    [ngModel]="secondaryPairCharB"
-                    (ngModelChange)="secondaryPairCharB = $event"
-                    name="secondaryPairCharB"
-                  >
-                    <option [ngValue]="null">Personaje 2</option>
-                    @for (c of pairableCharacters(); track c.id) {
-                      <option [ngValue]="c.id">{{ c.name }}</option>
-                    }
-                  </select>
-                  <button type="button" (click)="addSecondaryPairing()">Añadir</button>
-                </div>
-                @if (secondaryPairError()) {
-                  <p class="pair-error">{{ secondaryPairError() }}</p>
-                }
-              </div>
-            }
-          </fieldset>
+          <app-novel-form-character-pairings
+            #charPairings
+            [characters]="characters()"
+            [selectedCharacterIds]="selectedCharacterIds()"
+            [pairings]="pairings()"
+            [disabled]="saving()"
+            (characterIdsChange)="selectedCharacterIds.set($event)"
+            (pairingsChange)="pairings.set($event)"
+          />
         }
 
         @if (novelType === 'FANFIC') {
@@ -946,8 +687,7 @@ interface PairingDraft {
       }
       .hint a {
         color: var(--accent-text);
-        text-decoration: underline;
-        text-underline-offset: 2px;
+        text-decoration: none;
       }
       .hint a:hover {
         color: var(--accent);
@@ -1314,36 +1054,8 @@ export class NovelFormPageComponent implements OnInit {
   readonly worlds = signal<WorldSummary[]>([]);
   readonly languages = signal<LanguageCatalogItem[]>([]);
   readonly selectedGenreIds = signal<string[]>([]);
-  readonly selectedGenres = computed(() => {
-    const taken = new Set(this.selectedGenreIds());
-    return this.genres().filter((g) => taken.has(g.id));
-  });
-  readonly availableGenres = computed(() => {
-    const taken = new Set(this.selectedGenreIds());
-    return this.genres().filter((g) => !taken.has(g.id));
-  });
   readonly selectedCharacterIds = signal<string[]>([]);
   readonly initialCharacterIds = signal<string[]>([]);
-  readonly charDropdownOpen = signal(false);
-  characterSearch = '';
-
-  readonly filteredCharacters = computed(() => {
-    const term = this.characterSearch.trim().toLowerCase();
-    const all = this.characters();
-    if (!term) return all.slice(0, 50);
-    return all.filter((c) => c.name.toLowerCase().includes(term)).slice(0, 50);
-  });
-
-  characterById(id: string): CharacterSummary | undefined {
-    return this.characters().find((c) => c.id === id);
-  }
-
-  addCharacter(character: CharacterSummary) {
-    if (this.selectedCharacterIds().includes(character.id)) return;
-    this.selectedCharacterIds.update((current) => [...current, character.id]);
-    this.characterSearch = '';
-    this.charDropdownOpen.set(false);
-  }
   readonly selectedWorldIds = signal<string[]>([]);
   readonly initialWorldIds = signal<string[]>([]);
   readonly saving = signal(false);
@@ -1387,26 +1099,6 @@ export class NovelFormPageComponent implements OnInit {
   onWarningsChange(warnings: string[]) {
     this.warningList.set(warnings);
   }
-
-  toggleWarningId(id: string) {
-    this.selectedWarningIds.update((ids) =>
-      ids.includes(id) ? ids.filter((v) => v !== id) : [...ids, id],
-    );
-  }
-
-  onWarningFormSelect(id: string) {
-    if (id && !this.selectedWarningIds().includes(id)) {
-      this.selectedWarningIds.update((ids) => [...ids, id]);
-    }
-  }
-
-  getWarningLabel(id: string): string {
-    return this.warningsCatalog().find((w) => w.id === id)?.label ?? id;
-  }
-
-  availableFormWarnings() {
-    return this.warningsCatalog().filter((w) => !this.selectedWarningIds().includes(w.id));
-  }
   isPublic = false;
   pendingWorldId = '';
 
@@ -1429,75 +1121,6 @@ export class NovelFormPageComponent implements OnInit {
   }
 
   readonly pairings = signal<PairingDraft[]>([]);
-  mainPairCharA: string | null = null;
-  mainPairCharB: string | null = null;
-  secondaryPairCharA: string | null = null;
-  secondaryPairCharB: string | null = null;
-
-  readonly pairableCharacters = computed(() =>
-    this.characters().filter((c) => this.selectedCharacterIds().includes(c.id)),
-  );
-
-  readonly mainPairings = computed(() => this.pairings().filter((p) => p.isMain));
-  readonly secondaryPairings = computed(() => this.pairings().filter((p) => !p.isMain));
-  readonly mainPairError = signal<string | null>(null);
-  readonly secondaryPairError = signal<string | null>(null);
-
-  addMainPairing() {
-    this.mainPairError.set(null);
-    if (!this.mainPairCharA || !this.mainPairCharB) {
-      this.mainPairError.set('Debes seleccionar 2 personajes para formar una pareja.');
-      return;
-    }
-    if (this.mainPairCharA === this.mainPairCharB) {
-      this.mainPairError.set('No puedes seleccionar el mismo personaje dos veces.');
-      return;
-    }
-    const a = this.mainPairCharA!;
-    const b = this.mainPairCharB!;
-    const exists = this.pairings().some(
-      (p) =>
-        (p.characterAId === a && p.characterBId === b) ||
-        (p.characterAId === b && p.characterBId === a),
-    );
-    if (exists) {
-      this.mainPairError.set('Esta pareja ya existe.');
-      return;
-    }
-    this.pairings.update((list) => [...list, { characterAId: a, characterBId: b, isMain: true }]);
-    this.mainPairCharA = null;
-    this.mainPairCharB = null;
-  }
-
-  addSecondaryPairing() {
-    this.secondaryPairError.set(null);
-    if (!this.secondaryPairCharA || !this.secondaryPairCharB) {
-      this.secondaryPairError.set('Debes seleccionar 2 personajes para formar una pareja.');
-      return;
-    }
-    if (this.secondaryPairCharA === this.secondaryPairCharB) {
-      this.secondaryPairError.set('No puedes seleccionar el mismo personaje dos veces.');
-      return;
-    }
-    const a = this.secondaryPairCharA;
-    const b = this.secondaryPairCharB;
-    const exists = this.pairings().some(
-      (p) =>
-        (p.characterAId === a && p.characterBId === b) ||
-        (p.characterAId === b && p.characterBId === a),
-    );
-    if (exists) {
-      this.secondaryPairError.set('Esta pareja ya existe.');
-      return;
-    }
-    this.pairings.update((list) => [...list, { characterAId: a, characterBId: b, isMain: false }]);
-    this.secondaryPairCharA = null;
-    this.secondaryPairCharB = null;
-  }
-
-  removePairing(p: PairingDraft) {
-    this.pairings.update((list) => list.filter((x) => x !== p));
-  }
 
   // Fanfic string-based pairings (saved as tags "a/b").
   readonly fanficMainPairs = signal<{ a: string; b: string }[]>([]);
@@ -1717,34 +1340,6 @@ export class NovelFormPageComponent implements OnInit {
     });
   }
 
-  toggleGenre(genre: Genre) {
-    this.selectedGenreIds.update((current) =>
-      current.includes(genre.id)
-        ? current.filter((id) => id !== genre.id)
-        : current.length < 5
-          ? [...current, genre.id]
-          : current,
-    );
-  }
-
-  addGenreById(id: string) {
-    if (!id) return;
-    this.selectedGenreIds.update((current) =>
-      current.includes(id) || current.length >= 5 ? current : [...current, id],
-    );
-  }
-
-  removeGenre(id: string) {
-    this.selectedGenreIds.update((current) => current.filter((x) => x !== id));
-  }
-
-  toggleCharacter(character: CharacterSummary) {
-    this.selectedCharacterIds.update((current) =>
-      current.includes(character.id)
-        ? current.filter((id) => id !== character.id)
-        : [...current, character.id],
-    );
-  }
 
   selectWorld(worldId: string) {
     if (!worldId || this.selectedWorldIds().includes(worldId)) {
@@ -1760,21 +1355,18 @@ export class NovelFormPageComponent implements OnInit {
     this.selectedWorldIds.update((current) => current.filter((id) => id !== worldId));
   }
 
+  @ViewChild('charPairings') charPairingsRef?: NovelFormCharacterPairingsComponent;
+  @ViewChild('fanficSection') fanficSectionRef?: NovelFormFanficSectionComponent;
+
   save() {
     if (this.saving() || !this.title.trim() || !this.languageId) {
       return;
     }
 
     // Auto-commit any pending pair selections that the user filled but didn't click "Definir/Añadir"
-    if (this.mainPairCharA && this.mainPairCharB) {
-      this.addMainPairing();
-      if (this.mainPairError()) {
-        return;
-      }
-    }
-    if (this.secondaryPairCharA && this.secondaryPairCharB) {
-      this.addSecondaryPairing();
-      if (this.secondaryPairError()) {
+    if (this.charPairingsRef) {
+      const result = this.charPairingsRef.autoCommitPendingPairs();
+      if (result.mainError || result.secondaryError) {
         return;
       }
     }
@@ -1783,7 +1375,7 @@ export class NovelFormPageComponent implements OnInit {
     this.errorMessage.set('');
     this.statusMessage.set('');
 
-    const customFandomTag = this.customFandom.trim();
+    const customFandomTag = this.fanficSectionRef?.getCustomFandom() ?? this.customFandom.trim();
     if (
       !this.isEdit() &&
       this.novelType === 'FANFIC' &&

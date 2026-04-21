@@ -1,6 +1,6 @@
 import { DatePipe, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -18,10 +18,12 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
 import { CharacterCardComponent } from '../characters/components/character-card.component';
 import { WorldCardComponent } from '../worlds/components/world-card.component';
 import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/linked-visual-boards-section.component';
-import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
-import { RelativeDatePipe } from '../../shared/pipes/relative-date.pipe';
 import { PostsService } from '../../core/services/posts.service';
+import { NovelDetailHeaderComponent } from './components/novel-detail/novel-detail-header.component';
+import { NovelDetailChaptersComponent } from './components/novel-detail/novel-detail-chapters.component';
+import { NovelDetailSidebarComponent } from './components/novel-detail/novel-detail-sidebar.component';
+import { NovelDetailCommentsComponent } from './components/novel-detail/novel-detail-comments.component';
 
 const EVENT_TYPE_ICONS: Record<string, string> = {
   WORLD_EVENT: '\u{1F30D}',
@@ -45,9 +47,11 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
     WorldCardComponent,
     CharacterCardComponent,
     LinkedVisualBoardsSectionComponent,
-    GenreLabelPipe,
     TranslatePipe,
-    RelativeDatePipe,
+    NovelDetailHeaderComponent,
+    NovelDetailChaptersComponent,
+    NovelDetailSidebarComponent,
+    NovelDetailCommentsComponent,
   ],
   template: `
     @if (loading()) {
@@ -56,288 +60,35 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
       <app-error-message />
     } @else if (novel(); as currentNovel) {
       <section class="detail-shell">
-        <article class="hero">
-          <div class="cover">{{ currentNovel.title.charAt(0) }}</div>
-
-          <div class="meta">
-            <div class="chips">
-              <span>{{ currentNovel.status }}</span>
-              <span>{{ currentNovel.rating }}</span>
-              <span>{{ currentNovel.wordCount }} palabras</span>
-            </div>
-            <h1>{{ currentNovel.title }}</h1>
-            @if (currentNovel.novelType === 'FANFIC' && currentNovel.linkedCommunity) {
-              <a
-                class="fanfic-badge"
-                [routerLink]="['/comunidades', currentNovel.linkedCommunity.slug]"
-                title="Ver comunidad"
-              >
-                ★ Fanfic de {{ currentNovel.linkedCommunity.name }}
-              </a>
-            }
-            @if (currentNovel.series; as novelSeries) {
-              <a [routerLink]="['/sagas', novelSeries.slug]" class="series-badge">
-                📚 Parte de {{ novelSeries.title }}
-                <span>Libro {{ novelSeries.orderIndex }} de {{ novelSeries.novelsCount }}</span>
-                @if (novelSeries.status === 'COMPLETED') {
-                  <span class="complete-badge">Serie completa</span>
-                }
-              </a>
-            }
-            <p class="author">
-              por
-              <a [routerLink]="['/perfil', currentNovel.author.username]"
-                >@{{ currentNovel.author.username }}</a
-              >
-            </p>
-            <p class="synopsis">{{ currentNovel.synopsis }}</p>
-
-            <div class="actions">
-              @if (
-                currentNovel.viewerContext?.reading_progress &&
-                currentNovel.viewerContext?.reading_progress?.chapter_slug
-              ) {
-                <a
-                  [routerLink]="[
-                    '/novelas',
-                    currentNovel.slug,
-                    currentNovel.viewerContext?.reading_progress?.chapter_slug,
-                  ]"
-                >
-                  Continuar desde cap.
-                  {{ currentNovel.viewerContext?.reading_progress?.chapter_order }} -
-                  {{ currentNovel.viewerContext?.reading_progress?.chapter_title }}
-                </a>
-              } @else if (authService.isAuthenticated() && currentNovel.chapters.length) {
-                <a [routerLink]="['/novelas', currentNovel.slug, currentNovel.chapters[0].slug]">
-                  Comenzar a leer
-                </a>
-              }
-
-              @if (!currentNovel.viewerContext?.isAuthor) {
-                <button
-                  type="button"
-                  [disabled]="kudoLoading()"
-                  (click)="toggleKudo()"
-                  [class.active]="currentNovel.viewerContext?.hasKudo"
-                >
-                  <span [class.kudo-beat]="kudoBeat()">&#9829;</span>
-                  {{ currentNovel.viewerContext?.hasKudo ? 'Kudo dado' : 'Dar kudo' }}
-                </button>
-                <button
-                  type="button"
-                  [class.active]="currentNovel.viewerContext?.isSubscribed"
-                  [disabled]="subscribeLoading()"
-                  (click)="toggleSubscription()"
-                >
-                  <svg
-                    style="display:inline-block;vertical-align:middle;margin-right:4px"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg
-                  >{{ currentNovel.viewerContext?.isSubscribed ? 'Suscrito' : 'Suscribirse' }}
-                </button>
-              }
-
-              @if (currentNovel.viewerContext && !currentNovel.viewerContext.isAuthor) {
-                <button type="button" (click)="toggleBookmark()">
-                  {{ currentNovel.viewerContext.hasBookmarked ? 'Quitar guardado' : 'Guardar' }}
-                </button>
-                <button type="button" [disabled]="listsLoading()" (click)="toggleListsMenu()">
-                  {{ listsLoading() ? 'Cargando listas...' : 'Guardar en lista' }}
-                </button>
-              }
-
-              @if (currentNovel.viewerContext) {
-                <button
-                  type="button"
-                  class="recommend-btn"
-                  [disabled]="recommended()"
-                  (click)="openRecommendPreview()"
-                >
-                  {{
-                    recommended()
-                      ? ('recommend.done' | translate)
-                      : ('recommend.button' | translate)
-                  }}
-                </button>
-              }
-
-              @if (currentNovel.viewerContext?.isAuthor) {
-                <a [routerLink]="['/analytics/novelas', currentNovel.slug]">Analytics</a>
-                <a [routerLink]="['/mis-novelas', currentNovel.slug, 'editar']">Editar novela</a>
-                <a [routerLink]="['/mis-novelas', currentNovel.slug, 'capitulos']"
-                  >Gestionar capitulos</a
-                >
-                <a routerLink="/mis-mundos">Gestionar mundos</a>
-                <a routerLink="/mis-personajes">Gestionar personajes</a>
-              }
-            </div>
-
-            @if (showListsMenu()) {
-              <div class="list-menu">
-                @if (listsLoading()) {
-                  <span class="list-feedback list-feedback-muted">Cargando tus listas...</span>
-                } @else if (listsError()) {
-                  <span class="list-feedback list-feedback-error">{{ listsError() }}</span>
-                } @else if (!readingLists().length) {
-                  <span class="list-feedback list-feedback-muted">
-                    Aun no tienes listas creadas para guardar esta novela.
-                  </span>
-                } @else {
-                  @for (list of readingLists(); track list.id) {
-                    <label
-                      class="list-option"
-                      [class.list-option-busy]="listActionId() === list.id"
-                    >
-                      <input
-                        type="checkbox"
-                        [checked]="listMembership().has(list.id)"
-                        [disabled]="listActionId() === list.id || listsLoading()"
-                        (change)="toggleListMembership(list)"
-                      />
-                      <span class="list-option-copy">
-                        <strong>{{ list.name }}</strong>
-                        <small>
-                          @if (listActionId() === list.id) {
-                            Procesando...
-                          } @else if (listMembership().has(list.id)) {
-                            Guardada en esta lista
-                          } @else {
-                            Disponible
-                          }
-                        </small>
-                      </span>
-                    </label>
-                  }
-
-                  @if (listsMessage()) {
-                    <span class="list-feedback list-feedback-success">{{ listsMessage() }}</span>
-                  }
-                }
-              </div>
-            }
-          </div>
-        </article>
+        <app-novel-detail-header
+          [novel]="currentNovel"
+          [isAuthenticated]="authService.isAuthenticated()"
+          [kudoLoading]="kudoLoading()"
+          [kudoBeat]="kudoBeat()"
+          [subscribeLoading]="subscribeLoading()"
+          [recommended]="recommended()"
+          [showListsMenu]="showListsMenu()"
+          [listsLoading]="listsLoading()"
+          [listsError]="listsError()"
+          [listsMessage]="listsMessage()"
+          [readingLists]="readingLists()"
+          [listMembership]="listMembership()"
+          [listActionId]="listActionId()"
+          (toggleKudo)="toggleKudo()"
+          (toggleBookmark)="toggleBookmark()"
+          (toggleSubscribe)="toggleSubscription()"
+          (toggleListsMenu)="toggleListsMenu()"
+          (toggleListMembershipEvt)="toggleListMembership($event)"
+          (openRecommend)="openRecommendPreview()"
+        />
 
         <section class="content-grid">
-          <div class="chapter-list card">
-            <h2>Capitulos</h2>
-            @for (chapter of currentNovel.chapters; track chapter.id) {
-              <a class="chapter-item" [routerLink]="['/novelas', currentNovel.slug, chapter.slug]">
-                <span>{{ chapter.order }}. {{ chapter.title }}</span>
-                <small>{{ chapter.wordCount }} palabras</small>
-              </a>
-            }
-          </div>
+          <app-novel-detail-chapters
+            [chapters]="currentNovel.chapters"
+            [novelSlug]="currentNovel.slug"
+          />
 
-          <aside class="stats card">
-            <h3>Estadisticas</h3>
-            <span>{{ currentNovel.stats.chaptersCount }} capitulos</span>
-            <span>{{ currentNovel.stats.kudosCount }} kudos</span>
-            <span>{{ currentNovel.stats.bookmarksCount }} guardados</span>
-            <span>{{ currentNovel.stats.votesCount }} votos</span>
-            <span>{{ currentNovel.stats.commentsCount }} comentarios</span>
-            <span>{{ currentNovel.stats.worldsCount }} mundos</span>
-            <span>{{ currentNovel.stats.charactersCount }} personajes</span>
-            <span>{{ currentNovel.viewsCount }} vistas</span>
-            <span>Actualizada {{ currentNovel.updatedAt | date: 'longDate' }}</span>
-          </aside>
-        </section>
-
-        <section class="related-block">
-          <div class="section-head">
-            <h2>Detalle</h2>
-          </div>
-          <div class="detail-card card">
-            @if (currentNovel.genres?.length) {
-              <div class="detail-row">
-                <span class="detail-label">Géneros</span>
-                <div class="chips-block">
-                  @for (g of currentNovel.genres; track g.id) {
-                    <span class="chip chip-genre">{{ g | genreLabel }}</span>
-                  }
-                </div>
-              </div>
-            }
-
-            @if (currentNovel.romanceGenres?.length) {
-              <div class="detail-row">
-                <span class="detail-label">Romance</span>
-                <div class="chips-block">
-                  @for (rg of currentNovel.romanceGenres; track rg.id) {
-                    <span class="romance-genre-badge">{{ rg.label }}</span>
-                  }
-                </div>
-              </div>
-            }
-
-            @if (currentNovel.pairings?.length || pairingTagsList().length) {
-              <div class="detail-row">
-                <span class="detail-label">Parejas</span>
-                <div class="pairings-block">
-                  @for (p of currentNovel.pairings; track p.id) {
-                    <span class="pairing-pill" [class.is-main]="p.isMain">
-                      @if (p.isMain) {
-                        <span class="main-tag">★ Principal</span>
-                      }
-                      {{ p.characterA.name }} × {{ p.characterB.name }}
-                    </span>
-                  }
-                  @for (pt of pairingTagsList(); track pt) {
-                    <span class="pairing-pill">{{ pt }}</span>
-                  }
-                </div>
-              </div>
-            }
-
-            @if (nonPairingTagsList().length) {
-              <div class="detail-row">
-                <span class="detail-label">Etiquetas</span>
-                <div class="chips-block">
-                  @for (t of nonPairingTagsList(); track t) {
-                    <span class="chip chip-tag">#{{ t }}</span>
-                  }
-                </div>
-              </div>
-            }
-
-            @if (currentNovel.warnings?.length) {
-              <div class="detail-row">
-                <span class="detail-label">Advertencias</span>
-                <div class="chips-block">
-                  @for (w of currentNovel.warnings; track w) {
-                    <span class="chip chip-warning">⚠ {{ w }}</span>
-                  }
-                </div>
-              </div>
-            }
-
-            <div class="detail-row">
-              <span class="detail-label">Idioma</span>
-              <span class="chip chip-meta">{{
-                currentNovel.language?.name || currentNovel.language?.code || 'es'
-              }}</span>
-            </div>
-
-            <div class="detail-row">
-              <span class="detail-label">Estado</span>
-              <span class="chip chip-meta">{{ currentNovel.status }}</span>
-            </div>
-
-            <div class="detail-row">
-              <span class="detail-label">Clasificación</span>
-              <span class="chip chip-meta">{{ currentNovel.rating }}</span>
-            </div>
-          </div>
+          <app-novel-detail-sidebar [novel]="currentNovel" />
         </section>
 
         @if (currentNovel.worlds.length && currentNovel.novelType !== 'FANFIC') {
@@ -461,74 +212,20 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
           [isOwner]="currentNovel.viewerContext?.isAuthor ?? false"
         />
 
-        <section class="novel-comments">
-          <h2>Comentarios</h2>
-
-          @if (commentsEnabled()) {
-            @if (authService.isAuthenticated()) {
-              <div class="comment-form">
-                <textarea
-                  rows="3"
-                  placeholder="Escribe un comentario…"
-                  [(ngModel)]="newComment"
-                ></textarea>
-                <button
-                  class="btn-send"
-                  [disabled]="commentSending() || !newComment.trim()"
-                  (click)="submitComment(currentNovel.slug)"
-                >
-                  {{ commentSending() ? 'Enviando…' : 'Comentar' }}
-                </button>
-              </div>
-            }
-
-            @if (novelCommentsLoading() && !novelComments().length) {
-              <p class="comment-hint">Cargando comentarios…</p>
-            } @else if (!novelComments().length) {
-              <p class="comment-hint">Aún no hay comentarios. ¡Sé el primero!</p>
-            } @else {
-              <div class="comments-list">
-                @for (c of novelComments(); track c.id) {
-                  <div class="comment-item">
-                    <div class="comment-avatar">
-                      {{ (c.author.displayName || c.author.username).charAt(0).toUpperCase() }}
-                    </div>
-                    <div class="comment-body">
-                      <div class="comment-header">
-                        <a class="comment-author" [routerLink]="['/@' + c.author.username]">
-                          {{ c.author.displayName || '@' + c.author.username }}
-                        </a>
-                        <span class="comment-date">{{ c.createdAt | relativeDate }}</span>
-                        @if (currentNovel.viewerContext?.isAuthor) {
-                          <button
-                            class="comment-delete"
-                            title="Eliminar comentario"
-                            (click)="removeComment(currentNovel.slug, c.id)"
-                          >
-                            ✕
-                          </button>
-                        }
-                      </div>
-                      <p class="comment-text">{{ c.content }}</p>
-                    </div>
-                  </div>
-                }
-              </div>
-
-              @if (commentsHasMore()) {
-                <button
-                  class="btn-load-more"
-                  [disabled]="novelCommentsLoading()"
-                  (click)="loadMoreComments(currentNovel.slug)"
-                >
-                  {{ novelCommentsLoading() ? 'Cargando…' : 'Ver más comentarios' }}
-                </button>
-              }
-            }
-          } @else {
-            <p class="comment-hint">Los comentarios están desactivados para esta novela.</p>
-          }
-        </section>
+        <app-novel-detail-comments
+          [comments]="novelComments()"
+          [loading]="novelCommentsLoading()"
+          [hasMore]="commentsHasMore()"
+          [isAuthenticated]="authService.isAuthenticated()"
+          [isAuthor]="currentNovel.viewerContext?.isAuthor ?? false"
+          [commentsEnabled]="commentsEnabled()"
+          [commentText]="newComment"
+          [commentSending]="commentSending()"
+          (addComment)="submitComment(currentNovel.slug, $event)"
+          (deleteComment)="removeComment(currentNovel.slug, $event)"
+          (loadMore)="loadMoreComments(currentNovel.slug)"
+          (commentTextChange)="newComment = $event"
+        />
       </section>
     }
 
@@ -582,25 +279,14 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
   styles: [
     `
       .detail-shell,
-      .meta,
       .card,
-      .chapter-list,
       .related-block {
         display: grid;
         gap: 1rem;
       }
-      .chapter-list {
-        /* Cuando la columna se estira (porque la aside derecha es mas alta),
-           los items se reparten en el espacio sobrante. Forzamos top-align. */
-        align-content: start;
-      }
-      .hero,
-      .content-grid,
       .section-head {
         display: grid;
         gap: 1.25rem;
-      }
-      .section-head {
         grid-template-columns: 1fr auto;
         align-items: center;
       }
@@ -611,84 +297,15 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
       .section-head a:hover {
         color: var(--accent);
       }
-      .hero {
-        grid-template-columns: 220px 1fr;
-      }
-      .cover,
       .card {
         border-radius: 1.25rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
-      }
-      .cover {
-        min-height: 320px;
-        display: grid;
-        place-items: center;
-        font-size: 4rem;
-      }
-      .meta,
-      .card {
         padding: 1.25rem;
       }
-      .chips,
-      .actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-      }
-      .author a {
-        color: var(--accent-text);
-        text-decoration: none;
-        font-weight: 600;
-      }
-      .author a:hover {
-        text-decoration: underline;
-      }
-      .chips span,
-      .actions a,
-      .actions button,
-      .stats span {
-        padding: 0.5rem 0.75rem;
-        border-radius: 999px;
-        background: var(--accent-glow);
-        color: var(--accent-text);
-        border: 0;
-      }
-      .list-menu {
-        display: grid;
-        gap: 0.5rem;
-        padding: 1rem;
-        border-radius: 1rem;
-        border: 1px solid var(--border);
-        background: var(--bg-surface);
-      }
-      .list-option {
-        display: flex;
-        align-items: flex-start;
-        gap: 0.75rem;
-        padding: 0.75rem;
-        border-radius: 0.85rem;
-        border: 1px solid var(--border);
-        cursor: pointer;
-      }
-      .list-option-busy {
-        opacity: 0.7;
-      }
-      .list-option-copy {
-        display: grid;
-        gap: 0.25rem;
-      }
-      .list-option-copy small,
-      .list-feedback {
-        color: var(--text-2);
-      }
-      .list-feedback-error {
-        color: #b42318;
-      }
-      .list-feedback-success {
-        color: #027a48;
-      }
       .content-grid {
+        display: grid;
+        gap: 1.25rem;
         grid-template-columns: 1fr 280px;
         margin-top: 1.5rem;
       }
@@ -697,62 +314,6 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
         display: grid;
         gap: 1rem;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-      .romance-card {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 1rem 1.25rem;
-      }
-      .detail-card {
-        display: grid;
-        gap: 0.75rem;
-        padding: 1.25rem;
-      }
-      .detail-row {
-        display: grid;
-        grid-template-columns: 140px 1fr;
-        gap: 0.75rem;
-        align-items: start;
-      }
-      .detail-label {
-        color: var(--text-3);
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        font-weight: 700;
-        padding-top: 0.4rem;
-      }
-      .chips-block {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-      }
-      .chip {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.35rem 0.7rem;
-        border-radius: 999px;
-        font-size: 0.78rem;
-        white-space: nowrap;
-      }
-      .chip-genre {
-        background: var(--accent-glow);
-        color: var(--accent-text);
-      }
-      .fanfic-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 0.9rem;
-        border-radius: 999px;
-        background: linear-gradient(135deg, #6f3aff, #b34dff);
-        color: #fff;
-        font-weight: 600;
-        text-decoration: none;
-        font-size: 0.85rem;
-        width: fit-content;
       }
       .char-group-title {
         margin: 1rem 0 0.5rem;
@@ -800,152 +361,113 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
         font-size: 0.7rem;
         width: fit-content;
       }
-      .chip-tag {
-        background: rgba(122, 156, 220, 0.14);
-        color: #9bb6e8;
-        border: 1px solid rgba(122, 156, 220, 0.3);
-      }
-      .chip-warning {
-        background: rgba(214, 154, 91, 0.12);
-        color: #e0b07a;
-        border: 1px solid rgba(214, 154, 91, 0.3);
-      }
-      .chip-meta {
-        background: var(--bg-surface);
-        color: var(--text-2);
-        border: 1px solid var(--border);
-      }
-      .novel-comments {
-        display: grid;
-        gap: 1rem;
-      }
-      .novel-comments h2 {
-        margin: 0;
-        font-size: 1.1rem;
-      }
-      .comment-form {
-        display: grid;
-        gap: 0.5rem;
-      }
-      .comment-form textarea {
-        width: 100%;
-        padding: 0.75rem;
-        border-radius: 0.75rem;
-        border: 1px solid var(--border);
-        background: var(--bg-surface);
-        color: var(--text-1);
-        font-size: 0.85rem;
-        font-family: inherit;
-        resize: vertical;
-      }
-      .comment-form textarea:focus {
-        outline: none;
-        border-color: var(--accent);
-      }
-      .btn-send {
-        justify-self: end;
-        padding: 0.5rem 1rem;
-        border-radius: 999px;
-        border: none;
-        background: var(--accent);
-        color: #fff;
-        font-weight: 600;
-        font-size: 0.85rem;
-        cursor: pointer;
-        min-height: unset;
-      }
-      .btn-send:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-      .comment-hint {
-        color: var(--text-3);
-        font-size: 0.85rem;
+      .timeline-summary,
+      .timeline-empty {
         text-align: center;
-        padding: 1rem;
+      }
+      .tl-desc {
+        color: var(--text-2);
+        font-size: 0.85rem;
         margin: 0;
       }
-      .comments-list {
-        display: grid;
-        gap: 0.75rem;
-      }
-      .comment-item {
-        display: flex;
-        gap: 0.6rem;
-      }
-      .comment-avatar {
-        width: 2rem;
-        height: 2rem;
-        min-width: 2rem;
-        border-radius: 50%;
+      .tl-count {
+        display: inline-block;
+        padding: 0.3rem 0.7rem;
+        border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .timeline-empty p {
+        color: var(--text-3);
+        margin: 0;
+      }
+      .tl-create-btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: 1rem;
+        border: 1px dashed var(--border-s);
+        background: transparent;
+        color: var(--accent-text);
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+      .tl-create-btn:hover {
+        background: var(--accent-glow);
+      }
+      .tl-events-list {
         display: grid;
-        place-items: center;
-        font-size: 0.75rem;
-        font-weight: 700;
+        gap: 0;
+        border: 1px solid var(--border);
+        border-radius: 1rem;
+        overflow: hidden;
       }
-      .comment-body {
-        flex: 1;
-        min-width: 0;
-      }
-      .comment-header {
+      .tl-event-row {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        flex-wrap: wrap;
+        gap: 0.75rem;
+        padding: 0.7rem 1rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-card);
       }
-      .comment-author {
-        font-weight: 600;
+      .tl-event-row:last-child {
+        border-bottom: none;
+      }
+      .tl-event-icon {
+        font-size: 1.1rem;
+        flex-shrink: 0;
+      }
+      .tl-event-info {
+        flex: 1;
+        display: grid;
+        gap: 0.15rem;
+        min-width: 0;
+      }
+      .tl-event-info strong {
         font-size: 0.85rem;
         color: var(--text-1);
-        text-decoration: none;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
-      .comment-author:hover {
+      .tl-event-info small {
+        font-size: 0.75rem;
+        color: var(--text-3);
+      }
+      .tl-relevance {
+        padding: 0.15rem 0.5rem;
+        border-radius: 999px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+      .tl-relevance-critical {
+        background: rgba(224, 85, 85, 0.15);
+        color: #e05555;
+      }
+      .tl-relevance-major {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+      }
+      .tl-relevance-minor {
+        background: rgba(201, 168, 76, 0.15);
         color: var(--accent-text);
       }
-      .comment-date {
-        color: var(--text-3);
-        font-size: 0.78rem;
-      }
-      .comment-delete {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 1.6rem;
-        height: 1.6rem;
-        min-height: unset;
-        border: none;
-        border-radius: 50%;
-        background: none;
-        color: var(--text-3);
-        cursor: pointer;
-        padding: 0;
-      }
-      .comment-delete:hover {
-        color: #e55;
+      .tl-relevance-background {
         background: var(--bg-surface);
+        color: var(--text-3);
       }
-      .comment-text {
-        margin: 0.2rem 0 0;
-        color: var(--text-2);
-        font-size: 0.85rem;
-        line-height: 1.5;
-      }
-      .btn-load-more {
+      .tl-see-all {
         display: block;
-        margin: 0 auto;
-        padding: 0.5rem 1.2rem;
-        border-radius: 999px;
-        border: 1px solid var(--border);
+        text-align: center;
+        padding: 0.6rem;
         background: var(--bg-surface);
-        color: var(--text-1);
-        cursor: pointer;
-        font-size: 0.85rem;
-        min-height: unset;
+        color: var(--accent-text);
+        font-size: 0.8rem;
+        text-decoration: none;
       }
-      .btn-load-more:hover {
-        border-color: var(--accent);
+      .tl-see-all:hover {
+        background: var(--accent-glow);
       }
       .recommend-overlay {
         position: fixed;
@@ -1065,208 +587,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
         opacity: 0.5;
         cursor: not-allowed;
       }
-      @media (max-width: 640px) {
-        .detail-row {
-          grid-template-columns: 1fr;
-          gap: 0.4rem;
-        }
-        .detail-label {
-          padding-top: 0;
-        }
-      }
-      .romance-genre-badge {
-        padding: 0.4rem 0.8rem;
-        border-radius: 999px;
-        background: var(--accent-glow);
-        color: var(--accent-text);
-        font-size: 0.85rem;
-        font-weight: 600;
-      }
-      .pairings-block {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
-      .pairing-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.4rem 0.8rem;
-        border-radius: 999px;
-        background: rgba(224, 85, 85, 0.12);
-        color: #e89a9a;
-        border: 1px solid rgba(224, 85, 85, 0.3);
-        font-size: 0.85rem;
-      }
-      .pairing-pill.is-main {
-        background: rgba(224, 85, 85, 0.22);
-        color: #f0b0b0;
-        border-color: rgba(224, 85, 85, 0.55);
-        font-weight: 600;
-      }
-      .pairing-pill .main-tag {
-        font-size: 0.7rem;
-        opacity: 0.85;
-      }
-      .chapter-item {
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-        text-decoration: none;
-        color: var(--text-1);
-        padding: 0.85rem 0;
-        border-bottom: 1px solid var(--border);
-      }
-      .timeline-summary,
-      .timeline-empty {
-        text-align: center;
-      }
-      .tl-desc {
-        color: var(--text-2);
-        font-size: 0.85rem;
-        margin: 0;
-      }
-      .tl-count {
-        display: inline-block;
-        padding: 0.3rem 0.7rem;
-        border-radius: 999px;
-        background: var(--accent-glow);
-        color: var(--accent-text);
-        font-size: 0.8rem;
-        font-weight: 600;
-      }
-      .timeline-empty p {
-        color: var(--text-3);
-        margin: 0;
-      }
-      .tl-create-btn {
-        padding: 0.6rem 1.2rem;
-        border-radius: 1rem;
-        border: 1px dashed var(--border-s);
-        background: transparent;
-        color: var(--accent-text);
-        cursor: pointer;
-        font-size: 0.85rem;
-      }
-      .tl-create-btn:hover {
-        background: var(--accent-glow);
-      }
-      .tl-events-list {
-        display: grid;
-        gap: 0;
-        border: 1px solid var(--border);
-        border-radius: 1rem;
-        overflow: hidden;
-      }
-      .tl-event-row {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.7rem 1rem;
-        border-bottom: 1px solid var(--border);
-        background: var(--bg-card);
-      }
-      .tl-event-row:last-child {
-        border-bottom: none;
-      }
-      .tl-event-icon {
-        font-size: 1.1rem;
-        flex-shrink: 0;
-      }
-      .tl-event-info {
-        flex: 1;
-        display: grid;
-        gap: 0.15rem;
-        min-width: 0;
-      }
-      .tl-event-info strong {
-        font-size: 0.85rem;
-        color: var(--text-1);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-      .tl-event-info small {
-        font-size: 0.75rem;
-        color: var(--text-3);
-      }
-      .tl-relevance {
-        padding: 0.15rem 0.5rem;
-        border-radius: 999px;
-        font-size: 0.65rem;
-        font-weight: 600;
-        flex-shrink: 0;
-      }
-      .tl-relevance-critical {
-        background: rgba(224, 85, 85, 0.15);
-        color: #e05555;
-      }
-      .tl-relevance-major {
-        background: rgba(245, 158, 11, 0.15);
-        color: #f59e0b;
-      }
-      .tl-relevance-minor {
-        background: rgba(201, 168, 76, 0.15);
-        color: var(--accent-text);
-      }
-      .tl-relevance-background {
-        background: var(--bg-surface);
-        color: var(--text-3);
-      }
-      .tl-see-all {
-        display: block;
-        text-align: center;
-        padding: 0.6rem;
-        background: var(--bg-surface);
-        color: var(--accent-text);
-        font-size: 0.8rem;
-        text-decoration: none;
-      }
-      .tl-see-all:hover {
-        background: var(--accent-glow);
-      }
-      .series-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 0.85rem;
-        border-radius: 999px;
-        background: var(--accent-glow);
-        color: var(--accent-text);
-        text-decoration: none;
-        font-size: 0.85rem;
-        width: fit-content;
-      }
-      .series-badge .complete-badge {
-        background: rgba(77, 184, 138, 0.25);
-        color: #63d4a2;
-        padding: 0.1rem 0.5rem;
-        border-radius: 999px;
-        font-size: 0.7rem;
-        font-weight: 700;
-      }
-      .actions button.active,
-      .actions button.active:hover {
-        background: rgba(224, 85, 85, 0.15);
-        color: #e05555;
-      }
-      .kudo-beat {
-        display: inline-block;
-        animation: beat 300ms ease-in-out;
-      }
-      @keyframes beat {
-        0% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.3);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
       @media (max-width: 900px) {
-        .hero,
         .content-grid,
         .world-grid,
         .character-grid {
@@ -1318,21 +639,6 @@ export class NovelDetailPageComponent implements OnInit {
   readonly subscribeLoading = signal(false);
   readonly eventTypeIcons = EVENT_TYPE_ICONS;
 
-  readonly pairingTagsList = computed(() => {
-    const novel = this.novel();
-    return (novel?.tags ?? [])
-      .filter((t) => this.isPairingTag(t))
-      .map((t) => {
-        const [a, b] = t.split('/');
-        return `${this.prettifyName(a)} × ${this.prettifyName(b)}`;
-      });
-  });
-
-  readonly nonPairingTagsList = computed(() => {
-    const novel = this.novel();
-    return (novel?.tags ?? []).filter((t) => !this.isPairingTag(t));
-  });
-
   toggleSubscription() {
     const novel = this.novel();
     if (!novel) return;
@@ -1344,7 +650,6 @@ export class NovelDetailPageComponent implements OnInit {
     if (!ctx) return;
 
     const wasSubscribed = ctx.isSubscribed;
-    // Optimistic
     this.novel.set({
       ...novel,
       stats: {
@@ -1372,7 +677,6 @@ export class NovelDetailPageComponent implements OnInit {
         this.subscribeLoading.set(false);
       },
       error: () => {
-        // Rollback
         const latest = this.novel();
         if (latest) {
           this.novel.set({
@@ -1529,64 +833,10 @@ export class NovelDetailPageComponent implements OnInit {
       });
   }
 
-  // eventTypeIcon migrado a constante EVENT_TYPE_ICONS accedida directamente en el template.
-
-  romanceGenreLabel(value: string | null): string {
-    return value ?? '';
-  }
-
-  private isPairingTag(tag: string): boolean {
-    if (!tag.includes('/')) return false;
-    const parts = tag.split('/');
-    return parts.length === 2 && parts[0].length > 0 && parts[1].length > 0;
-  }
-
-  private prettifyName(s: string): string {
-    return s
-      .split('-')
-      .filter(Boolean)
-      .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
-      .join(' ');
-  }
-
-  // pairingTags / nonPairingTags migrados a computed signals (pairingTagsList, nonPairingTagsList)
-  // para evitar re-ejecución en cada ciclo de change detection.
-
   createTimeline(novelSlug: string) {
     this.timelineService.getByNovelSlug(novelSlug).subscribe({
       next: (tl) => this.timeline.set(tl),
     });
-  }
-
-  private loadTimeline(novelSlug: string) {
-    this.timelineService.getByNovelSlug(novelSlug).subscribe({
-      next: (detail) => this.timeline.set(detail),
-      error: () => this.timeline.set(null),
-    });
-  }
-
-  private loadReadingLists(novelId: string, showLoader = true) {
-    if (showLoader) {
-      this.listsLoading.set(true);
-    }
-
-    this.listsError.set(null);
-    this.readingListsService
-      .listMine(novelId)
-      .pipe(finalize(() => this.listsLoading.set(false)))
-      .subscribe({
-        next: (lists) => {
-          this.readingLists.set(lists);
-          this.listMembership.set(
-            new Set(lists.filter((list) => list.contains_novel).map((list) => list.id)),
-          );
-        },
-        error: () => {
-          this.readingLists.set([]);
-          this.listMembership.set(new Set<string>());
-          this.listsError.set('No se pudieron cargar tus listas.');
-        },
-      });
   }
 
   openRecommendPreview() {
@@ -1643,10 +893,10 @@ export class NovelDetailPageComponent implements OnInit {
     this.loadComments(slug, false);
   }
 
-  submitComment(slug: string) {
-    if (!this.newComment.trim() || this.commentSending()) return;
+  submitComment(slug: string, text: string) {
+    if (!text.trim() || this.commentSending()) return;
     this.commentSending.set(true);
-    this.novelsService.createComment(slug, this.newComment.trim()).subscribe({
+    this.novelsService.createComment(slug, text.trim()).subscribe({
       next: (comment) => {
         this.novelComments.update((list) => [...list, comment]);
         this.newComment = '';
@@ -1664,5 +914,34 @@ export class NovelDetailPageComponent implements OnInit {
     });
   }
 
-  // relativeDate migrado a RelativeDatePipe (pure) en el template.
+  private loadTimeline(novelSlug: string) {
+    this.timelineService.getByNovelSlug(novelSlug).subscribe({
+      next: (detail) => this.timeline.set(detail),
+      error: () => this.timeline.set(null),
+    });
+  }
+
+  private loadReadingLists(novelId: string, showLoader = true) {
+    if (showLoader) {
+      this.listsLoading.set(true);
+    }
+
+    this.listsError.set(null);
+    this.readingListsService
+      .listMine(novelId)
+      .pipe(finalize(() => this.listsLoading.set(false)))
+      .subscribe({
+        next: (lists) => {
+          this.readingLists.set(lists);
+          this.listMembership.set(
+            new Set(lists.filter((list) => list.contains_novel).map((list) => list.id)),
+          );
+        },
+        error: () => {
+          this.readingLists.set([]);
+          this.listMembership.set(new Set<string>());
+          this.listsError.set('No se pudieron cargar tus listas.');
+        },
+      });
+  }
 }

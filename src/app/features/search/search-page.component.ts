@@ -188,9 +188,9 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
               <div class="user-list">
                 @for (user of grouped()!.results.users.items; track user.id) {
                   <a class="user-card" [routerLink]="['/perfil', user.username]">
-                    <div class="avatar">{{ user.display_name.charAt(0) }}</div>
+                    <div class="avatar">{{ user.displayName.charAt(0) }}</div>
                     <div class="user-copy">
-                      <strong>{{ user.display_name }}</strong>
+                      <strong>{{ user.displayName }}</strong>
                       <span>@{{ user.username }}</span>
                     </div>
                   </a>
@@ -207,10 +207,10 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
               <div class="post-list">
                 @for (post of grouped()!.results.posts.items; track post.id) {
                   <article class="post-result" [routerLink]="['/feed']">
-                    <p [innerHTML]="post.content_excerpt | highlight: query()"></p>
+                    <p [innerHTML]="post.contentExcerpt | highlight: query()"></p>
                     <span
-                      >{{ post.author.display_name }} ·
-                      {{ post.stats.reactions_count }} reacciones</span
+                      >{{ post.author.displayName }} ·
+                      {{ post.stats.reactionsCount }} reacciones</span
                     >
                   </article>
                 }
@@ -261,13 +261,13 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
             <div class="user-list">
               @for (user of users(); track user.id) {
                 <a class="user-card" [routerLink]="['/perfil', user.username]">
-                  <div class="avatar">{{ user.display_name.charAt(0) }}</div>
+                  <div class="avatar">{{ user.displayName.charAt(0) }}</div>
                   <div class="user-copy">
-                    <strong>{{ user.display_name }}</strong>
+                    <strong>{{ user.displayName }}</strong>
                     <span>@{{ user.username }}</span>
                     <small
-                      >{{ user.stats.followers_count }} seguidores ·
-                      {{ user.stats.novels_count }} novelas</small
+                      >{{ user.stats.followersCount }} seguidores ·
+                      {{ user.stats.novelsCount }} novelas</small
                     >
                   </div>
                 </a>
@@ -287,10 +287,10 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
             <div class="post-list">
               @for (post of posts(); track post.id) {
                 <article class="post-result" [routerLink]="['/feed']">
-                  <p [innerHTML]="post.content_excerpt | highlight: query()"></p>
+                  <p [innerHTML]="post.contentExcerpt | highlight: query()"></p>
                   <span
-                    >{{ post.author.display_name }} ·
-                    {{ post.stats.comments_count }} comentarios</span
+                    >{{ post.author.displayName }} ·
+                    {{ post.stats.commentsCount }} comentarios</span
                   >
                 </article>
               }

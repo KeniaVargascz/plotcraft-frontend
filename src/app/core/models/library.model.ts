@@ -5,29 +5,29 @@ export interface LibraryNovelCard {
   id: string;
   slug: string;
   title: string;
-  cover_url: string | null;
+  coverUrl: string | null;
   status: string;
-  word_count: number;
-  views_count: number;
+  wordCount: number;
+  viewsCount: number;
   author: {
     username: string;
-    display_name: string;
-    avatar_url: string | null;
+    displayName: string;
+    avatarUrl: string | null;
   };
   stats: {
-    chapters_count: number;
-    likes_count: number;
-    bookmarks_count: number;
+    chaptersCount: number;
+    likesCount: number;
+    bookmarksCount: number;
   };
-  reading_progress: {
-    chapter_id: string;
-    chapter_slug: string;
-    chapter_title: string;
-    chapter_order: number;
-    scroll_pct: number;
-    updated_at: string;
+  readingProgress: {
+    chapterId: string;
+    chapterSlug: string;
+    chapterTitle: string;
+    chapterOrder: number;
+    scrollPct: number;
+    updatedAt: string;
   } | null;
-  last_chapter: {
+  lastChapter: {
     id: string;
     slug: string;
     title: string;
@@ -39,43 +39,43 @@ export interface ReadingGoal {
   id: string;
   year: number;
   month: number | null;
-  target_words: number;
-  created_at: string;
-  updated_at: string;
+  targetWords: number;
+  createdAt: string;
+  updatedAt: string;
   progress: {
-    words_read: number;
-    pct_complete: number;
-    novels_read: number;
-    chapters_read: number;
+    wordsRead: number;
+    pctComplete: number;
+    novelsRead: number;
+    chaptersRead: number;
   };
 }
 
 export interface ReadingStats {
-  total_chapters_read: number;
-  total_novels_started: number;
-  total_novels_completed: number;
-  total_words_read: number;
-  total_bookmarks: number;
-  total_highlights: number;
-  reading_streak_days: number;
-  favorite_genre: {
+  totalChaptersRead: number;
+  totalNovelsStarted: number;
+  totalNovelsCompleted: number;
+  totalWordsRead: number;
+  totalBookmarks: number;
+  totalHighlights: number;
+  readingStreakDays: number;
+  favoriteGenre: {
     slug: string;
     label: string;
   } | null;
-  monthly_breakdown: Array<{
+  monthlyBreakdown: Array<{
     year: number;
     month: number;
-    words_read: number;
-    chapters_read: number;
+    wordsRead: number;
+    chaptersRead: number;
   }>;
 }
 
 export interface LibrarySummary {
-  in_progress: LibraryNovelCard[];
+  inProgress: LibraryNovelCard[];
   completed: LibraryNovelCard[];
   bookmarked: LibraryNovelCard[];
-  reading_lists: ReadingList[];
-  active_goal: ReadingGoal | null;
+  readingLists: ReadingList[];
+  activeGoal: ReadingGoal | null;
 }
 
 export type ChronologicalHistoryResponse = {

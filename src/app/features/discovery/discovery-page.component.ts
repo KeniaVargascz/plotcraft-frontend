@@ -66,19 +66,19 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
       } @else {
         <section class="stats-banner">
           <span>
-            {{ snapshot()!.stats.total_novels }}
+            {{ snapshot()!.stats.totalNovels }}
             {{ 'discovery.stats.novels' | translate }}
           </span>
           <span>
-            {{ snapshot()!.stats.total_authors }}
+            {{ snapshot()!.stats.totalAuthors }}
             {{ 'discovery.stats.authors' | translate }}
           </span>
           <span>
-            {{ snapshot()!.stats.total_worlds }}
+            {{ snapshot()!.stats.totalWorlds }}
             {{ 'discovery.stats.worlds' | translate }}
           </span>
           <span>
-            {{ snapshot()!.stats.total_characters }}
+            {{ snapshot()!.stats.totalCharacters }}
             {{ 'discovery.stats.characters' | translate }}
           </span>
         </section>
@@ -133,10 +133,10 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
             </h2>
             <a routerLink="/novelas">Ver mas en novelas</a>
           </div>
-          @if (snapshot()!.new_releases.length) {
+          @if (snapshot()!.newReleases.length) {
             <div class="release-grid" data-testid="new-releases">
               @for (
-                release of snapshot()!.new_releases;
+                release of snapshot()!.newReleases;
                 track release.novel.id;
                 let index = $index
               ) {
@@ -149,20 +149,20 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
                         <a class="release-title" (click)="onNovelClick(release.novel.slug)">
                           {{ release.novel.title }}
                         </a>
-                        <span class="release-badge"> +{{ release.new_chapters_count }} </span>
+                        <span class="release-badge"> +{{ release.newChaptersCount }} </span>
                       </div>
                       <p class="release-author">@{{ release.novel.author.username }}</p>
                     </div>
                   </div>
 
-                  @if (release.latest_chapter) {
+                  @if (release.latestChapter) {
                     <div class="release-body">
                       <span class="release-label">Capitulo mas reciente</span>
                       <p class="release-chapter">
-                        {{ release.latest_chapter.title }}
+                        {{ release.latestChapter.title }}
                       </p>
                       <span class="release-published-at">
-                        {{ release.latest_chapter.publishedAt | date: 'shortDate' }}
+                        {{ release.latestChapter.publishedAt | date: 'shortDate' }}
                       </span>
                     </div>
                   }

@@ -25,7 +25,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         <section class="grid">
           <a class="card nav-card" routerLink="/biblioteca/en-progreso">
             <strong>{{ 'library.inProgress' | translate }}</strong>
-            <span>{{ current.in_progress.length }} novelas</span>
+            <span>{{ current.inProgress.length }} novelas</span>
           </a>
           <a class="card nav-card" routerLink="/biblioteca/historial">
             <strong>{{ 'library.history' | translate }}</strong>
@@ -37,7 +37,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
           </a>
           <a class="card nav-card" routerLink="/biblioteca/listas">
             <strong>{{ 'library.listsTitle' | translate }}</strong>
-            <span>{{ current.reading_lists.length }} listas</span>
+            <span>{{ current.readingLists.length }} listas</span>
           </a>
         </section>
 
@@ -48,10 +48,10 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
               <a routerLink="/biblioteca/en-progreso">{{ 'feed.loadMore' | translate }}</a>
             </div>
 
-            @if (!current.in_progress.length) {
+            @if (!current.inProgress.length) {
               <p>{{ 'library.empty.inProgress' | translate }}</p>
             } @else {
-              @for (item of current.in_progress; track item.id) {
+              @for (item of current.inProgress; track item.id) {
                 <a class="row-link" [routerLink]="['/novelas', item.slug]">
                   <strong>{{ item.title }}</strong>
                   <span>
@@ -59,10 +59,10 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
                       'library.resumeFrom'
                         | translate
                           : {
-                              n: item.reading_progress?.chapter_order ?? 1,
+                              n: item.readingProgress?.chapterOrder ?? 1,
                               title:
-                                item.reading_progress?.chapter_title ??
-                                item.last_chapter?.title ??
+                                item.readingProgress?.chapterTitle ??
+                                item.lastChapter?.title ??
                                 item.title,
                             }
                     }}
@@ -78,13 +78,13 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
               <a routerLink="/biblioteca/metas">{{ 'common.save' | translate }}</a>
             </div>
 
-            @if (current.active_goal; as activeGoal) {
+            @if (current.activeGoal; as activeGoal) {
               <div class="goal-meter">
                 <div class="goal-value">
-                  {{ (activeGoal.progress.pct_complete * 100).toFixed(0) }}%
+                  {{ (activeGoal.progress.pctComplete * 100).toFixed(0) }}%
                 </div>
                 <p>
-                  {{ activeGoal.progress.words_read }} / {{ activeGoal.target_words }}
+                  {{ activeGoal.progress.wordsRead }} / {{ activeGoal.targetWords }}
                   {{ 'library.goals.targetWords' | translate }}
                 </p>
               </div>

@@ -191,7 +191,7 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
 
                 <div class="meta-row">
                   <span>{{ list.items_count }} novelas</span>
-                  <span>Actualizada {{ list.updated_at | date: 'mediumDate' }}</span>
+                  <span>Actualizada {{ list.updatedAt | date: 'mediumDate' }}</span>
                 </div>
 
                 <div class="card-actions">

@@ -313,8 +313,8 @@ export class PostComposerComponent {
         ...this.form.getRawValue(),
         image_urls: this.imageUrls().length ? this.imageUrls() : undefined,
         tags: this.tags().length ? this.tags() : undefined,
-        novel_id: this.selectedNovelId() ?? undefined,
-        chapter_id: this.selectedChapterId() ?? undefined,
+        novelId: this.selectedNovelId() ?? undefined,
+        chapterId: this.selectedChapterId() ?? undefined,
         world_id: this.selectedWorldId() ?? undefined,
         character_ids: this.selectedCharacterIds().length ? this.selectedCharacterIds() : undefined,
       })

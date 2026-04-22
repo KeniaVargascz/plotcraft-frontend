@@ -85,12 +85,12 @@ export interface NovelSummary {
     hasKudo: boolean;
     isAuthor: boolean;
     isSubscribed: boolean;
-    reading_progress: {
-      chapter_id: string;
-      chapter_slug: string;
-      chapter_title: string;
-      chapter_order: number;
-      scroll_pct: number;
+    readingProgress: {
+      chapterId: string;
+      chapterSlug: string;
+      chapterTitle: string;
+      chapterOrder: number;
+      scrollPct: number;
     } | null;
   } | null;
 }

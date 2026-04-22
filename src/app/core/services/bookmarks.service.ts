@@ -20,9 +20,9 @@ export class BookmarksService {
   }
 
   create(payload: {
-    novel_id: string;
-    chapter_id: string;
-    anchor_id?: string | null;
+    novelId: string;
+    chapterId: string;
+    anchorId?: string | null;
     label?: string | null;
   }) {
     return this.api.post<ReaderBookmark>('/bookmarks', payload);

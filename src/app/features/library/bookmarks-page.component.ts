@@ -29,16 +29,16 @@ import { LibraryService } from '../../core/services/library.service';
               <div class="row">
                 <div class="stack">
                   <strong>{{ item.title }}</strong>
-                  <span>{{ item.author.display_name }}</span>
+                  <span>{{ item.author.displayName }}</span>
                 </div>
                 <a [routerLink]="['/novelas', item.slug]">Ver detalle</a>
               </div>
-              @if (item.reading_progress; as progress) {
-                <a [routerLink]="['/novelas', item.slug, progress.chapter_slug]">
-                  Continuar desde cap. {{ progress.chapter_order }} -
-                  {{ progress.chapter_title }}
+              @if (item.readingProgress; as progress) {
+                <a [routerLink]="['/novelas', item.slug, progress.chapterSlug]">
+                  Continuar desde cap. {{ progress.chapterOrder }} -
+                  {{ progress.chapterTitle }}
                 </a>
-              } @else if (item.last_chapter; as lastChapter) {
+              } @else if (item.lastChapter; as lastChapter) {
                 <a [routerLink]="['/novelas', item.slug, lastChapter.slug]">
                   Ir al ultimo capitulo publicado
                 </a>
@@ -67,7 +67,7 @@ import { LibraryService } from '../../core/services/library.service';
                 <div class="row">
                   <a
                     [routerLink]="['/novelas', bookmark.novel.slug, bookmark.chapter.slug]"
-                    [fragment]="bookmark.anchor_id ?? undefined"
+                    [fragment]="bookmark.anchorId ?? undefined"
                   >
                     {{ bookmark.label || 'Ir al marcador' }}
                   </a>

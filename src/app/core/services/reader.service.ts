@@ -19,11 +19,11 @@ export class ReaderService {
     return this.api.get<ReadingProgress | null>(`/reader/progress/${novelId}`);
   }
 
-  saveProgress(payload: { novel_id: string; chapter_id: string; scroll_pct: number }) {
+  saveProgress(payload: { novelId: string; chapterId: string; scrollPct: number }) {
     return this.api.post<ReadingProgress>('/reader/progress', payload);
   }
 
-  addHistory(payload: { novel_id: string; chapter_id: string }) {
+  addHistory(payload: { novelId: string; chapterId: string }) {
     return this.api.post<ReadingHistoryItem>('/reader/history', payload);
   }
 

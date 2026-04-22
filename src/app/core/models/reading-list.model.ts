@@ -5,15 +5,15 @@ export interface ReadingListItem {
     id: string;
     slug: string;
     title: string;
-    cover_url: string | null;
+    coverUrl: string | null;
     status: string;
     author: {
       username: string;
-      display_name: string;
+      displayName: string;
     };
     stats: {
-      chapters_count: number;
-      likes_count: number;
+      chaptersCount: number;
+      likesCount: number;
     };
   };
   personal_note: string | null;
@@ -25,12 +25,12 @@ export interface ReadingList {
   name: string;
   description: string | null;
   visibility: ReadingListVisibility;
-  created_at: string;
-  updated_at: string;
+  createdAt: string;
+  updatedAt: string;
   owner: {
     username: string;
-    display_name: string;
-    avatar_url: string | null;
+    displayName: string;
+    avatarUrl: string | null;
   };
   items_count: number;
   contains_novel?: boolean;

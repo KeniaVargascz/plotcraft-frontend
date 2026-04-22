@@ -1,8 +1,8 @@
 export interface ReaderBookmark {
   id: string;
-  anchor_id: string | null;
+  anchorId: string | null;
   label: string | null;
-  created_at: string;
+  createdAt: string;
   chapter: {
     id: string;
     slug: string;

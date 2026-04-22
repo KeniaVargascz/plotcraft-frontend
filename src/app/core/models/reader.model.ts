@@ -3,26 +3,26 @@ export type ReaderMode = 'scroll' | 'paginated';
 
 export interface ReaderPreferences {
   id: string;
-  font_family: ReaderFontFamily;
-  font_size: number;
-  line_height: number;
-  max_width: number;
-  reading_mode: ReaderMode;
-  show_progress: boolean;
-  created_at: string;
-  updated_at: string;
+  fontFamily: ReaderFontFamily;
+  fontSize: number;
+  lineHeight: number;
+  maxWidth: number;
+  readingMode: ReaderMode;
+  showProgress: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ReadingProgress {
-  novel_id: string;
-  chapter_id: string;
-  scroll_pct: number;
+  novelId: string;
+  chapterId: string;
+  scrollPct: number;
   chapter: {
     slug: string;
     title: string;
     order: number;
   };
-  updated_at: string;
+  updatedAt: string;
 }
 
 export interface ReadingHistoryItem {
@@ -30,10 +30,10 @@ export interface ReadingHistoryItem {
     id: string;
     slug: string;
     title: string;
-    cover_url: string | null;
+    coverUrl: string | null;
     author: {
       username: string;
-      display_name: string;
+      displayName: string;
     };
   };
   chapter: {
@@ -42,5 +42,5 @@ export interface ReadingHistoryItem {
     title: string;
     order: number;
   };
-  opened_at: string;
+  openedAt: string;
 }

@@ -50,19 +50,19 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
         <div class="actions">
           @if (
-            novel().viewerContext?.reading_progress &&
-            novel().viewerContext?.reading_progress?.chapter_slug
+            novel().viewerContext?.readingProgress &&
+            novel().viewerContext?.readingProgress?.chapterSlug
           ) {
             <a
               [routerLink]="[
                 '/novelas',
                 novel().slug,
-                novel().viewerContext?.reading_progress?.chapter_slug,
+                novel().viewerContext?.readingProgress?.chapterSlug,
               ]"
             >
               Continuar desde cap.
-              {{ novel().viewerContext?.reading_progress?.chapter_order }} -
-              {{ novel().viewerContext?.reading_progress?.chapter_title }}
+              {{ novel().viewerContext?.readingProgress?.chapterOrder }} -
+              {{ novel().viewerContext?.readingProgress?.chapterTitle }}
             </a>
           } @else if (isAuthenticated() && novel().chapters.length) {
             <a [routerLink]="['/novelas', novel().slug, novel().chapters[0].slug]">

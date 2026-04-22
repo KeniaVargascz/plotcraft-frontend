@@ -45,7 +45,7 @@ export class LibraryService {
     return this.api.get<ReadingGoal[]>('/library/goals');
   }
 
-  saveGoal(payload: { year: number; month?: number | null; target_words: number }) {
+  saveGoal(payload: { year: number; month?: number | null; targetWords: number }) {
     return this.api.post<ReadingGoal>('/library/goals', payload);
   }
 

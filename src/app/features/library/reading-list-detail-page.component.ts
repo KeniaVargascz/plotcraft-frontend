@@ -31,7 +31,7 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
               <span>novelas guardadas</span>
             </div>
             <div class="meta-card">
-              <strong>{{ current.updated_at | date: 'mediumDate' }}</strong>
+              <strong>{{ current.updatedAt | date: 'mediumDate' }}</strong>
               <span>ultima actualizacion</span>
             </div>
           </div>
@@ -61,12 +61,12 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
                       <a class="title-link" [routerLink]="['/novelas', item.novel.slug]">
                         {{ item.novel.title }}
                       </a>
-                      <span>{{ item.novel.author.display_name }}</span>
+                      <span>{{ item.novel.author.displayName }}</span>
                     </div>
 
                     <div class="meta-row">
-                      <span>{{ item.novel.stats.chapters_count }} capitulos</span>
-                      <span>{{ item.novel.stats.likes_count }} likes</span>
+                      <span>{{ item.novel.stats.chaptersCount }} capitulos</span>
+                      <span>{{ item.novel.stats.likesCount }} likes</span>
                       <span>{{ item.novel.status | titlecase }}</span>
                     </div>
                   </div>

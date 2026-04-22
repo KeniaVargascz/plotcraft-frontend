@@ -141,10 +141,10 @@ export class ChaptersService {
     chapterSlug: string,
     payload: {
       content: string;
-      anchor_id: string;
+      anchorId: string;
       quoted_text: string;
-      start_offset: number;
-      end_offset: number;
+      startOffset: number;
+      endOffset: number;
     },
   ) {
     return this.api.post<ChapterCommentModel>(

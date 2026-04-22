@@ -37,17 +37,17 @@ import { LibraryService } from '../../core/services/library.service';
                 <div class="cover">{{ item.title.charAt(0) }}</div>
                 <div class="copy">
                   <strong>{{ item.title }}</strong>
-                  <span>{{ item.author.display_name }}</span>
+                  <span>{{ item.author.displayName }}</span>
                   <small
-                    >{{ item.stats.chapters_count }} capitulos ·
-                    {{ item.stats.bookmarks_count }} guardados</small
+                    >{{ item.stats.chaptersCount }} capitulos ·
+                    {{ item.stats.bookmarksCount }} guardados</small
                   >
                 </div>
               </div>
 
-              @if (item.reading_progress; as progress) {
-                <a class="cta" [routerLink]="['/novelas', item.slug, progress.chapter_slug]">
-                  Continuar desde cap. {{ progress.chapter_order }} - {{ progress.chapter_title }}
+              @if (item.readingProgress; as progress) {
+                <a class="cta" [routerLink]="['/novelas', item.slug, progress.chapterSlug]">
+                  Continuar desde cap. {{ progress.chapterOrder }} - {{ progress.chapterTitle }}
                 </a>
               }
             </article>

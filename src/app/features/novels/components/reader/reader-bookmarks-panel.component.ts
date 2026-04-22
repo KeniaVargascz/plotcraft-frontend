@@ -41,9 +41,9 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
             <button
               type="button"
               class="bookmark-link"
-              (click)="scrollToBookmark.emit(bookmark.anchor_id)"
+              (click)="scrollToBookmark.emit(bookmark.anchorId)"
             >
-              {{ bookmark.label || bookmark.anchor_id || bookmark.chapter.title }}
+              {{ bookmark.label || bookmark.anchorId || bookmark.chapter.title }}
             </button>
             <button type="button" (click)="removeBookmark.emit(bookmark.id)">
               {{ 'reader.bookmarksPanel.remove' | translate }}

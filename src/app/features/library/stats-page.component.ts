@@ -12,33 +12,33 @@ import { LibraryService } from '../../core/services/library.service';
         <h1>Estadisticas</h1>
         <div class="grid">
           <article class="card">
-            <strong>{{ current.total_chapters_read }}</strong
+            <strong>{{ current.totalChaptersRead }}</strong
             ><span>Capitulos</span>
           </article>
           <article class="card">
-            <strong>{{ current.total_novels_completed }}</strong
+            <strong>{{ current.totalNovelsCompleted }}</strong
             ><span>Completadas</span>
           </article>
           <article class="card">
-            <strong>{{ current.total_words_read }}</strong
+            <strong>{{ current.totalWordsRead }}</strong
             ><span>Palabras</span>
           </article>
           <article class="card">
-            <strong>{{ current.reading_streak_days }}</strong
+            <strong>{{ current.readingStreakDays }}</strong
             ><span>Racha</span>
           </article>
         </div>
         <article class="card">
           <h2>Actividad mensual</h2>
-          @for (item of current.monthly_breakdown; track item.year + '-' + item.month) {
+          @for (item of current.monthlyBreakdown; track item.year + '-' + item.month) {
             <div class="bar-row">
               <span>{{ item.month }}/{{ item.year }}</span>
               <div class="bar">
                 <span
-                  [style.width.%]="maxWords() ? (item.words_read / maxWords()) * 100 : 0"
+                  [style.width.%]="maxWords() ? (item.wordsRead / maxWords()) * 100 : 0"
                 ></span>
               </div>
-              <small>{{ item.words_read }}</small>
+              <small>{{ item.wordsRead }}</small>
             </div>
           }
         </article>
@@ -58,7 +58,7 @@ export class StatsPageComponent {
   constructor() {
     this.libraryService.getStats().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((stats) => {
       this.stats.set(stats);
-      this.maxWords.set(Math.max(...stats.monthly_breakdown.map((item) => item.words_read), 0));
+      this.maxWords.set(Math.max(...stats.monthlyBreakdown.map((item) => item.wordsRead), 0));
     });
   }
 }

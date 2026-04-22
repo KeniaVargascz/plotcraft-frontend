@@ -85,15 +85,15 @@ import { LibraryService } from '../../core/services/library.service';
             <article class="goal-card card">
               <div class="row">
                 <strong>{{ goal.year }}{{ goal.month ? '/' + goal.month : '' }}</strong>
-                <span>{{ (goal.progress.pct_complete * 100).toFixed(0) }}%</span>
+                <span>{{ (goal.progress.pctComplete * 100).toFixed(0) }}%</span>
               </div>
               <div class="meter">
-                <span [style.width.%]="goal.progress.pct_complete * 100"></span>
+                <span [style.width.%]="goal.progress.pctComplete * 100"></span>
               </div>
               <div class="meta">
-                <span>{{ goal.progress.words_read }} / {{ goal.target_words }} palabras</span>
-                <span>{{ goal.progress.chapters_read }} capitulos leidos</span>
-                <span>{{ goal.progress.novels_read }} novelas avanzadas</span>
+                <span>{{ goal.progress.wordsRead }} / {{ goal.targetWords }} palabras</span>
+                <span>{{ goal.progress.chaptersRead }} capitulos leidos</span>
+                <span>{{ goal.progress.novelsRead }} novelas avanzadas</span>
               </div>
             </article>
           }
@@ -230,7 +230,7 @@ export class GoalsPageComponent {
       .saveGoal({
         year: this.year,
         month: this.month || null,
-        target_words: this.targetWords,
+        targetWords: this.targetWords,
       })
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe(() => {

@@ -13,13 +13,13 @@ import { FollowsService } from '../../../core/services/follows.service';
       <a class="band" [class]="bandClass()" [routerLink]="['/perfil', author().username]">
         <span class="band-texture"></span>
         <span class="avatar" [class]="avatarClass()">
-          {{ author().display_name.charAt(0) }}
+          {{ author().displayName.charAt(0) }}
         </span>
       </a>
 
       <div class="body">
         <a class="identity" [routerLink]="['/perfil', author().username]">
-          <strong class="name">{{ author().display_name }}</strong>
+          <strong class="name">{{ author().displayName }}</strong>
           <span class="handle">@{{ author().username }}</span>
         </a>
 
@@ -27,17 +27,17 @@ import { FollowsService } from '../../../core/services/follows.service';
 
         <div class="stats-row">
           <span class="stat-item">
-            <span class="stat-value">{{ author().stats.followers_count }}</span>
+            <span class="stat-value">{{ author().stats.followersCount }}</span>
             <span class="stat-label">seguidores</span>
           </span>
           <span class="stat-divider"></span>
           <span class="stat-item">
-            <span class="stat-value">{{ author().stats.novels_count }}</span>
+            <span class="stat-value">{{ author().stats.novelsCount }}</span>
             <span class="stat-label">novelas</span>
           </span>
           <span class="stat-divider"></span>
           <span class="stat-item">
-            <span class="stat-value">{{ author().stats.worlds_count }}</span>
+            <span class="stat-value">{{ author().stats.worldsCount }}</span>
             <span class="stat-label">mundos</span>
           </span>
         </div>
@@ -300,7 +300,7 @@ export class AuthorCardComponent {
     return [...username].reduce((acc, char) => acc + char.charCodeAt(0), 0) % 5;
   });
   readonly coverDots = computed(() =>
-    (this.author().latest_covers ?? []).slice(0, 3).map((cover) => Boolean(cover)),
+    (this.author().latestCovers ?? []).slice(0, 3).map((cover) => Boolean(cover)),
   );
 
   bandClass() {

@@ -12,20 +12,20 @@ export class HighlightsService {
     return this.api.get<Highlight[]>(`/highlights/chapter/${chapterId}`);
   }
 
-  listAll(query: { cursor?: string | null; limit?: number; novel_id?: string } = {}) {
+  listAll(query: { cursor?: string | null; limit?: number; novelId?: string } = {}) {
     let params = new HttpParams();
     if (query.cursor) params = params.set('cursor', query.cursor);
     if (query.limit) params = params.set('limit', query.limit);
-    if (query.novel_id) params = params.set('novel_id', query.novel_id);
+    if (query.novelId) params = params.set('novelId', query.novelId);
     return this.api.get<PaginatedResponse<Highlight>>('/highlights', { params });
   }
 
   create(payload: {
-    novel_id: string;
-    chapter_id: string;
-    anchor_id: string;
-    start_offset: number;
-    end_offset: number;
+    novelId: string;
+    chapterId: string;
+    anchorId: string;
+    startOffset: number;
+    endOffset: number;
     color?: HighlightColor;
     note?: string | null;
   }) {

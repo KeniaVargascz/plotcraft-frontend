@@ -32,7 +32,7 @@ import { LibraryService } from '../../core/services/library.service';
         </section>
       } @else {
         <section class="timeline">
-          @for (item of items(); track item.chapter.id + item.opened_at) {
+          @for (item of items(); track item.chapter.id + item.openedAt) {
             <a class="entry card" [routerLink]="['/novelas', item.novel.slug, item.chapter.slug]">
               <div class="entry-top">
                 <div class="cover">{{ item.novel.title.charAt(0) }}</div>
@@ -40,7 +40,7 @@ import { LibraryService } from '../../core/services/library.service';
                   <strong>{{ item.novel.title }}</strong>
                   <span>{{ item.chapter.order }}. {{ item.chapter.title }}</span>
                 </div>
-                <small>{{ item.opened_at | date: 'short' }}</small>
+                <small>{{ item.openedAt | date: 'short' }}</small>
               </div>
             </a>
           }

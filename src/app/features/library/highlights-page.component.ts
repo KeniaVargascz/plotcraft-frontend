@@ -40,7 +40,7 @@ import { HighlightsService } from '../../core/services/highlights.service';
                 </div>
                 <span class="color-dot" [style.background]="item.color"></span>
               </div>
-              <p class="quote">Fragmento {{ item.start_offset }} - {{ item.end_offset }}</p>
+              <p class="quote">Fragmento {{ item.startOffset }} - {{ item.endOffset }}</p>
 
               @if (item.note) {
                 <p class="note">{{ item.note }}</p>
@@ -49,7 +49,7 @@ import { HighlightsService } from '../../core/services/highlights.service';
               <div class="actions">
                 <a
                   [routerLink]="['/novelas', item.novel.slug, item.chapter.slug]"
-                  [fragment]="item.anchor_id"
+                  [fragment]="item.anchorId"
                 >
                   Ver en contexto
                 </a>

@@ -323,10 +323,10 @@ export class ParagraphCommentsComponent implements OnChanges {
     const trimmedQuote = quote.length > 200 ? quote.slice(0, 200) + '…' : quote;
     const payload = {
       content: text,
-      anchor_id: this.anchorId,
+      anchorId: this.anchorId,
       quoted_text: trimmedQuote || '',
-      start_offset: this.startOffset ?? 0,
-      end_offset: this.endOffset ?? 0,
+      startOffset: this.startOffset ?? 0,
+      endOffset: this.endOffset ?? 0,
     };
     this.chaptersService
       .createParagraphComment(this.novelSlug, this.chapterSlug, payload)

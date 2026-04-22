@@ -167,7 +167,7 @@ import { ReaderChapterNavComponent } from './components/reader/reader-chapter-na
           </header>
 
           <!-- TODO: Barra de progreso deshabilitada — ver nota en ngOnInit -->
-          <!-- @if (preferences().show_progress) {
+          <!-- @if (preferences().showProgress) {
           <div class="progress-strip" data-testid="progress-bar">
             <span [style.width.%]="progressPercent() * 100"></span>
           </div>
@@ -213,7 +213,7 @@ import { ReaderChapterNavComponent } from './components/reader/reader-chapter-na
           }
 
           <section class="reader-main">
-            @if (preferences().reading_mode === 'paginated') {
+            @if (preferences().readingMode === 'paginated') {
               <section class="reader-paginated" #readerContainer>
                 <div
                   class="reader-body"
@@ -732,14 +732,14 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   readonly progressPercent = signal(0);
   readonly preferences = signal<ReaderPreferences>({
     id: 'local',
-    font_family: 'crimson',
-    font_size: 18,
-    line_height: 1.8,
-    max_width: 720,
-    reading_mode: 'scroll',
-    show_progress: true,
-    created_at: '',
-    updated_at: '',
+    fontFamily: 'crimson',
+    fontSize: 18,
+    lineHeight: 1.8,
+    maxWidth: 720,
+    readingMode: 'scroll',
+    showProgress: true,
+    createdAt: '',
+    updatedAt: '',
   });
 
   readonly chapterVotesCount = signal(0);
@@ -870,7 +870,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       fromEvent(window, 'scroll', { passive: true })
         .pipe(auditTime(16), takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
-          if (this.preferences().reading_mode !== 'scroll' || !this.readerContainer) return;
+          if (this.preferences().readingMode !== 'scroll' || !this.readerContainer) return;
           const container = this.readerContainer.nativeElement;
           const rect = container.getBoundingClientRect();
           const maxDistance = container.offsetHeight - window.innerHeight;
@@ -883,14 +883,14 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
 
   @HostListener('window:keydown.arrowright')
   onArrowRight() {
-    if (this.preferences().reading_mode === 'paginated') {
+    if (this.preferences().readingMode === 'paginated') {
       this.goToNextPage();
     }
   }
 
   @HostListener('window:keydown.arrowleft')
   onArrowLeft() {
-    if (this.preferences().reading_mode === 'paginated') {
+    if (this.preferences().readingMode === 'paginated') {
       this.goToPreviousPage();
     }
   }
@@ -938,9 +938,9 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
         if (label === null) return;
         this.bookmarksService
           .create({
-            novel_id: chapter.novel.id,
-            chapter_id: chapter.id,
-            anchor_id: anchorId,
+            novelId: chapter.novel.id,
+            chapterId: chapter.id,
+            anchorId: anchorId,
             label: label || undefined,
           })
           .pipe(takeUntilDestroyed(this.destroyRef))
@@ -1037,9 +1037,9 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
         if (label === null) return;
         this.bookmarksService
           .create({
-            novel_id: chapter.novel.id,
-            chapter_id: chapter.id,
-            anchor_id: paragraph.getAttribute('data-anchor-id'),
+            novelId: chapter.novel.id,
+            chapterId: chapter.id,
+            anchorId: paragraph.getAttribute('data-anchor-id'),
             label,
           })
           .pipe(takeUntilDestroyed(this.destroyRef))
@@ -1090,11 +1090,11 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
 
     this.highlightsService
       .create({
-        novel_id: chapter.novel.id,
-        chapter_id: chapter.id,
-        anchor_id: anchorId,
-        start_offset: this.selectionStart(),
-        end_offset: this.selectionEnd(),
+        novelId: chapter.novel.id,
+        chapterId: chapter.id,
+        anchorId: anchorId,
+        startOffset: this.selectionStart(),
+        endOffset: this.selectionEnd(),
         color,
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -1145,7 +1145,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     this.applyReaderStyles();
     this.preferencesQueue.next({ [key]: value } as Partial<ReaderPreferences>);
 
-    if (key === 'reading_mode') {
+    if (key === 'readingMode') {
       this.buildPages();
     }
   }
@@ -1171,7 +1171,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       this.loadComments(chapter, true);
       if (this.isAuthenticated()) {
         this.readerService
-          .addHistory({ novel_id: chapter.novel.id, chapter_id: chapter.id })
+          .addHistory({ novelId: chapter.novel.id, chapterId: chapter.id })
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe();
         this.loadChapterBookmarks(chapter.id);
@@ -1304,9 +1304,9 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     const grouped = new Map<string, Highlight[]>();
 
     highlights.forEach((highlight) => {
-      const list = grouped.get(highlight.anchor_id) ?? [];
+      const list = grouped.get(highlight.anchorId) ?? [];
       list.push(highlight);
-      grouped.set(highlight.anchor_id, list);
+      grouped.set(highlight.anchorId, list);
     });
 
     grouped.forEach((items, anchorId) => {
@@ -1317,11 +1317,11 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
 
       let text = element.textContent ?? '';
       items
-        .sort((a, b) => b.start_offset - a.start_offset)
+        .sort((a, b) => b.startOffset - a.startOffset)
         .forEach((highlight) => {
-          const before = text.slice(0, highlight.start_offset);
-          const marked = text.slice(highlight.start_offset, highlight.end_offset);
-          const after = text.slice(highlight.end_offset);
+          const before = text.slice(0, highlight.startOffset);
+          const marked = text.slice(highlight.startOffset, highlight.endOffset);
+          const after = text.slice(highlight.endOffset);
           text =
             `${this.escapeHtml(before)}<span class="reader-highlight reader-highlight--${highlight.color}" data-highlight-id="${highlight.id}">` +
             `${this.escapeHtml(marked)}</span>${this.escapeHtml(after)}`;
@@ -1340,10 +1340,10 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
     const grouped = new Map<string, ReaderBookmark[]>();
 
     for (const bk of bookmarks) {
-      if (!bk.anchor_id) continue;
-      const list = grouped.get(bk.anchor_id) ?? [];
+      if (!bk.anchorId) continue;
+      const list = grouped.get(bk.anchorId) ?? [];
       list.push(bk);
-      grouped.set(bk.anchor_id, list);
+      grouped.set(bk.anchorId, list);
     }
 
     grouped.forEach((items, anchorId) => {
@@ -1385,7 +1385,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   }
 
   private buildPages() {
-    if (this.preferences().reading_mode !== 'paginated') {
+    if (this.preferences().readingMode !== 'paginated') {
       this.pages.set([]);
       return;
     }
@@ -1411,14 +1411,14 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      this.progressPercent.set(progress.scroll_pct);
-      if (this.preferences().reading_mode === 'paginated') {
+      this.progressPercent.set(progress.scrollPct);
+      if (this.preferences().readingMode === 'paginated') {
         this.currentPage.set(
           Math.max(
             0,
             Math.min(
               this.pages().length - 1,
-              Math.round(progress.scroll_pct * Math.max(this.pages().length - 1, 1)),
+              Math.round(progress.scrollPct * Math.max(this.pages().length - 1, 1)),
             ),
           ),
         );
@@ -1438,7 +1438,7 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
         }
 
         window.scrollTo({
-          top: container.offsetTop + container.offsetHeight * progress.scroll_pct,
+          top: container.offsetTop + container.offsetHeight * progress.scrollPct,
         });
       });
     });
@@ -1452,9 +1452,9 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   //   }
   //   this.readerService
   //     .saveProgress({
-  //       novel_id: chapter.novel.id,
-  //       chapter_id: chapter.id,
-  //       scroll_pct: scrollPct,
+  //       novelId: chapter.novel.id,
+  //       chapterId: chapter.id,
+  //       scrollPct: scrollPct,
   //     })
   //     .subscribe();
   // }
@@ -1490,12 +1490,12 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
       mono: "'Courier New', monospace",
     };
 
-    container.style.setProperty('--reader-font-size', `${this.preferences().font_size}px`);
-    container.style.setProperty('--reader-line-height', `${this.preferences().line_height}`);
-    container.style.setProperty('--reader-max-width', `${this.preferences().max_width}px`);
+    container.style.setProperty('--reader-font-size', `${this.preferences().fontSize}px`);
+    container.style.setProperty('--reader-line-height', `${this.preferences().lineHeight}`);
+    container.style.setProperty('--reader-max-width', `${this.preferences().maxWidth}px`);
     container.style.setProperty(
       '--reader-font-family',
-      fontMap[this.preferences().font_family] ?? fontMap['crimson'],
+      fontMap[this.preferences().fontFamily] ?? fontMap['crimson'],
     );
   }
 

@@ -36,8 +36,8 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
       <label>
         {{ 'reader.preferences.font' | translate }}
         <select
-          [value]="preferences().font_family"
-          (change)="preferencesChange.emit({ font_family: $any($event.target).value })"
+          [value]="preferences().fontFamily"
+          (change)="preferencesChange.emit({ fontFamily: $any($event.target).value })"
         >
           <option value="crimson">{{ 'reader.preferences.fonts.crimson' | translate }}</option>
           <option value="outfit">{{ 'reader.preferences.fonts.outfit' | translate }}</option>
@@ -51,8 +51,8 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
           type="range"
           min="14"
           max="26"
-          [value]="preferences().font_size"
-          (input)="preferencesChange.emit({ font_size: +$any($event.target).value })"
+          [value]="preferences().fontSize"
+          (input)="preferencesChange.emit({ fontSize: +$any($event.target).value })"
           data-testid="font-size-slider"
         />
       </label>
@@ -63,15 +63,15 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
           min="1.4"
           max="2.4"
           step="0.1"
-          [value]="preferences().line_height"
-          (input)="preferencesChange.emit({ line_height: +$any($event.target).value })"
+          [value]="preferences().lineHeight"
+          (input)="preferencesChange.emit({ lineHeight: +$any($event.target).value })"
         />
       </label>
       <label>
         {{ 'reader.preferences.mode' | translate }}
         <select
-          [value]="preferences().reading_mode"
-          (change)="preferencesChange.emit({ reading_mode: $any($event.target).value })"
+          [value]="preferences().readingMode"
+          (change)="preferencesChange.emit({ readingMode: $any($event.target).value })"
         >
           <option value="scroll">{{ 'reader.preferences.modeScroll' | translate }}</option>
           <option value="paginated">{{ 'reader.preferences.modePaginated' | translate }}</option>
@@ -80,8 +80,8 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
       <label class="toggle">
         <input
           type="checkbox"
-          [checked]="preferences().show_progress"
-          (change)="preferencesChange.emit({ show_progress: $any($event.target).checked })"
+          [checked]="preferences().showProgress"
+          (change)="preferencesChange.emit({ showProgress: $any($event.target).checked })"
         />
         {{ 'reader.preferences.showProgress' | translate }}
       </label>

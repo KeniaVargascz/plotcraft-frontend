@@ -820,7 +820,7 @@ export class NovelDetailPageComponent implements OnInit {
     }
 
     this.readingListsService
-      .addItem(list.id, { novel_id: novel.id })
+      .addItem(list.id, { novelId: novel.id })
       .pipe(finalize(() => this.listActionId.set(null)))
       .subscribe({
         next: () => {
@@ -858,7 +858,7 @@ export class NovelDetailPageComponent implements OnInit {
       .create({
         content: this.recommendMessage.trim() || `Recomiendo "${n.title}"`,
         type: 'RECOMMENDATION',
-        novel_id: n.id,
+        novelId: n.id,
       })
       .subscribe({
         next: () => {

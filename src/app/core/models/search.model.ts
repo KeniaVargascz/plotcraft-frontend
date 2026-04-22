@@ -41,30 +41,30 @@ export type SearchPostSort = 'relevance' | 'recent' | 'reactions';
 export interface UserSearchResult {
   id: string;
   username: string;
-  display_name: string;
-  avatar_url: string | null;
+  displayName: string;
+  avatarUrl: string | null;
   bio: string | null;
-  latest_covers?: Array<string | null>;
+  latestCovers?: Array<string | null>;
   stats: {
-    followers_count: number;
-    novels_count: number;
-    worlds_count: number;
+    followersCount: number;
+    novelsCount: number;
+    worldsCount: number;
   };
 }
 
 export interface PostSearchResult {
   id: string;
-  content_excerpt: string;
+  contentExcerpt: string;
   type: PostType;
-  created_at: string;
+  createdAt: string;
   author: {
     username: string;
-    display_name: string;
-    avatar_url: string | null;
+    displayName: string;
+    avatarUrl: string | null;
   };
   stats: {
-    reactions_count: number;
-    comments_count: number;
+    reactionsCount: number;
+    commentsCount: number;
   };
 }
 
@@ -89,7 +89,7 @@ export interface SearchSuggestion {
   label: string;
   sublabel: string;
   url: string;
-  avatar_url: string | null;
+  avatarUrl: string | null;
 }
 
 export interface SearchSuggestionsResponse {

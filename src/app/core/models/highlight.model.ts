@@ -2,12 +2,12 @@ export type HighlightColor = 'yellow' | 'green' | 'blue' | 'pink';
 
 export interface Highlight {
   id: string;
-  anchor_id: string;
-  start_offset: number;
-  end_offset: number;
+  anchorId: string;
+  startOffset: number;
+  endOffset: number;
   color: HighlightColor;
   note: string | null;
-  created_at: string;
+  createdAt: string;
   chapter: {
     id: string;
     slug: string;

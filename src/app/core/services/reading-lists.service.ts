@@ -7,7 +7,7 @@ export class ReadingListsService {
   private readonly api = inject(HttpApiService);
 
   listMine(novelId?: string) {
-    const query = novelId ? `?novel_id=${encodeURIComponent(novelId)}` : '';
+    const query = novelId ? `?novelId=${encodeURIComponent(novelId)}` : '';
     return this.api.get<ReadingList[]>(`/reading-lists/me${query}`);
   }
 
@@ -34,7 +34,7 @@ export class ReadingListsService {
     return this.api.delete<{ message: string }>(`/reading-lists/${id}`);
   }
 
-  addItem(id: string, payload: { novel_id: string; personal_note?: string | null }) {
+  addItem(id: string, payload: { novelId: string; personal_note?: string | null }) {
     return this.api.post<ReadingListItem>(`/reading-lists/${id}/items`, payload);
   }
 

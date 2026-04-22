@@ -6,8 +6,8 @@ import { WorldSummary } from './world.model';
 
 export interface DiscoveryNewRelease {
   novel: NovelSummary;
-  new_chapters_count: number;
-  latest_chapter: {
+  newChaptersCount: number;
+  latestChapter: {
     title: string;
     slug: string;
     publishedAt: string;
@@ -16,7 +16,7 @@ export interface DiscoveryNewRelease {
 
 export interface GenreSpotlight {
   genre: Pick<Genre, 'slug' | 'label'>;
-  top_novels: NovelSummary[];
+  topNovels: NovelSummary[];
 }
 
 export interface DiscoverySnapshot {
@@ -26,20 +26,20 @@ export interface DiscoverySnapshot {
     characters: CharacterSummary[];
     authors: UserSearchResult[];
   };
-  new_releases: DiscoveryNewRelease[];
-  genres_spotlight: GenreSpotlight[];
-  community_posts: PostSearchResult[];
+  newReleases: DiscoveryNewRelease[];
+  genresSpotlight: GenreSpotlight[];
+  communityPosts: PostSearchResult[];
   stats: {
-    total_novels: number;
-    total_authors: number;
-    total_worlds: number;
-    total_characters: number;
-    total_chapters_published: number;
+    totalNovels: number;
+    totalAuthors: number;
+    totalWorlds: number;
+    totalCharacters: number;
+    totalChaptersPublished: number;
   };
 }
 
 export interface TrendingResponse<T> {
   items: T[];
   period: '72h' | '7d';
-  generated_at: string;
+  generatedAt: string;
 }

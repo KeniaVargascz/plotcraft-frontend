@@ -1,21 +1,14 @@
-export interface FeedPagination {
-  nextCursor: string | null;
-  hasMore: boolean;
-  limit: number;
-}
+import type { PagePagination } from './pagination.model';
 
-export interface PaginatedResponse<T> {
-  data: T[];
-  pagination: FeedPagination;
-}
-
-export interface PagePagination {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-  hasMore: boolean;
-}
+export type {
+  CursorPagination,
+  CursorPagination as FeedPagination,
+  PagePagination,
+  Pagination,
+  CursorPaginatedResponse,
+  CursorPaginatedResponse as PaginatedResponse,
+  PagePaginatedResponse,
+} from './pagination.model';
 
 export interface PagedResponse<T> {
   data: T[];

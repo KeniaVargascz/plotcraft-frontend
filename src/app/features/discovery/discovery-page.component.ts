@@ -851,7 +851,19 @@ export class DiscoveryPageComponent {
         this.loading.set(false);
       },
       error: () => {
-        this.snapshot.set(null);
+        this.snapshot.set({
+          trending: { novels: [], worlds: [], characters: [], authors: [] },
+          newReleases: [],
+          genresSpotlight: [],
+          communityPosts: [],
+          stats: {
+            totalNovels: 0,
+            totalAuthors: 0,
+            totalWorlds: 0,
+            totalCharacters: 0,
+            totalChaptersPublished: 0,
+          },
+        });
         this.loading.set(false);
       },
     });

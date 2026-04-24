@@ -7,13 +7,15 @@
         <div class="nav-group">
           <span class="group-label">{{ group.label }}</span>
           @for (item of group.items; track item.route) {
-            <a
-              [routerLink]="item.route"
-              [class.active]="isNavItemActive(item)"
-              [attr.aria-current]="isNavItemActive(item) ? 'page' : null"
-            >
-              {{ item.label }}
-            </a>
+            @if (isNavItemVisible(item)) {
+              <a
+                [routerLink]="item.route"
+                [class.active]="isNavItemActive(item)"
+                [attr.aria-current]="isNavItemActive(item) ? 'page' : null"
+              >
+                {{ item.label }}
+              </a>
+            }
           }
           @if (group.label === 'Comunidad' && authService.getCurrentUserSnapshot()?.isAdmin) {
             <a routerLink="/admin/comunidades" routerLinkActive="active">Panel de revision</a>
@@ -237,14 +239,16 @@
         <section class="nav-group">
           <span class="group-label">{{ group.label }}</span>
           @for (item of group.items; track item.route) {
-            <a
-              [routerLink]="item.route"
-              [class.active]="isNavItemActive(item)"
-              [attr.aria-current]="isNavItemActive(item) ? 'page' : null"
-              (click)="closeMobileMenu(false)"
-            >
-              {{ item.label }}
-            </a>
+            @if (isNavItemVisible(item)) {
+              <a
+                [routerLink]="item.route"
+                [class.active]="isNavItemActive(item)"
+                [attr.aria-current]="isNavItemActive(item) ? 'page' : null"
+                (click)="closeMobileMenu(false)"
+              >
+                {{ item.label }}
+              </a>
+            }
           }
           @if (group.label === 'Comunidad' && authService.getCurrentUserSnapshot()?.isAdmin) {
             <a

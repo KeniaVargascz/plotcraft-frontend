@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { featureFlagGuard } from './core/guards/feature-flag.guard';
 import { guestGuard } from './core/guards/guest.guard';
 import { adminMatchGuard } from './core/guards/admin-match.guard';
 import { anonymousMatchGuard, authenticatedMatchGuard } from './core/guards/session-match.guard';
@@ -34,6 +35,7 @@ export const routes: Routes = [
       },
       {
         path: 'feed',
+        canActivate: [featureFlagGuard('social.feed')],
         loadComponent: () =>
           import('./features/feed/feed-page/feed-page.component').then(
             (module) => module.FeedPageComponent,
@@ -212,6 +214,7 @@ export const routes: Routes = [
       },
       {
         path: 'analytics',
+        canActivate: [featureFlagGuard('author.analytics')],
         loadComponent: () =>
           import('./features/analytics/author-analytics-page.component').then(
             (module) => module.AuthorAnalyticsPageComponent,
@@ -261,6 +264,7 @@ export const routes: Routes = [
       },
       {
         path: 'referencias-visuales',
+        canActivate: [featureFlagGuard('author.visual_boards')],
         loadComponent: () =>
           import('./features/visual-boards/my-visual-boards-page.component').then(
             (module) => module.MyVisualBoardsPageComponent,
@@ -380,6 +384,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-timelines',
+        canActivate: [featureFlagGuard('author.timelines')],
         loadComponent: () =>
           import('./features/timeline/timelines-list-page.component').then(
             (module) => module.TimelinesListPageComponent,
@@ -394,6 +399,7 @@ export const routes: Routes = [
       },
       {
         path: 'planner',
+        canActivate: [featureFlagGuard('author.planner')],
         loadComponent: () =>
           import('./features/planner/planner-dashboard-page.component').then(
             (module) => module.PlannerDashboardPageComponent,

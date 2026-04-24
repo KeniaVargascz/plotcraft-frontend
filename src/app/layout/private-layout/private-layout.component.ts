@@ -18,6 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
+import { FeatureFlagService } from '../../core/services/feature-flag.service';
 import { NotificationsService } from '../../core/services/notifications.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { NotificationsPanelComponent } from '../../features/notifications/notifications-panel.component';
@@ -29,6 +30,7 @@ type NavItem = {
   label: string;
   exact?: boolean;
   excludePrefixes?: string[];
+  featureKey?: string;
 };
 
 type NavGroup = {
@@ -58,6 +60,7 @@ type NavGroup = {
 })
 export class PrivateLayoutComponent {
   readonly authService = inject(AuthService);
+  readonly ff = inject(FeatureFlagService);
   readonly themeService = inject(ThemeService);
   private readonly notificationsService = inject(NotificationsService);
   private readonly breakpointObserver = inject(BreakpointObserver);
@@ -76,10 +79,10 @@ export class PrivateLayoutComponent {
   readonly unreadCount = signal(0);
 
   readonly primaryNavItems: NavItem[] = [
-    { route: '/feed', label: 'Feed', exact: true },
-    { route: '/descubrir', label: 'Descubrir' },
-    { route: '/novelas', label: 'Novelas' },
-    { route: '/mundos', label: 'Mundos' },
+    { route: '/feed', label: 'Feed', exact: true, featureKey: 'social.feed' },
+    { route: '/descubrir', label: 'Descubrir', featureKey: 'explore.discovery' },
+    { route: '/novelas', label: 'Novelas', featureKey: 'explore.novels_catalog' },
+    { route: '/mundos', label: 'Mundos', featureKey: 'explore.worlds_catalog' },
     { route: '/mi-perfil', label: 'Perfil' },
   ];
 
@@ -87,48 +90,51 @@ export class PrivateLayoutComponent {
     {
       label: 'Explorar',
       items: [
-        { route: '/feed', label: 'Feed', exact: true },
-        { route: '/descubrir', label: 'Descubrir' },
+        { route: '/feed', label: 'Feed', exact: true, featureKey: 'social.feed' },
+        { route: '/descubrir', label: 'Descubrir', featureKey: 'explore.discovery' },
         {
           route: '/novelas',
           label: 'Novelas',
           excludePrefixes: ['/novelas/generos'],
+          featureKey: 'explore.novels_catalog',
         },
-        { route: '/mundos', label: 'Mundos' },
-        { route: '/personajes', label: 'Personajes' },
-        { route: '/foro', label: 'Foro' },
-        { route: '/comunidades', label: 'Comunidades', exact: true },
+        { route: '/mundos', label: 'Mundos', featureKey: 'explore.worlds_catalog' },
+        { route: '/personajes', label: 'Personajes', featureKey: 'explore.characters_catalog' },
+        { route: '/foro', label: 'Foro', featureKey: 'community.forum' },
+        { route: '/comunidades', label: 'Comunidades', exact: true, featureKey: 'community.communities' },
         { route: '/novelas/generos', label: 'Categorías' },
       ],
     },
     {
       label: 'Comunidad',
-      items: [{ route: '/mis-comunidades', label: 'Mis comunidades' }],
+      items: [
+        { route: '/mis-comunidades', label: 'Mis comunidades', featureKey: 'community.communities' },
+      ],
     },
     {
       label: 'Autor',
       items: [
-        { route: '/mis-novelas', label: 'Mis novelas' },
-        { route: '/mis-mundos', label: 'Mis mundos' },
-        { route: '/mis-personajes', label: 'Mis personajes' },
-        { route: '/referencias-visuales', label: 'Tableros' },
-        { route: '/mis-timelines', label: 'Timelines' },
-        { route: '/planner', label: 'Planner' },
+        { route: '/mis-novelas', label: 'Mis novelas', featureKey: 'author.novels' },
+        { route: '/mis-mundos', label: 'Mis mundos', featureKey: 'author.worlds' },
+        { route: '/mis-personajes', label: 'Mis personajes', featureKey: 'author.characters' },
+        { route: '/referencias-visuales', label: 'Tableros', featureKey: 'author.visual_boards' },
+        { route: '/mis-timelines', label: 'Timelines', featureKey: 'author.timelines' },
+        { route: '/planner', label: 'Planner', featureKey: 'author.planner' },
       ],
     },
     {
       label: 'Biblioteca',
       items: [
-        { route: '/biblioteca', label: 'Biblioteca', exact: true },
-        { route: '/biblioteca/colecciones', label: 'Colecciones' },
-        { route: '/mis-suscripciones', label: 'Suscripciones' },
+        { route: '/biblioteca', label: 'Biblioteca', exact: true, featureKey: 'reader.library' },
+        { route: '/biblioteca/colecciones', label: 'Colecciones', featureKey: 'reader.library' },
+        { route: '/mis-suscripciones', label: 'Suscripciones', featureKey: 'reader.subscriptions' },
       ],
     },
     {
       label: 'Herramientas',
       items: [
-        { route: '/analytics', label: 'Analytics' },
-        { route: '/herramientas/plantillas', label: 'Plantillas' },
+        { route: '/analytics', label: 'Analytics', featureKey: 'author.analytics' },
+        { route: '/herramientas/plantillas', label: 'Plantillas', featureKey: 'platform.templates' },
       ],
     },
     {
@@ -219,6 +225,11 @@ export class PrivateLayoutComponent {
 
   logout(): void {
     this.authService.logout();
+  }
+
+  isNavItemVisible(item: NavItem): boolean {
+    if (!item.featureKey) return true;
+    return this.ff.isEnabled(item.featureKey);
   }
 
   isActive(route: string, exact = false): boolean {

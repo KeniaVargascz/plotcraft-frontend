@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { UpperCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ThreadSummary } from '../../../core/models/forum-thread.model';
@@ -429,6 +429,7 @@ import { CategoryBadgeComponent } from './category-badge.component';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ThreadCardComponent {
   readonly thread = input.required<ThreadSummary>();

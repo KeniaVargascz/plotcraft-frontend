@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
@@ -9,5 +9,6 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
   imports: [MatButtonModule, RouterLink, TranslatePipe],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LandingComponent {}

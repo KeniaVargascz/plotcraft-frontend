@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SearchResult } from '../../../core/models/search.model';
 
@@ -97,6 +97,7 @@ import { SearchResult } from '../../../core/models/search.model';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchResultCardComponent {
   @Input({ required: true }) result!: SearchResult;

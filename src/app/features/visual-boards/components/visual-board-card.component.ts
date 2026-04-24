@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { VisualBoardSummary } from '../models/visual-board.model';
 
@@ -162,6 +162,7 @@ import { VisualBoardSummary } from '../models/visual-board.model';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VisualBoardCardComponent {
   @Input({ required: true }) board!: VisualBoardSummary;

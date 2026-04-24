@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReadingStats } from '../../core/models/library.model';
 import { LibraryService } from '../../core/services/library.service';
@@ -48,6 +48,7 @@ import { LibraryService } from '../../core/services/library.service';
   styles: [
     '.page-shell,.grid,.card{display:grid;gap:1rem}.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.card{padding:1rem;border:1px solid var(--border);border-radius:1rem;background:var(--bg-card)}.bar-row{display:grid;grid-template-columns:90px 1fr 70px;gap:1rem;align-items:center}.bar{height:10px;border-radius:999px;background:var(--bg-surface);overflow:hidden}.bar span{display:block;height:100%;background:var(--accent)}@media(max-width:900px){.grid{grid-template-columns:1fr 1fr}}',
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatsPageComponent {
   private readonly libraryService = inject(LibraryService);

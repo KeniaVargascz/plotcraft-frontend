@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { WritingTask } from '../../../core/models/writing-task.model';
 import { WordProgressBarComponent } from './word-progress-bar.component';
 
@@ -231,6 +231,7 @@ const PRIORITY_LABELS: Record<string, string> = {
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskCardComponent {
   task = input.required<WritingTask>();

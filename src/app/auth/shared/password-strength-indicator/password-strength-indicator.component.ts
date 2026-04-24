@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
 @Component({
@@ -59,6 +59,7 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PasswordStrengthIndicatorComponent {
   @Input() password = '';

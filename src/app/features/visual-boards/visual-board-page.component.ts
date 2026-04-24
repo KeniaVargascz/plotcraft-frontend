@@ -1,5 +1,5 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -26,6 +26,7 @@ import { VisualBoardsService } from './services/visual-boards.service';
   imports: [FormsModule, RouterLink, DragDropModule, LightboxComponent],
   templateUrl: './visual-board-page.template.html',
   styleUrl: './visual-board-page.styles.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VisualBoardPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

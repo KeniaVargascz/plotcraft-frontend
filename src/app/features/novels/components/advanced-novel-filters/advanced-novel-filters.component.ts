@@ -1,4 +1,4 @@
-import { Component, DestroyRef, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
@@ -430,7 +430,7 @@ export interface NovelFilters {
         border-radius: 0.75rem;
         max-height: 220px;
         overflow-y: auto;
-        z-index: 10;
+        z-index: var(--z-raised);
         box-shadow: 0 12px 28px -16px var(--shadow);
       }
       .char-search .dropdown li {
@@ -580,6 +580,7 @@ export interface NovelFilters {
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdvancedNovelFiltersComponent {
   private readonly languagesService = inject(LanguagesService);

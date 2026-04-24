@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject, Input, OnInit, OnDestroy, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, OnInit, OnDestroy, signal, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { OtpInputComponent } from '../../../../shared/otp-input/otp-input.component';
 import { TranslatePipe } from '../../../../../shared/pipes/translate.pipe';
@@ -11,6 +11,7 @@ import { AuthService } from '../../../../../core/services/auth.service';
   imports: [OtpInputComponent, TranslatePipe],
   templateUrl: './register-step2.component.html',
   styleUrl: './register-step2.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterStep2Component implements OnInit, OnDestroy {
   @Input({ required: true }) email = '';

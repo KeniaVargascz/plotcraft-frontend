@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FieldDefinition, FieldValue } from '../../../../core/models/field-definition.model';
 import { MarkdownService } from '../../../../core/services/markdown.service';
@@ -189,6 +189,7 @@ import { inject } from '@angular/core';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WbDynamicFieldComponent {
   private readonly markdownService = inject(MarkdownService);

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { WorldSummary } from '../../core/models/world.model';
@@ -105,6 +105,7 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorldsCatalogPageComponent {
   private readonly worldsService = inject(WorldsService);

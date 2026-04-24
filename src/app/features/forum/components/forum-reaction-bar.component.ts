@@ -1,4 +1,5 @@
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ForumService } from '../../../core/services/forum.service';
 
 type ReactionKey = 'LIKE' | 'HELPFUL' | 'INSIGHTFUL' | 'FUNNY';
@@ -66,9 +67,11 @@ const REACTION_MAP: { key: ReactionKey; emoji: string; label: string }[] = [
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForumReactionBarComponent {
   private readonly forumService = inject(ForumService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly reactions = input.required<Record<string, number>>();
   readonly viewerReaction = input<string | null>(null);
@@ -114,9 +117,10 @@ export class ForumReactionBarComponent {
     if (rid) {
       this.forumService
         .toggleReplyReaction(this.threadSlug(), rid, { reactionType: key })
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe();
     } else {
-      this.forumService.toggleThreadReaction(this.threadSlug(), { reactionType: key }).subscribe();
+      this.forumService.toggleThreadReaction(this.threadSlug(), { reactionType: key }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     }
   }
 }

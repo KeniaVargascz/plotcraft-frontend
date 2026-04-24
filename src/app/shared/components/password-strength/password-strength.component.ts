@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
 type PasswordRule = {
@@ -13,6 +13,7 @@ type PasswordRule = {
   imports: [TranslatePipe],
   templateUrl: './password-strength.component.html',
   styleUrl: './password-strength.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PasswordStrengthComponent {
   @Input() password = '';

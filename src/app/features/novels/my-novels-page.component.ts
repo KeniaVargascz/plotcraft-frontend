@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { NovelSummary } from '../../core/models/novel.model';
@@ -74,6 +74,7 @@ import { NovelCardComponent } from './components/novel-card.component';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyNovelsPageComponent implements OnInit {
   private readonly novelsService = inject(NovelsService);

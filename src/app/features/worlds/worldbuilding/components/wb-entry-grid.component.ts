@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { WbEntrySummary } from '../../../../core/models/wb-entry.model';
 import { WbEntryCardComponent } from './wb-entry-card.component';
 
@@ -39,6 +39,7 @@ import { WbEntryCardComponent } from './wb-entry-card.component';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WbEntryGridComponent {
   readonly entries = input.required<WbEntrySummary[]>();

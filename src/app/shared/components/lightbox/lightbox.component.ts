@@ -1,10 +1,11 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-lightbox',
   standalone: true,
   templateUrl: './lightbox.component.html',
   styleUrl: './lightbox.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LightboxComponent implements OnInit {
   @Input() images: string[] = [];

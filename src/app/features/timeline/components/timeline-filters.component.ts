@@ -1,4 +1,4 @@
-import { Component, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TimelineEventType, TimelineEventRelevance } from '../../../core/models/timeline.model';
 
@@ -125,6 +125,7 @@ const RELEVANCES: { value: TimelineEventRelevance | null; label: string }[] = [
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelineFiltersComponent {
   readonly filterChange = output<TimelineFilters>();

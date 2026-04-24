@@ -1,3 +1,5 @@
+@use '../../../../styles/responsive' as responsive;
+
 .profile-page,
 .post-stack {
   display: grid;
@@ -93,7 +95,7 @@
   padding: 1.25rem;
 }
 
-@media (max-width: 720px) {
+@include responsive.respond-sm-down {
   .profile-meta {
     grid-template-columns: 1fr;
   }

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { Highlight } from '../../core/models/highlight.model';
@@ -169,6 +169,7 @@ import { HighlightsService } from '../../core/services/highlights.service';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HighlightsPageComponent {
   private readonly highlightsService = inject(HighlightsService);

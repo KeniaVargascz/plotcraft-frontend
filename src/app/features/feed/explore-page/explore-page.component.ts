@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   AfterViewInit,
   Component,
   DestroyRef,
@@ -33,6 +34,7 @@ import { PostTypeFilterComponent } from '../components/post-type-filter/post-typ
   ],
   templateUrl: './explore-page.component.html',
   styleUrl: './explore-page.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ExplorePageComponent implements AfterViewInit, OnDestroy {
   readonly authService = inject(AuthService);

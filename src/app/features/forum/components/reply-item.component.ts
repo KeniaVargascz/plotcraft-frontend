@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ForumReply } from '../../../core/models/forum-reply.model';
 import { AuthService } from '../../../core/services/auth.service';
@@ -291,6 +291,7 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReplyItemComponent {
   private readonly forumService = inject(ForumService);

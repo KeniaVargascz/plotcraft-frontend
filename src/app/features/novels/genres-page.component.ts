@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { Genre } from '../../core/models/genre.model';
@@ -97,6 +97,7 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GenresPageComponent {
   private readonly genresService = inject(GenresService);

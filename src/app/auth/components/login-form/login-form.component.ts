@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, inject, OnDestroy, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, OnDestroy, Output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
@@ -12,6 +12,7 @@ import { AuthService } from '../../../core/services/auth.service';
   imports: [ReactiveFormsModule, TranslatePipe, RouterLink],
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginFormComponent implements OnDestroy {
   @Output() loginSuccess = new EventEmitter<void>();

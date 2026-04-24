@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, DestroyRef, inject, signal, computed, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, computed, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AnalyticsService } from '../../core/services/analytics.service';
 import { AuthorAnalytics, AudienceStats } from '../../core/models/author-analytics.model';
@@ -321,6 +321,7 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
       color: var(--text-2);
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthorAnalyticsPageComponent implements OnInit {
   private readonly analyticsService = inject(AnalyticsService);

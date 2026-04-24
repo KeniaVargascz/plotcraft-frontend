@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { WritingProjectSummary } from '../../../core/models/writing-project.model';
 
@@ -173,6 +173,7 @@ import { WritingProjectSummary } from '../../../core/models/writing-project.mode
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectCardComponent {
   project = input.required<WritingProjectSummary>();

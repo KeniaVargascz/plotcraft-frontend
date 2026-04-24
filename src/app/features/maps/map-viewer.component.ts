@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, input, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, signal, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WorldMap } from '../../core/models/world-map.model';
 import { MapsService } from '../../core/services/maps.service';
@@ -52,6 +52,7 @@ import { MapLegendComponent } from './components/map-legend.component';
       opacity: 0.9;
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapViewerComponent implements OnInit {
   readonly worldSlug = input.required<string>();

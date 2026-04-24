@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ForumCategory } from '../../../core/models/forum-thread.model';
 
 const CATEGORY_CONFIG: Record<ForumCategory, { label: string; color: string; bg: string }> = {
@@ -41,6 +41,7 @@ const CATEGORY_CONFIG: Record<ForumCategory, { label: string; color: string; bg:
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CategoryBadgeComponent {
   readonly category = input.required<ForumCategory>();

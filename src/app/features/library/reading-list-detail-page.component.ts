@@ -1,5 +1,5 @@
 import { DatePipe, NgClass, TitleCasePipe } from '@angular/common';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -236,6 +236,7 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReadingListDetailPageComponent {
   private readonly route = inject(ActivatedRoute);

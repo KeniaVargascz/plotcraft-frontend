@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   AfterViewInit,
   Component,
   DestroyRef,
@@ -697,6 +698,7 @@ import { ReaderChapterNavComponent } from './components/reader/reader-chapter-na
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   private readonly route = inject(ActivatedRoute);

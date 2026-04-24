@@ -1,4 +1,4 @@
-import { Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { WritingTask } from '../../../core/models/writing-task.model';
 import { TaskStatus } from '../../../core/models/writing-project.model';
@@ -135,6 +135,7 @@ const STATUS_LABELS: Record<string, string> = {
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanColumnComponent {
   title = input<string>();

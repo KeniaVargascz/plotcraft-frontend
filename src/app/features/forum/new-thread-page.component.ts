@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/tag-chips-input.component';
@@ -428,6 +428,7 @@ const CATEGORIES: CategoryOption[] = [
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewThreadPageComponent implements OnInit {
   private readonly forumService = inject(ForumService);

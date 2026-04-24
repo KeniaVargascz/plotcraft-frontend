@@ -1,3 +1,5 @@
+@use '../../../../styles/responsive' as responsive;
+
 .profile-edit-shell,
 .tips,
 .settings-card,
@@ -154,7 +156,7 @@ form {
 
 .field-error {
   font-size: 0.78rem;
-  color: #e55;
+  color: var(--danger);
 }
 
 .preview-card {
@@ -306,7 +308,7 @@ form {
 
 .toggle-input:checked + .toggle-switch .toggle-thumb {
   transform: translateX(16px);
-  background: #fff;
+  background: var(--accent-text);
 }
 
 .btn {
@@ -326,7 +328,7 @@ form {
 
 .btn-primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-text);
   border-color: var(--accent);
 }
 
@@ -350,7 +352,7 @@ form {
   color: var(--accent-text);
 }
 
-@media (max-width: 960px) {
+@include responsive.respond-md-down {
   .hero-card,
   .content-grid,
   .field-grid {

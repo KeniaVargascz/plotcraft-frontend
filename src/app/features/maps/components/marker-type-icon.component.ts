@@ -1,4 +1,4 @@
-import { Component, input, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, computed } from '@angular/core';
 import { MarkerType } from '../../../core/models/map-marker.model';
 
 const MARKER_CONFIG: Record<MarkerType, { emoji: string; color: string }> = {
@@ -36,6 +36,7 @@ export { MARKER_CONFIG };
       line-height: 1;
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MarkerTypeIconComponent {
   readonly type = input.required<MarkerType>();

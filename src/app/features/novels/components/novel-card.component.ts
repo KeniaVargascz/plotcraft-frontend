@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NovelSummary } from '../../../core/models/novel.model';
 import { AuthGateService } from '../../../core/services/auth-gate.service';
@@ -522,6 +522,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NovelCardComponent {
   private readonly authGate = inject(AuthGateService);

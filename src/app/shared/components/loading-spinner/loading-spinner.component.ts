@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 
@@ -8,5 +8,6 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
   imports: [MatProgressSpinnerModule, TranslatePipe],
   templateUrl: './loading-spinner.component.html',
   styleUrl: './loading-spinner.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoadingSpinnerComponent {}

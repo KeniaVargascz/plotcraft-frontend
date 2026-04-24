@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SparklineChartComponent } from './sparkline-chart.component';
 
@@ -109,6 +109,7 @@ export interface TopNovelRow {
       color: var(--text-3);
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopNovelsTableComponent {
   readonly novels = input.required<TopNovelRow[]>();

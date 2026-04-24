@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Genre } from '../../../core/models/genre.model';
 import { GenreLabelPipe } from '../../pipes/genre-label.pipe';
@@ -93,6 +93,7 @@ import { GenreLabelPipe } from '../../pipes/genre-label.pipe';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GenreSpotlightCardComponent {
   readonly genre = input.required<Pick<Genre, 'slug' | 'label'>>();

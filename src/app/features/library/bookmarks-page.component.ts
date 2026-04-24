@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ReaderBookmark } from '../../core/models/bookmark.model';
@@ -140,6 +140,7 @@ import { LibraryService } from '../../core/services/library.service';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BookmarksPageComponent {
   private readonly libraryService = inject(LibraryService);

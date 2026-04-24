@@ -1,4 +1,4 @@
-import { Component, DestroyRef, HostListener, inject, signal, computed, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, HostListener, inject, signal, computed, OnDestroy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -207,7 +207,7 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
         background: var(--bg-card);
         position: sticky;
         top: 0;
-        z-index: 10;
+        z-index: var(--z-raised);
       }
       .topbar-left {
         display: flex;
@@ -406,6 +406,7 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WbEntryFormPageComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);

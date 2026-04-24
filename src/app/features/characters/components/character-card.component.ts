@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CharacterRole, CharacterSummary } from '../../../core/models/character.model';
 import { AuthGateService } from '../../../core/services/auth-gate.service';
@@ -299,6 +299,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CharacterCardComponent {
   private readonly authGate = inject(AuthGateService);

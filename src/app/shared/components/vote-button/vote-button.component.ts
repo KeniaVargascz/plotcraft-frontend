@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { VotesService, ChapterVoteResponse } from '../../../core/services/votes.service';
@@ -9,6 +9,7 @@ import { VotesService, ChapterVoteResponse } from '../../../core/services/votes.
   imports: [],
   templateUrl: './vote-button.component.html',
   styleUrl: './vote-button.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VoteButtonComponent {
   private readonly votesService = inject(VotesService);

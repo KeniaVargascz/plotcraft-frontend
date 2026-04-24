@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
@@ -57,6 +58,7 @@ interface ComposerCharacter {
   ],
   templateUrl: './post-composer.component.html',
   styleUrl: './post-composer.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostComposerComponent {
   private readonly formBuilder = inject(FormBuilder);

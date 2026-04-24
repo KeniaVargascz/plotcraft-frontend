@@ -1,4 +1,4 @@
-import { Component, input, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, computed, signal } from '@angular/core';
 import { ChapterStats } from '../../../core/models/novel-analytics.model';
 
 @Component({
@@ -80,6 +80,7 @@ import { ChapterStats } from '../../../core/models/novel-analytics.model';
       font-size: 0.85rem;
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChapterFunnelComponent {
   readonly chapters = input.required<ChapterStats[]>();

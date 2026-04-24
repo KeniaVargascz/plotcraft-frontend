@@ -1,3 +1,5 @@
+@use '../../../../styles/responsive' as responsive;
+
 .profile-card {
   display: grid;
   gap: 1rem;
@@ -180,7 +182,7 @@
   margin-top: 0.5rem;
 }
 
-@media (max-width: 720px) {
+@include responsive.respond-sm-down {
   .profile-card {
     padding: 1.25rem;
   }

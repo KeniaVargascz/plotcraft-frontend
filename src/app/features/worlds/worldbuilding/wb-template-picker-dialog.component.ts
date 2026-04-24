@@ -1,4 +1,4 @@
-import { Component, input, output, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CategoryTemplate, WbCategory } from '../../../core/models/wb-category.model';
 import { WorldbuildingService } from '../../../core/services/worldbuilding.service';
@@ -112,7 +112,7 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
         background: rgba(0, 0, 0, 0.55);
         display: grid;
         place-items: center;
-        z-index: 1000;
+        z-index: var(--z-dialog);
         padding: 1rem;
         overflow-y: auto;
       }
@@ -288,6 +288,7 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WbTemplatePickerDialogComponent {
   private readonly wbService = inject(WorldbuildingService);

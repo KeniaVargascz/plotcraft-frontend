@@ -1,4 +1,4 @@
-import { Component, DestroyRef, computed, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -482,6 +482,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelineCanvasPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -542,7 +543,7 @@ export class TimelineCanvasPageComponent implements OnInit {
     }
     this.titleTimeout = setTimeout(() => {
       if (!name.trim()) return;
-      this.timelineService.update(this.timelineId(), { name: name.trim() }).subscribe();
+      this.timelineService.update(this.timelineId(), { name: name.trim() }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
     }, 800);
   }
 
@@ -564,11 +565,11 @@ export class TimelineCanvasPageComponent implements OnInit {
       data,
     });
 
-    ref.afterClosed().subscribe((result) => {
+    ref.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((result) => {
       if (!result) return;
       if (event) {
         // Update
-        this.timelineService.updateEvent(this.timelineId(), event.id, result).subscribe({
+        this.timelineService.updateEvent(this.timelineId(), event.id, result).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (updated) => {
             this.allEvents.update((evts) => evts.map((e) => (e.id === updated.id ? updated : e)));
           },
@@ -576,7 +577,7 @@ export class TimelineCanvasPageComponent implements OnInit {
       } else {
         // Create
         const payload = { ...result, sortOrder: this.allEvents().length + 1 };
-        this.timelineService.createEvent(this.timelineId(), payload).subscribe({
+        this.timelineService.createEvent(this.timelineId(), payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (created) => {
             this.allEvents.update((evts) => [...evts, created]);
           },
@@ -595,9 +596,9 @@ export class TimelineCanvasPageComponent implements OnInit {
       },
     });
 
-    ref.afterClosed().subscribe((confirmed) => {
+    ref.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((confirmed) => {
       if (confirmed !== true) return;
-      this.timelineService.deleteEvent(this.timelineId(), event.id).subscribe({
+      this.timelineService.deleteEvent(this.timelineId(), event.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: () => {
           this.allEvents.update((evts) => evts.filter((e) => e.id !== event.id));
         },
@@ -617,13 +618,14 @@ export class TimelineCanvasPageComponent implements OnInit {
         this.timelineId(),
         reordered.map((e) => ({ id: e.id, sortOrder: e.sortOrder })),
       )
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
   }
 
   /* ─── Export ─── */
 
   exportJson() {
-    this.timelineService.exportTimeline(this.timelineId()).subscribe((blob) => {
+    this.timelineService.exportTimeline(this.timelineId()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((blob) => {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;

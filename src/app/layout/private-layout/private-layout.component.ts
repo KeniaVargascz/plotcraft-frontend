@@ -1,5 +1,6 @@
 import { AsyncPipe, DOCUMENT, NgTemplateOutlet } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
@@ -53,6 +54,7 @@ type NavGroup = {
   ],
   templateUrl: './private-layout.component.html',
   styleUrl: './private-layout.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PrivateLayoutComponent {
   readonly authService = inject(AuthService);

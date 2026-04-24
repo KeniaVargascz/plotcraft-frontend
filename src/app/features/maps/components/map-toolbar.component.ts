@@ -1,4 +1,4 @@
-import { Component, input, output, HostListener } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, HostListener } from '@angular/core';
 
 export type MapTool = 'pan' | 'marker' | 'region' | 'select';
 
@@ -71,6 +71,7 @@ const TOOLS: ToolDef[] = [
       border-color: var(--accent, #8b5cf6);
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapToolbarComponent {
   readonly activeTool = input<string>('pan');

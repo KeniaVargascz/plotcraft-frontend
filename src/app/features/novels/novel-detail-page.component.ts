@@ -1,6 +1,6 @@
 import { DatePipe, SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -475,7 +475,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
         background: rgba(0, 0, 0, 0.5);
         display: grid;
         place-items: center;
-        z-index: 1000;
+        z-index: var(--z-dialog);
         padding: 1rem;
       }
       .recommend-modal {
@@ -596,6 +596,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NovelDetailPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

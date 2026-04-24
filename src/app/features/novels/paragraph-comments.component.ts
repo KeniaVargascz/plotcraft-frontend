@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, Output, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ChaptersService, ChapterCommentModel } from '../../core/services/chapters.service';
@@ -73,7 +73,7 @@ import { ChaptersService, ChapterCommentModel } from '../../core/services/chapte
       .p-overlay {
         position: fixed;
         inset: 0;
-        z-index: 1000;
+        z-index: var(--z-dialog);
         background: rgba(0, 0, 0, 0.45);
         display: grid;
         place-items: center;
@@ -285,6 +285,7 @@ import { ChaptersService, ChapterCommentModel } from '../../core/services/chapte
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ParagraphCommentsComponent implements OnChanges {
   @Input() novelSlug!: string;

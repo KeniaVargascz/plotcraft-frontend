@@ -1,3 +1,5 @@
+@use '../../../styles/responsive' as responsive;
+
 .public-shell {
   min-height: 100vh;
 }
@@ -58,7 +60,7 @@ nav a.active {
   font-size: 0.88rem;
 }
 
-@media (max-width: 960px) {
+@include responsive.respond-md-down {
   .public-header {
     grid-template-columns: 1fr;
   }

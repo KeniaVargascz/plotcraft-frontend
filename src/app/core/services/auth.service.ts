@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, catchError, map, of, tap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, take, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../models/api-response.model';
 import { AuthResponse } from '../models/auth-response.model';
@@ -145,7 +145,7 @@ export class AuthService {
             },
           },
         )
-        .pipe(catchError(() => of(null)))
+        .pipe(take(1), catchError(() => of(null)))
         .subscribe();
     }
 

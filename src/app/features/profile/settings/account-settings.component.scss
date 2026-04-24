@@ -1,3 +1,5 @@
+@use '../../../../styles/responsive' as responsive;
+
 .account-shell,
 .settings-stack,
 .settings-card,
@@ -122,7 +124,7 @@
 
 .danger-badge {
   background: color-mix(in srgb, var(--danger) 14%, var(--bg-card));
-  color: #b42318;
+  color: var(--danger);
 }
 
 form {
@@ -207,7 +209,7 @@ form {
 
 .field-error {
   font-size: 0.78rem;
-  color: #e55;
+  color: var(--danger);
 }
 
 .btn {
@@ -227,7 +229,7 @@ form {
 
 .btn-primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-text);
   border-color: var(--accent);
 
   &:hover {
@@ -253,7 +255,7 @@ form {
 
 .btn-danger {
   background: color-mix(in srgb, var(--danger) 14%, var(--bg-card));
-  color: #e55;
+  color: var(--danger);
   border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
 
   &:hover {
@@ -304,7 +306,7 @@ form {
 
 .error {
   background: color-mix(in srgb, var(--danger) 18%, var(--bg-surface));
-  color: #ffb3b3;
+  color: color-mix(in srgb, var(--danger) 40%, transparent);
 }
 
 .toggle-list {
@@ -397,7 +399,7 @@ form {
 
 .toggle-input:checked + .toggle-switch .toggle-thumb {
   transform: translateX(16px);
-  background: #fff;
+  background: var(--accent-text);
 }
 
 .toggle-row:hover .toggle-switch {
@@ -487,7 +489,7 @@ form {
   }
 }
 
-@media (max-width: 960px) {
+@include responsive.respond-md-down {
   .hero-card,
   .content-grid,
   .field-grid {

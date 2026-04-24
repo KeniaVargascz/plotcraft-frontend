@@ -9,7 +9,20 @@ export async function clearSession(page: Page) {
   });
 }
 
+/**
+ * Ensures the user is authenticated.
+ * If storageState was loaded via global-setup (recommended), just navigates to /feed.
+ * Falls back to form-based login if no session exists.
+ */
 export async function loginAsDemo(page: Page, email = 'demo@plotcraft.com') {
+  // Check if already authenticated via storageState
+  await page.goto('/feed', { waitUntil: 'networkidle', timeout: 15_000 });
+
+  if (page.url().includes('/feed')) {
+    return; // Already authenticated via storageState
+  }
+
+  // Fallback: form-based login
   await clearSession(page);
   await page.goto('/login');
   await page.locator('input[formcontrolname="identifier"]').fill(email);

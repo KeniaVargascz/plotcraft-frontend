@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { AppNotification, NotificationType } from '../../../core/models/notification.model';
 
 const TYPE_ICONS: Record<NotificationType, string> = {
@@ -124,6 +124,7 @@ const TYPE_ICONS: Record<NotificationType, string> = {
       color: var(--danger);
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationItemComponent {
   readonly notification = input.required<AppNotification>();

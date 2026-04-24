@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../models/series.model';
 
@@ -180,6 +180,7 @@ import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../m
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SeriesCardComponent {
   readonly series = input.required<SeriesSummary>();

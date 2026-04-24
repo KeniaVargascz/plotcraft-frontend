@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { WbCategorySummary } from '../../../../core/models/wb-category.model';
 import { WbSearchBarComponent } from './wb-search-bar.component';
@@ -139,6 +139,7 @@ import { WbSearchBarComponent } from './wb-search-bar.component';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WbSidebarComponent {
   readonly worldSlug = input.required<string>();

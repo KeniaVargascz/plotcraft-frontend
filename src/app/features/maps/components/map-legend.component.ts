@@ -1,4 +1,4 @@
-import { Component, input, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, computed } from '@angular/core';
 import { MapMarkerResponse, MarkerType } from '../../../core/models/map-marker.model';
 import { MapRegionResponse } from '../../../core/models/map-region.model';
 import { MarkerTypeIconComponent } from './marker-type-icon.component';
@@ -81,6 +81,7 @@ import { MarkerTypeIconComponent } from './marker-type-icon.component';
       margin: 0;
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapLegendComponent {
   readonly markers = input<MapMarkerResponse[]>([]);

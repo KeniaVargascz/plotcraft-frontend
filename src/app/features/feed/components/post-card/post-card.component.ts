@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -36,6 +37,7 @@ import { ReactionBarComponent } from '../reaction-bar/reaction-bar.component';
   ],
   templateUrl: './post-card.component.html',
   styleUrl: './post-card.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostCardComponent {
   private readonly authService = inject(AuthService);

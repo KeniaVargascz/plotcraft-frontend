@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommunityForum } from '../../models/community-forum.model';
 import { CommunityForumsService } from '../../services/community-forums.service';
@@ -144,6 +144,7 @@ import { AuthService } from '../../../../core/services/auth.service';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForumCardComponent {
   private readonly forumsService = inject(CommunityForumsService);

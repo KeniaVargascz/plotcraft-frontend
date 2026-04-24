@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
@@ -27,6 +27,7 @@ import { PostCardComponent } from '../../feed/components/post-card/post-card.com
   ],
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyProfileComponent {
   private readonly authService = inject(AuthService);
@@ -53,14 +54,15 @@ export class MyProfileComponent {
     this.authService
       .me()
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         tap((user) => {
           this.user.set(user);
           this.loading.set(false);
           this.loadActivity(user.username);
-          this.followsService.getFollowers(user.username).subscribe({
+          this.followsService.getFollowers(user.username).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (res) => this.followersCount.set(res.data.length),
           });
-          this.followsService.getFollowing(user.username).subscribe({
+          this.followsService.getFollowing(user.username).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
             next: (res) => this.followingCount.set(res.data.length),
           });
         }),
@@ -72,7 +74,7 @@ export class MyProfileComponent {
       )
       .subscribe();
 
-    this.novelsService.listMine({ limit: 50 }).subscribe({
+    this.novelsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (response) => {
         this.novelsCount.set(response.data.filter((novel) => novel.isPublic).length);
         this.publishedWords.set(response.data.reduce((total, novel) => total + novel.wordCount, 0));

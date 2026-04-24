@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RegisterStep1Component } from './steps/register-step1/register-step1.component';
 import { RegisterStep2Component } from './steps/register-step2/register-step2.component';
 
@@ -22,6 +22,7 @@ export interface RegisterStep1Payload {
     }
   `,
   styleUrl: './register-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterFormComponent {
   readonly step = signal(1);

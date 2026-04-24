@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   input,
   effect,
@@ -52,6 +53,7 @@ Chart.register(
       height: 100% !important;
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimeSeriesChartComponent implements AfterViewInit, OnDestroy {
   readonly labels = input.required<string[]>();

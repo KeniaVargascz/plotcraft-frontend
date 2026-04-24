@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { PlannerStats } from '../../core/models/planner-stats.model';
@@ -411,6 +411,7 @@ const TYPE_LABELS: Record<string, string> = {
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlannerStatsPageComponent implements OnInit {
   private readonly plannerService = inject(PlannerService);

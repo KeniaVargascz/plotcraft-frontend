@@ -1,4 +1,4 @@
-import { Component, input, output, signal, effect } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal, effect } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FieldDefinition, FieldType } from '../../../../core/models/field-definition.model';
 
@@ -271,6 +271,7 @@ type FieldPropValue = FieldDefinition[keyof FieldDefinition];
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WbFieldSchemaBuilderComponent {
   readonly fieldSchema = input<FieldDefinition[]>([]);

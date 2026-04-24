@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { WritingTask } from '../../core/models/writing-task.model';
@@ -274,7 +274,7 @@ const PRIORITY_COLORS: Record<string, string> = {
         position: fixed;
         inset: 0;
         background: rgba(0, 0, 0, 0.3);
-        z-index: 100;
+        z-index: var(--z-overlay);
         display: flex;
         justify-content: flex-end;
       }
@@ -371,6 +371,7 @@ const PRIORITY_COLORS: Record<string, string> = {
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlannerCalendarPageComponent implements OnInit {
   private readonly plannerService = inject(PlannerService);

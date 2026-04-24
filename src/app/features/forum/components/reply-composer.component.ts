@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MarkdownService } from '../../../core/services/markdown.service';
 
@@ -133,6 +133,7 @@ import { MarkdownService } from '../../../core/services/markdown.service';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReplyComposerComponent {
   private readonly md = inject(MarkdownService);

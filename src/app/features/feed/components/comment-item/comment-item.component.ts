@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
@@ -23,6 +24,7 @@ import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
   imports: [ReactiveFormsModule, TranslatePipe, RelativeDatePipe],
   templateUrl: './comment-item.component.html',
   styleUrl: './comment-item.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommentItemComponent {
   private readonly formBuilder = inject(FormBuilder);

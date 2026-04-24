@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ThreadSummary } from '../../core/models/forum-thread.model';
@@ -95,6 +95,7 @@ import { ThreadCardComponent } from './components/thread-card.component';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ArchivedThreadsPageComponent implements OnInit {
   private readonly forumService = inject(ForumService);

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
@@ -18,6 +18,7 @@ import { SearchBarComponent } from '../../shared/components/search-bar/search-ba
   ],
   templateUrl: './public-layout.component.html',
   styleUrl: './public-layout.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PublicLayoutComponent {
   readonly themeService = inject(ThemeService);

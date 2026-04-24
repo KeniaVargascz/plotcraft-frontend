@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -424,6 +424,7 @@ import { WbTemplatePickerDialogComponent } from './wb-template-picker-dialog.com
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WbWorkspacePageComponent {
   @ViewChild('categoryDialog') categoryDialog!: WbCategoryFormDialogComponent;

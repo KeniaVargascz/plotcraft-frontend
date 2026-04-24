@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -34,6 +34,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
   imports: [FormsModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './account-settings.component.html',
   styleUrl: './account-settings.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountSettingsComponent implements OnInit {
   private readonly fb = inject(FormBuilder);

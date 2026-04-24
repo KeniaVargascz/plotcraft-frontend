@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   EventEmitter,
@@ -18,6 +19,7 @@ export interface SelectOption {
   standalone: true,
   templateUrl: './custom-select.component.html',
   styleUrl: './custom-select.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomSelectComponent {
   @Input({ required: true }) options: SelectOption[] = [];

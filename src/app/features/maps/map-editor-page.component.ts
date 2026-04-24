@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { inject } from '@angular/core';
 
@@ -95,6 +95,7 @@ import { inject } from '@angular/core';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapEditorPageComponent {
   readonly slug = inject(ActivatedRoute).snapshot.paramMap.get('slug') ?? '';

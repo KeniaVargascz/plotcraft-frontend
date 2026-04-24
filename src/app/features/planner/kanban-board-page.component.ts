@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -342,6 +342,7 @@ const ALL_TYPES: TaskType[] = [
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KanbanBoardPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -484,7 +485,7 @@ export class KanbanBoardPageComponent implements OnInit {
   onNameBlur(): void {
     const trimmed = this.projectName.trim();
     if (trimmed && trimmed !== this.project()?.name) {
-      this.plannerService.updateProject(this.projectId, { name: trimmed }).subscribe({
+      this.plannerService.updateProject(this.projectId, { name: trimmed }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (updated) => this.project.set(updated),
       });
     }
@@ -500,6 +501,7 @@ export class KanbanBoardPageComponent implements OnInit {
       const reorderPayload = col.map((t, i) => ({ id: t.id, sortOrder: i }));
       this.plannerService
         .reorderTasks(this.projectId, { tasks: reorderPayload, status: targetStatus })
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe();
     } else {
       // Move between columns
@@ -521,6 +523,7 @@ export class KanbanBoardPageComponent implements OnInit {
           status: targetStatus,
           sortOrder: event.currentIndex,
         })
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe();
     }
   }
@@ -538,12 +541,12 @@ export class KanbanBoardPageComponent implements OnInit {
       data,
     });
 
-    ref.afterClosed().subscribe((result) => {
+    ref.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((result) => {
       if (!result) return;
 
       if (task) {
         // Update existing task
-        this.plannerService.updateTask(this.projectId, task.id, result).subscribe({
+        this.plannerService.updateTask(this.projectId, task.id, result).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (updated) => {
             this.board.update((b) => {
               const newBoard = { ...b };
@@ -560,7 +563,7 @@ export class KanbanBoardPageComponent implements OnInit {
         });
       } else {
         // Create new task
-        this.plannerService.createTask(this.projectId, result).subscribe({
+        this.plannerService.createTask(this.projectId, result).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
           next: (created) => {
             const status = created.status;
             this.board.update((b) => ({
@@ -575,7 +578,7 @@ export class KanbanBoardPageComponent implements OnInit {
 
   onDeleteTask(task: WritingTask): void {
     if (!confirm(`Eliminar tarea "${task.title}"?`)) return;
-    this.plannerService.deleteTask(this.projectId, task.id).subscribe({
+    this.plannerService.deleteTask(this.projectId, task.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.board.update((b) => {
           const newBoard = { ...b };

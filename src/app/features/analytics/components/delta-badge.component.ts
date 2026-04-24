@@ -1,4 +1,4 @@
-import { Component, input, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, computed } from '@angular/core';
 
 @Component({
   selector: 'app-delta-badge',
@@ -40,6 +40,7 @@ import { Component, input, computed } from '@angular/core';
       font-size: 0.75rem;
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeltaBadgeComponent {
   readonly delta = input.required<number>();

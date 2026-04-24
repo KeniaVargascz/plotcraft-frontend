@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   HostListener,
@@ -351,7 +352,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
         border-radius: 0.75rem;
         max-height: 220px;
         overflow-y: auto;
-        z-index: 10;
+        z-index: var(--z-raised);
         box-shadow: 0 12px 28px -16px var(--shadow);
         scrollbar-width: thin;
         scrollbar-color: color-mix(in srgb, var(--accent) 38%, var(--border)) transparent;
@@ -466,6 +467,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CatalogPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

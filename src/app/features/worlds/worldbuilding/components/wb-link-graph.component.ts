@@ -1,4 +1,4 @@
-import { Component, input, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { WbEntryLink } from '../../../../core/models/wb-entry.model';
 
@@ -101,6 +101,7 @@ import { WbEntryLink } from '../../../../core/models/wb-entry.model';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WbLinkGraphComponent {
   private readonly router = inject(Router);

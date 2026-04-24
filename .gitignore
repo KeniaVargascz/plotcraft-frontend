@@ -19,6 +19,7 @@ yarn-error.log
 
 # Playwright artifacts
 /test-results
+/e2e/.auth
 /playwright-report
 /playwright/.cache
 

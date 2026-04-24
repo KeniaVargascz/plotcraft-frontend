@@ -1,4 +1,4 @@
-import { Component, DestroyRef, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, Input, Output, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ReactionsService } from '../../../../core/services/reactions.service';
@@ -12,6 +12,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
   imports: [TranslatePipe],
   templateUrl: './reaction-bar.component.html',
   styleUrl: './reaction-bar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReactionBarComponent {
   private readonly reactionsService = inject(ReactionsService);

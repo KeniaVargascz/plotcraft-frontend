@@ -1,4 +1,4 @@
-import { Component, input, output, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -61,6 +61,7 @@ import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs'
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WbSearchBarComponent implements OnInit, OnDestroy {
   readonly placeholder = input('Buscar entradas...');

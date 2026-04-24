@@ -1,3 +1,5 @@
+@use '../../../../../styles/responsive' as responsive;
+
 .delete-shell,
 .tips,
 .sidebar-card,
@@ -94,7 +96,7 @@
 
 .danger-badge {
   background: color-mix(in srgb, var(--danger) 16%, var(--bg-card));
-  color: #b42318;
+  color: var(--danger);
   border-color: color-mix(in srgb, var(--danger) 45%, var(--border));
 }
 
@@ -186,7 +188,7 @@ form,
 
 .field-error {
   font-size: 0.78rem;
-  color: #e55;
+  color: var(--danger);
 }
 
 .btn {
@@ -217,7 +219,7 @@ form,
 
 .btn-danger {
   background: color-mix(in srgb, var(--danger) 14%, var(--bg-card));
-  color: #e55;
+  color: var(--danger);
   border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
 }
 
@@ -230,7 +232,7 @@ form,
   cursor: not-allowed;
 }
 
-@media (max-width: 960px) {
+@include responsive.respond-md-down {
   .hero-card,
   .content-grid {
     grid-template-columns: 1fr;

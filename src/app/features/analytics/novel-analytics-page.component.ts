@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, DestroyRef, inject, signal, computed, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, computed, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { AnalyticsService } from '../../core/services/analytics.service';
@@ -312,6 +312,7 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
       box-shadow: 0 0 8px var(--accent-glow);
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NovelAnalyticsPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

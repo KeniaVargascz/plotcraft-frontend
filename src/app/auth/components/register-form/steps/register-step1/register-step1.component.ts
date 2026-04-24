@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, EventEmitter, Output, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, Output, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '../../../../../shared/pipes/translate.pipe';
@@ -19,6 +19,7 @@ import { RegisterStep1Payload } from '../../register-form.component';
   imports: [ReactiveFormsModule, TranslatePipe, PasswordStrengthIndicatorComponent],
   templateUrl: './register-step1.component.html',
   styleUrl: './register-step1.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterStep1Component {
   @Output() submitted = new EventEmitter<RegisterStep1Payload>();

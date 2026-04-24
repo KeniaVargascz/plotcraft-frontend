@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   input,
@@ -187,6 +188,7 @@ import { MARKER_CONFIG } from './marker-type-icon.component';
       cursor: pointer;
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MapCanvasComponent implements OnDestroy {
   readonly mapData = input<WorldMap | null>(null);

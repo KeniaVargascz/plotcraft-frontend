@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { WbEntryLink } from '../../../../core/models/wb-entry.model';
 
 @Component({
@@ -145,6 +145,7 @@ import { WbEntryLink } from '../../../../core/models/wb-entry.model';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WbEntryLinksComponent {
   readonly links = input.required<WbEntryLink[]>();

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ChapterSummary } from '../../core/models/chapter.model';
@@ -142,6 +142,7 @@ import { PlannerService } from '../../core/services/planner.service';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NovelChaptersPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

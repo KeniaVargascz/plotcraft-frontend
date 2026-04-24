@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MarkerType, MapMarkerResponse } from '../../../core/models/map-marker.model';
@@ -239,6 +239,7 @@ const COLOR_SWATCHES = [
       border: 1px solid var(--border-color, #333);
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MarkerFormDialogComponent implements OnInit {
   readonly dialogRef = inject(MatDialogRef<MarkerFormDialogComponent>);

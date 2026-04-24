@@ -1,4 +1,4 @@
-import { Component, DestroyRef, Input, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, Input, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -78,6 +78,7 @@ import { VisualBoardCardComponent } from './visual-board-card.component';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LinkedVisualBoardsSectionComponent implements OnInit {
   @Input({ required: true }) linkedType!: VisualBoardLinkedType;

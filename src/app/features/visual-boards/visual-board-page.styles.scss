@@ -57,7 +57,7 @@
 }
 
 .badge.linked {
-  color: #8a5a35;
+  color: var(--accent);
 }
 
 .description,
@@ -128,7 +128,7 @@ figcaption {
   bottom: 0;
   padding: 0.6rem 0.75rem;
   background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.72));
-  color: #fff;
+  color: var(--accent-text);
   font-size: 0.82rem;
 }
 
@@ -140,7 +140,7 @@ figcaption {
   border: 0;
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.62);
-  color: #fff;
+  color: var(--accent-text);
   padding: 0.3rem 0.55rem;
 }
 
@@ -157,5 +157,5 @@ figcaption {
 }
 
 .danger {
-  color: #9e2f2f;
+  color: var(--danger);
 }

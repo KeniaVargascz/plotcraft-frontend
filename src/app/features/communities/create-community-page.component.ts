@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 /**
@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
   selector: 'app-create-community-page',
   standalone: true,
   template: '',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateCommunityPageComponent implements OnInit {
   private readonly router = inject(Router);

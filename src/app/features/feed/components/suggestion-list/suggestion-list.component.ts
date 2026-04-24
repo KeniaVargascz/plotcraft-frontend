@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -16,6 +17,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
   imports: [TranslatePipe],
   templateUrl: './suggestion-list.component.html',
   styleUrl: './suggestion-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SuggestionListComponent {
   private readonly cdr = inject(ChangeDetectorRef);

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { LibraryNovelCard } from '../../core/models/library.model';
@@ -135,6 +135,7 @@ import { LibraryService } from '../../core/services/library.service';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InProgressPageComponent {
   private readonly libraryService = inject(LibraryService);

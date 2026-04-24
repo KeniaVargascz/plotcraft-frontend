@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -58,6 +58,7 @@ import { MatButtonModule } from '@angular/material/button';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPromptDialogComponent {
   readonly data = inject<{ entityType?: string }>(MAT_DIALOG_DATA, { optional: true });

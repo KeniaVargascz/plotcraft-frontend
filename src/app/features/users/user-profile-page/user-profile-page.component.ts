@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PostModel, PostType } from '../../../core/models/post.model';
@@ -34,6 +34,7 @@ import { WorldCardComponent } from '../../worlds/components/world-card.component
   ],
   templateUrl: './user-profile-page.component.html',
   styleUrl: './user-profile-page.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserProfilePageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

@@ -1,3 +1,5 @@
+@use '../../../../styles/responsive' as responsive;
+
 .feed-layout {
   display: grid;
   grid-template-columns: minmax(0, 680px) minmax(260px, 320px);
@@ -122,7 +124,7 @@
   display: none;
 }
 
-@media (max-width: 1080px) {
+@include responsive.respond-md-down {
   .feed-layout {
     grid-template-columns: 1fr;
   }

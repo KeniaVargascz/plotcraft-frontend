@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommunityCharacter } from '../../models/community-character.model';
 
 @Component({
@@ -93,6 +93,7 @@ import { CommunityCharacter } from '../../models/community-character.model';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommunityCharacterCardComponent {
   @Input() character!: CommunityCharacter;

@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ForumCategory, ThreadStatus, ThreadSummary } from '../../core/models/forum-thread.model';
@@ -351,6 +351,7 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForumHomePageComponent implements OnInit {
   private readonly forumService = inject(ForumService);

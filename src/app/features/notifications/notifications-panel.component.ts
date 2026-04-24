@@ -1,4 +1,4 @@
-import { Component, DestroyRef, input, output, signal, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, input, output, signal, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { AppNotification } from '../../core/models/notification.model';
@@ -132,6 +132,7 @@ import { NotificationItemComponent } from './components/notification-item.compon
       }
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationsPanelComponent implements OnInit {
   private readonly notificationsService = inject(NotificationsService);

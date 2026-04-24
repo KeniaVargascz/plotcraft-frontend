@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { DeltaBadgeComponent } from './delta-badge.component';
 import { SparklineChartComponent } from './sparkline-chart.component';
 
@@ -64,6 +64,7 @@ import { SparklineChartComponent } from './sparkline-chart.component';
       max-width: 120px;
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetricCardComponent {
   readonly icon = input.required<string>();

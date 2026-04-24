@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { WorldSummary, WORLD_GENRE_LABELS } from '../../../core/models/world.model';
 import { AuthGateService } from '../../../core/services/auth-gate.service';
@@ -318,6 +318,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorldCardComponent {
   private readonly authGate = inject(AuthGateService);

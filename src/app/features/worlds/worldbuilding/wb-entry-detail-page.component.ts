@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { WbEntryDetail } from '../../../core/models/wb-entry.model';
@@ -309,6 +309,7 @@ import { WbLinkGraphComponent } from './components/wb-link-graph.component';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WbEntryDetailPageComponent {
   private readonly route = inject(ActivatedRoute);

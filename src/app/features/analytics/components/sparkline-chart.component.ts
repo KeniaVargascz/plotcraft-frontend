@@ -1,4 +1,4 @@
-import { Component, input, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, computed } from '@angular/core';
 
 @Component({
   selector: 'app-sparkline-chart',
@@ -24,6 +24,7 @@ import { Component, input, computed } from '@angular/core';
       height: 30px;
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SparklineChartComponent {
   readonly values = input.required<number[]>();

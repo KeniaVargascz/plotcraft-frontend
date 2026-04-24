@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MarkdownService } from '../../core/services/markdown.service';
@@ -340,6 +340,7 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WorldDetailPageComponent {
   private readonly route = inject(ActivatedRoute);

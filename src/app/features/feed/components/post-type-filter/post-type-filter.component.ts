@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { PostType } from '../../../../core/models/post.model';
 import { TranslationService } from '../../../../core/services/translation.service';
 import {
@@ -12,6 +12,7 @@ import {
   imports: [CustomSelectComponent],
   templateUrl: './post-type-filter.component.html',
   styleUrl: './post-type-filter.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostTypeFilterComponent {
   private readonly t = inject(TranslationService);

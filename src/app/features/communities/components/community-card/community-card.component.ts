@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { COMMUNITY_TYPE_LABELS, Community } from '../../models/community.model';
 
@@ -214,6 +214,7 @@ import { COMMUNITY_TYPE_LABELS, Community } from '../../models/community.model';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommunityCardComponent {
   @Input({ required: true }) community!: Community;

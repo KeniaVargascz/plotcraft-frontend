@@ -1,3 +1,5 @@
+@use '../../../../../styles/responsive' as responsive;
+
 .composer-card {
   display: grid;
   gap: 1rem;
@@ -118,7 +120,7 @@ textarea {
   border: 0;
   border-radius: 999px;
   background: var(--accent);
-  color: #111;
+  color: var(--accent-text);
   padding: 0.8rem 1.3rem;
   font-weight: 700;
   cursor: pointer;
@@ -160,7 +162,7 @@ textarea {
   right: 2px;
   background: rgba(0, 0, 0, 0.6);
   border: none;
-  color: #fff;
+  color: var(--accent-text);
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -218,7 +220,7 @@ textarea {
 
   &:hover {
     background: var(--accent);
-    color: #111;
+    color: var(--accent-text);
   }
 }
 
@@ -251,7 +253,7 @@ textarea {
   }
 }
 
-@media (max-width: 640px) {
+@include responsive.respond-sm-down {
   .composer-actions {
     flex-direction: column;
     align-items: stretch;

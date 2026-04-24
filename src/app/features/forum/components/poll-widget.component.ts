@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal, computed, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal, computed, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ForumPoll } from '../../../core/models/forum-poll.model';
 import { ForumService } from '../../../core/services/forum.service';
@@ -146,6 +146,7 @@ import { ForumService } from '../../../core/services/forum.service';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PollWidgetComponent implements OnInit {
   private readonly forumService = inject(ForumService);

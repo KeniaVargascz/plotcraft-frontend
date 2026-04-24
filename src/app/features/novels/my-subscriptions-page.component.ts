@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SubscribedNovel, SubscriptionsService } from '../../core/services/subscriptions.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
@@ -142,6 +142,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MySubscriptionsPageComponent implements OnInit {
   private readonly subsService = inject(SubscriptionsService);

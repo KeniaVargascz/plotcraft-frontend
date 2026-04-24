@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'app-period-selector',
@@ -45,6 +45,7 @@ import { Component, input, output } from '@angular/core';
       box-shadow: 0 0 8px var(--accent-glow);
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PeriodSelectorComponent {
   readonly selected = input<string>('30d');

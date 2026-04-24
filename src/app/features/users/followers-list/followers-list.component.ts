@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FollowModel } from '../../../core/models/follow.model';
@@ -11,6 +11,7 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
   imports: [RouterLink, TranslatePipe],
   templateUrl: './followers-list.component.html',
   styleUrl: './followers-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FollowersListComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

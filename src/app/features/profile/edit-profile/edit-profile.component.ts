@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
@@ -12,6 +12,7 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
   imports: [MatSnackBarModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   templateUrl: './edit-profile.component.html',
   styleUrl: './edit-profile.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditProfileComponent {
   private readonly fb = inject(FormBuilder);

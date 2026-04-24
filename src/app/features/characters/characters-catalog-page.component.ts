@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { CharactersService } from '../../core/services/characters.service';
@@ -98,6 +98,7 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CharactersCatalogPageComponent {
   private readonly charactersService = inject(CharactersService);

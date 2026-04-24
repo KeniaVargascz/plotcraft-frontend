@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   EventEmitter,
@@ -23,6 +24,7 @@ import { CommentItemComponent } from '../comment-item/comment-item.component';
   imports: [ReactiveFormsModule, TranslatePipe, CommentItemComponent],
   templateUrl: './comment-list.component.html',
   styleUrl: './comment-list.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommentListComponent implements OnInit {
   readonly authService = inject(AuthService);

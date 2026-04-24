@@ -1,4 +1,4 @@
-import { Component, input, output, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { WbCategory } from '../../../core/models/wb-category.model';
 import { FieldDefinition } from '../../../core/models/field-definition.model';
@@ -117,7 +117,7 @@ const COLOR_SWATCHES = [
         background: rgba(0, 0, 0, 0.55);
         display: grid;
         place-items: center;
-        z-index: 1000;
+        z-index: var(--z-dialog);
         padding: 1rem;
         overflow-y: auto;
       }
@@ -245,6 +245,7 @@ const COLOR_SWATCHES = [
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WbCategoryFormDialogComponent {
   private readonly wbService = inject(WorldbuildingService);

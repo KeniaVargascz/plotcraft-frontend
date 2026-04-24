@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import {
   TimelineEvent,
   TimelineEventType,
@@ -184,6 +184,7 @@ const RELEVANCE_OPACITY: Record<TimelineEventRelevance, number> = {
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelineEventCardComponent {
   readonly event = input.required<TimelineEvent>();

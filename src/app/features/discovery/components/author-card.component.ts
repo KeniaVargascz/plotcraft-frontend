@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { UserSearchResult } from '../../../core/models/search.model';
 import { AuthService } from '../../../core/services/auth.service';
@@ -287,6 +287,7 @@ import { FollowsService } from '../../../core/services/follows.service';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AuthorCardComponent {
   private readonly authService = inject(AuthService);

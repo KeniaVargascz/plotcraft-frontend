@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { DiscoverySnapshot } from '../../core/models/discovery.model';
@@ -811,6 +811,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DiscoveryPageComponent {
   private readonly discoveryService = inject(DiscoveryService);

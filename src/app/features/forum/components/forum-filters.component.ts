@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ForumCategory } from '../../../core/models/forum-thread.model';
 import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs';
@@ -81,6 +81,7 @@ const CATEGORIES: CategoryOption[] = [
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ForumFiltersComponent implements OnInit, OnDestroy {
   readonly filterChange = output<{

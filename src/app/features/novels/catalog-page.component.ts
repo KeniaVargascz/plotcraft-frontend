@@ -534,23 +534,22 @@ export class CatalogPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.genresService
-      .list()
+    combineLatest([
+      this.genresService.list(),
+      this.route.paramMap,
+      this.route.queryParamMap,
+    ])
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((genres) => {
+      .subscribe(([genres, params, queryParams]) => {
         this.genres.set(genres);
-        this.syncGenreCopy();
+        this.genre = params.get('genreSlug') ?? queryParams.get('genre') ?? '';
+
         // Redirect if the URL genre slug is not in the active list
         if (this.genre && !genres.some((g) => g.slug === this.genre)) {
           this.router.navigate(['/novelas/generos']);
           return;
         }
-      });
 
-    combineLatest([this.route.paramMap, this.route.queryParamMap])
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(([params, queryParams]) => {
-        this.genre = params.get('genreSlug') ?? queryParams.get('genre') ?? '';
         this.search = queryParams.get('search') ?? '';
         const sort = queryParams.get('sort');
         this.sort = sort === 'popular' || sort === 'views' ? sort : 'recent';

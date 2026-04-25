@@ -5,6 +5,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { ThemeService } from '../../core/services/theme.service';
 import { FeatureFlagService } from '../../core/services/feature-flag.service';
 import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
+import { InfoBannerComponent } from '../../shared/components/info-banner/info-banner.component';
 
 @Component({
   selector: 'app-public-layout',
@@ -16,6 +17,7 @@ import { SearchBarComponent } from '../../shared/components/search-bar/search-ba
     MatButtonModule,
     TranslatePipe,
     SearchBarComponent,
+    InfoBannerComponent,
   ],
   templateUrl: './public-layout.component.html',
   styleUrl: './public-layout.component.scss',

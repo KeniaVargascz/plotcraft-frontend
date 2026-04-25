@@ -23,6 +23,7 @@ import { NotificationsService } from '../../core/services/notifications.service'
 import { ThemeService } from '../../core/services/theme.service';
 import { NotificationsPanelComponent } from '../../features/notifications/notifications-panel.component';
 import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
+import { InfoBannerComponent } from '../../shared/components/info-banner/info-banner.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 type NavItem = {
@@ -52,6 +53,7 @@ type NavGroup = {
     RouterLinkActive,
     RouterOutlet,
     SearchBarComponent,
+    InfoBannerComponent,
     TranslatePipe,
   ],
   templateUrl: './private-layout.component.html',

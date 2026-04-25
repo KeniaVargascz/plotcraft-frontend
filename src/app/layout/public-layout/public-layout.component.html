@@ -9,7 +9,9 @@
     </nav>
     <nav class="auth-links">
       <a routerLink="/login" routerLinkActive="active">{{ 'nav.login' | translate }}</a>
-      <a routerLink="/register" routerLinkActive="active">{{ 'nav.register' | translate }}</a>
+      @if (canRegister()) {
+        <a routerLink="/register" routerLinkActive="active">{{ 'nav.register' | translate }}</a>
+      }
     </nav>
   </header>
 

@@ -4,7 +4,9 @@
     <h1>{{ 'landing.title' | translate }}</h1>
     <p>{{ 'app.tagline' | translate }}</p>
     <div class="hero-actions">
-      <a mat-flat-button routerLink="/register">{{ 'landing.ctaPrimary' | translate }}</a>
+      @if (canRegister()) {
+        <a mat-flat-button routerLink="/register">{{ 'landing.ctaPrimary' | translate }}</a>
+      }
       <a mat-stroked-button routerLink="/login">{{ 'landing.ctaSecondary' | translate }}</a>
     </div>
   </div>

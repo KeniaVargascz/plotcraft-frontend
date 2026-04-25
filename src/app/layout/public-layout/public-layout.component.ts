@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { ThemeService } from '../../core/services/theme.service';
+import { FeatureFlagService } from '../../core/services/feature-flag.service';
 import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
 
 @Component({
@@ -22,4 +23,6 @@ import { SearchBarComponent } from '../../shared/components/search-bar/search-ba
 })
 export class PublicLayoutComponent {
   readonly themeService = inject(ThemeService);
+  private readonly ff = inject(FeatureFlagService);
+  readonly canRegister = this.ff.enabled('platform.registration');
 }

@@ -540,6 +540,11 @@ export class CatalogPageComponent implements OnInit {
       .subscribe((genres) => {
         this.genres.set(genres);
         this.syncGenreCopy();
+        // Redirect if the URL genre slug is not in the active list
+        if (this.genre && !genres.some((g) => g.slug === this.genre)) {
+          this.router.navigate(['/novelas/generos']);
+          return;
+        }
       });
 
     combineLatest([this.route.paramMap, this.route.queryParamMap])

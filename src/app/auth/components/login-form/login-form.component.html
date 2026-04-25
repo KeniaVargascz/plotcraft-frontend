@@ -101,5 +101,7 @@
     </button>
   </form>
 
-  <a class="register-link" href="/register">{{ 'auth.login.registerPrompt' | translate }}</a>
+  @if (canRegister()) {
+    <a class="register-link" href="/register">{{ 'auth.login.registerPrompt' | translate }}</a>
+  }
 </div>

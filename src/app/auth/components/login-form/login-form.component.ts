@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { getFirstError } from '../../utils/form-errors.util';
 import { AuthService } from '../../../core/services/auth.service';
+import { FeatureFlagService } from '../../../core/services/feature-flag.service';
 
 @Component({
   selector: 'app-login-form',
@@ -20,6 +21,8 @@ export class LoginFormComponent implements OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly ff = inject(FeatureFlagService);
+  readonly canRegister = this.ff.enabled('platform.registration');
 
   readonly isSubmitting = signal(false);
   readonly formError = signal('');

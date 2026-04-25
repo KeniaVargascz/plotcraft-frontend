@@ -847,7 +847,7 @@ export const routes: Routes = [
   },
   {
     path: 'register',
-    canActivate: [guestGuard],
+    canActivate: [guestGuard, featureFlagGuard('platform.registration')],
     loadComponent: () =>
       import('./auth/components/register-form/register-form.component').then(
         (module) => module.RegisterFormComponent,

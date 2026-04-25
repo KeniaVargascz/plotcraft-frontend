@@ -229,7 +229,7 @@ export class PrivateLayoutComponent {
 
   isNavItemVisible(item: NavItem): boolean {
     if (!item.featureKey) return true;
-    return this.ff.isEnabled(item.featureKey);
+    return this.ff.enabled(item.featureKey)();
   }
 
   isActive(route: string, exact = false): boolean {

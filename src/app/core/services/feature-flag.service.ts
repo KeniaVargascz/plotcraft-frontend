@@ -1,5 +1,8 @@
 import { Injectable, signal, computed } from '@angular/core';
+import { timeout, catchError, of } from 'rxjs';
 import { HttpApiService } from './http-api.service';
+
+const LOAD_TIMEOUT_MS = 5000;
 
 @Injectable({ providedIn: 'root' })
 export class FeatureFlagService {
@@ -12,18 +15,20 @@ export class FeatureFlagService {
   load(): Promise<void> {
     if (this.loadPromise) return this.loadPromise;
     this.loadPromise = new Promise((resolve) => {
-      this.api.get<string[]>('/features/active').subscribe({
-        next: (keys) => {
-          this.flags.set(new Set(keys));
+      this.api
+        .get<string[]>('/features/active')
+        .pipe(
+          timeout(LOAD_TIMEOUT_MS),
+          catchError(() => of(null)),
+        )
+        .subscribe((keys) => {
+          if (keys) {
+            this.flags.set(new Set(keys));
+          }
+          // null = timeout or error → fail-open (empty flags = everything enabled)
           this.ready.set(true);
           resolve();
-        },
-        error: () => {
-          // If endpoint fails, enable everything (fail-open)
-          this.ready.set(true);
-          resolve();
-        },
-      });
+        });
     });
     return this.loadPromise;
   }

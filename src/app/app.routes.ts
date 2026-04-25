@@ -5,6 +5,7 @@ import { guestGuard } from './core/guards/guest.guard';
 import { adminMatchGuard } from './core/guards/admin-match.guard';
 import { anonymousMatchGuard, authenticatedMatchGuard } from './core/guards/session-match.guard';
 import { authGateGuard } from './core/guards/auth-gate.guard';
+import { activeGenreGuard } from './core/guards/active-genre.guard';
 import { MinimalLayoutComponent } from './layout/minimal-layout/minimal-layout.component';
 import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
 import { PrivateLayoutComponent } from './layout/private-layout/private-layout.component';
@@ -96,7 +97,7 @@ export const routes: Routes = [
       },
       {
         path: 'novelas/genero/:genreSlug',
-        canActivate: [featureFlagGuard('explore.novels_catalog')],
+        canActivate: [featureFlagGuard('explore.novels_catalog'), activeGenreGuard],
         loadComponent: () =>
           import('./features/novels/catalog-page.component').then(
             (module) => module.CatalogPageComponent,
@@ -666,7 +667,7 @@ export const routes: Routes = [
       },
       {
         path: 'novelas/genero/:genreSlug',
-        canActivate: [featureFlagGuard('explore.novels_catalog')],
+        canActivate: [featureFlagGuard('explore.novels_catalog'), activeGenreGuard],
         loadComponent: () =>
           import('./features/novels/catalog-page.component').then(
             (module) => module.CatalogPageComponent,

@@ -543,13 +543,6 @@ export class CatalogPageComponent implements OnInit {
       .subscribe(([genres, params, queryParams]) => {
         this.genres.set(genres);
         this.genre = params.get('genreSlug') ?? queryParams.get('genre') ?? '';
-
-        // Redirect if the URL genre slug is not in the active list
-        if (this.genre && !genres.some((g) => g.slug === this.genre)) {
-          this.router.navigate(['/novelas/generos']);
-          return;
-        }
-
         this.search = queryParams.get('search') ?? '';
         const sort = queryParams.get('sort');
         this.sort = sort === 'popular' || sort === 'views' ? sort : 'recent';

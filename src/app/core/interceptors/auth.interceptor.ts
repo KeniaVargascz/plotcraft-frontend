@@ -34,11 +34,18 @@ export const authInterceptor: HttpInterceptorFn = (
 
   return next(authRequest).pipe(
     catchError((error: unknown) => {
-      if (
-        !(error instanceof HttpErrorResponse) ||
-        error.status !== 401 ||
-        request.url.endsWith('/auth/refresh')
-      ) {
+      if (!(error instanceof HttpErrorResponse)) {
+        return throwError(() => error);
+      }
+
+      // 403 = forced logout (account disabled, locked, flags changed)
+      if (error.status === 403) {
+        authService.logout();
+        return throwError(() => error);
+      }
+
+      // 401 on refresh endpoint = no retry
+      if (error.status !== 401 || request.url.endsWith('/auth/refresh')) {
         return throwError(() => error);
       }
 

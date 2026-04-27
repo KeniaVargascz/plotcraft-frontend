@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { timeout, catchError, of } from 'rxjs';
 import { HttpApiService } from './http-api.service';
+import type { FeatureFlagKey } from '../constants/feature-flags.constants';
 
 const LOAD_TIMEOUT_MS = 5000;
 
@@ -25,7 +26,7 @@ export class FeatureFlagService {
           if (keys) {
             this.flags.set(new Set(keys));
           }
-          // null = timeout or error → fail-open (empty flags = everything enabled)
+          // null = timeout or error → fail-closed (empty flags = everything disabled)
           this.ready.set(true);
           resolve();
         });
@@ -39,19 +40,19 @@ export class FeatureFlagService {
     await this.load();
   }
 
-  isEnabled(key: string): boolean {
-    if (!this.ready()) return true; // fail-open before load
+  isEnabled(key: FeatureFlagKey): boolean {
+    if (!this.ready()) return false; // fail-closed before load
     return this.flags().has(key);
   }
 
   /** Reactive signal for use in templates — cached per key */
   private readonly enabledCache = new Map<string, ReturnType<typeof computed<boolean>>>();
 
-  enabled(key: string) {
+  enabled(key: FeatureFlagKey) {
     let c = this.enabledCache.get(key);
     if (!c) {
       c = computed(() => {
-        if (!this.ready()) return true; // fail-open before load
+        if (!this.ready()) return false; // fail-closed before load
         return this.flags().has(key);
       });
       this.enabledCache.set(key, c);

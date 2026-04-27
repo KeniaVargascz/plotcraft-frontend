@@ -9,6 +9,7 @@ import { activeGenreGuard } from './core/guards/active-genre.guard';
 import { MinimalLayoutComponent } from './layout/minimal-layout/minimal-layout.component';
 import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
 import { PrivateLayoutComponent } from './layout/private-layout/private-layout.component';
+import { FeatureFlag } from './core/constants/feature-flags.constants';
 
 export const routes: Routes = [
   {
@@ -36,7 +37,7 @@ export const routes: Routes = [
       },
       {
         path: 'feed',
-        canActivate: [featureFlagGuard('social.feed')],
+        canActivate: [featureFlagGuard(FeatureFlag.SOCIAL_FEED)],
         loadComponent: () =>
           import('./features/feed/feed-page/feed-page.component').then(
             (module) => module.FeedPageComponent,
@@ -44,7 +45,7 @@ export const routes: Routes = [
       },
       {
         path: 'descubrir',
-        canActivate: [featureFlagGuard('explore.discovery')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_DISCOVERY)],
         loadComponent: () =>
           import('./features/discovery/discovery-page.component').then(
             (module) => module.DiscoveryPageComponent,
@@ -52,7 +53,7 @@ export const routes: Routes = [
       },
       {
         path: 'buscar',
-        canActivate: [featureFlagGuard('explore.search')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_SEARCH)],
         loadComponent: () =>
           import('./features/search/search-page.component').then(
             (module) => module.SearchPageComponent,
@@ -81,7 +82,7 @@ export const routes: Routes = [
       },
       {
         path: 'novelas',
-        canActivate: [featureFlagGuard('explore.novels_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_NOVELS_CATALOG)],
         loadComponent: () =>
           import('./features/novels/catalog-page.component').then(
             (module) => module.CatalogPageComponent,
@@ -89,7 +90,7 @@ export const routes: Routes = [
       },
       {
         path: 'novelas/generos',
-        canActivate: [featureFlagGuard('explore.novels_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_NOVELS_CATALOG)],
         loadComponent: () =>
           import('./features/novels/genres-page.component').then(
             (module) => module.GenresPageComponent,
@@ -97,7 +98,7 @@ export const routes: Routes = [
       },
       {
         path: 'novelas/genero/:genreSlug',
-        canActivate: [featureFlagGuard('explore.novels_catalog'), activeGenreGuard],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_NOVELS_CATALOG), activeGenreGuard],
         loadComponent: () =>
           import('./features/novels/catalog-page.component').then(
             (module) => module.CatalogPageComponent,
@@ -105,7 +106,7 @@ export const routes: Routes = [
       },
       {
         path: 'mundos',
-        canActivate: [featureFlagGuard('explore.worlds_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_WORLDS_CATALOG)],
         loadComponent: () =>
           import('./features/worlds/worlds-catalog-page.component').then(
             (module) => module.WorldsCatalogPageComponent,
@@ -113,7 +114,7 @@ export const routes: Routes = [
       },
       {
         path: 'mundos/:slug/lore',
-        canActivate: [featureFlagGuard('explore.worlds_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_WORLDS_CATALOG)],
         loadComponent: () =>
           import('./features/worlds/world-lore-page.component').then(
             (module) => module.WorldLorePageComponent,
@@ -121,7 +122,7 @@ export const routes: Routes = [
       },
       {
         path: 'mundos/:slug/lore/:entrySlug',
-        canActivate: [featureFlagGuard('explore.worlds_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_WORLDS_CATALOG)],
         loadComponent: () =>
           import('./features/worlds/worldbuilding/wb-entry-detail-page.component').then(
             (module) => module.WbEntryDetailPageComponent,
@@ -129,7 +130,7 @@ export const routes: Routes = [
       },
       {
         path: 'mundos/:slug',
-        canActivate: [featureFlagGuard('explore.worlds_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_WORLDS_CATALOG)],
         loadComponent: () =>
           import('./features/worlds/world-detail-page.component').then(
             (module) => module.WorldDetailPageComponent,
@@ -137,7 +138,7 @@ export const routes: Routes = [
       },
       {
         path: 'personajes',
-        canActivate: [featureFlagGuard('explore.characters_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_CHARACTERS_CATALOG)],
         loadComponent: () =>
           import('./features/characters/characters-catalog-page.component').then(
             (module) => module.CharactersCatalogPageComponent,
@@ -145,7 +146,7 @@ export const routes: Routes = [
       },
       {
         path: 'personajes/:username/:slug',
-        canActivate: [featureFlagGuard('explore.characters_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_CHARACTERS_CATALOG)],
         loadComponent: () =>
           import('./features/characters/character-detail-page.component').then(
             (module) => module.CharacterDetailPageComponent,
@@ -153,7 +154,7 @@ export const routes: Routes = [
       },
       {
         path: 'novelas/:slug',
-        canActivate: [featureFlagGuard('explore.novels_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_NOVELS_CATALOG)],
         loadComponent: () =>
           import('./features/novels/novel-detail-page.component').then(
             (module) => module.NovelDetailPageComponent,
@@ -161,7 +162,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-novelas',
-        canActivate: [featureFlagGuard('author.novels')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_NOVELS)],
         loadComponent: () =>
           import('./features/novels/my-novels-page.component').then(
             (module) => module.MyNovelsPageComponent,
@@ -169,7 +170,7 @@ export const routes: Routes = [
       },
       {
         path: 'sagas',
-        canActivate: [featureFlagGuard('explore.series_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_SERIES_CATALOG)],
         loadComponent: () =>
           import('./features/series/series-catalog-page.component').then(
             (m) => m.SeriesCatalogPageComponent,
@@ -194,7 +195,7 @@ export const routes: Routes = [
       },
       {
         path: 'sagas/:slug',
-        canActivate: [featureFlagGuard('explore.series_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_SERIES_CATALOG)],
         loadComponent: () =>
           import('./features/series/series-detail-page.component').then(
             (m) => m.SeriesDetailPageComponent,
@@ -202,7 +203,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-suscripciones',
-        canActivate: [featureFlagGuard('reader.subscriptions')],
+        canActivate: [featureFlagGuard(FeatureFlag.READER_SUBSCRIPTIONS)],
         loadComponent: () =>
           import('./features/novels/my-subscriptions-page.component').then(
             (m) => m.MySubscriptionsPageComponent,
@@ -210,7 +211,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-mundos',
-        canActivate: [featureFlagGuard('author.worlds')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_WORLDS)],
         loadComponent: () =>
           import('./features/worlds/my-worlds-page.component').then(
             (module) => module.MyWorldsPageComponent,
@@ -218,7 +219,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-mundos/nuevo',
-        canActivate: [featureFlagGuard('author.worlds')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_WORLDS)],
         loadComponent: () =>
           import('./features/worlds/world-form-page.component').then(
             (module) => module.WorldFormPageComponent,
@@ -226,7 +227,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-mundos/:slug/editar',
-        canActivate: [featureFlagGuard('author.worlds')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_WORLDS)],
         loadComponent: () =>
           import('./features/worlds/world-form-page.component').then(
             (module) => module.WorldFormPageComponent,
@@ -234,7 +235,7 @@ export const routes: Routes = [
       },
       {
         path: 'analytics',
-        canActivate: [featureFlagGuard('author.analytics')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_ANALYTICS)],
         loadComponent: () =>
           import('./features/analytics/author-analytics-page.component').then(
             (module) => module.AuthorAnalyticsPageComponent,
@@ -242,7 +243,7 @@ export const routes: Routes = [
       },
       {
         path: 'analytics/novelas/:slug',
-        canActivate: [featureFlagGuard('author.analytics')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_ANALYTICS)],
         loadComponent: () =>
           import('./features/analytics/novel-analytics-page.component').then(
             (module) => module.NovelAnalyticsPageComponent,
@@ -250,7 +251,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-mundos/:slug/mapa',
-        canActivate: [featureFlagGuard('author.worlds')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_WORLDS)],
         loadComponent: () =>
           import('./features/maps/map-editor-page.component').then(
             (module) => module.MapEditorPageComponent,
@@ -258,7 +259,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-mundos/:slug/world-building',
-        canActivate: [featureFlagGuard('author.worlds.worldbuilding')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_WORLDS_WORLDBUILDING)],
         loadComponent: () =>
           import('./features/worlds/worldbuilding/wb-workspace-page.component').then(
             (module) => module.WbWorkspacePageComponent,
@@ -266,7 +267,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-mundos/:slug/world-building/:catSlug/nueva',
-        canActivate: [featureFlagGuard('author.worlds.worldbuilding')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_WORLDS_WORLDBUILDING)],
         loadComponent: () =>
           import('./features/worlds/worldbuilding/wb-entry-form-page.component').then(
             (module) => module.WbEntryFormPageComponent,
@@ -274,7 +275,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-mundos/:slug/world-building/:catSlug/:entrySlug/editar',
-        canActivate: [featureFlagGuard('author.worlds.worldbuilding')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_WORLDS_WORLDBUILDING)],
         loadComponent: () =>
           import('./features/worlds/worldbuilding/wb-entry-form-page.component').then(
             (module) => module.WbEntryFormPageComponent,
@@ -282,7 +283,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-personajes',
-        canActivate: [featureFlagGuard('author.characters')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_CHARACTERS)],
         loadComponent: () =>
           import('./features/characters/my-characters-page.component').then(
             (module) => module.MyCharactersPageComponent,
@@ -290,7 +291,7 @@ export const routes: Routes = [
       },
       {
         path: 'referencias-visuales',
-        canActivate: [featureFlagGuard('author.visual_boards')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_VISUAL_BOARDS)],
         loadComponent: () =>
           import('./features/visual-boards/my-visual-boards-page.component').then(
             (module) => module.MyVisualBoardsPageComponent,
@@ -298,7 +299,7 @@ export const routes: Routes = [
       },
       {
         path: 'referencias-visuales/:id',
-        canActivate: [featureFlagGuard('author.visual_boards')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_VISUAL_BOARDS)],
         loadComponent: () =>
           import('./features/visual-boards/visual-board-page.component').then(
             (module) => module.VisualBoardPageComponent,
@@ -306,7 +307,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-personajes/nuevo',
-        canActivate: [featureFlagGuard('author.characters')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_CHARACTERS)],
         loadComponent: () =>
           import('./features/characters/character-form-page.component').then(
             (module) => module.CharacterFormPageComponent,
@@ -314,7 +315,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-personajes/:slug/editar',
-        canActivate: [featureFlagGuard('author.characters')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_CHARACTERS)],
         loadComponent: () =>
           import('./features/characters/character-form-page.component').then(
             (module) => module.CharacterFormPageComponent,
@@ -322,7 +323,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-novelas/nueva',
-        canActivate: [featureFlagGuard('author.novels')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_NOVELS)],
         loadComponent: () =>
           import('./features/novels/novel-form-page.component').then(
             (module) => module.NovelFormPageComponent,
@@ -330,7 +331,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-novelas/:slug/editar',
-        canActivate: [featureFlagGuard('author.novels')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_NOVELS)],
         loadComponent: () =>
           import('./features/novels/novel-form-page.component').then(
             (module) => module.NovelFormPageComponent,
@@ -338,7 +339,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-novelas/:slug/capitulos',
-        canActivate: [featureFlagGuard('author.novels')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_NOVELS)],
         loadComponent: () =>
           import('./features/novels/novel-chapters-page.component').then(
             (module) => module.NovelChaptersPageComponent,
@@ -346,7 +347,7 @@ export const routes: Routes = [
       },
       {
         path: 'biblioteca',
-        canActivate: [featureFlagGuard('reader.library')],
+        canActivate: [featureFlagGuard(FeatureFlag.READER_LIBRARY)],
         loadComponent: () =>
           import('./features/library/library-page.component').then(
             (module) => module.LibraryPageComponent,
@@ -354,7 +355,7 @@ export const routes: Routes = [
       },
       {
         path: 'biblioteca/colecciones',
-        canActivate: [featureFlagGuard('reader.library')],
+        canActivate: [featureFlagGuard(FeatureFlag.READER_LIBRARY)],
         loadComponent: () =>
           import('./features/library/organize-collections-page.component').then(
             (m) => m.OrganizeCollectionsPageComponent,
@@ -362,7 +363,7 @@ export const routes: Routes = [
       },
       {
         path: 'biblioteca/en-progreso',
-        canActivate: [featureFlagGuard('reader.library')],
+        canActivate: [featureFlagGuard(FeatureFlag.READER_LIBRARY)],
         loadComponent: () =>
           import('./features/library/in-progress-page.component').then(
             (module) => module.InProgressPageComponent,
@@ -370,7 +371,7 @@ export const routes: Routes = [
       },
       {
         path: 'biblioteca/historial',
-        canActivate: [featureFlagGuard('reader.library')],
+        canActivate: [featureFlagGuard(FeatureFlag.READER_LIBRARY)],
         loadComponent: () =>
           import('./features/library/history-page.component').then(
             (module) => module.HistoryPageComponent,
@@ -378,7 +379,7 @@ export const routes: Routes = [
       },
       {
         path: 'biblioteca/marcadores',
-        canActivate: [featureFlagGuard('reader.library.bookmarks')],
+        canActivate: [featureFlagGuard(FeatureFlag.READER_LIBRARY_BOOKMARKS)],
         loadComponent: () =>
           import('./features/library/bookmarks-page.component').then(
             (module) => module.BookmarksPageComponent,
@@ -386,7 +387,7 @@ export const routes: Routes = [
       },
       {
         path: 'biblioteca/subrayados',
-        canActivate: [featureFlagGuard('reader.library.highlights')],
+        canActivate: [featureFlagGuard(FeatureFlag.READER_LIBRARY_HIGHLIGHTS)],
         loadComponent: () =>
           import('./features/library/highlights-page.component').then(
             (module) => module.HighlightsPageComponent,
@@ -394,7 +395,7 @@ export const routes: Routes = [
       },
       {
         path: 'biblioteca/listas',
-        canActivate: [featureFlagGuard('reader.library.lists')],
+        canActivate: [featureFlagGuard(FeatureFlag.READER_LIBRARY_LISTS)],
         loadComponent: () =>
           import('./features/library/reading-lists-page.component').then(
             (module) => module.ReadingListsPageComponent,
@@ -402,7 +403,7 @@ export const routes: Routes = [
       },
       {
         path: 'biblioteca/listas/:id',
-        canActivate: [featureFlagGuard('reader.library.lists')],
+        canActivate: [featureFlagGuard(FeatureFlag.READER_LIBRARY_LISTS)],
         loadComponent: () =>
           import('./features/library/reading-list-detail-page.component').then(
             (module) => module.ReadingListDetailPageComponent,
@@ -410,7 +411,7 @@ export const routes: Routes = [
       },
       {
         path: 'biblioteca/metas',
-        canActivate: [featureFlagGuard('reader.library.goals')],
+        canActivate: [featureFlagGuard(FeatureFlag.READER_LIBRARY_GOALS)],
         loadComponent: () =>
           import('./features/library/goals-page.component').then(
             (module) => module.GoalsPageComponent,
@@ -418,7 +419,7 @@ export const routes: Routes = [
       },
       {
         path: 'biblioteca/estadisticas',
-        canActivate: [featureFlagGuard('reader.library.stats')],
+        canActivate: [featureFlagGuard(FeatureFlag.READER_LIBRARY_STATS)],
         loadComponent: () =>
           import('./features/library/stats-page.component').then(
             (module) => module.StatsPageComponent,
@@ -426,7 +427,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-timelines',
-        canActivate: [featureFlagGuard('author.timelines')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_TIMELINES)],
         loadComponent: () =>
           import('./features/timeline/timelines-list-page.component').then(
             (module) => module.TimelinesListPageComponent,
@@ -434,7 +435,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-timelines/:id',
-        canActivate: [featureFlagGuard('author.timelines')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_TIMELINES)],
         loadComponent: () =>
           import('./features/timeline/timeline-canvas-page.component').then(
             (module) => module.TimelineCanvasPageComponent,
@@ -442,7 +443,7 @@ export const routes: Routes = [
       },
       {
         path: 'planner',
-        canActivate: [featureFlagGuard('author.planner')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_PLANNER)],
         loadComponent: () =>
           import('./features/planner/planner-dashboard-page.component').then(
             (module) => module.PlannerDashboardPageComponent,
@@ -450,7 +451,7 @@ export const routes: Routes = [
       },
       {
         path: 'planner/calendario',
-        canActivate: [featureFlagGuard('author.planner')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_PLANNER)],
         loadComponent: () =>
           import('./features/planner/planner-calendar-page.component').then(
             (module) => module.PlannerCalendarPageComponent,
@@ -458,7 +459,7 @@ export const routes: Routes = [
       },
       {
         path: 'planner/estadisticas',
-        canActivate: [featureFlagGuard('author.planner')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_PLANNER)],
         loadComponent: () =>
           import('./features/planner/planner-stats-page.component').then(
             (module) => module.PlannerStatsPageComponent,
@@ -466,7 +467,7 @@ export const routes: Routes = [
       },
       {
         path: 'planner/:projectId',
-        canActivate: [featureFlagGuard('author.planner')],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_PLANNER)],
         loadComponent: () =>
           import('./features/planner/kanban-board-page.component').then(
             (module) => module.KanbanBoardPageComponent,
@@ -474,7 +475,7 @@ export const routes: Routes = [
       },
       {
         path: 'herramientas/plantillas',
-        canActivate: [featureFlagGuard('platform.templates')],
+        canActivate: [featureFlagGuard(FeatureFlag.PLATFORM_TEMPLATES)],
         loadComponent: () =>
           import('./features/tools/templates-page.component').then(
             (module) => module.TemplatesPageComponent,
@@ -482,7 +483,7 @@ export const routes: Routes = [
       },
       {
         path: 'notificaciones',
-        canActivate: [featureFlagGuard('social.notifications')],
+        canActivate: [featureFlagGuard(FeatureFlag.SOCIAL_NOTIFICATIONS)],
         loadComponent: () =>
           import('./features/notifications/notifications-page.component').then(
             (module) => module.NotificationsPageComponent,
@@ -490,7 +491,7 @@ export const routes: Routes = [
       },
       {
         path: 'foro/nuevo',
-        canActivate: [featureFlagGuard('community.forum')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_FORUM)],
         loadComponent: () =>
           import('./features/forum/new-thread-page.component').then(
             (module) => module.NewThreadPageComponent,
@@ -498,7 +499,7 @@ export const routes: Routes = [
       },
       {
         path: 'foro/archivados',
-        canActivate: [featureFlagGuard('community.forum')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_FORUM)],
         loadComponent: () =>
           import('./features/forum/archived-threads-page.component').then(
             (module) => module.ArchivedThreadsPageComponent,
@@ -506,7 +507,7 @@ export const routes: Routes = [
       },
       {
         path: 'foro',
-        canActivate: [featureFlagGuard('community.forum')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_FORUM)],
         loadComponent: () =>
           import('./features/forum/forum-home-page.component').then(
             (module) => module.ForumHomePageComponent,
@@ -514,7 +515,7 @@ export const routes: Routes = [
       },
       {
         path: 'foro/:slug',
-        canActivate: [featureFlagGuard('community.forum')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_FORUM)],
         loadComponent: () =>
           import('./features/forum/thread-detail-page.component').then(
             (module) => module.ThreadDetailPageComponent,
@@ -522,7 +523,7 @@ export const routes: Routes = [
       },
       {
         path: 'comunidades',
-        canActivate: [featureFlagGuard('community.communities')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_COMMUNITIES)],
         loadComponent: () =>
           import('./features/communities/followed-communities-page.component').then(
             (m) => m.FollowedCommunitiesPageComponent,
@@ -530,7 +531,7 @@ export const routes: Routes = [
       },
       {
         path: 'comunidades/explorar',
-        canActivate: [featureFlagGuard('community.communities')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_COMMUNITIES)],
         loadComponent: () =>
           import('./features/communities/communities-page.component').then(
             (m) => m.CommunitiesPageComponent,
@@ -538,7 +539,7 @@ export const routes: Routes = [
       },
       {
         path: 'comunidades/nueva',
-        canActivate: [featureFlagGuard('community.communities')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_COMMUNITIES)],
         loadComponent: () =>
           import('./features/communities/create-community-page.component').then(
             (m) => m.CreateCommunityPageComponent,
@@ -546,7 +547,7 @@ export const routes: Routes = [
       },
       {
         path: 'comunidades/:slug',
-        canActivate: [featureFlagGuard('community.communities')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_COMMUNITIES)],
         loadComponent: () =>
           import('./features/communities/community-detail-page.component').then(
             (m) => m.CommunityDetailPageComponent,
@@ -554,7 +555,7 @@ export const routes: Routes = [
       },
       {
         path: 'comunidades/:slug/foros/:forumSlug',
-        canActivate: [featureFlagGuard('community.communities.forums')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_COMMUNITIES_FORUMS)],
         loadComponent: () =>
           import('./features/community-forums/forum-page.component').then(
             (m) => m.ForumPageComponent,
@@ -562,7 +563,7 @@ export const routes: Routes = [
       },
       {
         path: 'comunidades/:slug/foros/:forumSlug/nuevo-hilo',
-        canActivate: [featureFlagGuard('community.communities.forums')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_COMMUNITIES_FORUMS)],
         loadComponent: () =>
           import('./features/community-forums/create-thread-page.component').then(
             (m) => m.CreateThreadPageComponent,
@@ -570,7 +571,7 @@ export const routes: Routes = [
       },
       {
         path: 'comunidades/:slug/foros/:forumSlug/hilos/:threadSlug',
-        canActivate: [featureFlagGuard('community.communities.forums')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_COMMUNITIES_FORUMS)],
         loadComponent: () =>
           import('./features/community-forums/thread-detail-page.component').then(
             (m) => m.CommunityThreadDetailPageComponent,
@@ -578,7 +579,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-comunidades',
-        canActivate: [featureFlagGuard('community.communities')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_COMMUNITIES)],
         loadComponent: () =>
           import('./features/communities/my-communities-page.component').then(
             (m) => m.MyCommunitiesPageComponent,
@@ -586,7 +587,7 @@ export const routes: Routes = [
       },
       {
         path: 'mis-comunidades/:slug/editar',
-        canActivate: [featureFlagGuard('community.communities')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_COMMUNITIES)],
         loadComponent: () =>
           import('./features/communities/edit-community-page.component').then(
             (m) => m.EditCommunityPageComponent,
@@ -614,7 +615,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'descubrir',
-        canActivate: [featureFlagGuard('explore.discovery')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_DISCOVERY)],
         loadComponent: () =>
           import('./features/discovery/discovery-page.component').then(
             (module) => module.DiscoveryPageComponent,
@@ -622,7 +623,7 @@ export const routes: Routes = [
       },
       {
         path: 'buscar',
-        canActivate: [featureFlagGuard('explore.search')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_SEARCH)],
         loadComponent: () =>
           import('./features/search/search-page.component').then(
             (module) => module.SearchPageComponent,
@@ -651,7 +652,7 @@ export const routes: Routes = [
       },
       {
         path: 'novelas',
-        canActivate: [featureFlagGuard('explore.novels_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_NOVELS_CATALOG)],
         loadComponent: () =>
           import('./features/novels/catalog-page.component').then(
             (module) => module.CatalogPageComponent,
@@ -659,7 +660,7 @@ export const routes: Routes = [
       },
       {
         path: 'novelas/generos',
-        canActivate: [featureFlagGuard('explore.novels_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_NOVELS_CATALOG)],
         loadComponent: () =>
           import('./features/novels/genres-page.component').then(
             (module) => module.GenresPageComponent,
@@ -667,7 +668,7 @@ export const routes: Routes = [
       },
       {
         path: 'novelas/genero/:genreSlug',
-        canActivate: [featureFlagGuard('explore.novels_catalog'), activeGenreGuard],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_NOVELS_CATALOG), activeGenreGuard],
         loadComponent: () =>
           import('./features/novels/catalog-page.component').then(
             (module) => module.CatalogPageComponent,
@@ -675,7 +676,7 @@ export const routes: Routes = [
       },
       {
         path: 'mundos',
-        canActivate: [featureFlagGuard('explore.worlds_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_WORLDS_CATALOG)],
         loadComponent: () =>
           import('./features/worlds/worlds-catalog-page.component').then(
             (module) => module.WorldsCatalogPageComponent,
@@ -683,7 +684,7 @@ export const routes: Routes = [
       },
       {
         path: 'mundos/:slug/lore',
-        canActivate: [featureFlagGuard('explore.worlds_catalog'), authGateGuard],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_WORLDS_CATALOG), authGateGuard],
         loadComponent: () =>
           import('./features/worlds/world-lore-page.component').then(
             (module) => module.WorldLorePageComponent,
@@ -691,7 +692,7 @@ export const routes: Routes = [
       },
       {
         path: 'mundos/:slug/lore/:entrySlug',
-        canActivate: [featureFlagGuard('explore.worlds_catalog'), authGateGuard],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_WORLDS_CATALOG), authGateGuard],
         loadComponent: () =>
           import('./features/worlds/worldbuilding/wb-entry-detail-page.component').then(
             (module) => module.WbEntryDetailPageComponent,
@@ -699,7 +700,7 @@ export const routes: Routes = [
       },
       {
         path: 'mundos/:slug',
-        canActivate: [featureFlagGuard('explore.worlds_catalog'), authGateGuard],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_WORLDS_CATALOG), authGateGuard],
         loadComponent: () =>
           import('./features/worlds/world-detail-page.component').then(
             (module) => module.WorldDetailPageComponent,
@@ -707,7 +708,7 @@ export const routes: Routes = [
       },
       {
         path: 'personajes',
-        canActivate: [featureFlagGuard('explore.characters_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_CHARACTERS_CATALOG)],
         loadComponent: () =>
           import('./features/characters/characters-catalog-page.component').then(
             (module) => module.CharactersCatalogPageComponent,
@@ -715,7 +716,7 @@ export const routes: Routes = [
       },
       {
         path: 'personajes/:username/:slug',
-        canActivate: [featureFlagGuard('explore.characters_catalog'), authGateGuard],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_CHARACTERS_CATALOG), authGateGuard],
         loadComponent: () =>
           import('./features/characters/character-detail-page.component').then(
             (module) => module.CharacterDetailPageComponent,
@@ -723,7 +724,7 @@ export const routes: Routes = [
       },
       {
         path: 'novelas/:slug',
-        canActivate: [featureFlagGuard('explore.novels_catalog'), authGateGuard],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_NOVELS_CATALOG), authGateGuard],
         loadComponent: () =>
           import('./features/novels/novel-detail-page.component').then(
             (module) => module.NovelDetailPageComponent,
@@ -731,7 +732,7 @@ export const routes: Routes = [
       },
       {
         path: 'sagas',
-        canActivate: [featureFlagGuard('explore.series_catalog')],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_SERIES_CATALOG)],
         loadComponent: () =>
           import('./features/series/series-catalog-page.component').then(
             (m) => m.SeriesCatalogPageComponent,
@@ -739,7 +740,7 @@ export const routes: Routes = [
       },
       {
         path: 'sagas/:slug',
-        canActivate: [featureFlagGuard('explore.series_catalog'), authGateGuard],
+        canActivate: [featureFlagGuard(FeatureFlag.EXPLORE_SERIES_CATALOG), authGateGuard],
         loadComponent: () =>
           import('./features/series/series-detail-page.component').then(
             (m) => m.SeriesDetailPageComponent,
@@ -747,7 +748,7 @@ export const routes: Routes = [
       },
       {
         path: 'foro',
-        canActivate: [featureFlagGuard('community.forum')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_FORUM)],
         loadComponent: () =>
           import('./features/forum/forum-home-page.component').then(
             (module) => module.ForumHomePageComponent,
@@ -755,7 +756,7 @@ export const routes: Routes = [
       },
       {
         path: 'foro/:slug',
-        canActivate: [featureFlagGuard('community.forum'), authGateGuard],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_FORUM), authGateGuard],
         loadComponent: () =>
           import('./features/forum/thread-detail-page.component').then(
             (module) => module.ThreadDetailPageComponent,
@@ -763,7 +764,7 @@ export const routes: Routes = [
       },
       {
         path: 'comunidades',
-        canActivate: [featureFlagGuard('community.communities')],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_COMMUNITIES)],
         loadComponent: () =>
           import('./features/communities/communities-page.component').then(
             (m) => m.CommunitiesPageComponent,
@@ -771,7 +772,7 @@ export const routes: Routes = [
       },
       {
         path: 'comunidades/:slug',
-        canActivate: [featureFlagGuard('community.communities'), authGateGuard],
+        canActivate: [featureFlagGuard(FeatureFlag.COMMUNITY_COMMUNITIES), authGateGuard],
         loadComponent: () =>
           import('./features/communities/community-detail-page.component').then(
             (m) => m.CommunityDetailPageComponent,
@@ -779,7 +780,7 @@ export const routes: Routes = [
       },
       {
         path: 'referencias-visuales/:id',
-        canActivate: [featureFlagGuard('author.visual_boards'), authGateGuard],
+        canActivate: [featureFlagGuard(FeatureFlag.AUTHOR_VISUAL_BOARDS), authGateGuard],
         loadComponent: () =>
           import('./features/visual-boards/visual-board-page.component').then(
             (module) => module.VisualBoardPageComponent,
@@ -848,7 +849,7 @@ export const routes: Routes = [
   },
   {
     path: 'register',
-    canActivate: [guestGuard, featureFlagGuard('platform.registration')],
+    canActivate: [guestGuard, featureFlagGuard(FeatureFlag.PLATFORM_REGISTRATION)],
     loadComponent: () =>
       import('./auth/components/register-form/register-form.component').then(
         (module) => module.RegisterFormComponent,

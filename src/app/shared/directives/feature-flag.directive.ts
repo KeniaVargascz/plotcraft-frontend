@@ -1,12 +1,13 @@
 import {
   Directive,
-  Input,
   TemplateRef,
   ViewContainerRef,
   inject,
   effect,
+  input,
 } from '@angular/core';
 import { FeatureFlagService } from '../../core/services/feature-flag.service';
+import type { FeatureFlagKey } from '../../core/constants/feature-flags.constants';
 
 @Directive({
   selector: '[appFeature]',
@@ -18,9 +19,11 @@ export class FeatureFlagDirective {
   private readonly viewContainer = inject(ViewContainerRef);
   private hasView = false;
 
-  @Input()
-  set appFeature(key: string) {
+  readonly appFeature = input.required<FeatureFlagKey>();
+
+  constructor() {
     effect(() => {
+      const key = this.appFeature();
       const enabled = this.featureFlags.enabled(key)();
       if (enabled && !this.hasView) {
         this.viewContainer.createEmbeddedView(this.templateRef);

@@ -3,10 +3,11 @@
   <header class="public-header">
     <a routerLink="/" class="brand">{{ 'app.name' | translate }}</a>
     <nav>
-      <a routerLink="/novelas" routerLinkActive="active">{{ 'nav.novels' | translate }}</a>
-      <a routerLink="/mundos" routerLinkActive="active">{{ 'nav.worlds' | translate }}</a>
-      <a routerLink="/personajes" routerLinkActive="active">{{ 'nav.characters' | translate }}</a>
-      <a routerLink="/descubrir" routerLinkActive="active">{{ 'nav.discovery' | translate }}</a>
+      @for (item of navItems; track item.route) {
+        @if (isVisible(item.featureKey)) {
+          <a [routerLink]="item.route" routerLinkActive="active">{{ item.label | translate }}</a>
+        }
+      }
     </nav>
     <nav class="auth-links">
       <a routerLink="/login" routerLinkActive="active">{{ 'nav.login' | translate }}</a>

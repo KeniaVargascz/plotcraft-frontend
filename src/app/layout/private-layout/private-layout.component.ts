@@ -25,13 +25,14 @@ import { NotificationsPanelComponent } from '../../features/notifications/notifi
 import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
 import { InfoBannerComponent } from '../../shared/components/info-banner/info-banner.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { FeatureFlag, FeatureFlagKey } from '../../core/constants/feature-flags.constants';
 
 type NavItem = {
   route: string;
   label: string;
   exact?: boolean;
   excludePrefixes?: string[];
-  featureKey?: string;
+  featureKey?: FeatureFlagKey;
 };
 
 type NavGroup = {
@@ -81,10 +82,10 @@ export class PrivateLayoutComponent {
   readonly unreadCount = signal(0);
 
   readonly primaryNavItems: NavItem[] = [
-    { route: '/feed', label: 'Feed', exact: true, featureKey: 'social.feed' },
-    { route: '/descubrir', label: 'Descubrir', featureKey: 'explore.discovery' },
-    { route: '/novelas', label: 'Novelas', featureKey: 'explore.novels_catalog' },
-    { route: '/mundos', label: 'Mundos', featureKey: 'explore.worlds_catalog' },
+    { route: '/feed', label: 'Feed', exact: true, featureKey: FeatureFlag.SOCIAL_FEED },
+    { route: '/descubrir', label: 'Descubrir', featureKey: FeatureFlag.EXPLORE_DISCOVERY },
+    { route: '/novelas', label: 'Novelas', featureKey: FeatureFlag.EXPLORE_NOVELS_CATALOG },
+    { route: '/mundos', label: 'Mundos', featureKey: FeatureFlag.EXPLORE_WORLDS_CATALOG },
     { route: '/mi-perfil', label: 'Perfil' },
   ];
 
@@ -92,51 +93,51 @@ export class PrivateLayoutComponent {
     {
       label: 'Explorar',
       items: [
-        { route: '/feed', label: 'Feed', exact: true, featureKey: 'social.feed' },
-        { route: '/descubrir', label: 'Descubrir', featureKey: 'explore.discovery' },
+        { route: '/feed', label: 'Feed', exact: true, featureKey: FeatureFlag.SOCIAL_FEED },
+        { route: '/descubrir', label: 'Descubrir', featureKey: FeatureFlag.EXPLORE_DISCOVERY },
         {
           route: '/novelas',
           label: 'Novelas',
           excludePrefixes: ['/novelas/generos'],
-          featureKey: 'explore.novels_catalog',
+          featureKey: FeatureFlag.EXPLORE_NOVELS_CATALOG,
         },
-        { route: '/mundos', label: 'Mundos', featureKey: 'explore.worlds_catalog' },
-        { route: '/personajes', label: 'Personajes', featureKey: 'explore.characters_catalog' },
-        { route: '/foro', label: 'Foro', featureKey: 'community.forum' },
-        { route: '/comunidades', label: 'Comunidades', exact: true, featureKey: 'community.communities' },
+        { route: '/mundos', label: 'Mundos', featureKey: FeatureFlag.EXPLORE_WORLDS_CATALOG },
+        { route: '/personajes', label: 'Personajes', featureKey: FeatureFlag.EXPLORE_CHARACTERS_CATALOG },
+        { route: '/foro', label: 'Foro', featureKey: FeatureFlag.COMMUNITY_FORUM },
+        { route: '/comunidades', label: 'Comunidades', exact: true, featureKey: FeatureFlag.COMMUNITY_COMMUNITIES },
         { route: '/novelas/generos', label: 'Categorías' },
       ],
     },
     {
       label: 'Comunidad',
       items: [
-        { route: '/mis-comunidades', label: 'Mis comunidades', featureKey: 'community.communities' },
+        { route: '/mis-comunidades', label: 'Mis comunidades', featureKey: FeatureFlag.COMMUNITY_COMMUNITIES },
       ],
     },
     {
       label: 'Autor',
       items: [
-        { route: '/mis-novelas', label: 'Mis novelas', featureKey: 'author.novels' },
-        { route: '/mis-mundos', label: 'Mis mundos', featureKey: 'author.worlds' },
-        { route: '/mis-personajes', label: 'Mis personajes', featureKey: 'author.characters' },
-        { route: '/referencias-visuales', label: 'Tableros', featureKey: 'author.visual_boards' },
-        { route: '/mis-timelines', label: 'Timelines', featureKey: 'author.timelines' },
-        { route: '/planner', label: 'Planner', featureKey: 'author.planner' },
+        { route: '/mis-novelas', label: 'Mis novelas', featureKey: FeatureFlag.AUTHOR_NOVELS },
+        { route: '/mis-mundos', label: 'Mis mundos', featureKey: FeatureFlag.AUTHOR_WORLDS },
+        { route: '/mis-personajes', label: 'Mis personajes', featureKey: FeatureFlag.AUTHOR_CHARACTERS },
+        { route: '/referencias-visuales', label: 'Tableros', featureKey: FeatureFlag.AUTHOR_VISUAL_BOARDS },
+        { route: '/mis-timelines', label: 'Timelines', featureKey: FeatureFlag.AUTHOR_TIMELINES },
+        { route: '/planner', label: 'Planner', featureKey: FeatureFlag.AUTHOR_PLANNER },
       ],
     },
     {
       label: 'Biblioteca',
       items: [
-        { route: '/biblioteca', label: 'Biblioteca', exact: true, featureKey: 'reader.library' },
-        { route: '/biblioteca/colecciones', label: 'Colecciones', featureKey: 'reader.library' },
-        { route: '/mis-suscripciones', label: 'Suscripciones', featureKey: 'reader.subscriptions' },
+        { route: '/biblioteca', label: 'Biblioteca', exact: true, featureKey: FeatureFlag.READER_LIBRARY },
+        { route: '/biblioteca/colecciones', label: 'Colecciones', featureKey: FeatureFlag.READER_LIBRARY },
+        { route: '/mis-suscripciones', label: 'Suscripciones', featureKey: FeatureFlag.READER_SUBSCRIPTIONS },
       ],
     },
     {
       label: 'Herramientas',
       items: [
-        { route: '/analytics', label: 'Analytics', featureKey: 'author.analytics' },
-        { route: '/herramientas/plantillas', label: 'Plantillas', featureKey: 'platform.templates' },
+        { route: '/analytics', label: 'Analytics', featureKey: FeatureFlag.AUTHOR_ANALYTICS },
+        { route: '/herramientas/plantillas', label: 'Plantillas', featureKey: FeatureFlag.PLATFORM_TEMPLATES },
       ],
     },
     {

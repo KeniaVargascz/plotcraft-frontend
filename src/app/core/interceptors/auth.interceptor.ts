@@ -11,6 +11,7 @@ import { Observable, catchError, switchMap, throwError } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../services/auth.service';
 import { TokenService } from '../services/token.service';
+import { MaintenanceService } from '../services/maintenance.service';
 
 export const authInterceptor: HttpInterceptorFn = (
   request: HttpRequest<unknown>,
@@ -32,9 +33,17 @@ export const authInterceptor: HttpInterceptorFn = (
         })
       : request;
 
+  const maintenance = inject(MaintenanceService);
+
   return next(authRequest).pipe(
     catchError((error: unknown) => {
       if (!(error instanceof HttpErrorResponse)) {
+        return throwError(() => error);
+      }
+
+      // 503 = maintenance mode — show maintenance screen
+      if (error.status === 503) {
+        maintenance.enabled.set(true);
         return throwError(() => error);
       }
 

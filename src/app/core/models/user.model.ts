@@ -6,6 +6,7 @@ export interface User {
   username: string;
   isActive: boolean;
   isAdmin?: boolean;
+  role?: number;
   createdAt: string;
   updatedAt: string;
   profile?: Profile | null;

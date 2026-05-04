@@ -20,6 +20,7 @@ import { AuthService } from './core/services/auth.service';
 import { FeatureFlagService } from './core/services/feature-flag.service';
 import { ThemeService } from './core/services/theme.service';
 import { TranslationService } from './core/services/translation.service';
+import { MaintenanceService } from './core/services/maintenance.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -40,6 +41,7 @@ export const appConfig: ApplicationConfig = {
         inject(TranslationService).loadTranslations(),
         inject(AuthService).initializeSession(),
         inject(FeatureFlagService).load(),
+        inject(MaintenanceService).check(),
       ]);
     }),
     provideQuillConfig({

@@ -18,7 +18,7 @@
               </a>
             }
           }
-          @if (group.label === 'Comunidad' && authService.getCurrentUserSnapshot()?.isAdmin) {
+          @if (group.label === 'Comunidad' && authService.isAdmin()) {
             <a routerLink="/admin/comunidades" routerLinkActive="active">Panel de revision</a>
           }
         </div>
@@ -251,7 +251,7 @@
               </a>
             }
           }
-          @if (group.label === 'Comunidad' && authService.getCurrentUserSnapshot()?.isAdmin) {
+          @if (group.label === 'Comunidad' && authService.isAdmin()) {
             <a
               routerLink="/admin/comunidades"
               routerLinkActive="active"

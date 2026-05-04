@@ -6,7 +6,7 @@ export const adminMatchGuard: CanMatchFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const user = authService.getCurrentUserSnapshot();
-  if (!user?.isAdmin) {
+  if ((user?.role ?? 0) < 50) {
     return router.createUrlTree(['/']);
   }
   return true;

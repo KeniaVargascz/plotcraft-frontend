@@ -36,18 +36,24 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideAppInitializer(async () => {
-      inject(ThemeService).initializeTheme();
+      const theme = inject(ThemeService);
+      const translation = inject(TranslationService);
+      const auth = inject(AuthService);
+      const flags = inject(FeatureFlagService);
       const maintenance = inject(MaintenanceService);
+
+      theme.initializeTheme();
       await maintenance.check();
+
       if (maintenance.enabled()) {
-        // In maintenance mode, only load translations for the UI
-        await inject(TranslationService).loadTranslations();
+        await translation.loadTranslations();
         return;
       }
+
       await Promise.all([
-        inject(TranslationService).loadTranslations(),
-        inject(AuthService).initializeSession(),
-        inject(FeatureFlagService).load(),
+        translation.loadTranslations(),
+        auth.initializeSession(),
+        flags.load(),
       ]);
     }),
     provideQuillConfig({

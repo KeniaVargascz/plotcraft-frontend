@@ -35,13 +35,19 @@ export const appConfig: ApplicationConfig = {
         anchorScrolling: 'enabled',
       }),
     ),
-    provideAppInitializer(() => {
+    provideAppInitializer(async () => {
       inject(ThemeService).initializeTheme();
-      return Promise.all([
+      const maintenance = inject(MaintenanceService);
+      await maintenance.check();
+      if (maintenance.enabled()) {
+        // In maintenance mode, only load translations for the UI
+        await inject(TranslationService).loadTranslations();
+        return;
+      }
+      await Promise.all([
         inject(TranslationService).loadTranslations(),
         inject(AuthService).initializeSession(),
         inject(FeatureFlagService).load(),
-        inject(MaintenanceService).check(),
       ]);
     }),
     provideQuillConfig({

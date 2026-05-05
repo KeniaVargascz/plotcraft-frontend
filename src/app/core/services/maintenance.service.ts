@@ -38,9 +38,11 @@ export class MaintenanceService {
       .get<{ enabled: boolean }>('/features/maintenance')
       .pipe(
         timeout(5000),
-        catchError(() => of({ enabled: false })),
-      )
-      .pipe(
+        catchError((err) => {
+          // If backend returns 503, maintenance is active
+          if (err?.status === 503) return of({ enabled: true });
+          return of({ enabled: false });
+        }),
         switchMap((data) => of(data?.enabled ?? false)),
       );
   }

@@ -50,7 +50,10 @@ export const appConfig: ApplicationConfig = {
         return;
       }
 
-      await Promise.all([
+      // If any service gets a 503 (maintenance activated mid-init or
+      // cold-start race), the interceptors set maintenance.enabled = true
+      // and the app renders the maintenance screen instead of crashing.
+      await Promise.allSettled([
         translation.loadTranslations(),
         auth.initializeSession(),
         flags.load(),

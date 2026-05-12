@@ -44,11 +44,22 @@ export const appConfig: ApplicationConfig = {
 
       theme.initializeTheme();
 
-      // Run all initialization in parallel to minimize blocking time.
-      // maintenance.check() was previously sequential — now parallel.
+      // Translations load from a local asset — start immediately (no backend dependency).
+      const translationsPromise = translation.loadTranslations();
+
+      // Maintenance check must resolve first to avoid false positives:
+      // if auth/flags hit a 503 during Render cold-start, the error interceptor
+      // would set maintenance.enabled=true before the real check completes.
+      await maintenance.check();
+
+      if (maintenance.enabled()) {
+        await translationsPromise;
+        return;
+      }
+
+      // Backend is up — safe to call auth and flags in parallel with translations.
       await Promise.allSettled([
-        maintenance.check(),
-        translation.loadTranslations(),
+        translationsPromise,
         auth.initializeSession(),
         flags.load(),
       ]);

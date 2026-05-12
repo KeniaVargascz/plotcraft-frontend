@@ -43,17 +43,11 @@ export const appConfig: ApplicationConfig = {
       const maintenance = inject(MaintenanceService);
 
       theme.initializeTheme();
-      await maintenance.check();
 
-      if (maintenance.enabled()) {
-        await translation.loadTranslations();
-        return;
-      }
-
-      // If any service gets a 503 (maintenance activated mid-init or
-      // cold-start race), the interceptors set maintenance.enabled = true
-      // and the app renders the maintenance screen instead of crashing.
+      // Run all initialization in parallel to minimize blocking time.
+      // maintenance.check() was previously sequential — now parallel.
       await Promise.allSettled([
+        maintenance.check(),
         translation.loadTranslations(),
         auth.initializeSession(),
         flags.load(),

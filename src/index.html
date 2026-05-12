@@ -8,19 +8,33 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link rel="preconnect" href="https://plotcraft-backend.onrender.com" />
     <link rel="dns-prefetch" href="https://plotcraft-backend.onrender.com" />
+    <script>
+      // Apply theme before first paint to avoid flash.
+      // Must match ThemeService defaults and CSS variable names.
+      (function(){
+        var themes={
+          ink:{bg:'#09070a',accent:'#c9a84c'},
+          parchment:{bg:'#f6eedc',accent:'#7a3410'},
+          midnight:{bg:'#060410',accent:'#8b5cf6'},
+          forest:{bg:'#040b06',accent:'#3db05a'}
+        };
+        var t=themes[localStorage.getItem('plotcraft-theme')]||themes.ink;
+        document.documentElement.style.setProperty('--splash-bg',t.bg);
+        document.documentElement.style.setProperty('--splash-accent',t.accent);
+      })();
+    </script>
     <style>
-      .splash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:#09070a;font-family:system-ui,-apple-system,sans-serif;transition:opacity .3s}
-      .splash.fade-out{opacity:0;pointer-events:none}
+      .splash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:var(--splash-bg,#09070a);font-family:system-ui,-apple-system,sans-serif}
       .splash-inner{text-align:center}
-      .splash-logo{font-size:1.8rem;font-weight:700;color:#c9a84c;letter-spacing:.04em;margin-bottom:1.2rem}
-      .splash-bar{width:140px;height:3px;background:rgba(201,168,76,.15);border-radius:3px;margin:0 auto;overflow:hidden;position:relative}
-      .splash-bar::after{content:'';position:absolute;left:-40%;top:0;height:100%;width:40%;background:#c9a84c;border-radius:3px;animation:slide 1s ease-in-out infinite}
+      .splash-logo{font-size:1.8rem;font-weight:700;color:var(--splash-accent,#c9a84c);letter-spacing:.04em;margin-bottom:1.2rem}
+      .splash-bar{width:140px;height:3px;background:color-mix(in srgb,var(--splash-accent,#c9a84c) 15%,transparent);border-radius:3px;margin:0 auto;overflow:hidden;position:relative}
+      .splash-bar::after{content:'';position:absolute;left:-40%;top:0;height:100%;width:40%;background:var(--splash-accent,#c9a84c);border-radius:3px;animation:slide 1s ease-in-out infinite}
       @keyframes slide{to{left:100%}}
     </style>
   </head>
   <body>
     <app-root>
-      <div class="splash" id="splash">
+      <div class="splash">
         <div class="splash-inner">
           <div class="splash-logo">PlotCraft</div>
           <div class="splash-bar"></div>

@@ -9,8 +9,8 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
       min-height: 100vh;
       display: grid;
       place-items: center;
-      background: var(--bg-primary, #1a1a2e);
-      color: var(--text-primary, #e0e0e0);
+      background: var(--bg-base, #09070a);
+      color: var(--text-1, #f0e8d0);
       font-family: system-ui, sans-serif;
       padding: 2rem;
       text-align: center;
@@ -25,7 +25,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     }
     p {
       font-size: 1rem;
-      color: var(--text-secondary, #a0a0b8);
+      color: var(--text-2, #9088a0);
       line-height: 1.6;
     }
   `],

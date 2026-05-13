@@ -211,7 +211,8 @@
       "accountDisabled": "Tu cuenta esta desactivada. Contacta al soporte.",
       "generic": "No se pudo completar la solicitud. Intenta de nuevo.",
       "emailTaken": "Este email ya esta registrado.",
-      "usernameTaken": "Este username ya esta en uso."
+      "usernameTaken": "Este username ya esta en uso.",
+      "duplicateData": "No se pudo completar el registro. Intenta con datos diferentes."
     },
     "passwordStrength": {
       "title": "Fuerza de la contrasena",

@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, Output, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, EventEmitter, Output, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe } from '../../../../../shared/pipes/translate.pipe';
@@ -27,6 +27,7 @@ export class RegisterStep1Component {
   private readonly fb = inject(FormBuilder);
   private readonly http = inject(HttpClient);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly isSubmitting = signal(false);
   readonly serverError = signal('');
@@ -121,16 +122,11 @@ export class RegisterStep1Component {
       error: (err: HttpErrorResponse) => {
         this.isSubmitting.set(false);
         if (err.status === 409) {
-          const msg = (err.error?.message ?? '').toLowerCase();
-          if (msg.includes('username')) {
-            this.form.get('username')!.setErrors({ usernameTaken: true });
-          }
-          if (msg.includes('email')) {
-            this.form.get('email')!.setErrors({ emailTaken: true });
-          }
-          return;
+          this.serverError.set('auth.errors.duplicateData');
+        } else {
+          this.serverError.set('auth.errors.generic');
         }
-        this.serverError.set('auth.errors.generic');
+        this.cdr.markForCheck();
       },
     });
   }

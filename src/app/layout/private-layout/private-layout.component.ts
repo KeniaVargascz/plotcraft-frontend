@@ -80,6 +80,7 @@ export class PrivateLayoutComponent {
   readonly isMobileSearchOpen = signal(false);
   readonly showNotifications = signal(false);
   readonly unreadCount = signal(0);
+  readonly notificationsEnabled = this.ff.enabled(FeatureFlag.SOCIAL_NOTIFICATIONS);
 
   readonly primaryNavItems: NavItem[] = [
     { route: '/feed', label: 'Feed', exact: true, featureKey: FeatureFlag.SOCIAL_FEED },
@@ -105,7 +106,7 @@ export class PrivateLayoutComponent {
         { route: '/personajes', label: 'Personajes', featureKey: FeatureFlag.EXPLORE_CHARACTERS_CATALOG },
         { route: '/foro', label: 'Foro', featureKey: FeatureFlag.COMMUNITY_FORUM },
         { route: '/comunidades', label: 'Comunidades', exact: true, featureKey: FeatureFlag.COMMUNITY_COMMUNITIES },
-        { route: '/novelas/generos', label: 'Categorías' },
+        { route: '/novelas/generos', label: 'Categorías', featureKey: FeatureFlag.EXPLORE_NOVELS_CATALOG },
       ],
     },
     {
@@ -180,8 +181,10 @@ export class PrivateLayoutComponent {
         this.isMobile() && this.isMobileMenuOpen() ? 'hidden' : '';
     });
 
-    this.loadUnreadCount();
-    this.pollInterval = setInterval(() => this.loadUnreadCount(), 60_000);
+    if (this.notificationsEnabled()) {
+      this.loadUnreadCount();
+      this.pollInterval = setInterval(() => this.loadUnreadCount(), 60_000);
+    }
     this.destroyRef.onDestroy(() => {
       if (this.pollInterval) {
         clearInterval(this.pollInterval);
@@ -233,6 +236,12 @@ export class PrivateLayoutComponent {
   isNavItemVisible(item: NavItem): boolean {
     if (!item.featureKey) return true;
     return this.ff.enabled(item.featureKey)();
+  }
+
+  isGroupVisible(group: NavGroup): boolean {
+    if (group.items.some((item) => this.isNavItemVisible(item))) return true;
+    if (group.label === 'Comunidad' && this.authService.isAdmin()) return true;
+    return false;
   }
 
   isActive(route: string, exact = false): boolean {

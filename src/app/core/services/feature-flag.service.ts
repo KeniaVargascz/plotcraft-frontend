@@ -1,7 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { timeout, catchError, of } from 'rxjs';
 import { HttpApiService } from './http-api.service';
-import type { FeatureFlagKey } from '../constants/feature-flags.constants';
+import { FeatureFlag, type FeatureFlagKey } from '../constants/feature-flags.constants';
 
 const LOAD_TIMEOUT_MS = 5000;
 
@@ -58,5 +58,20 @@ export class FeatureFlagService {
       this.enabledCache.set(key, c);
     }
     return c;
+  }
+
+  private static readonly HOME_ROUTES: { flag: FeatureFlagKey; route: string }[] = [
+    { flag: FeatureFlag.SOCIAL_FEED, route: '/feed' },
+    { flag: FeatureFlag.AUTHOR_NOVELS, route: '/mis-novelas' },
+    { flag: FeatureFlag.EXPLORE_DISCOVERY, route: '/descubrir' },
+    { flag: FeatureFlag.AUTHOR_WORLDS, route: '/mis-mundos' },
+    { flag: FeatureFlag.AUTHOR_CHARACTERS, route: '/mis-personajes' },
+  ];
+
+  getHomeRoute(): string {
+    for (const { flag, route } of FeatureFlagService.HOME_ROUTES) {
+      if (this.isEnabled(flag)) return route;
+    }
+    return '/mi-perfil';
   }
 }

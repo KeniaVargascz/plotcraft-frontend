@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subscription, timer } from 'rxjs';
@@ -441,6 +442,7 @@ export class ChapterEditorPageComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly chaptersService = inject(ChaptersService);
   private readonly markdownService = inject(MarkdownService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly isCreate = signal(true);
   readonly chapter = signal<ChapterDetail | null>(null);
@@ -476,7 +478,7 @@ export class ChapterEditorPageComponent implements OnInit, OnDestroy {
   private autosaveQueued = false;
 
   ngOnInit() {
-    this.route.paramMap.subscribe((params) => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.slug = params.get('slug') ?? '';
       this.chapterSlug = params.get('chSlug');
       this.isCreate.set(!this.chapterSlug);

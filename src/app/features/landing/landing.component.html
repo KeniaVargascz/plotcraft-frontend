@@ -5,9 +5,9 @@
     <p>{{ 'app.tagline' | translate }}</p>
     <div class="hero-actions">
       @if (canRegister()) {
-        <a mat-flat-button routerLink="/register">{{ 'landing.ctaPrimary' | translate }}</a>
+        <a class="btn-primary" routerLink="/register">{{ 'landing.ctaPrimary' | translate }}</a>
       }
-      <a mat-stroked-button routerLink="/login">{{ 'landing.ctaSecondary' | translate }}</a>
+      <a class="btn-outline" routerLink="/login">{{ 'landing.ctaSecondary' | translate }}</a>
     </div>
   </div>
   <div class="hero-card">

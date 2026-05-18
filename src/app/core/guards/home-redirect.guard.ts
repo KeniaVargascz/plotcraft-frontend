@@ -1,16 +1,10 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
 import { FeatureFlagService } from '../services/feature-flag.service';
 
-export const guestGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
+export const homeRedirectGuard: CanActivateFn = async () => {
   const ff = inject(FeatureFlagService);
-
-  if (!authService.isAuthenticated()) {
-    return true;
-  }
-
+  const router = inject(Router);
+  await ff.whenReady();
   return router.createUrlTree([ff.getHomeRoute()]);
 };

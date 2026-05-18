@@ -6,6 +6,7 @@ import { adminMatchGuard } from './core/guards/admin-match.guard';
 import { anonymousMatchGuard, authenticatedMatchGuard } from './core/guards/session-match.guard';
 import { authGateGuard } from './core/guards/auth-gate.guard';
 import { activeGenreGuard } from './core/guards/active-genre.guard';
+import { homeRedirectGuard } from './core/guards/home-redirect.guard';
 import { MinimalLayoutComponent } from './layout/minimal-layout/minimal-layout.component';
 import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
 import { PrivateLayoutComponent } from './layout/private-layout/private-layout.component';
@@ -15,6 +16,7 @@ export const routes: Routes = [
   {
     path: '',
     component: PublicLayoutComponent,
+    canMatch: [anonymousMatchGuard],
     children: [
       {
         path: '',
@@ -31,9 +33,16 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: 'dashboard',
-        redirectTo: '/feed',
+        path: '',
         pathMatch: 'full',
+        canActivate: [homeRedirectGuard],
+        loadComponent: () => import('./features/landing/landing.component').then((m) => m.LandingComponent),
+      },
+      {
+        path: 'dashboard',
+        pathMatch: 'full',
+        canActivate: [homeRedirectGuard],
+        loadComponent: () => import('./features/landing/landing.component').then((m) => m.LandingComponent),
       },
       {
         path: 'feed',

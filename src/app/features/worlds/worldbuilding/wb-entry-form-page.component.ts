@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { finalize } from 'rxjs';
+import { EMPTY, finalize, switchMap } from 'rxjs';
 import { WbEntryLink } from '../../../core/models/wb-entry.model';
 import { WbCategory } from '../../../core/models/wb-category.model';
 import { FieldDefinition, FieldValue } from '../../../core/models/field-definition.model';
@@ -453,37 +453,40 @@ export class WbEntryFormPageComponent implements OnDestroy {
   }
 
   constructor() {
-    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      const slug = params.get('slug');
-      const catSlug = params.get('catSlug');
-      const entrySlug = params.get('entrySlug');
+    this.route.paramMap.pipe(
+      switchMap((params) => {
+        const slug = params.get('slug');
+        const catSlug = params.get('catSlug');
+        const entrySlug = params.get('entrySlug');
 
-      if (!slug || !catSlug) return;
-      this.worldSlug.set(slug);
-      this.catSlug = catSlug;
-      this.entrySlug = entrySlug || null;
-      this.isEdit.set(Boolean(entrySlug));
+        if (!slug || !catSlug) return EMPTY;
+        this.worldSlug.set(slug);
+        this.catSlug = catSlug;
+        this.entrySlug = entrySlug || null;
+        this.isEdit.set(Boolean(entrySlug));
 
-      this.wbService.getCategory(slug, catSlug).subscribe({
-        next: (cat) => {
-          this.category.set(cat);
-          this.fieldSchema.set(cat.fieldSchema || []);
-          if (entrySlug) {
-            this.loadEntry(slug, entrySlug);
-          } else {
-            this.initDefaults();
-            this.loading.set(false);
-          }
-        },
-        error: (err) => {
+        return this.wbService.getCategory(slug, catSlug);
+      }),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe({
+      next: (cat) => {
+        this.category.set(cat);
+        this.fieldSchema.set(cat.fieldSchema || []);
+        if (this.entrySlug) {
+          this.loadEntry(this.worldSlug(), this.entrySlug);
+        } else {
+          this.initDefaults();
           this.loading.set(false);
-          const msg =
-            err?.status === 404
-              ? 'Categoria no encontrada. Verifica que la URL sea correcta.'
-              : 'No se pudo cargar la categoria.';
-          this.errorMsg.set(msg);
-        },
-      });
+        }
+      },
+      error: (err) => {
+        this.loading.set(false);
+        const msg =
+          err?.status === 404
+            ? 'Categoria no encontrada. Verifica que la URL sea correcta.'
+            : 'No se pudo cargar la categoria.';
+        this.errorMsg.set(msg);
+      },
     });
 
     this.autoSaveTimer = setInterval(() => {

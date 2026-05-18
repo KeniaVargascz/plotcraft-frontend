@@ -9,11 +9,11 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   provideRouter,
   withPreloading,
-  PreloadAllModules,
   withInMemoryScrolling,
 } from '@angular/router';
 import { provideQuillConfig } from 'ngx-quill';
 import { routes } from './app.routes';
+import { FeaturePreloadingStrategy } from './core/services/feature-preloading.strategy';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { AuthService } from './core/services/auth.service';
@@ -29,7 +29,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
     provideRouter(
       routes,
-      withPreloading(PreloadAllModules),
+      withPreloading(FeaturePreloadingStrategy),
       withInMemoryScrolling({
         scrollPositionRestoration: 'top',
         anchorScrolling: 'enabled',

@@ -5,23 +5,25 @@
       <a class="brand" routerLink="/feed">{{ 'app.name' | translate }}</a>
 
       @for (group of navGroups; track group.label) {
-        <div class="nav-group">
-          <span class="group-label">{{ group.label }}</span>
-          @for (item of group.items; track item.route) {
-            @if (isNavItemVisible(item)) {
-              <a
-                [routerLink]="item.route"
-                [class.active]="isNavItemActive(item)"
-                [attr.aria-current]="isNavItemActive(item) ? 'page' : null"
-              >
-                {{ item.label }}
-              </a>
+        @if (isGroupVisible(group)) {
+          <div class="nav-group">
+            <span class="group-label">{{ group.label }}</span>
+            @for (item of group.items; track item.route) {
+              @if (isNavItemVisible(item)) {
+                <a
+                  [routerLink]="item.route"
+                  [class.active]="isNavItemActive(item)"
+                  [attr.aria-current]="isNavItemActive(item) ? 'page' : null"
+                >
+                  {{ item.label }}
+                </a>
+              }
             }
-          }
-          @if (group.label === 'Comunidad' && authService.isAdmin()) {
-            <a routerLink="/admin/comunidades" routerLinkActive="active">Panel de revision</a>
-          }
-        </div>
+            @if (group.label === 'Comunidad' && authService.isAdmin()) {
+              <a routerLink="/admin/comunidades" routerLinkActive="active">Panel de revision</a>
+            }
+          </div>
+        }
       }
     </aside>
   }
@@ -83,28 +85,30 @@
               </svg>
             </button>
 
-            <div class="notification-slot">
-              <a
-                routerLink="/notificaciones"
-                class="icon-button no-select notification-button"
-                aria-label="Ver notificaciones"
-              >
-                <svg
-                  class="notification-icon"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                  focusable="false"
+            @if (notificationsEnabled()) {
+              <div class="notification-slot">
+                <a
+                  routerLink="/notificaciones"
+                  class="icon-button no-select notification-button"
+                  aria-label="Ver notificaciones"
                 >
-                  <path
-                    d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 1 0-14 0v5l-2 2v1h18v-1l-2-2Z"
-                    fill="currentColor"
-                  />
-                </svg>
-                @if (unreadCount() > 0) {
-                  <span class="notif-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
-                }
-              </a>
-            </div>
+                  <svg
+                    class="notification-icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path
+                      d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 1 0-14 0v5l-2 2v1h18v-1l-2-2Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  @if (unreadCount() > 0) {
+                    <span class="notif-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
+                  }
+                </a>
+              </div>
+            }
 
             @if (authService.currentUser$ | async; as currentUser) {
               <a
@@ -140,32 +144,34 @@
           <app-search-bar [compact]="false" />
         </div>
 
-        <div class="notification-slot">
-          <button
-            class="icon-button notification-button no-select"
-            type="button"
-            aria-label="Abrir notificaciones"
-            [attr.aria-expanded]="showNotifications()"
-            (click)="toggleNotifications()"
-          >
-            <svg class="notification-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path
-                d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 1 0-14 0v5l-2 2v1h18v-1l-2-2Z"
-                fill="currentColor"
+        @if (notificationsEnabled()) {
+          <div class="notification-slot">
+            <button
+              class="icon-button notification-button no-select"
+              type="button"
+              aria-label="Abrir notificaciones"
+              [attr.aria-expanded]="showNotifications()"
+              (click)="toggleNotifications()"
+            >
+              <svg class="notification-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M12 22a2.5 2.5 0 0 0 2.45-2h-4.9A2.5 2.5 0 0 0 12 22Zm7-6V11a7 7 0 1 0-14 0v5l-2 2v1h18v-1l-2-2Z"
+                  fill="currentColor"
+                />
+              </svg>
+              @if (unreadCount() > 0) {
+                <span class="notif-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
+              }
+            </button>
+            @if (showNotifications()) {
+              <app-notifications-panel
+                [visible]="showNotifications()"
+                (close)="closeNotifications()"
+                (badgeReset)="unreadCount.set(0)"
               />
-            </svg>
-            @if (unreadCount() > 0) {
-              <span class="notif-badge">{{ unreadCount() > 99 ? '99+' : unreadCount() }}</span>
             }
-          </button>
-          @if (showNotifications()) {
-            <app-notifications-panel
-              [visible]="showNotifications()"
-              (close)="closeNotifications()"
-              (badgeReset)="unreadCount.set(0)"
-            />
-          }
-        </div>
+          </div>
+        }
 
         <div class="user-actions">
           @if (authService.currentUser$ | async; as currentUser) {
@@ -237,30 +243,32 @@
 
     <div class="mobile-drawer-groups">
       @for (group of navGroups; track group.label) {
-        <section class="nav-group">
-          <span class="group-label">{{ group.label }}</span>
-          @for (item of group.items; track item.route) {
-            @if (isNavItemVisible(item)) {
+        @if (isGroupVisible(group)) {
+          <section class="nav-group">
+            <span class="group-label">{{ group.label }}</span>
+            @for (item of group.items; track item.route) {
+              @if (isNavItemVisible(item)) {
+                <a
+                  [routerLink]="item.route"
+                  [class.active]="isNavItemActive(item)"
+                  [attr.aria-current]="isNavItemActive(item) ? 'page' : null"
+                  (click)="closeMobileMenu(false)"
+                >
+                  {{ item.label }}
+                </a>
+              }
+            }
+            @if (group.label === 'Comunidad' && authService.isAdmin()) {
               <a
-                [routerLink]="item.route"
-                [class.active]="isNavItemActive(item)"
-                [attr.aria-current]="isNavItemActive(item) ? 'page' : null"
+                routerLink="/admin/comunidades"
+                routerLinkActive="active"
                 (click)="closeMobileMenu(false)"
               >
-                {{ item.label }}
+                Panel de revision
               </a>
             }
-          }
-          @if (group.label === 'Comunidad' && authService.isAdmin()) {
-            <a
-              routerLink="/admin/comunidades"
-              routerLinkActive="active"
-              (click)="closeMobileMenu(false)"
-            >
-              Panel de revision
-            </a>
-          }
-        </section>
+          </section>
+        }
       }
     </div>
 

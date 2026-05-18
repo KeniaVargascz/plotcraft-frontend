@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { DiscoverySnapshot } from '../../core/models/discovery.model';
@@ -813,7 +813,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DiscoveryPageComponent {
+export class DiscoveryPageComponent implements OnInit {
   private readonly discoveryService = inject(DiscoveryService);
   private readonly genresService = inject(GenresService);
   private readonly communitiesService = inject(CommunityService);
@@ -828,7 +828,7 @@ export class DiscoveryPageComponent {
   readonly recentPosts = signal<PostModel[]>([]);
   readonly visibleGenres = computed(() => this.genres().slice(0, 4));
 
-  constructor() {
+  ngOnInit() {
     this.genresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (genres) => this.genres.set(genres),
       error: () => this.genres.set([]),

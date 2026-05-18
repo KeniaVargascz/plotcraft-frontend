@@ -67,7 +67,7 @@ export class LoginFormComponent implements OnDestroy {
         this.isSubmitting.set(false);
         this.form.enable();
         this.loginSuccess.emit();
-        void this.router.navigateByUrl('/feed');
+        void this.router.navigateByUrl(this.ff.getHomeRoute());
       },
       error: (err: unknown) => {
         this.isSubmitting.set(false);

@@ -44,6 +44,8 @@ import { ReaderBookmarksPanelComponent } from './components/reader/reader-bookma
 import { ReaderPreferencesPanelComponent } from './components/reader/reader-preferences-panel.component';
 import { ReaderCommentsSectionComponent } from './components/reader/reader-comments-section.component';
 import { ReaderChapterNavComponent } from './components/reader/reader-chapter-nav.component';
+import { FeatureFlagService } from '../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../core/constants/feature-flags.constants';
 
 @Component({
   selector: 'app-chapter-reader-page',
@@ -83,60 +85,62 @@ import { ReaderChapterNavComponent } from './components/reader/reader-chapter-na
                   {{ 'reader.loginHint' | translate }}
                 </span>
               } @else {
-                <button
-                  type="button"
-                  class="icon-btn"
-                  [attr.aria-label]="'reader.actions.bookmarkPosition' | translate"
-                  [title]="
-                    bookmarks().length >= MAX_BOOKMARKS_PER_CHAPTER
-                      ? 'Maximo ' + MAX_BOOKMARKS_PER_CHAPTER + ' marcadores por capitulo'
-                      : ('reader.actions.bookmarkPosition' | translate)
-                  "
-                  [disabled]="bookmarks().length >= MAX_BOOKMARKS_PER_CHAPTER"
-                  (click)="toggleBookmark()"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
+                @if (bookmarksFeatureEnabled()) {
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    [attr.aria-label]="'reader.actions.bookmarkPosition' | translate"
+                    [title]="
+                      bookmarks().length >= MAX_BOOKMARKS_PER_CHAPTER
+                        ? 'Maximo ' + MAX_BOOKMARKS_PER_CHAPTER + ' marcadores por capitulo'
+                        : ('reader.actions.bookmarkPosition' | translate)
+                    "
+                    [disabled]="bookmarks().length >= MAX_BOOKMARKS_PER_CHAPTER"
+                    (click)="toggleBookmark()"
                   >
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                  </svg>
-                  <span class="btn-label">{{ 'reader.actions.bookmarkPosition' | translate }}</span>
-                </button>
-                <button
-                  type="button"
-                  class="icon-btn"
-                  [attr.aria-label]="'reader.actions.bookmarks' | translate"
-                  [title]="'reader.actions.bookmarks' | translate"
-                  (click)="toggleBookmarksPanel()"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                    </svg>
+                    <span class="btn-label">{{ 'reader.actions.bookmarkPosition' | translate }}</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="icon-btn"
+                    [attr.aria-label]="'reader.actions.bookmarks' | translate"
+                    [title]="'reader.actions.bookmarks' | translate"
+                    (click)="toggleBookmarksPanel()"
                   >
-                    <line x1="8" y1="6" x2="21" y2="6" />
-                    <line x1="8" y1="12" x2="21" y2="12" />
-                    <line x1="8" y1="18" x2="21" y2="18" />
-                    <circle cx="3.5" cy="6" r="1" />
-                    <circle cx="3.5" cy="12" r="1" />
-                    <circle cx="3.5" cy="18" r="1" />
-                  </svg>
-                  <span class="btn-label">{{ 'reader.actions.bookmarks' | translate }}</span>
-                </button>
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <line x1="8" y1="6" x2="21" y2="6" />
+                      <line x1="8" y1="12" x2="21" y2="12" />
+                      <line x1="8" y1="18" x2="21" y2="18" />
+                      <circle cx="3.5" cy="6" r="1" />
+                      <circle cx="3.5" cy="12" r="1" />
+                      <circle cx="3.5" cy="18" r="1" />
+                    </svg>
+                    <span class="btn-label">{{ 'reader.actions.bookmarks' | translate }}</span>
+                  </button>
+                }
               }
               <button
                 type="button"
@@ -188,12 +192,12 @@ import { ReaderChapterNavComponent } from './components/reader/reader-chapter-na
         @if (showPreferences()) {
           <div class="prefs-overlay" (click)="showPreferences.set(false)"></div>
         }
-        @if (showBookmarksPanel()) {
+        @if (bookmarksFeatureEnabled() && showBookmarksPanel()) {
           <div class="bookmarks-overlay" (click)="showBookmarksPanel.set(false)"></div>
         }
 
         <div class="reader-layout">
-          @if (showPreferences() || showBookmarksPanel()) {
+          @if (showPreferences() || (bookmarksFeatureEnabled() && showBookmarksPanel())) {
             <div class="side-panels">
               @if (showPreferences()) {
                 <app-reader-preferences-panel
@@ -202,7 +206,7 @@ import { ReaderChapterNavComponent } from './components/reader/reader-chapter-na
                   (preferencesChange)="onPreferencesPartialChange($event)"
                 />
               }
-              @if (showBookmarksPanel()) {
+              @if (bookmarksFeatureEnabled() && showBookmarksPanel()) {
                 <app-reader-bookmarks-panel
                   [bookmarks]="bookmarks()"
                   (closed)="showBookmarksPanel.set(false)"
@@ -713,6 +717,8 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   private readonly votesService = inject(VotesService);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly ngZone = inject(NgZone);
+  private readonly featureFlagService = inject(FeatureFlagService);
+  readonly bookmarksFeatureEnabled = this.featureFlagService.enabled(FeatureFlag.READER_LIBRARY_BOOKMARKS);
 
   @ViewChild('readerContainer') readerContainer?: ElementRef<HTMLElement>;
   @ViewChild('bookmarksPanel') bookmarksPanel?: ElementRef<HTMLElement>;

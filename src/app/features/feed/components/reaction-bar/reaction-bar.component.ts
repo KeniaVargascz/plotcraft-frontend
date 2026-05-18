@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, Input, Ou
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../../../core/services/auth.service';
 import { ReactionsService } from '../../../../core/services/reactions.service';
+import { FeatureFlagService } from '../../../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../../../core/constants/feature-flags.constants';
 import { PostModel } from '../../../../core/models/post.model';
 import { ReactionType } from '../../../../core/models/reaction.model';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
@@ -15,6 +17,8 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReactionBarComponent {
+  private readonly ff = inject(FeatureFlagService);
+  readonly reactionsEnabled = this.ff.enabled(FeatureFlag.SOCIAL_FEED_REACTIONS);
   private readonly reactionsService = inject(ReactionsService);
   private readonly destroyRef = inject(DestroyRef);
   readonly authService = inject(AuthService);

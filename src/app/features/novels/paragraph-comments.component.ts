@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Out
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ChaptersService, ChapterCommentModel } from '../../core/services/chapters.service';
+import { FeatureFlagService } from '../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../core/constants/feature-flags.constants';
 
 @Component({
   selector: 'app-paragraph-comments',
@@ -23,7 +25,7 @@ import { ChaptersService, ChapterCommentModel } from '../../core/services/chapte
           <div class="p-comments-list">
             @for (c of comments(); track c.id) {
               <div class="p-comment-item">
-                @if (c.quotedText) {
+                @if (highlightsEnabled() && c.quotedText) {
                   <blockquote class="p-comment-quote">{{ truncateQuote(c.quotedText) }}</blockquote>
                 }
                 <div class="p-comment-body">
@@ -45,7 +47,7 @@ import { ChaptersService, ChapterCommentModel } from '../../core/services/chapte
 
         @if (isAuthenticated && commentsEnabled) {
           <div class="p-dialog-footer">
-            @if (quotedText) {
+            @if (highlightsEnabled() && quotedText) {
               <blockquote class="p-new-quote">{{ truncateQuote(quotedText) }}</blockquote>
             }
             <div class="p-comment-form">
@@ -307,6 +309,8 @@ export class ParagraphCommentsComponent implements OnChanges {
   @Output() commentRemoved = new EventEmitter<void>();
 
   private chaptersService = inject(ChaptersService);
+  private readonly featureFlagService = inject(FeatureFlagService);
+  readonly highlightsEnabled = this.featureFlagService.enabled(FeatureFlag.READER_LIBRARY_HIGHLIGHTS);
 
   readonly comments = signal<ChapterCommentModel[]>([]);
   readonly sending = signal(false);

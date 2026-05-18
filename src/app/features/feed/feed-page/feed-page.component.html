@@ -22,7 +22,7 @@
             (postChange)="updatePost($event)"
             (postDeleted)="removePost($event)"
           />
-          @if ((i + 1) % 10 === 0 && suggestions().length) {
+          @if (followsEnabled() && (i + 1) % 10 === 0 && suggestions().length) {
             <app-suggestion-list
               [suggestions]="suggestions()"
               (follow)="followSuggestion($event)"
@@ -32,7 +32,7 @@
         }
       </div>
 
-      @if (posts().length % 10 !== 0 && suggestions().length && !hasMore()) {
+      @if (followsEnabled() && posts().length % 10 !== 0 && suggestions().length && !hasMore()) {
         <app-suggestion-list
           [suggestions]="suggestions()"
           (follow)="followSuggestion($event)"
@@ -48,12 +48,14 @@
   </div>
 
   <aside class="feed-sidebar">
-    <app-suggestion-list
-      class="sidebar-suggestions"
-      [suggestions]="suggestions()"
-      (follow)="followSuggestion($event)"
-      (unfollow)="unfollowSuggestion($event)"
-    />
+    @if (followsEnabled()) {
+      <app-suggestion-list
+        class="sidebar-suggestions"
+        [suggestions]="suggestions()"
+        (follow)="followSuggestion($event)"
+        (unfollow)="unfollowSuggestion($event)"
+      />
+    }
 
     <section class="sidebar-card highlight">
       <h3>{{ 'feed.discover' | translate }}</h3>

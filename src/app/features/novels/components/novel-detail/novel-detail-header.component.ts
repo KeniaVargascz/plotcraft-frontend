@@ -1,10 +1,12 @@
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SlicePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NovelDetail } from '../../../../core/models/novel.model';
 import { ReadingList } from '../../../../core/models/reading-list.model';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
+import { FeatureFlagService } from '../../../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../../../core/constants/feature-flags.constants';
 
 @Component({
   selector: 'app-novel-detail-header',
@@ -71,39 +73,43 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
           }
 
           @if (!novel().viewerContext?.isAuthor) {
-            <button
-              type="button"
-              [disabled]="kudoLoading()"
-              (click)="toggleKudo.emit()"
-              [class.active]="novel().viewerContext?.hasKudo"
-            >
-              <span [class.kudo-beat]="kudoBeat()">&#9829;</span>
-              {{ novel().viewerContext?.hasKudo ? 'Kudo dado' : 'Dar kudo' }}
-            </button>
-            <button
-              type="button"
-              [class.active]="novel().viewerContext?.isSubscribed"
-              [disabled]="subscribeLoading()"
-              (click)="toggleSubscribe.emit()"
-            >
-              <svg
-                style="display:inline-block;vertical-align:middle;margin-right:4px"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+            @if (kudosEnabled()) {
+              <button
+                type="button"
+                [disabled]="kudoLoading()"
+                (click)="toggleKudo.emit()"
+                [class.active]="novel().viewerContext?.hasKudo"
               >
-                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                <path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg
-              >{{ novel().viewerContext?.isSubscribed ? 'Suscrito' : 'Suscribirse' }}
-            </button>
+                <span [class.kudo-beat]="kudoBeat()">&#9829;</span>
+                {{ novel().viewerContext?.hasKudo ? 'Kudo dado' : 'Dar kudo' }}
+              </button>
+            }
+            @if (subscriptionsEnabled()) {
+              <button
+                type="button"
+                [class.active]="novel().viewerContext?.isSubscribed"
+                [disabled]="subscribeLoading()"
+                (click)="toggleSubscribe.emit()"
+              >
+                <svg
+                  style="display:inline-block;vertical-align:middle;margin-right:4px"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg
+                >{{ novel().viewerContext?.isSubscribed ? 'Suscrito' : 'Suscribirse' }}
+              </button>
+            }
           }
 
-          @if (novel().viewerContext && !novel().viewerContext!.isAuthor) {
+          @if (novel().viewerContext && !novel().viewerContext!.isAuthor && bookmarksEnabled()) {
             <button type="button" (click)="toggleBookmark.emit()">
               {{ novel().viewerContext!.hasBookmarked ? 'Quitar guardado' : 'Guardar' }}
             </button>
@@ -324,6 +330,11 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
   ],
 })
 export class NovelDetailHeaderComponent {
+  private readonly featureFlagService = inject(FeatureFlagService);
+  readonly subscriptionsEnabled = this.featureFlagService.enabled(FeatureFlag.READER_SUBSCRIPTIONS);
+  readonly bookmarksEnabled = this.featureFlagService.enabled(FeatureFlag.READER_LIBRARY_BOOKMARKS);
+  readonly kudosEnabled = this.featureFlagService.enabled(FeatureFlag.READER_KUDOS);
+
   readonly novel = input.required<NovelDetail>();
   readonly isAuthenticated = input.required<boolean>();
   readonly kudoLoading = input<boolean>(false);

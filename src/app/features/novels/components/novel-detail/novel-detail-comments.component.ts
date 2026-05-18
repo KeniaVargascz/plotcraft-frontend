@@ -1,6 +1,8 @@
-import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { FeatureFlagService } from '../../../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../../../core/constants/feature-flags.constants';
 import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
 
 export interface NovelComment {
@@ -26,7 +28,7 @@ export interface NovelComment {
       <h2>Comentarios</h2>
 
       @if (commentsEnabled()) {
-        @if (isAuthenticated()) {
+        @if (commentsFeatureEnabled() && isAuthenticated()) {
           <div class="comment-form">
             <textarea
               rows="3"
@@ -230,6 +232,8 @@ export interface NovelComment {
   ],
 })
 export class NovelDetailCommentsComponent {
+  private readonly ff = inject(FeatureFlagService);
+  readonly commentsFeatureEnabled = this.ff.enabled(FeatureFlag.SOCIAL_FEED_COMMENTS);
   readonly comments = input.required<NovelComment[]>();
   readonly loading = input<boolean>(false);
   readonly hasMore = input<boolean>(false);

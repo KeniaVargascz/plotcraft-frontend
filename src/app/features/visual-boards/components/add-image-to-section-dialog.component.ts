@@ -5,6 +5,8 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatButtonModule } from '@angular/material/button';
 import { catchError, finalize, of } from 'rxjs';
 import { MediaService } from '../../../core/services/media.service';
+import { FeatureFlagService } from '../../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../../core/constants/feature-flags.constants';
 
 export interface AddImageToSectionDialogData {
   sectionTitle: string;
@@ -25,10 +27,14 @@ export interface AddImageToSectionResult {
       <div class="form">
         <p class="hint">Seccion: {{ data.sectionTitle }}</p>
 
-        <label class="file-upload">
-          <span>Selecciona una imagen</span>
-          <input type="file" accept="image/*" (change)="onFileSelected($event)" />
-        </label>
+        @if (mediaUploadEnabled()) {
+          <label class="file-upload">
+            <span>Selecciona una imagen</span>
+            <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+          </label>
+        } @else {
+          <p class="hint">La subida de imagenes esta desactivada temporalmente.</p>
+        }
 
         <label>
           <span>O pega una URL</span>
@@ -116,6 +122,8 @@ export class AddImageToSectionDialogComponent {
     MatDialogRef<AddImageToSectionDialogComponent, AddImageToSectionResult | null>,
   );
   private readonly mediaService = inject(MediaService);
+  private readonly featureFlagService = inject(FeatureFlagService);
+  readonly mediaUploadEnabled = this.featureFlagService.enabled(FeatureFlag.PLATFORM_MEDIA_UPLOAD);
 
   readonly uploading = signal(false);
   readonly error = signal<string | null>(null);

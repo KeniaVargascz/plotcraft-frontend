@@ -19,7 +19,7 @@
     </div>
   }
 
-  @if (authService.isAuthenticated()) {
+  @if (commentsEnabled() && authService.isAuthenticated()) {
     <form class="comment-form" [formGroup]="form" (ngSubmit)="createComment()">
       <textarea
         formControlName="content"

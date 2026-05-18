@@ -11,6 +11,8 @@ import { NovelSummary } from '../../core/models/novel.model';
 import { NovelsService } from '../../core/services/novels.service';
 import { WorldsService } from '../../core/services/worlds.service';
 import { WorldSummary } from '../../core/models/world.model';
+import { FeatureFlagService } from '../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../core/constants/feature-flags.constants';
 
 @Component({
   selector: 'app-character-form-page',
@@ -26,6 +28,12 @@ import { WorldSummary } from '../../core/models/world.model';
         </div>
         <a class="back-link" routerLink="/mis-personajes">Volver</a>
       </header>
+
+      @if (!catalogEnabled()) {
+        <div class="flag-notice" style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:8px;font-size:.9rem;margin-bottom:1rem">
+          El catalogo de personajes esta desactivado. Tu personaje no sera visible publicamente hasta que se habilite.
+        </div>
+      }
 
       <form class="editor-grid" (ngSubmit)="submit()">
         <section class="card form-pane">
@@ -375,6 +383,8 @@ export class CharacterFormPageComponent {
   private readonly novelsService = inject(NovelsService);
   private readonly worldsService = inject(WorldsService);
   private readonly markdownService = inject(MarkdownService);
+  private readonly featureFlagService = inject(FeatureFlagService);
+  readonly catalogEnabled = this.featureFlagService.enabled(FeatureFlag.EXPLORE_CHARACTERS_CATALOG);
 
   readonly isEdit = signal(false);
   readonly saving = signal(false);

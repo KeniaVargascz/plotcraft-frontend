@@ -14,6 +14,8 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { FollowModel } from '../../../core/models/follow.model';
 import { PostModel, PostType } from '../../../core/models/post.model';
+import { FeatureFlagService } from '../../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../../core/constants/feature-flags.constants';
 import { FeedService } from '../../../core/services/feed.service';
 import { FollowsService } from '../../../core/services/follows.service';
 import { TagChipsInputComponent } from '../../../shared/components/tag-chips-input/tag-chips-input.component';
@@ -41,6 +43,8 @@ import { SuggestionListComponent } from '../components/suggestion-list/suggestio
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FeedPageComponent implements AfterViewInit, OnDestroy {
+  private readonly ff = inject(FeatureFlagService);
+  readonly followsEnabled = this.ff.enabled(FeatureFlag.SOCIAL_FOLLOWS);
   private readonly feedService = inject(FeedService);
   private readonly followsService = inject(FollowsService);
   private readonly destroyRef = inject(DestroyRef);

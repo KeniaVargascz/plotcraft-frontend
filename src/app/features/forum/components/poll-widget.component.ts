@@ -2,12 +2,15 @@ import { ChangeDetectionStrategy, Component, inject, input, output, signal, comp
 import { FormsModule } from '@angular/forms';
 import { ForumPoll } from '../../../core/models/forum-poll.model';
 import { ForumService } from '../../../core/services/forum.service';
+import { FeatureFlagService } from '../../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../../core/constants/feature-flags.constants';
 
 @Component({
   selector: 'app-poll-widget',
   standalone: true,
   imports: [FormsModule],
   template: `
+    @if (pollsEnabled()) {
     <div class="poll-card">
       <h4 class="question">{{ poll().question }}</h4>
 
@@ -55,6 +58,7 @@ import { ForumService } from '../../../core/services/forum.service';
         }
       }
     </div>
+    }
   `,
   styles: [
     `
@@ -150,6 +154,8 @@ import { ForumService } from '../../../core/services/forum.service';
 })
 export class PollWidgetComponent implements OnInit {
   private readonly forumService = inject(ForumService);
+  private readonly featureFlagService = inject(FeatureFlagService);
+  readonly pollsEnabled = this.featureFlagService.enabled(FeatureFlag.COMMUNITY_FORUM_POLLS);
 
   readonly poll = input.required<ForumPoll>();
   readonly threadSlug = input.required<string>();

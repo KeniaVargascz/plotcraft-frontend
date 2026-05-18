@@ -13,6 +13,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommentModel } from '../../../../core/models/comment.model';
 import { PostModel } from '../../../../core/models/post.model';
+import { FeatureFlagService } from '../../../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../../../core/constants/feature-flags.constants';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CommentsService } from '../../../../core/services/comments.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
@@ -27,6 +29,8 @@ import { CommentItemComponent } from '../comment-item/comment-item.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CommentListComponent implements OnInit {
+  private readonly ff = inject(FeatureFlagService);
+  readonly commentsEnabled = this.ff.enabled(FeatureFlag.SOCIAL_FEED_COMMENTS);
   readonly authService = inject(AuthService);
   private readonly commentsService = inject(CommentsService);
   private readonly formBuilder = inject(FormBuilder);

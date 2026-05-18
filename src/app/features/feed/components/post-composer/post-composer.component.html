@@ -1,3 +1,4 @@
+@if (composerEnabled()) {
 <section class="composer-card" data-testid="post-composer">
   @if (!expanded()) {
     <div class="compact-view" (click)="expanded.set(true)">
@@ -134,3 +135,4 @@
     }
   }
 </section>
+}

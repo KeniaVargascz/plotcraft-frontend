@@ -1,3 +1,4 @@
+@if (reactionsEnabled()) {
 <div class="reaction-bar">
   @if (!isAuthor) {
     <button
@@ -41,3 +42,4 @@
 
   <ng-content />
 </div>
+}

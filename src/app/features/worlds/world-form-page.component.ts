@@ -9,6 +9,8 @@ import { NovelsService } from '../../core/services/novels.service';
 import { WorldsService } from '../../core/services/worlds.service';
 import { WorldGenre, WorldVisibility, WORLD_GENRE_LABELS } from '../../core/models/world.model';
 import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/tag-chips-input.component';
+import { FeatureFlagService } from '../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../core/constants/feature-flags.constants';
 
 @Component({
   selector: 'app-world-form-page',
@@ -34,6 +36,12 @@ import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/
           <a class="back-link" routerLink="/mis-mundos">Volver</a>
         </div>
       </header>
+
+      @if (!catalogEnabled()) {
+        <div class="flag-notice" style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:8px;font-size:.9rem;margin-bottom:1rem">
+          El catalogo de mundos esta desactivado. Tu mundo no sera visible publicamente hasta que se habilite.
+        </div>
+      }
 
       <form class="editor-grid" (ngSubmit)="submit()">
         <section class="card form-pane">
@@ -379,6 +387,8 @@ export class WorldFormPageComponent {
   private readonly novelsService = inject(NovelsService);
   private readonly markdownService = inject(MarkdownService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly featureFlagService = inject(FeatureFlagService);
+  readonly catalogEnabled = this.featureFlagService.enabled(FeatureFlag.EXPLORE_WORLDS_CATALOG);
 
   readonly isEdit = signal(false);
   readonly saving = signal(false);

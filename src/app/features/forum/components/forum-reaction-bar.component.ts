@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ForumService } from '../../../core/services/forum.service';
+import { FeatureFlagService } from '../../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../../core/constants/feature-flags.constants';
 
 type ReactionKey = 'LIKE' | 'HELPFUL' | 'INSIGHTFUL' | 'FUNNY';
 
@@ -12,6 +14,7 @@ const REACTION_MAP: { key: ReactionKey; emoji: string; label: string }[] = [
   selector: 'app-forum-reaction-bar',
   standalone: true,
   template: `
+    @if (reactionsEnabled()) {
     <div class="reaction-bar">
       @for (r of reactionTypes; track r.key) {
         <button
@@ -28,6 +31,7 @@ const REACTION_MAP: { key: ReactionKey; emoji: string; label: string }[] = [
         </button>
       }
     </div>
+    }
   `,
   styles: [
     `
@@ -72,6 +76,8 @@ const REACTION_MAP: { key: ReactionKey; emoji: string; label: string }[] = [
 export class ForumReactionBarComponent {
   private readonly forumService = inject(ForumService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly featureFlagService = inject(FeatureFlagService);
+  readonly reactionsEnabled = this.featureFlagService.enabled(FeatureFlag.COMMUNITY_FORUM_REACTIONS);
 
   readonly reactions = input.required<Record<string, number>>();
   readonly viewerReaction = input<string | null>(null);

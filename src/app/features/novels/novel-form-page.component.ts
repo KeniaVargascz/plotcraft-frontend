@@ -33,6 +33,8 @@ import {
   PairingDraft,
 } from './components/novel-form/novel-form-character-pairings.component';
 import { NovelFormFanficSectionComponent } from './components/novel-form/novel-form-fanfic-section.component';
+import { FeatureFlagService } from '../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../core/constants/feature-flags.constants';
 
 @Component({
   selector: 'app-novel-form-page',
@@ -49,6 +51,12 @@ import { NovelFormFanficSectionComponent } from './components/novel-form/novel-f
   template: `
     <section class="form-shell">
       <h1>{{ isEdit() ? 'Editar novela' : 'Nueva novela' }}</h1>
+
+      @if (!catalogEnabled()) {
+        <div class="flag-notice" style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:8px;font-size:.9rem;margin-bottom:1rem">
+          El catalogo de novelas esta desactivado. Tu novela no sera visible publicamente hasta que se habilite.
+        </div>
+      }
 
       <div class="form-grid">
         <fieldset class="full novel-type-fieldset">
@@ -201,12 +209,14 @@ import { NovelFormFanficSectionComponent } from './components/novel-form/novel-f
           </div>
         </fieldset>
 
-        <app-novel-form-warnings-selector
-          [allWarnings]="warningsCatalog()"
-          [selectedWarningIds]="selectedWarningIds()"
-          [disabled]="saving()"
-          (warningsChange)="selectedWarningIds.set($event)"
-        />
+        @if (contentWarningsEnabled()) {
+          <app-novel-form-warnings-selector
+            [allWarnings]="warningsCatalog()"
+            [selectedWarningIds]="selectedWarningIds()"
+            [disabled]="saving()"
+            (warningsChange)="selectedWarningIds.set($event)"
+          />
+        }
 
         <app-novel-form-genre-selector
           [allGenres]="genres()"
@@ -964,6 +974,9 @@ export class NovelFormPageComponent implements OnInit {
   private readonly communityService = inject(CommunityService);
   private readonly communityCharactersService = inject(CommunityCharactersService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly featureFlagService = inject(FeatureFlagService);
+  readonly catalogEnabled = this.featureFlagService.enabled(FeatureFlag.EXPLORE_NOVELS_CATALOG);
+  readonly contentWarningsEnabled = this.featureFlagService.enabled(FeatureFlag.PLATFORM_CONTENT_WARNINGS);
 
   novelType: NovelType = 'ORIGINAL';
   linkedCommunityId = '';

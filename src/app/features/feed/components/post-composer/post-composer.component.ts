@@ -14,6 +14,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PostModel, PostType } from '../../../../core/models/post.model';
 import { PostsService } from '../../../../core/services/posts.service';
+import { FeatureFlagService } from '../../../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../../../core/constants/feature-flags.constants';
 import { NovelsService } from '../../../../core/services/novels.service';
 import { WorldsService } from '../../../../core/services/worlds.service';
 import { CharactersService } from '../../../../core/services/characters.service';
@@ -61,6 +63,8 @@ interface ComposerCharacter {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PostComposerComponent {
+  private readonly ff = inject(FeatureFlagService);
+  readonly composerEnabled = this.ff.enabled(FeatureFlag.SOCIAL_FEED_COMPOSER);
   private readonly formBuilder = inject(FormBuilder);
   private readonly postsService = inject(PostsService);
   private readonly t = inject(TranslationService);

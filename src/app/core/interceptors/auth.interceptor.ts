@@ -47,15 +47,10 @@ export const authInterceptor: HttpInterceptorFn = (
         return throwError(() => error);
       }
 
-      // 403 = forced logout (account disabled, locked, flags changed)
-      if (error.status === 403) {
-        // On refresh endpoint, just clear tokens — calling logout() would
-        // navigate and fire HTTP requests during app bootstrap, causing hangs.
-        if (request.url.endsWith('/auth/refresh')) {
-          tokenService.clear();
-        } else {
-          authService.logout();
-        }
+      // 403 = session invalid (account disabled, locked, flags changed)
+      if (error.status === 403 && request.url.startsWith(environment.apiUrl)) {
+        tokenService.clear();
+        void router.navigateByUrl('/login');
         return throwError(() => error);
       }
 

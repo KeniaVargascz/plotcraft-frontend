@@ -1,5 +1,13 @@
 @if (maintenance.enabled()) {
   <app-maintenance-screen />
 } @else {
+  @if (loading()) {
+    <div class="splash">
+      <div class="splash-inner">
+        <div class="splash-logo">PlotCraft</div>
+        <div class="splash-bar"></div>
+      </div>
+    </div>
+  }
   <router-outlet />
 }

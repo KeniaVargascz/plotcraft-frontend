@@ -30,9 +30,18 @@ export class AuthService {
     }
 
     await new Promise<void>((resolve) => {
+      const timer = setTimeout(() => {
+        this.clearSession();
+        resolve();
+      }, 5000);
+
       this.me().subscribe({
-        next: () => resolve(),
+        next: () => {
+          clearTimeout(timer);
+          resolve();
+        },
         error: () => {
+          clearTimeout(timer);
           this.clearSession();
           resolve();
         },

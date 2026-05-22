@@ -53,8 +53,8 @@ export const authInterceptor: HttpInterceptorFn = (
         return throwError(() => error);
       }
 
-      // 401 on refresh endpoint = no retry
-      if (error.status !== 401 || request.url.endsWith('/auth/refresh')) {
+      // 401 on public/refresh endpoints = no retry
+      if (error.status !== 401 || request.url.endsWith('/auth/refresh') || isPublicRoute) {
         return throwError(() => error);
       }
 

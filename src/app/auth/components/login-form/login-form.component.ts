@@ -64,10 +64,11 @@ export class LoginFormComponent implements OnDestroy {
 
     this.authService.login({ identifier: trimmedIdentifier, password }).subscribe({
       next: () => {
-        this.isSubmitting.set(false);
-        this.form.enable();
         this.loginSuccess.emit();
-        void this.router.navigateByUrl(this.ff.getHomeRoute());
+        // Full page reload so the app re-initializes with fresh tokens.
+        // SPA navigation fails here because Angular's canMatch guards
+        // on the root path don't re-evaluate correctly after login.
+        window.location.href = this.ff.getHomeRoute();
       },
       error: (err: unknown) => {
         this.isSubmitting.set(false);

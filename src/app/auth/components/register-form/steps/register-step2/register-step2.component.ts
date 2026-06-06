@@ -67,7 +67,9 @@ export class RegisterStep2Component implements OnInit, OnDestroy {
     this.authService.verifyRegistration({ email: this.email, code }).subscribe({
       next: () => {
         this.isVerifying.set(false);
-        window.location.href = this.ff.getHomeRoute();
+        const target = this.ff.getHomeRoute();
+        history.replaceState(null, '', target);
+        window.location.reload();
       },
       error: (err: HttpErrorResponse) => {
         this.isVerifying.set(false);

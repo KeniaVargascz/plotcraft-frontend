@@ -69,10 +69,13 @@ export class LoginFormComponent {
     this.authService.login({ identifier: trimmedIdentifier, password }).subscribe({
       next: () => {
         this.loginSuccess.emit();
-        // Full page reload so the app re-initializes with fresh tokens.
-        // SPA navigation fails here because Angular's canMatch guards
-        // on the root path don't re-evaluate correctly after login.
-        window.location.href = this.ff.getHomeRoute();
+        // Set target URL then force a real browser reload so Angular
+        // re-bootstraps with fresh tokens and canMatch guards re-evaluate.
+        // Plain `window.location.href = url` may be swallowed by the SPA
+        // router on same-origin navigations — replaceState + reload avoids that.
+        const target = this.ff.getHomeRoute();
+        history.replaceState(null, '', target);
+        window.location.reload();
       },
       error: (err: unknown) => {
         this.isSubmitting.set(false);

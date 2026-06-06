@@ -3,13 +3,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { CharactersService } from '../../core/services/characters.service';
 import { CharacterSummary } from '../../core/models/character.model';
+import { CardGridSkeletonComponent } from '../../shared/components/skeleton-loader/card-grid-skeleton.component';
 import { CharacterCardComponent } from './components/character-card.component';
 import { PaginatorComponent } from '../../shared/components/paginator/paginator.component';
 
 @Component({
   selector: 'app-characters-catalog-page',
   standalone: true,
-  imports: [FormsModule, CharacterCardComponent, PaginatorComponent],
+  imports: [FormsModule, CharacterCardComponent, PaginatorComponent, CardGridSkeletonComponent],
   template: `
     <section class="catalog-shell">
       <header class="hero card">
@@ -31,7 +32,7 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
       </header>
 
       @if (loading()) {
-        <p class="state">Cargando personajes...</p>
+        <app-card-grid-skeleton />
       } @else if (!characters().length) {
         <p class="state">Aun no hay personajes publicos para mostrar.</p>
       } @else {
@@ -59,8 +60,8 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
         gap: 1rem;
       }
       .card {
-        padding: 1.35rem;
-        border-radius: 1.25rem;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
@@ -79,7 +80,7 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
         gap: 0.5rem;
       }
       input {
-        padding: 0.9rem 1rem;
+        padding: 1rem 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);

@@ -3,12 +3,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { Genre } from '../../core/models/genre.model';
 import { GenresService } from '../../core/services/genres.service';
+import { CardGridSkeletonComponent } from '../../shared/components/skeleton-loader/card-grid-skeleton.component';
 import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotlight-card/genre-spotlight-card.component';
 
 @Component({
   selector: 'app-genres-page',
   standalone: true,
-  imports: [RouterLink, GenreSpotlightCardComponent],
+  imports: [RouterLink, GenreSpotlightCardComponent, CardGridSkeletonComponent],
   template: `
     <section class="genres-page">
       <header class="hero">
@@ -21,7 +22,7 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
       </header>
 
       @if (loading()) {
-        <div class="state-card">Cargando generos...</div>
+        <app-card-grid-skeleton />
       } @else if (!genres().length) {
         <div class="state-card">Aun no hay generos disponibles.</div>
       } @else {
@@ -37,12 +38,12 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
     `
       .genres-page {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
       }
 
       .hero,
       .state-card {
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
@@ -51,13 +52,13 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
         display: flex;
         justify-content: space-between;
         gap: 1rem;
-        padding: 1.35rem;
+        padding: 1.5rem;
         align-items: end;
       }
 
       .hero-copy {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
 
       .hero-copy h1,
@@ -80,7 +81,7 @@ import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotl
       }
 
       .state-card {
-        padding: 1.2rem;
+        padding: 1.5rem;
       }
 
       .genres-grid {

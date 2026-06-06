@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../core/services/auth.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { CardGridSkeletonComponent } from '../../shared/components/skeleton-loader/card-grid-skeleton.component';
 import { SeriesCardComponent } from './components/series-card/series-card.component';
 import { SeriesSummary } from './models/series.model';
 import { SeriesService } from './services/series.service';
@@ -13,7 +13,7 @@ import { SeriesService } from './services/series.service';
 @Component({
   selector: 'app-my-series-page',
   standalone: true,
-  imports: [RouterLink, ErrorMessageComponent, LoadingSpinnerComponent, SeriesCardComponent],
+  imports: [RouterLink, ErrorMessageComponent, CardGridSkeletonComponent, SeriesCardComponent],
   template: `
     <section class="page">
       <header class="header">
@@ -25,7 +25,7 @@ import { SeriesService } from './services/series.service';
       </header>
 
       @if (loading()) {
-        <app-loading-spinner />
+        <app-card-grid-skeleton />
       } @else if (error()) {
         <app-error-message />
       } @else if (!items().length) {

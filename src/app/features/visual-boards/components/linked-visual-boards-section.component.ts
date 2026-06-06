@@ -70,7 +70,7 @@ import { VisualBoardCardComponent } from './visual-board-card.component';
         grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
       }
       .create-btn {
-        padding: 0.65rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);

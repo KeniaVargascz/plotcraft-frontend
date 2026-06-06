@@ -19,11 +19,12 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { CommentsService } from '../../../../core/services/comments.service';
 import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 import { CommentItemComponent } from '../comment-item/comment-item.component';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-comment-list',
   standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe, CommentItemComponent],
+  imports: [ReactiveFormsModule, TranslatePipe, CommentItemComponent, EmptyStateComponent],
   templateUrl: './comment-list.component.html',
   styleUrl: './comment-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

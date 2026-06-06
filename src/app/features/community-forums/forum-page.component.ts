@@ -145,7 +145,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         font-size: 0.85rem;
         color: var(--text-3);
         display: flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .breadcrumb a {
         color: var(--accent);
@@ -155,7 +155,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: 1rem;
-        padding: 1.25rem;
+        padding: 1.5rem;
       }
       .header h1 {
         margin: 0 0 0.5rem;
@@ -175,7 +175,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         gap: 0.5rem;
       }
       .btn {
-        padding: 0.55rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -193,15 +193,15 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: 1rem;
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
       }
       .sort-row {
         color: var(--text-2);
       }
       .sort-row select {
         margin-left: 0.5rem;
-        padding: 0.4rem 0.6rem;
-        border-radius: 0.55rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -213,10 +213,10 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       .thread-card {
         padding: 1rem;
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         background: var(--bg-card);
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .thread-card h3 {
         margin: 0;
@@ -234,7 +234,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       .badge {
         font-size: 0.72rem;
         font-weight: 600;
-        padding: 0.15rem 0.5rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
       }
       .badge.pin {
@@ -247,14 +247,14 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       }
       .tags {
         display: flex;
-        gap: 0.35rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
       }
       .tag {
         font-size: 0.78rem;
         color: var(--accent);
         background: var(--bg-surface);
-        padding: 0.15rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 0.5rem;
       }
       .empty {

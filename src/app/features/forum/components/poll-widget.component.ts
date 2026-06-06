@@ -65,8 +65,8 @@ import { FeatureFlag } from '../../../core/constants/feature-flags.constants';
       .poll-card {
         background: var(--bg-surface);
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
-        padding: 1rem 1.25rem;
+        border-radius: 1rem;
+        padding: 1rem 1.5rem;
       }
       .question {
         margin: 0 0 0.75rem;
@@ -87,7 +87,7 @@ import { FeatureFlag } from '../../../core/constants/feature-flags.constants';
       }
       .vote-btn {
         margin-top: 0.75rem;
-        padding: 0.5rem 1.25rem;
+        padding: 0.5rem 1.5rem;
         border-radius: 0.75rem;
         border: none;
         background: var(--accent);
@@ -101,11 +101,11 @@ import { FeatureFlag } from '../../../core/constants/feature-flags.constants';
       }
       .results {
         display: grid;
-        gap: 0.6rem;
+        gap: 0.75rem;
       }
       .result-row {
         display: grid;
-        gap: 0.2rem;
+        gap: 0.25rem;
       }
       .result-label {
         display: flex;
@@ -140,8 +140,8 @@ import { FeatureFlag } from '../../../core/constants/feature-flags.constants';
       }
       .login-banner {
         margin-top: 0.75rem;
-        padding: 0.6rem 0.85rem;
-        border-radius: 0.65rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
         font-size: 0.85rem;

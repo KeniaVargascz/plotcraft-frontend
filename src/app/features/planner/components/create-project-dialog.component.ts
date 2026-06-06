@@ -84,15 +84,15 @@ const COLOR_SWATCHES = [
         color: var(--text-1);
         font-size: 1.15rem;
         margin: 0;
-        padding: 1rem 1.25rem 0.5rem;
+        padding: 1rem 1.5rem 0.5rem;
       }
       mat-dialog-content {
-        padding: 0 1.25rem;
+        padding: 0 1.5rem;
       }
       .form-grid {
         display: flex;
         flex-direction: column;
-        gap: 0.875rem;
+        gap: 1rem;
         padding-bottom: 0.5rem;
       }
       .field {
@@ -110,8 +110,8 @@ const COLOR_SWATCHES = [
       select {
         background: var(--bg-base);
         border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 0.5rem 0.625rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem;
         font-size: 0.85rem;
         color: var(--text-1);
         font-family: inherit;
@@ -134,7 +134,7 @@ const COLOR_SWATCHES = [
       .swatch {
         width: 28px;
         height: 28px;
-        border-radius: 6px;
+        border-radius: 0.5rem;
         border: 2px solid transparent;
         cursor: pointer;
         transition:
@@ -149,13 +149,13 @@ const COLOR_SWATCHES = [
         box-shadow: 0 0 0 2px var(--bg-card);
       }
       mat-dialog-actions {
-        padding: 0.75rem 1.25rem;
+        padding: 0.75rem 1.5rem;
         gap: 0.5rem;
       }
       .btn-cancel {
         background: var(--bg-surface);
         border: 1px solid var(--border);
-        border-radius: 6px;
+        border-radius: 0.5rem;
         padding: 0.5rem 1rem;
         font-size: 0.85rem;
         color: var(--text-2);
@@ -167,8 +167,8 @@ const COLOR_SWATCHES = [
       .btn-save {
         background: var(--accent);
         border: none;
-        border-radius: 6px;
-        padding: 0.5rem 1.25rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1.5rem;
         font-size: 0.85rem;
         color: #fff;
         font-weight: 600;

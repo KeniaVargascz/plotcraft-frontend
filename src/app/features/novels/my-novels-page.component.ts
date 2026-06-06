@@ -4,13 +4,13 @@ import { RouterLink } from '@angular/router';
 import { NovelSummary } from '../../core/models/novel.model';
 import { NovelsService } from '../../core/services/novels.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { CardGridSkeletonComponent } from '../../shared/components/skeleton-loader/card-grid-skeleton.component';
 import { NovelCardComponent } from './components/novel-card.component';
 
 @Component({
   selector: 'app-my-novels-page',
   standalone: true,
-  imports: [RouterLink, ErrorMessageComponent, LoadingSpinnerComponent, NovelCardComponent],
+  imports: [RouterLink, ErrorMessageComponent, CardGridSkeletonComponent, NovelCardComponent],
   template: `
     <section class="page-shell">
       <header class="page-header">
@@ -27,7 +27,7 @@ import { NovelCardComponent } from './components/novel-card.component';
       </header>
 
       @if (loading()) {
-        <app-loading-spinner />
+        <app-card-grid-skeleton />
       } @else if (error()) {
         <app-error-message />
       } @else {
@@ -59,14 +59,14 @@ import { NovelCardComponent } from './components/novel-card.component';
         flex-wrap: wrap;
       }
       .primary {
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
         text-decoration: none;
       }
       .secondary {
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         color: var(--text-1);

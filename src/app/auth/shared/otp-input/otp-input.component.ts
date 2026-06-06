@@ -51,8 +51,8 @@ import {
         transition: border-color 0.2s;
       }
       .otp-digit:focus {
-        border-color: var(--primary, #6366f1);
-        box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary, #6366f1) 25%, transparent);
+        border-color: var(--accent, #6366f1);
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent, #6366f1) 25%, transparent);
       }
     `,
   ],

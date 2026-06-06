@@ -1,3 +1,5 @@
+@use '../../../../styles/responsive' as responsive;
+
 .auth-card {
   width: min(100%, 32rem);
   margin: 4rem auto;
@@ -7,6 +9,11 @@
   border-radius: 0.75rem;
   display: grid;
   gap: 0.75rem;
+
+  @include responsive.respond-xs {
+    margin: 1.5rem auto;
+    padding: 1.25rem;
+  }
 }
 
 .subtitle {
@@ -43,7 +50,7 @@ form {
 }
 
 .field input:focus {
-  border-color: var(--primary);
+  border-color: var(--accent);
 }
 
 .field input.input--invalid {
@@ -111,8 +118,8 @@ form {
   padding: 0.75rem;
   border: none;
   border-radius: 0.5rem;
-  background: var(--primary);
-  color: var(--accent-text);
+  background: var(--accent);
+  color: var(--accent-contrast);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -126,12 +133,12 @@ form {
 
 .forgot-link {
   text-align: right;
-  color: var(--primary);
+  color: var(--accent);
   font-size: 0.85rem;
 }
 
 .register-link {
   text-align: center;
-  color: var(--primary);
+  color: var(--accent);
   font-size: 0.9rem;
 }

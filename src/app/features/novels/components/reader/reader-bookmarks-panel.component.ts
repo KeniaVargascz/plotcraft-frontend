@@ -119,7 +119,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.5rem 0.8rem;
+        padding: 0.5rem 1rem;
       }
     `,
   ],

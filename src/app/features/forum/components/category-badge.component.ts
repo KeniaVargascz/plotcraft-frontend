@@ -31,8 +31,8 @@ const CATEGORY_CONFIG: Record<ForumCategory, { label: string; color: string; bg:
       .badge {
         display: inline-flex;
         align-items: center;
-        padding: 0.2rem 0.65rem;
-        border-radius: 9999px;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
         font-size: 0.75rem;
         font-weight: 600;
         border: 1px solid;

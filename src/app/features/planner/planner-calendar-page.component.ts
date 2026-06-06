@@ -157,7 +157,7 @@ const PRIORITY_COLORS: Record<string, string> = {
       .nav-btn {
         background: var(--bg-surface);
         border: 1px solid var(--border);
-        border-radius: 6px;
+        border-radius: 0.5rem;
         padding: 0.25rem 0.75rem;
         font-size: 1.25rem;
         color: var(--text-2);
@@ -178,8 +178,8 @@ const PRIORITY_COLORS: Record<string, string> = {
       .today-btn {
         background: var(--accent);
         border: none;
-        border-radius: 6px;
-        padding: 0.375rem 1rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
         font-size: 0.8rem;
         color: #fff;
         font-weight: 600;
@@ -192,7 +192,7 @@ const PRIORITY_COLORS: Record<string, string> = {
       .calendar-grid-wrapper {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 0.75rem;
         overflow: hidden;
       }
       .day-headers {
@@ -214,7 +214,7 @@ const PRIORITY_COLORS: Record<string, string> = {
       }
       .day-cell {
         min-height: 90px;
-        padding: 0.375rem;
+        padding: 0.5rem;
         border-right: 1px solid var(--border);
         border-bottom: 1px solid var(--border);
         cursor: pointer;
@@ -284,7 +284,7 @@ const PRIORITY_COLORS: Record<string, string> = {
         border-left: 1px solid var(--border);
         height: 100%;
         overflow-y: auto;
-        padding: 1.25rem;
+        padding: 1.5rem;
         display: flex;
         flex-direction: column;
         gap: 1rem;
@@ -318,11 +318,11 @@ const PRIORITY_COLORS: Record<string, string> = {
       .panel-task {
         display: flex;
         align-items: center;
-        gap: 0.625rem;
-        padding: 0.625rem;
+        gap: 0.75rem;
+        padding: 0.75rem;
         background: var(--bg-surface);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 0.5rem;
         text-decoration: none;
         color: inherit;
         transition: border-color 0.15s;

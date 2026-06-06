@@ -19,6 +19,9 @@ import { Community } from '../communities/models/community.model';
 import { AuthGateService } from '../../core/services/auth-gate.service';
 import { GenreSpotlightCardComponent } from '../../shared/components/genre-spotlight-card/genre-spotlight-card.component';
 import { PostCardComponent } from '../feed/components/post-card/post-card.component';
+import { SkeletonLoaderComponent } from '../../shared/components/skeleton-loader/skeleton-loader.component';
+import { RailSkeletonComponent } from '../../shared/components/skeleton-loader/rail-skeleton.component';
+import { CardGridSkeletonComponent } from '../../shared/components/skeleton-loader/card-grid-skeleton.component';
 
 @Component({
   selector: 'app-discovery-page',
@@ -34,6 +37,9 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
     CommunityCardComponent,
     GenreSpotlightCardComponent,
     PostCardComponent,
+    SkeletonLoaderComponent,
+    RailSkeletonComponent,
+    CardGridSkeletonComponent,
   ],
   template: `
     <section class="discovery-page">
@@ -60,7 +66,14 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
       </header>
 
       @if (loading()) {
-        <div class="loading-shell">{{ 'common.loading' | translate }}</div>
+        <section class="skeleton-section">
+          <app-skeleton variant="title" width="40%" />
+          <app-rail-skeleton />
+        </section>
+        <section class="skeleton-section">
+          <app-skeleton variant="title" width="30%" />
+          <app-card-grid-skeleton [count]="6" minWidth="160px" />
+        </section>
       } @else if (!snapshot()) {
         <div class="loading-shell">{{ 'discovery.empty' | translate }}</div>
       } @else {
@@ -381,7 +394,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
       .discovery-page,
       .section {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
       }
 
       .discovery-page {
@@ -429,7 +442,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
       .hero,
       .stats-banner,
       .loading-shell {
-        padding: 0.5rem 0.85rem;
+        padding: 0.5rem 1rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -450,7 +463,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
 
       .hero-copy {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
 
       .hero h1 {
@@ -485,7 +498,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
         border: 1px solid var(--border);
         background: var(--accent-glow);
         color: var(--accent-text);
-        padding: 0.55rem 0.9rem;
+        padding: 0.75rem 1rem;
       }
 
       .refresh-button {
@@ -515,7 +528,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
         grid-auto-rows: 1fr;
         gap: 1rem;
         overflow-x: auto;
-        padding-bottom: 0.3rem;
+        padding-bottom: 0.5rem;
         scroll-snap-type: x proximity;
         align-items: stretch;
         scrollbar-width: thin;
@@ -591,7 +604,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
         gap: 0;
         padding: 0;
         overflow: hidden;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         box-shadow: 0 18px 36px var(--shadow);
@@ -615,20 +628,20 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
 
       .release-copy {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
         min-width: 0;
       }
 
       .release-head {
         padding-top: 1rem;
-        padding-bottom: 0.85rem;
+        padding-bottom: 1rem;
       }
 
       .release-title-row {
         display: flex;
         align-items: flex-start;
         justify-content: space-between;
-        gap: 0.8rem;
+        gap: 1rem;
       }
 
       .release-title {
@@ -653,7 +666,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
         justify-content: center;
         flex: 0 0 auto;
         min-height: 1.65rem;
-        padding: 0.18rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         border: 1px solid var(--border-s);
         background: var(--accent-glow);
@@ -672,9 +685,9 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
 
       .release-body {
         display: grid;
-        gap: 0.32rem;
+        gap: 0.5rem;
         margin: 0 1rem 1rem;
-        padding: 0.9rem 0.95rem;
+        padding: 1rem 1rem;
         border-radius: 1rem;
         background: var(--bg-surface);
         border: 1px solid var(--border);
@@ -708,16 +721,16 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 0.9rem;
-        padding-top: 0.78rem;
-        padding-bottom: 0.9rem;
+        gap: 1rem;
+        padding-top: 0.75rem;
+        padding-bottom: 1rem;
         border-top: 1px solid var(--border);
       }
 
       .release-meta {
         display: inline-flex;
         align-items: center;
-        gap: 0.38rem;
+        gap: 0.5rem;
         font-size: 0.82rem;
       }
 
@@ -725,7 +738,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
         content: '';
         width: 0.9rem;
         height: 0.9rem;
-        border-radius: 0.28rem;
+        border-radius: 0.25rem;
         background:
           linear-gradient(var(--text-3), var(--text-3)) center 25% / 70% 2px no-repeat,
           linear-gradient(var(--text-3), var(--text-3)) center 50% / 70% 2px no-repeat,
@@ -744,7 +757,7 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
         cursor: pointer;
         display: inline-flex;
         align-items: center;
-        gap: 0.28rem;
+        gap: 0.25rem;
         font-weight: 600;
         white-space: nowrap;
       }
@@ -767,13 +780,18 @@ import { PostCardComponent } from '../feed/components/post-card/post-card.compon
         text-align: center;
       }
 
+      .skeleton-section {
+        display: grid;
+        gap: 1rem;
+      }
+
       .empty-section {
         text-align: center;
         color: var(--text-3);
         padding: 2rem 1rem;
         margin: 0;
         border: 1px solid var(--border);
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         background: var(--bg-card);
       }
 

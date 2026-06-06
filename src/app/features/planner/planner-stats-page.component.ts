@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { PlannerStats } from '../../core/models/planner-stats.model';
 import { PlannerService } from '../../core/services/planner.service';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { DashboardSkeletonComponent } from '../../shared/components/skeleton-loader/dashboard-skeleton.component';
 import { WordProgressBarComponent } from './components/word-progress-bar.component';
 
 const PRIORITY_COLORS: Record<string, string> = {
@@ -34,7 +34,7 @@ const TYPE_LABELS: Record<string, string> = {
 @Component({
   selector: 'app-planner-stats-page',
   standalone: true,
-  imports: [RouterLink, LoadingSpinnerComponent, WordProgressBarComponent],
+  imports: [RouterLink, DashboardSkeletonComponent, WordProgressBarComponent],
   template: `
     <div class="stats-shell">
       <header class="stats-header">
@@ -43,7 +43,7 @@ const TYPE_LABELS: Record<string, string> = {
       </header>
 
       @if (loading()) {
-        <app-loading-spinner />
+        <app-dashboard-skeleton />
       } @else if (stats()) {
         <div class="stats-grid">
           <!-- Row 1: Summary cards -->
@@ -235,7 +235,7 @@ const TYPE_LABELS: Record<string, string> = {
       .stat-card {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 0.75rem;
         padding: 1rem;
         display: flex;
         flex-direction: column;
@@ -279,8 +279,8 @@ const TYPE_LABELS: Record<string, string> = {
       .chart-card {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 10px;
-        padding: 1.25rem;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
       }
       .card-title {
         font-size: 0.9rem;
@@ -304,7 +304,7 @@ const TYPE_LABELS: Record<string, string> = {
       .bar-row {
         display: flex;
         align-items: center;
-        gap: 0.625rem;
+        gap: 0.75rem;
       }
       .bar-label {
         font-size: 0.75rem;
@@ -345,7 +345,7 @@ const TYPE_LABELS: Record<string, string> = {
       .donut-legend {
         display: flex;
         flex-direction: column;
-        gap: 0.375rem;
+        gap: 0.5rem;
       }
       .legend-item {
         display: flex;
@@ -370,9 +370,9 @@ const TYPE_LABELS: Record<string, string> = {
       .completion-item {
         display: flex;
         align-items: center;
-        gap: 0.625rem;
+        gap: 0.75rem;
         padding: 0.5rem;
-        border-radius: 6px;
+        border-radius: 0.5rem;
         text-decoration: none;
         color: inherit;
         transition: background 0.1s;

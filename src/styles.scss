@@ -44,6 +44,7 @@
   --accent-dim: #8a6e28;
   --accent-glow: rgba(201, 168, 76, 0.1);
   --accent-text: #e8cc80;
+  --accent-contrast: #1a1200;
   --text-1: #f0e8d0;
   --text-2: #9088a0;
   --text-3: #4e4860;
@@ -63,6 +64,7 @@
   --accent-dim: #a05028;
   --accent-glow: rgba(122, 52, 16, 0.08);
   --accent-text: #7a3410;
+  --accent-contrast: #fff8f0;
   --text-1: #1a1008;
   --text-2: #584030;
   --text-3: #907060;
@@ -82,6 +84,7 @@
   --accent-dim: #6030c0;
   --accent-glow: rgba(139, 92, 246, 0.1);
   --accent-text: #c4a8ff;
+  --accent-contrast: #0e0820;
   --text-1: #eae4fc;
   --text-2: #807098;
   --text-3: #3e3460;
@@ -101,6 +104,7 @@
   --accent-dim: #206838;
   --accent-glow: rgba(61, 176, 90, 0.1);
   --accent-text: #70d888;
+  --accent-contrast: #042010;
   --text-1: #c8eccf;
   --text-2: #608870;
   --text-3: #2a5035;
@@ -213,10 +217,19 @@ textarea {
 h1 {
   font-size: 1.875rem;
   font-weight: 500;
+  line-height: 1.3;
 }
 
-h2, h3 {
+h2 {
+  font-size: 1.5rem;
   font-weight: 500;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.3;
 }
 
 strong, b {
@@ -232,10 +245,34 @@ input[type='search']:focus {
   appearance: none;
 }
 
+/* --- Themed scrollbars (desktop) --- */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--accent) 35%, transparent)
+    transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+/* Hide scrollbars on mobile */
 @media (max-width: 767px) {
-  *,
-  *::before,
-  *::after {
+  * {
     scrollbar-width: none;
 
     &::-webkit-scrollbar {
@@ -300,4 +337,75 @@ input[type='search']:focus {
 
 .cdk-overlay-dark-backdrop {
   background: var(--shadow) !important;
+}
+
+/* ── Route transition fade-in ── */
+router-outlet + * {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Micro-interactions --- */
+
+/* Cards: subtle lift on hover */
+.post-card,
+.novel-card,
+.world-card,
+.character-card,
+.community-card,
+.series-card,
+.author-card,
+.release-card,
+.thread-card,
+.template-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card:hover,
+.novel-card:hover,
+.world-card:hover,
+.character-card:hover,
+.community-card:hover,
+.series-card:hover,
+.author-card:hover,
+.release-card:hover,
+.thread-card:hover,
+.template-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -8px var(--shadow);
+}
+
+/* Buttons: subtle scale on active */
+button:not(:disabled):active,
+[role='button']:not(:disabled):active,
+a.cta-btn:active,
+a.btn:active,
+.btn-primary:active {
+  transform: scale(0.97);
+}
+
+/* Nav items: smooth color transition */
+.nav-item {
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+/* Links: underline on hover */
+a:not([class]):hover {
+  text-decoration: underline;
+}
+
+/* --- Accessibility: Reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

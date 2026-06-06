@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, catchError, map, of, shareReplay, take, tap } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, retry, shareReplay, take, tap, timeout } from 'rxjs';
 import { AuthResponse } from '../models/auth-response.model';
 import { User } from '../models/user.model';
 import { TokenService } from './token.service';
@@ -26,22 +26,21 @@ export class AuthService {
     }
 
     await new Promise<void>((resolve) => {
-      const timer = setTimeout(() => {
-        this.clearSession();
-        resolve();
-      }, 5000);
-
-      this.me().subscribe({
-        next: () => {
-          clearTimeout(timer);
-          resolve();
-        },
-        error: () => {
-          clearTimeout(timer);
-          this.clearSession();
-          resolve();
-        },
-      });
+      this.me()
+        .pipe(
+          timeout(15000),
+          retry({ count: 1, delay: 2000 }),
+        )
+        .subscribe({
+          next: () => resolve(),
+          error: (err) => {
+            const status = err?.status;
+            if (status === 401 || status === 403) {
+              this.clearSession();
+            }
+            resolve();
+          },
+        });
     });
   }
 

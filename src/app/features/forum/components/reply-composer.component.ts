@@ -61,7 +61,7 @@ import { MarkdownService } from '../../../core/services/markdown.service';
       .composer {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         overflow: hidden;
       }
       .tabs {
@@ -70,7 +70,7 @@ import { MarkdownService } from '../../../core/services/markdown.service';
       }
       .tab {
         flex: 1;
-        padding: 0.55rem;
+        padding: 0.75rem;
         border: none;
         background: transparent;
         color: var(--text-2);
@@ -87,7 +87,7 @@ import { MarkdownService } from '../../../core/services/markdown.service';
         border: none;
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.85rem;
+        padding: 1rem;
         font-family: inherit;
         font-size: 0.9rem;
         resize: vertical;
@@ -97,7 +97,7 @@ import { MarkdownService } from '../../../core/services/markdown.service';
         outline: none;
       }
       .preview {
-        padding: 0.85rem;
+        padding: 1rem;
         min-height: 100px;
         color: var(--text-1);
         font-size: 0.9rem;
@@ -107,7 +107,7 @@ import { MarkdownService } from '../../../core/services/markdown.service';
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.6rem 0.85rem;
+        padding: 0.75rem 1rem;
         border-top: 1px solid var(--border);
       }
       .counter {
@@ -118,8 +118,8 @@ import { MarkdownService } from '../../../core/services/markdown.service';
         color: var(--danger);
       }
       .submit-btn {
-        padding: 0.45rem 1.1rem;
-        border-radius: 0.65rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
         border: none;
         background: var(--accent);
         color: #fff;

@@ -10,7 +10,12 @@
   </div>
 
   @if (errorMessage()) {
-    <p class="feedback error">{{ errorMessage() | translate }}</p>
+    <p class="feedback error">
+      {{ errorMessage() | translate }}
+      @if (lockoutCountdown() > 0) {
+        {{ 'auth.verify.error.retryIn' | translate: { time: lockoutDisplay() } }}
+      }
+    </p>
   }
 
   <div class="actions">
@@ -28,7 +33,7 @@
     <button
       type="button"
       class="btn-link"
-      [disabled]="resendCooldown() > 0 && !formDisabled()"
+      [disabled]="resendCooldown() > 0 || formDisabled()"
       (click)="resend()"
     >
       @if (resendCooldown() > 0) {

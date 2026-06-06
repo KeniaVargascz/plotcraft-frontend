@@ -29,7 +29,7 @@ import { SparklineChartComponent } from './sparkline-chart.component';
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 0.75rem;
       padding: 20px;
       display: flex;
       flex-direction: column;

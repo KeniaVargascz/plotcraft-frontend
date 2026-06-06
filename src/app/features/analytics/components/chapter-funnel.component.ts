@@ -52,7 +52,7 @@ import { ChapterStats } from '../../../core/models/novel-analytics.model';
       position: relative;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 0.75rem;
       padding: 20px;
     }
     .funnel-svg {
@@ -65,7 +65,7 @@ import { ChapterStats } from '../../../core/models/novel-analytics.model';
       right: 12px;
       background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 0.5rem;
       padding: 10px 14px;
       display: flex;
       flex-direction: column;

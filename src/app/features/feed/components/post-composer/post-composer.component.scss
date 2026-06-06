@@ -3,8 +3,8 @@
 .composer-card {
   display: grid;
   gap: 1rem;
-  padding: 1.25rem;
-  border-radius: 1.4rem;
+  padding: 1.5rem;
+  border-radius: 1.5rem;
   background: color-mix(in srgb, var(--bg-card) 92%, transparent);
   border: 1px solid var(--border);
   box-shadow: 0 24px 60px -36px var(--shadow);
@@ -22,7 +22,7 @@
 }
 
 .compact-input {
-  padding: 0.85rem 1rem;
+  padding: 1rem 1rem;
   border-radius: 1rem;
   border: 1px solid var(--border);
   background: var(--bg-surface);
@@ -62,7 +62,7 @@ form {
 .rich-toolbar {
   display: flex;
   gap: 0.25rem;
-  padding: 0.35rem;
+  padding: 0.5rem;
   border: 1px solid var(--border);
   border-radius: 0.75rem 0.75rem 0 0;
   background: var(--bg-surface);
@@ -120,8 +120,8 @@ textarea {
   border: 0;
   border-radius: 999px;
   background: var(--accent);
-  color: var(--accent-text);
-  padding: 0.8rem 1.3rem;
+  color: var(--accent-contrast);
+  padding: 1rem 1.5rem;
   font-weight: 700;
   cursor: pointer;
 }
@@ -174,7 +174,7 @@ textarea {
 }
 
 .add-image-btn {
-  padding: 0.4rem 0.8rem;
+  padding: 0.5rem 1rem;
   border: 1px dashed var(--border);
   border-radius: 0.5rem;
   background: transparent;
@@ -209,7 +209,7 @@ textarea {
 }
 
 .add-url-btn {
-  padding: 0.5rem 0.8rem;
+  padding: 0.5rem 1rem;
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   background: var(--accent-glow);
@@ -220,7 +220,7 @@ textarea {
 
   &:hover {
     background: var(--accent);
-    color: var(--accent-text);
+    color: var(--accent-contrast);
   }
 }
 
@@ -233,15 +233,15 @@ textarea {
 .character-picker {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 .char-option {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
-  padding: 0.3rem 0.6rem;
-  border-radius: 9999px;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--bg-surface);
   font-size: 0.82rem;

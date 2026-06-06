@@ -45,7 +45,7 @@ import { MarkerTypeIconComponent } from './marker-type-icon.component';
       gap: 12px;
       padding: 12px;
       background: var(--surface-card, #1e1e2e);
-      border-radius: 8px;
+      border-radius: 0.5rem;
       border: 1px solid var(--border-color, #2a2a3a);
       font-size: 0.82rem;
     }

@@ -8,6 +8,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { OtpInputComponent } from '../../shared/otp-input/otp-input.component';
 import { PasswordStrengthIndicatorComponent } from '../../shared/password-strength-indicator/password-strength-indicator.component';
 import { passwordStrengthValidator } from '../../validators/password-strength.validator';
+import { confirmPasswordValidator } from '../../validators/confirm-password.validator';
 
 @Component({
   selector: 'app-forgot-password',
@@ -46,10 +47,15 @@ export class ForgotPasswordComponent {
   });
 
   // Step 2 form
-  readonly resetForm = this.fb.nonNullable.group({
-    newPassword: ['', [Validators.required, Validators.minLength(8), passwordStrengthValidator()]],
-    confirmPassword: ['', [Validators.required]],
-  });
+  readonly resetForm = this.fb.nonNullable.group(
+    {
+      newPassword: ['', [Validators.required, Validators.minLength(8), passwordStrengthValidator()]],
+      confirmPassword: ['', [Validators.required]],
+    },
+    {
+      validators: [confirmPasswordValidator('newPassword', 'confirmPassword')],
+    },
+  );
 
   readonly otpCode = signal('');
 
@@ -66,7 +72,6 @@ export class ForgotPasswordComponent {
 
   readonly confirmPasswordErrors: Record<string, string> = {
     required: 'auth.resetPassword.error.password.required',
-    mismatch: 'auth.resetPassword.error.password.mismatch',
   };
 
   get maskedEmail(): string {
@@ -109,15 +114,10 @@ export class ForgotPasswordComponent {
   submitReset(): void {
     this.resetForm.markAllAsTouched();
 
-    // Check password match
-    const { newPassword, confirmPassword } = this.resetForm.getRawValue();
-    if (newPassword !== confirmPassword) {
-      this.resetForm.controls.confirmPassword.setErrors({ mismatch: true });
-    }
-
     const code = this.otpCode();
     if (code.length !== 6 || this.resetForm.invalid || this.isSubmitting()) return;
 
+    const { newPassword } = this.resetForm.getRawValue();
     this.isSubmitting.set(true);
     this.formError.set('');
     this.resetForm.disable();

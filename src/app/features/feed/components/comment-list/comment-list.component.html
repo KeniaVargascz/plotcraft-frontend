@@ -6,7 +6,9 @@
   } @else {
     <div class="items">
       @if (comments().length === 0) {
-        <p>{{ 'post.noComments' | translate }}</p>
+        <app-empty-state
+          icon="💬"
+          [title]="'post.noComments' | translate" />
       } @else {
         @for (comment of comments(); track comment.id) {
           <app-comment-item

@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { WritingProjectSummary } from '../../core/models/writing-project.model';
 import { WritingTask } from '../../core/models/writing-task.model';
 import { PlannerService } from '../../core/services/planner.service';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { DashboardSkeletonComponent } from '../../shared/components/skeleton-loader/dashboard-skeleton.component';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { ProjectCardComponent } from './components/project-card.component';
 import { CreateProjectDialogComponent } from './components/create-project-dialog.component';
@@ -13,7 +13,7 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
 @Component({
   selector: 'app-planner-dashboard-page',
   standalone: true,
-  imports: [RouterLink, LoadingSpinnerComponent, ErrorMessageComponent, ProjectCardComponent],
+  imports: [RouterLink, DashboardSkeletonComponent, ErrorMessageComponent, ProjectCardComponent],
   template: `
     <section class="page-shell">
       <header class="page-header">
@@ -29,7 +29,7 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
       </header>
 
       @if (loading()) {
-        <app-loading-spinner />
+        <app-dashboard-skeleton />
       } @else if (error()) {
         <app-error-message />
       } @else {
@@ -173,7 +173,7 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
       .secondary {
         background: var(--bg-surface);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 0.5rem;
         padding: 0.5rem 1rem;
         font-size: 0.85rem;
         color: var(--text-2);
@@ -188,8 +188,8 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
       .primary {
         background: var(--accent);
         border: none;
-        border-radius: 8px;
-        padding: 0.5rem 1.25rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1.5rem;
         font-size: 0.85rem;
         color: #fff;
         font-weight: 600;
@@ -223,7 +223,7 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
         max-width: 320px;
         background: var(--bg-card);
         border: 2px dashed var(--border);
-        border-radius: 10px;
+        border-radius: 0.75rem;
         padding: 2rem;
         display: flex;
         flex-direction: column;
@@ -252,7 +252,7 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
         gap: 0.5rem;
         background: none;
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 0.5rem;
         padding: 0.5rem 1rem;
         font-size: 0.82rem;
         color: var(--text-3);
@@ -276,9 +276,9 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        padding: 0.6rem 1rem;
+        padding: 0.75rem 1rem;
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 0.5rem;
         background: var(--bg-card);
       }
       .archived-color {
@@ -299,8 +299,8 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
       .restore-btn {
         background: none;
         border: 1px solid var(--accent);
-        border-radius: 6px;
-        padding: 0.3rem 0.75rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem;
         font-size: 0.75rem;
         color: var(--accent-text);
         cursor: pointer;
@@ -313,8 +313,8 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
       .delete-archived-btn {
         background: none;
         border: 1px solid var(--danger);
-        border-radius: 6px;
-        padding: 0.3rem 0.75rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem;
         font-size: 0.75rem;
         color: var(--danger);
         cursor: pointer;
@@ -331,7 +331,7 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
       .dash-col {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 0.75rem;
         padding: 1rem;
         display: flex;
         flex-direction: column;
@@ -357,7 +357,7 @@ import { CreateProjectDialogComponent } from './components/create-project-dialog
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.375rem 0;
+        padding: 0.5rem 0;
         cursor: pointer;
         border-radius: 4px;
         transition: background 0.1s;

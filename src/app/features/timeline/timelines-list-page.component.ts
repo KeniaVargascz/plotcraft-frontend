@@ -10,6 +10,7 @@ import { TimelineService } from '../../core/services/timeline.service';
 import { NovelsService } from '../../core/services/novels.service';
 import { NovelSummary } from '../../core/models/novel.model';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ListSkeletonComponent } from '../../shared/components/skeleton-loader/list-skeleton.component';
 
 /* ─── Inline Create Dialog ─── */
 @Component({
@@ -72,8 +73,8 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
       input,
       textarea,
       select {
-        padding: 0.5rem 0.65rem;
-        border-radius: 0.6rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -85,7 +86,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
       }
       .btn-cancel,
       .btn-save {
-        padding: 0.55rem 1.1rem;
+        padding: 0.75rem 1rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         font-size: 0.82rem;
@@ -136,7 +137,7 @@ export class CreateTimelineDialogComponent {
 @Component({
   selector: 'app-timelines-list-page',
   standalone: true,
-  imports: [RouterLink, DatePipe, MatDialogModule],
+  imports: [RouterLink, DatePipe, MatDialogModule, ListSkeletonComponent],
   template: `
     <section class="page-shell">
       <header class="hero card">
@@ -149,7 +150,7 @@ export class CreateTimelineDialogComponent {
       </header>
 
       @if (loading()) {
-        <p class="state">Cargando timelines...</p>
+        <app-list-skeleton />
       } @else if (!timelines().length) {
         <section class="card empty">
           <h2>Aun no tienes timelines</h2>
@@ -251,8 +252,8 @@ export class CreateTimelineDialogComponent {
         gap: 1rem;
       }
       .card {
-        padding: 1.25rem;
-        border-radius: 1.25rem;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
@@ -270,7 +271,7 @@ export class CreateTimelineDialogComponent {
         color: var(--text-2);
       }
       .cta {
-        padding: 0.8rem 1rem;
+        padding: 1rem 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         text-decoration: none;
@@ -298,7 +299,7 @@ export class CreateTimelineDialogComponent {
         overflow-y: auto;
       }
       .tl-item {
-        padding: 0.65rem 0.75rem;
+        padding: 0.75rem 0.75rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -335,7 +336,7 @@ export class CreateTimelineDialogComponent {
       }
       .tl-actions {
         display: flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
         padding-top: 0.25rem;
       }
       .act-link,
@@ -419,14 +420,14 @@ export class CreateTimelineDialogComponent {
         padding: 0;
         list-style: none;
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .compact-list li {
         display: flex;
         justify-content: space-between;
         align-items: center;
         font-size: 0.8rem;
-        padding: 0.3rem 0.5rem;
+        padding: 0.5rem 0.5rem;
         border-radius: 0.5rem;
         background: var(--bg-surface);
         color: var(--text-1);

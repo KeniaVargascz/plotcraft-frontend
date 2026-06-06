@@ -124,7 +124,7 @@ const BORDER_SWATCHES = [
     textarea {
       padding: 8px 10px;
       border: 1px solid var(--border-color, #333);
-      border-radius: 6px;
+      border-radius: 0.5rem;
       background: var(--surface-input, #1a1a2a);
       color: var(--text-primary, #eee);
       font-size: 0.9rem;
@@ -168,7 +168,7 @@ const BORDER_SWATCHES = [
     .btn-primary,
     .btn-secondary {
       padding: 8px 18px;
-      border-radius: 6px;
+      border-radius: 0.5rem;
       font-size: 0.85rem;
       cursor: pointer;
       border: none;

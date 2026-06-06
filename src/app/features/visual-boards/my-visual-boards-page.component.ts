@@ -7,12 +7,13 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
 import { VisualBoardSavePayload, VisualBoardSummary } from './models/visual-board.model';
 import { VisualBoardsService } from './services/visual-boards.service';
 import { CreateBoardDialogComponent } from './components/create-board-dialog.component';
+import { CardGridSkeletonComponent } from '../../shared/components/skeleton-loader/card-grid-skeleton.component';
 import { VisualBoardCardComponent } from './components/visual-board-card.component';
 
 @Component({
   selector: 'app-my-visual-boards-page',
   standalone: true,
-  imports: [FormsModule, VisualBoardCardComponent],
+  imports: [FormsModule, VisualBoardCardComponent, CardGridSkeletonComponent],
   template: `
     <section class="page">
       <header class="header">
@@ -47,7 +48,7 @@ import { VisualBoardCardComponent } from './components/visual-board-card.compone
       </section>
 
       @if (loading()) {
-        <p class="state">Cargando tableros...</p>
+        <app-card-grid-skeleton />
       } @else if (!boards().length) {
         <p class="state">Aún no tienes tableros de referencias visuales.</p>
       } @else {
@@ -81,10 +82,10 @@ import { VisualBoardCardComponent } from './components/visual-board-card.compone
       }
       label {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       select {
-        padding: 0.7rem 0.8rem;
+        padding: 0.75rem 1rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -96,7 +97,7 @@ import { VisualBoardCardComponent } from './components/visual-board-card.compone
         grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
       }
       .primary {
-        padding: 0.75rem 1.1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 0;
         background: var(--accent-glow);

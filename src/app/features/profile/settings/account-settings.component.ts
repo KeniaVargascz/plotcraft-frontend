@@ -15,6 +15,8 @@ import { debounceTime } from 'rxjs/operators';
 import { PrivacySettings } from '../../../core/models/privacy-settings.model';
 import { NotificationPreferences } from '../../../core/models/notification-preferences.model';
 import { SettingsService } from '../../../core/services/settings.service';
+import { FeatureFlagService } from '../../../core/services/feature-flag.service';
+import { FeatureFlag } from '../../../core/constants/feature-flags.constants';
 import { ThemeService } from '../../../core/services/theme.service';
 import { UserService } from '../../../core/services/user.service';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
@@ -41,6 +43,8 @@ export class AccountSettingsComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly settingsService = inject(SettingsService);
   readonly themeService = inject(ThemeService);
+  readonly featureFlags = inject(FeatureFlagService);
+  readonly FeatureFlag = FeatureFlag;
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly privacyDebounce$ = new Subject<Partial<PrivacySettings>>();

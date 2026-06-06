@@ -1,3 +1,5 @@
+@use '../../../../../../styles/responsive' as responsive;
+
 .auth-card {
   padding: 2rem;
   background: var(--bg-card);
@@ -5,6 +7,10 @@
   border-radius: 0.75rem;
   display: grid;
   gap: 0.5rem;
+
+  @include responsive.respond-xs {
+    padding: 1.25rem;
+  }
 }
 
 .subtitle {
@@ -43,7 +49,7 @@ form {
 }
 
 .field input:focus {
-  border-color: var(--primary);
+  border-color: var(--accent);
 }
 
 .field input.input--invalid {
@@ -123,8 +129,8 @@ form {
   padding: 0.75rem;
   border: none;
   border-radius: 0.5rem;
-  background: var(--primary);
-  color: var(--accent-text);
+  background: var(--accent);
+  color: var(--accent-contrast);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;

@@ -26,10 +26,10 @@ import { NovelChapterSummary } from '../../../../core/models/novel.model';
         align-content: start;
       }
       .card {
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
-        padding: 1.25rem;
+        padding: 1.5rem;
       }
       .chapter-item {
         display: flex;
@@ -37,7 +37,7 @@ import { NovelChapterSummary } from '../../../../core/models/novel.model';
         gap: 1rem;
         text-decoration: none;
         color: var(--text-1);
-        padding: 0.85rem 0;
+        padding: 1rem 0;
         border-bottom: 1px solid var(--border);
       }
     `,

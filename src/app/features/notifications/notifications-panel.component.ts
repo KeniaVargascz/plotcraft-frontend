@@ -70,7 +70,7 @@ import { NotificationItemComponent } from './components/notification-item.compon
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.85rem 1rem;
+      padding: 1rem 1rem;
       border-bottom: 1px solid var(--border);
     }
     .panel-header h3 {
@@ -90,7 +90,7 @@ import { NotificationItemComponent } from './components/notification-item.compon
     .panel-body {
       flex: 1;
       overflow-y: auto;
-      padding: 0.35rem 0;
+      padding: 0.5rem 0;
     }
     .empty {
       text-align: center;
@@ -100,7 +100,7 @@ import { NotificationItemComponent } from './components/notification-item.compon
     }
     .panel-footer {
       border-top: 1px solid var(--border);
-      padding: 0.65rem 1rem;
+      padding: 0.75rem 1rem;
       text-align: center;
     }
     .panel-footer a {

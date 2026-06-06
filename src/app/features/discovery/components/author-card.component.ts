@@ -85,7 +85,7 @@ import { FollowsService } from '../../../core/services/follows.service';
         grid-template-rows: auto 1fr auto;
         min-width: 240px;
         height: 100%;
-        border-radius: 1.3rem;
+        border-radius: 1.5rem;
         overflow: hidden;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -192,14 +192,14 @@ import { FollowsService } from '../../../core/services/follows.service';
       .stats-row {
         display: flex;
         align-items: center;
-        gap: 0.62rem;
+        gap: 0.75rem;
         flex-wrap: wrap;
       }
 
       .stat-item {
         display: inline-flex;
         align-items: baseline;
-        gap: 0.22rem;
+        gap: 0.25rem;
         font-size: 0.72rem;
       }
 
@@ -221,7 +221,7 @@ import { FollowsService } from '../../../core/services/follows.service';
       .covers {
         display: flex;
         align-items: center;
-        gap: 0.38rem;
+        gap: 0.5rem;
         min-height: 0.7rem;
       }
 
@@ -240,20 +240,20 @@ import { FollowsService } from '../../../core/services/follows.service';
       }
 
       .footer {
-        padding: 0.95rem 1rem 1rem;
+        padding: 1rem 1rem 1rem;
       }
 
       .follow-button {
         width: 100%;
         min-height: 2.35rem;
-        border-radius: 0.9rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: transparent;
         color: var(--text-1);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 0.42rem;
+        gap: 0.5rem;
         font-size: 0.8rem;
         font-weight: 600;
         cursor: pointer;

@@ -8,11 +8,12 @@ import { WorldsService } from '../../core/services/worlds.service';
 import { WorldbuildingService } from '../../core/services/worldbuilding.service';
 import { WbEntryCardComponent } from './worldbuilding/components/wb-entry-card.component';
 import { WbSearchBarComponent } from './worldbuilding/components/wb-search-bar.component';
+import { DetailSkeletonComponent } from '../../shared/components/skeleton-loader/detail-skeleton.component';
 
 @Component({
   selector: 'app-world-lore-page',
   standalone: true,
-  imports: [RouterLink, WbEntryCardComponent, WbSearchBarComponent],
+  imports: [RouterLink, WbEntryCardComponent, WbSearchBarComponent, DetailSkeletonComponent],
   template: `
     <section class="lore-shell">
       <header class="hero card">
@@ -52,7 +53,7 @@ import { WbSearchBarComponent } from './worldbuilding/components/wb-search-bar.c
       }
 
       @if (loading()) {
-        <p class="state">Cargando entradas...</p>
+        <app-detail-skeleton />
       } @else if (entries().length) {
         <div class="entries-grid">
           @for (entry of entries(); track entry.id) {
@@ -81,7 +82,7 @@ import { WbSearchBarComponent } from './worldbuilding/components/wb-search-bar.c
       }
       .card {
         padding: 1.25rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
@@ -110,14 +111,14 @@ import { WbSearchBarComponent } from './worldbuilding/components/wb-search-bar.c
       }
       .filter-chips {
         display: flex;
-        gap: 0.45rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
       }
       .chip {
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
-        padding: 0.45rem 0.85rem;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -136,7 +137,7 @@ import { WbSearchBarComponent } from './worldbuilding/components/wb-search-bar.c
       }
       .chip-count {
         font-size: 0.68rem;
-        padding: 0.05rem 0.35rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         background: rgba(0, 0, 0, 0.15);
         min-width: 1.2rem;
@@ -166,7 +167,7 @@ import { WbSearchBarComponent } from './worldbuilding/components/wb-search-bar.c
       .load-more {
         display: block;
         margin: 0 auto;
-        padding: 0.7rem 1.5rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);

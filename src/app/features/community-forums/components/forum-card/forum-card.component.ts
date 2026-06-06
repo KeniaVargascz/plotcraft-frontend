@@ -91,7 +91,7 @@ import { AuthService } from '../../../../core/services/auth.service';
         background: rgba(120, 120, 120, 0.85);
         color: #fff;
         font-size: 0.7rem;
-        padding: 0.15rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         text-transform: uppercase;
         font-weight: 700;
@@ -124,7 +124,7 @@ import { AuthService } from '../../../../core/services/auth.service';
         align-items: center;
       }
       .btn {
-        padding: 0.5rem 0.9rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);

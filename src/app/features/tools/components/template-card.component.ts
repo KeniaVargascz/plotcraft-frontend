@@ -55,7 +55,7 @@ export type TemplateCardData = {
       }
       .card {
         border: 1px solid var(--border);
-        border-radius: 1.4rem;
+        border-radius: 1.5rem;
         background: linear-gradient(
           180deg,
           color-mix(in srgb, var(--bg-card) 92%, #f4e7d3 8%),
@@ -76,7 +76,7 @@ export type TemplateCardData = {
       .template-actions {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.65rem;
+        gap: 0.75rem;
       }
       .ghost-btn,
       .copy-btn {
@@ -84,7 +84,7 @@ export type TemplateCardData = {
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.65rem 1rem;
+        padding: 0.75rem 1rem;
         text-decoration: none;
         cursor: pointer;
         font-weight: 600;
@@ -98,7 +98,7 @@ export type TemplateCardData = {
         display: inline-flex;
         align-items: center;
         min-height: 2rem;
-        padding: 0.28rem 0.7rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         background: color-mix(in srgb, var(--accent-glow) 28%, var(--bg-surface));
         border: 1px solid color-mix(in srgb, var(--border) 75%, #c88136 25%);
@@ -124,8 +124,8 @@ export type TemplateCardData = {
       }
       .template-source {
         margin-top: 0.85rem;
-        padding: 0.9rem;
-        border-radius: 0.85rem;
+        padding: 1rem;
+        border-radius: 1rem;
         background: #1f2026;
         color: #f6f6f8;
         overflow-x: auto;

@@ -4,17 +4,17 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { DetailSkeletonComponent } from '../../shared/components/skeleton-loader/detail-skeleton.component';
 import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesDetail } from './models/series.model';
 import { SeriesService } from './services/series.service';
 
 @Component({
   selector: 'app-series-detail-page',
   standalone: true,
-  imports: [RouterLink, DatePipe, ErrorMessageComponent, LoadingSpinnerComponent],
+  imports: [RouterLink, DatePipe, ErrorMessageComponent, DetailSkeletonComponent],
   template: `
     @if (loading()) {
-      <app-loading-spinner />
+      <app-detail-skeleton />
     } @else if (error()) {
       <app-error-message />
     } @else if (series(); as s) {
@@ -92,10 +92,10 @@ import { SeriesService } from './services/series.service';
       .hero {
         display: grid;
         grid-template-columns: 220px 1fr;
-        gap: 1.25rem;
+        gap: 1.5rem;
       }
       .cover {
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         overflow: hidden;
         background: var(--bg-card);
         border: 1px solid var(--border);
@@ -122,7 +122,7 @@ import { SeriesService } from './services/series.service';
       .type-badge,
       .status-badge,
       .complete-badge {
-        padding: 0.25rem 0.7rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.72rem;
         font-weight: 700;
@@ -172,7 +172,7 @@ import { SeriesService } from './services/series.service';
       }
       .manage-btn {
         width: fit-content;
-        padding: 0.6rem 1.1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -181,7 +181,7 @@ import { SeriesService } from './services/series.service';
       }
       .novels-section {
         display: grid;
-        gap: 0.85rem;
+        gap: 1rem;
       }
       .novels-list {
         list-style: none;
@@ -195,7 +195,7 @@ import { SeriesService } from './services/series.service';
         grid-template-columns: auto 80px 1fr;
         gap: 1rem;
         align-items: center;
-        padding: 0.85rem;
+        padding: 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -221,7 +221,7 @@ import { SeriesService } from './services/series.service';
       }
       .novel-info {
         display: grid;
-        gap: 0.3rem;
+        gap: 0.5rem;
       }
       .novel-title {
         color: var(--text-1);

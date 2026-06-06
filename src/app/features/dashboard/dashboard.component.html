@@ -1,18 +1,133 @@
-<section class="dashboard-card">
-  <h1>{{ 'dashboard.title' | translate }}</h1>
-  <p>{{ 'dashboard.subtitle' | translate }}</p>
-  <div class="stats">
-    <article>
-      <strong>{{ (authService.currentUser$ | async)?.username }}</strong>
-      <span>{{ 'dashboard.cards.activeUser' | translate }}</span>
-    </article>
-    <article>
-      <strong>JWT + Refresh</strong>
-      <span>{{ 'dashboard.cards.session' | translate }}</span>
-    </article>
-    <article>
-      <strong>{{ 'dashboard.cards.profileTitle' | translate }}</strong>
-      <span>{{ 'dashboard.cards.profileHint' | translate }}</span>
-    </article>
+@if (loading()) {
+  <div class="dashboard-loading">
+    <span class="spinner"></span>
+    <p>Cargando tu dashboard...</p>
   </div>
-</section>
+} @else {
+  <!-- Section 1: Welcome + Quick Stats -->
+  <section class="welcome">
+    <h1>Hola, {{ displayName() }}</h1>
+    <p class="subtitle">Aqui tienes un resumen de tu actividad</p>
+
+    <div class="stat-row">
+      <article class="stat-card">
+        <span class="stat-value">{{ analytics()?.totals?.totalNovels ?? 0 }}</span>
+        <span class="stat-label">Total novelas</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-value">{{ analytics()?.totals?.totalViews ?? 0 }}</span>
+        <span class="stat-label">Total vistas</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-value">{{ analytics()?.totals?.totalFollowers ?? 0 }}</span>
+        <span class="stat-label">Seguidores</span>
+      </article>
+      <article class="stat-card">
+        <span class="stat-value">{{ analytics()?.totals?.totalWordsPublished ?? 0 }}</span>
+        <span class="stat-label">Palabras escritas</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- Section 2: Recent Novels + Library -->
+  <div class="two-col">
+    <section class="card">
+      <div class="card-header">
+        <h2>Mis novelas recientes</h2>
+        <a routerLink="/mis-novelas" class="link">Ver todas</a>
+      </div>
+
+      @if (novels().length === 0) {
+        <p class="empty">Aun no tienes novelas. Crea tu primera!</p>
+      } @else {
+        <ul class="novel-list">
+          @for (novel of novels(); track novel.id) {
+            <li class="novel-item">
+              <div class="novel-info">
+                <span class="novel-title">{{ novel.title }}</span>
+                <span class="novel-meta">
+                  {{ novel.stats.chaptersCount }} capitulos
+                </span>
+              </div>
+              <span class="badge badge--{{ novel.status.toLowerCase() }}">
+                {{ statusLabels[novel.status] || novel.status }}
+              </span>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <h2>Progreso de lectura</h2>
+        <a routerLink="/biblioteca" class="link">Ir a biblioteca</a>
+      </div>
+
+      <div class="library-grid">
+        <div class="library-stat">
+          <span class="library-value">{{ library()?.inProgress?.length ?? 0 }}</span>
+          <span class="library-label">En progreso</span>
+        </div>
+        <div class="library-stat">
+          <span class="library-value">{{ library()?.completed?.length ?? 0 }}</span>
+          <span class="library-label">Completadas</span>
+        </div>
+        <div class="library-stat">
+          <span class="library-value">{{ library()?.bookmarked?.length ?? 0 }}</span>
+          <span class="library-label">Marcadas</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Section 3: Planner Stats -->
+  <section class="card">
+    <div class="card-header">
+      <h2>Tareas del planner</h2>
+      <a routerLink="/planner" class="link">Ir al planner</a>
+    </div>
+
+    <div class="planner-grid">
+      <div class="planner-stat planner-stat--pending">
+        <span class="planner-value">{{ pendingTasks }}</span>
+        <span class="planner-label">Pendientes</span>
+      </div>
+      <div class="planner-stat planner-stat--progress">
+        <span class="planner-value">{{ planner()?.tasksInProgress ?? 0 }}</span>
+        <span class="planner-label">En progreso</span>
+      </div>
+      <div class="planner-stat planner-stat--done">
+        <span class="planner-value">{{ planner()?.tasksDone ?? 0 }}</span>
+        <span class="planner-label">Completadas</span>
+      </div>
+      <div class="planner-stat planner-stat--overdue">
+        <span class="planner-value">{{ planner()?.tasksOverdue ?? 0 }}</span>
+        <span class="planner-label">Vencidas</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: Quick Actions -->
+  <section class="card">
+    <h2>Acciones rapidas</h2>
+    <div class="actions-grid">
+      <a routerLink="/mis-novelas/nueva" class="action-btn">
+        <span class="action-icon">+</span>
+        Nueva novela
+      </a>
+      <a routerLink="/feed" class="action-btn">
+        <span class="action-icon">&#9998;</span>
+        Nuevo post
+      </a>
+      <a routerLink="/descubrir" class="action-btn">
+        <span class="action-icon">&#128270;</span>
+        Explorar
+      </a>
+      <a routerLink="/perfil" class="action-btn">
+        <span class="action-icon">&#128100;</span>
+        Mi perfil
+      </a>
+    </div>
+  </section>
+}

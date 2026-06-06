@@ -40,17 +40,17 @@ import { CommunityForum } from '../../models/community-forum.model';
     `
       .content {
         display: grid;
-        gap: 0.85rem;
+        gap: 1rem;
         min-width: 320px;
       }
       .field {
         display: grid;
-        gap: 0.3rem;
+        gap: 0.5rem;
       }
       .field input,
       .field textarea {
-        padding: 0.6rem 0.75rem;
-        border-radius: 0.65rem;
+        padding: 0.75rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -68,7 +68,7 @@ import { CommunityForum } from '../../models/community-forum.model';
         margin: 0;
       }
       button {
-        padding: 0.55rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-card);

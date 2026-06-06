@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime } from 'rxjs';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { CardGridSkeletonComponent } from '../../shared/components/skeleton-loader/card-grid-skeleton.component';
 import { PaginatorComponent } from '../../shared/components/paginator/paginator.component';
 import { SeriesCardComponent } from './components/series-card/series-card.component';
 import {
@@ -21,7 +21,7 @@ import { SeriesService } from './services/series.service';
   imports: [
     FormsModule,
     ErrorMessageComponent,
-    LoadingSpinnerComponent,
+    CardGridSkeletonComponent,
     SeriesCardComponent,
     PaginatorComponent,
   ],
@@ -54,7 +54,7 @@ import { SeriesService } from './services/series.service';
       </div>
 
       @if (loading()) {
-        <app-loading-spinner />
+        <app-card-grid-skeleton />
       } @else if (error()) {
         <app-error-message />
       } @else {
@@ -81,7 +81,7 @@ import { SeriesService } from './services/series.service';
     `
       .page {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
       }
       .header h1 {
         margin: 0 0 0.25rem;
@@ -97,8 +97,8 @@ import { SeriesService } from './services/series.service';
       }
       .filters input,
       .filters select {
-        padding: 0.7rem 0.9rem;
-        border-radius: 0.85rem;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);

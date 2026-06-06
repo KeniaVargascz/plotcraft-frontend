@@ -174,7 +174,7 @@ const COLOR_SWATCHES = [
     select {
       padding: 8px 10px;
       border: 1px solid var(--border-color, #333);
-      border-radius: 6px;
+      border-radius: 0.5rem;
       background: var(--surface-input, #1a1a2a);
       color: var(--text-primary, #eee);
       font-size: 0.9rem;
@@ -189,7 +189,7 @@ const COLOR_SWATCHES = [
       align-items: center;
       gap: 4px;
       padding: 4px 8px;
-      border-radius: 6px;
+      border-radius: 0.5rem;
       font-size: 0.78rem;
       border: 1px solid var(--border-color, #333);
       background: transparent;
@@ -220,7 +220,7 @@ const COLOR_SWATCHES = [
     .btn-primary,
     .btn-secondary {
       padding: 8px 18px;
-      border-radius: 6px;
+      border-radius: 0.5rem;
       font-size: 0.85rem;
       cursor: pointer;
       border: none;

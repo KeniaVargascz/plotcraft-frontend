@@ -32,8 +32,8 @@ import { GenreLabelPipe } from '../../pipes/genre-label.pipe';
       .genre-card {
         display: flex;
         align-items: center;
-        gap: 0.65rem;
-        padding: 0.5rem 0.85rem;
+        gap: 0.75rem;
+        padding: 0.5rem 1rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -86,7 +86,7 @@ import { GenreLabelPipe } from '../../pipes/genre-label.pipe';
       .genre-action {
         display: inline-flex;
         align-items: center;
-        gap: 0.2rem;
+        gap: 0.25rem;
         color: var(--accent-text);
         font-size: 0.75rem;
         flex-shrink: 0;

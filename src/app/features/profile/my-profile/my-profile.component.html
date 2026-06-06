@@ -1,5 +1,5 @@
 @if (loading()) {
-  <app-loading-spinner />
+  <app-profile-skeleton />
 } @else if (error()) {
   <app-error-message />
 } @else if (user(); as profileUser) {
@@ -79,12 +79,13 @@
     <h2>{{ 'myProfile.activity' | translate }}</h2>
 
     @if (activityLoading() && !activity().length) {
-      <app-loading-spinner />
+      <app-profile-skeleton />
     } @else if (!activity().length) {
-      <div class="empty-activity">
-        <p>{{ 'myProfile.emptyActivity' | translate }}</p>
-        <a class="btn btn-primary" routerLink="/feed">{{ 'myProfile.goToFeed' | translate }}</a>
-      </div>
+      <app-empty-state
+        icon="✍️"
+        [title]="'myProfile.emptyActivity' | translate"
+        [ctaLabel]="feedEnabled() ? ('myProfile.goToFeed' | translate) : undefined"
+        [ctaRoute]="feedEnabled() ? '/feed' : undefined" />
     } @else {
       <div class="activity-list">
         @for (post of activity(); track post.id) {

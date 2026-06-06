@@ -88,12 +88,12 @@ import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
   styles: [
     `
       .chapter-comments.card {
-        padding: 1.25rem;
+        padding: 1.5rem;
         display: grid;
         gap: 1rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
       }
       .chapter-comments h2 {
         margin: 0;
@@ -109,13 +109,13 @@ import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.75rem 0.9rem;
+        padding: 0.75rem 1rem;
         resize: vertical;
         font: inherit;
       }
       .comment-form .btn-send {
         justify-self: end;
-        padding: 0.55rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -130,7 +130,7 @@ import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
       .comment-login {
         display: inline-block;
         align-self: start;
-        padding: 0.5rem 0.9rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -148,7 +148,7 @@ import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
       }
       .comments-list {
         display: grid;
-        gap: 0.85rem;
+        gap: 1rem;
       }
       .comment-item {
         display: flex;
@@ -203,9 +203,9 @@ import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
         background: transparent;
         border: 1px solid var(--border);
         color: var(--text-2);
-        padding: 0.15rem 0.4rem;
+        padding: 0.25rem 0.5rem;
         cursor: pointer;
-        border-radius: 0.4rem;
+        border-radius: 0.5rem;
         min-height: unset;
         flex-shrink: 0;
       }
@@ -221,7 +221,7 @@ import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
       }
       .btn-load-more {
         justify-self: center;
-        padding: 0.45rem 0.9rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -240,7 +240,7 @@ import { RelativeDatePipe } from '../../../../shared/pipes/relative-date.pipe';
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.5rem 0.8rem;
+        padding: 0.5rem 1rem;
       }
     `,
   ],

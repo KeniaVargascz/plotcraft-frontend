@@ -79,22 +79,22 @@ import { Community } from '../../../communities/models/community.model';
       }
       fieldset {
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
-        padding: 0.85rem;
+        border-radius: 1rem;
+        padding: 1rem;
       }
       legend {
         color: var(--text-2);
         font-size: 0.88rem;
         font-weight: 600;
-        padding: 0 0.35rem;
+        padding: 0 0.5rem;
       }
       select,
       input {
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.75rem 0.9rem;
+        padding: 0.75rem 1rem;
       }
       select:focus,
       input:focus {

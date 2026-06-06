@@ -5,15 +5,16 @@
     <app-post-type-filter [selected]="selectedType()" (selectedChange)="onTypeChange($event)" />
 
     @if (loading()) {
-      <div class="state-card">{{ 'feed.loading' | translate }}</div>
+      <app-post-skeleton />
     } @else if (error()) {
       <div class="state-card">{{ 'common.error' | translate }}</div>
     } @else if (posts().length === 0) {
-      <div class="state-card empty">
-        <h2>{{ 'feed.empty.noFollowsTitle' | translate }}</h2>
-        <p>{{ 'feed.empty.noFollowsSubtitle' | translate }}</p>
-        <a routerLink="/descubrir" class="cta-btn">{{ 'feed.discoverAuthors' | translate }}</a>
-      </div>
+      <app-empty-state
+        icon="📡"
+        [title]="'feed.empty.noFollowsTitle' | translate"
+        [subtitle]="'feed.empty.noFollowsSubtitle' | translate"
+        [ctaLabel]="'feed.discoverAuthors' | translate"
+        ctaRoute="/descubrir" />
     } @else {
       <div class="post-stack">
         @for (post of posts(); track post.id; let i = $index) {

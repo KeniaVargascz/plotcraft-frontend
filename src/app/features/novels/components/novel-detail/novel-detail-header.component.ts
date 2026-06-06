@@ -194,11 +194,11 @@ import { FeatureFlag } from '../../../../core/constants/feature-flags.constants'
     `
       .hero {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
         grid-template-columns: 220px 1fr;
       }
       .cover {
-        border-radius: 1.25rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         min-height: 320px;
@@ -209,7 +209,7 @@ import { FeatureFlag } from '../../../../core/constants/feature-flags.constants'
       .meta {
         display: grid;
         gap: 1rem;
-        padding: 1.25rem;
+        padding: 1.5rem;
       }
       .chips,
       .actions {
@@ -238,7 +238,7 @@ import { FeatureFlag } from '../../../../core/constants/feature-flags.constants'
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.5rem 0.9rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         background: linear-gradient(135deg, #6f3aff, #b34dff);
         color: #fff;
@@ -251,7 +251,7 @@ import { FeatureFlag } from '../../../../core/constants/feature-flags.constants'
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.5rem 0.85rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -262,7 +262,7 @@ import { FeatureFlag } from '../../../../core/constants/feature-flags.constants'
       .series-badge .complete-badge {
         background: rgba(77, 184, 138, 0.25);
         color: #63d4a2;
-        padding: 0.1rem 0.5rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         font-size: 0.7rem;
         font-weight: 700;
@@ -300,7 +300,7 @@ import { FeatureFlag } from '../../../../core/constants/feature-flags.constants'
         align-items: flex-start;
         gap: 0.75rem;
         padding: 0.75rem;
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         cursor: pointer;
       }

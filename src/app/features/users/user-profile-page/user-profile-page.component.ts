@@ -19,6 +19,8 @@ import { NovelCardComponent } from '../../novels/components/novel-card.component
 import { PostCardComponent } from '../../feed/components/post-card/post-card.component';
 import { PostTypeFilterComponent } from '../../feed/components/post-type-filter/post-type-filter.component';
 import { WorldCardComponent } from '../../worlds/components/world-card.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { ProfileSkeletonComponent } from '../../../shared/components/skeleton-loader/profile-skeleton.component';
 
 @Component({
   selector: 'app-user-profile-page',
@@ -31,6 +33,8 @@ import { WorldCardComponent } from '../../worlds/components/world-card.component
     NovelCardComponent,
     WorldCardComponent,
     CharacterCardComponent,
+    EmptyStateComponent,
+    ProfileSkeletonComponent,
   ],
   templateUrl: './user-profile-page.component.html',
   styleUrl: './user-profile-page.component.scss',

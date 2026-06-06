@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { ListSkeletonComponent } from '../../shared/components/skeleton-loader/list-skeleton.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { NovelsService } from '../../core/services/novels.service';
 import { NovelSummary } from '../../core/models/novel.model';
@@ -14,7 +14,7 @@ import { CommunityService } from './services/community.service';
 @Component({
   selector: 'app-my-communities-page',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, LoadingSpinnerComponent, TranslatePipe],
+  imports: [RouterLink, ReactiveFormsModule, ListSkeletonComponent, TranslatePipe],
   template: `
     <section class="page">
       <header class="header">
@@ -130,7 +130,7 @@ import { CommunityService } from './services/community.service';
       }
 
       @if (loading()) {
-        <app-loading-spinner />
+        <app-list-skeleton />
       } @else if (!items().length) {
         <p class="empty">Aún no has creado ninguna comunidad.</p>
       } @else {

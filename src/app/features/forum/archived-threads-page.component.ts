@@ -3,14 +3,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ThreadSummary } from '../../core/models/forum-thread.model';
 import { ForumService } from '../../core/services/forum.service';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { ListSkeletonComponent } from '../../shared/components/skeleton-loader/list-skeleton.component';
 import { ThreadCardComponent } from './components/thread-card.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-archived-threads-page',
   standalone: true,
-  imports: [RouterLink, LoadingSpinnerComponent, ThreadCardComponent, TranslatePipe],
+  imports: [RouterLink, ListSkeletonComponent, ThreadCardComponent, TranslatePipe],
   template: `
     <section class="page-shell">
       <header class="page-header">
@@ -22,7 +22,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       </header>
 
       @if (loading()) {
-        <app-loading-spinner />
+        <app-list-skeleton />
       } @else {
         @if (archivedThreads().length) {
           <div class="thread-list">

@@ -121,7 +121,7 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
         max-width: 42rem;
         max-height: 90vh;
         overflow-y: auto;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
@@ -165,7 +165,7 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
       }
       .template-card {
         display: grid;
-        gap: 0.3rem;
+        gap: 0.5rem;
         padding: 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
@@ -194,7 +194,7 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
       .tpl-fields {
         font-size: 0.68rem;
         color: var(--accent-text);
-        padding: 0.15rem 0.45rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         background: var(--accent-glow);
         width: fit-content;
@@ -228,10 +228,10 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
       .field-pills {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .field-pill {
-        padding: 0.2rem 0.5rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         font-size: 0.7rem;
@@ -239,18 +239,18 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
       }
       form {
         display: grid;
-        gap: 0.85rem;
+        gap: 1rem;
       }
       label {
         display: grid;
-        gap: 0.3rem;
+        gap: 0.5rem;
       }
       label span {
         font-size: 0.82rem;
         color: var(--text-2);
       }
       input {
-        padding: 0.65rem 0.85rem;
+        padding: 0.75rem 1rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -271,7 +271,7 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
         gap: 0.75rem;
       }
       .dialog-actions button {
-        padding: 0.7rem 1.1rem;
+        padding: 0.75rem 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--accent-glow);

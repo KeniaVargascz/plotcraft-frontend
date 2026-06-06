@@ -191,23 +191,23 @@ const STATUSES: { value: TaskStatus; label: string }[] = [
         color: var(--text-1);
         font-size: 1.15rem;
         margin: 0;
-        padding: 1rem 1.25rem 0.5rem;
+        padding: 1rem 1.5rem 0.5rem;
       }
       mat-dialog-content {
-        padding: 0 1.25rem;
+        padding: 0 1.5rem;
         max-height: 65vh;
         overflow-y: auto;
       }
       .form-grid {
         display: flex;
         flex-direction: column;
-        gap: 1.25rem;
+        gap: 1.5rem;
         padding-bottom: 0.5rem;
       }
       .form-section {
         display: flex;
         flex-direction: column;
-        gap: 0.625rem;
+        gap: 0.75rem;
       }
       .section-title {
         font-size: 0.8rem;
@@ -239,8 +239,8 @@ const STATUSES: { value: TaskStatus; label: string }[] = [
       select {
         background: var(--bg-base);
         border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 0.5rem 0.625rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem;
         font-size: 0.85rem;
         color: var(--text-1);
         font-family: inherit;
@@ -256,13 +256,13 @@ const STATUSES: { value: TaskStatus; label: string }[] = [
         resize: vertical;
       }
       mat-dialog-actions {
-        padding: 0.75rem 1.25rem;
+        padding: 0.75rem 1.5rem;
         gap: 0.5rem;
       }
       .btn-cancel {
         background: var(--bg-surface);
         border: 1px solid var(--border);
-        border-radius: 6px;
+        border-radius: 0.5rem;
         padding: 0.5rem 1rem;
         font-size: 0.85rem;
         color: var(--text-2);
@@ -274,8 +274,8 @@ const STATUSES: { value: TaskStatus; label: string }[] = [
       .btn-save {
         background: var(--accent);
         border: none;
-        border-radius: 6px;
-        padding: 0.5rem 1.25rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1.5rem;
         font-size: 0.85rem;
         color: #fff;
         font-weight: 600;

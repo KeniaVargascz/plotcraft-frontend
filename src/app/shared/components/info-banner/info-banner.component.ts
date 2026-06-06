@@ -22,7 +22,7 @@ import { BannerService } from '../../../core/services/banner.service';
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      padding: 0.65rem 1.25rem;
+      padding: 0.75rem 1.5rem;
       background: var(--accent, #c9a84c);
       color: var(--accent-contrast, #1a1a2e);
       font-size: 0.88rem;

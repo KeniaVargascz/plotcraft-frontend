@@ -75,16 +75,16 @@ export interface AddImageToSectionResult {
       .form {
         min-width: min(30rem, 78vw);
         display: grid;
-        gap: 0.9rem;
+        gap: 1rem;
       }
       label {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       input {
         width: 100%;
         box-sizing: border-box;
-        padding: 0.7rem 0.8rem;
+        padding: 0.75rem 1rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -103,7 +103,7 @@ export interface AddImageToSectionResult {
       }
       .preview {
         overflow: hidden;
-        border-radius: 0.9rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
       }
       .preview img {

@@ -23,7 +23,9 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { PostCardComponent } from '../components/post-card/post-card.component';
 import { PostComposerComponent } from '../components/post-composer/post-composer.component';
 import { PostTypeFilterComponent } from '../components/post-type-filter/post-type-filter.component';
+import { PostSkeletonComponent } from '../../../shared/components/skeleton-loader/post-skeleton.component';
 import { SuggestionListComponent } from '../components/suggestion-list/suggestion-list.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-feed-page',
@@ -37,6 +39,8 @@ import { SuggestionListComponent } from '../components/suggestion-list/suggestio
     PostCardComponent,
     TagChipsInputComponent,
     SuggestionListComponent,
+    PostSkeletonComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './feed-page.component.html',
   styleUrl: './feed-page.component.scss',

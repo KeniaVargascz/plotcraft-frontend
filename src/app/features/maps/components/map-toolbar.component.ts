@@ -44,7 +44,7 @@ const TOOLS: ToolDef[] = [
       gap: 4px;
       padding: 6px;
       background: var(--surface-card, #1e1e2e);
-      border-radius: 8px;
+      border-radius: 0.5rem;
       border: 1px solid var(--border-color, #2a2a3a);
     }
     .tool-btn {
@@ -54,7 +54,7 @@ const TOOLS: ToolDef[] = [
       align-items: center;
       justify-content: center;
       border: 1px solid transparent;
-      border-radius: 6px;
+      border-radius: 0.5rem;
       background: transparent;
       color: var(--text-secondary, #aaa);
       cursor: pointer;

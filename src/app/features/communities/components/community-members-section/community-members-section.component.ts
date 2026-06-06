@@ -71,15 +71,15 @@ const ROLE_LABELS: Record<string, string> = {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0.6rem 0.85rem;
+        padding: 0.75rem 1rem;
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         background: var(--bg-card);
       }
       .member-link {
         display: flex;
         align-items: center;
-        gap: 0.65rem;
+        gap: 0.75rem;
         text-decoration: none;
         color: var(--text-1);
       }
@@ -100,7 +100,7 @@ const ROLE_LABELS: Record<string, string> = {
       }
       .info {
         display: grid;
-        gap: 0.1rem;
+        gap: 0.25rem;
       }
       .info strong {
         font-size: 0.9rem;
@@ -110,7 +110,7 @@ const ROLE_LABELS: Record<string, string> = {
         color: var(--text-3);
       }
       .role-badge {
-        padding: 0.2rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.7rem;
         font-weight: 700;

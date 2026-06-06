@@ -42,11 +42,11 @@ import { SearchResult } from '../../../core/models/search.model';
     `
       .card {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
         padding: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
-        border-radius: 0.85rem;
+        border-radius: 1rem;
       }
       .head {
         display: flex;
@@ -57,7 +57,7 @@ import { SearchResult } from '../../../core/models/search.model';
         font-size: 0.7rem;
         font-weight: 700;
         text-transform: uppercase;
-        padding: 0.15rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
       }
       .sec-feed {
@@ -92,7 +92,7 @@ import { SearchResult } from '../../../core/models/search.model';
         font-size: 0.82rem;
         color: var(--text-3);
         display: flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
       }
     `,

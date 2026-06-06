@@ -119,7 +119,7 @@ import { COMMUNITY_TYPE_LABELS, Community } from '../../models/community.model';
         position: absolute;
         top: 0.6rem;
         left: 0.6rem;
-        padding: 0.25rem 0.65rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.7rem;
         font-weight: 700;
@@ -133,7 +133,7 @@ import { COMMUNITY_TYPE_LABELS, Community } from '../../models/community.model';
         color: var(--accent-text);
       }
       .body {
-        padding: 0.85rem;
+        padding: 1rem;
         display: grid;
         gap: 0.5rem;
       }
@@ -184,7 +184,7 @@ import { COMMUNITY_TYPE_LABELS, Community } from '../../models/community.model';
       .footer {
         display: flex;
         align-items: center;
-        gap: 0.35rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
         font-size: 0.78rem;
         color: var(--text-3);
@@ -206,7 +206,7 @@ import { COMMUNITY_TYPE_LABELS, Community } from '../../models/community.model';
       .linked {
         display: flex;
         align-items: center;
-        gap: 0.3rem;
+        gap: 0.5rem;
       }
       .linked svg {
         color: var(--accent-text);

@@ -1,7 +1,7 @@
 .comment-item {
   display: grid;
   grid-template-columns: 2.4rem 1fr;
-  gap: 0.85rem;
+  gap: 1rem;
 }
 
 .comment-avatar {
@@ -71,14 +71,14 @@
   z-index: var(--z-raised);
   display: grid;
   min-width: 120px;
-  padding: 0.35rem 0;
+  padding: 0.5rem 0;
   border-radius: 0.75rem;
   border: 1px solid var(--border);
   background: var(--bg-elevated);
   box-shadow: 0 8px 24px var(--shadow);
 
   button {
-    padding: 0.55rem 0.85rem;
+    padding: 0.75rem 1rem;
     text-align: left;
     white-space: nowrap;
     min-height: unset;
@@ -101,7 +101,7 @@ textarea {
   border: 1px solid var(--border);
   background: var(--bg-surface);
   color: var(--text-1);
-  padding: 0.8rem 1rem;
+  padding: 1rem 1rem;
 }
 
 .edit-actions {

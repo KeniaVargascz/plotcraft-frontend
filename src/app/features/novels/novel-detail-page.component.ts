@@ -14,7 +14,7 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
 import { TimelineService } from '../../core/services/timeline.service';
 import { TimelineDetail } from '../../core/models/timeline.model';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { NovelDetailSkeletonComponent } from '../../shared/components/skeleton-loader/novel-detail-skeleton.component';
 import { CharacterCardComponent } from '../characters/components/character-card.component';
 import { WorldCardComponent } from '../worlds/components/world-card.component';
 import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/linked-visual-boards-section.component';
@@ -43,7 +43,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
     SlicePipe,
     FormsModule,
     ErrorMessageComponent,
-    LoadingSpinnerComponent,
+    NovelDetailSkeletonComponent,
     WorldCardComponent,
     CharacterCardComponent,
     LinkedVisualBoardsSectionComponent,
@@ -55,7 +55,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
   ],
   template: `
     @if (loading()) {
-      <app-loading-spinner />
+      <app-novel-detail-skeleton />
     } @else if (error()) {
       <app-error-message />
     } @else if (novel(); as currentNovel) {
@@ -286,7 +286,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
       }
       .section-head {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
         grid-template-columns: 1fr auto;
         align-items: center;
       }
@@ -298,14 +298,14 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
         color: var(--accent);
       }
       .card {
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
-        padding: 1.25rem;
+        padding: 1.5rem;
       }
       .content-grid {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
         grid-template-columns: 1fr 280px;
         margin-top: 1.5rem;
       }
@@ -329,9 +329,9 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
         display: grid;
         grid-template-columns: 48px 1fr;
         gap: 0.5rem;
-        padding: 0.6rem;
+        padding: 0.75rem;
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         background: var(--bg-card);
       }
       .cc-mini .avatar {
@@ -350,13 +350,13 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
       }
       .cc-mini .body {
         display: grid;
-        gap: 0.2rem;
+        gap: 0.25rem;
       }
       .canon-badge {
         display: inline-block;
         background: var(--accent-glow);
         color: var(--accent-text);
-        padding: 0.15rem 0.5rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         font-size: 0.7rem;
         width: fit-content;
@@ -372,7 +372,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
       }
       .tl-count {
         display: inline-block;
-        padding: 0.3rem 0.7rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -384,7 +384,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
         margin: 0;
       }
       .tl-create-btn {
-        padding: 0.6rem 1.2rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 1rem;
         border: 1px dashed var(--border-s);
         background: transparent;
@@ -406,7 +406,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        padding: 0.7rem 1rem;
+        padding: 0.75rem 1rem;
         border-bottom: 1px solid var(--border);
         background: var(--bg-card);
       }
@@ -420,7 +420,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
       .tl-event-info {
         flex: 1;
         display: grid;
-        gap: 0.15rem;
+        gap: 0.25rem;
         min-width: 0;
       }
       .tl-event-info strong {
@@ -435,7 +435,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
         color: var(--text-3);
       }
       .tl-relevance {
-        padding: 0.15rem 0.5rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         font-size: 0.65rem;
         font-weight: 600;
@@ -460,7 +460,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
       .tl-see-all {
         display: block;
         text-align: center;
-        padding: 0.6rem;
+        padding: 0.75rem;
         background: var(--bg-surface);
         color: var(--accent-text);
         font-size: 0.8rem;
@@ -484,7 +484,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
         width: 100%;
         max-width: 480px;
         padding: 1.5rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
         box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
@@ -523,7 +523,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
       }
       .preview-info {
         display: grid;
-        gap: 0.15rem;
+        gap: 0.25rem;
         align-content: start;
         min-width: 0;
       }
@@ -558,7 +558,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
         gap: 0.5rem;
       }
       .btn-cancel {
-        padding: 0.55rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -571,7 +571,7 @@ const EVENT_TYPE_ICONS: Record<string, string> = {
         border-color: var(--accent);
       }
       .btn-confirm {
-        padding: 0.55rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: none;
         background: var(--accent);

@@ -126,7 +126,7 @@ const COLOR_SWATCHES = [
         max-width: 36rem;
         max-height: 90vh;
         overflow-y: auto;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
@@ -165,7 +165,7 @@ const COLOR_SWATCHES = [
       }
       .dialog-body label {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .dialog-body label span,
       .label-text {
@@ -175,7 +175,7 @@ const COLOR_SWATCHES = [
       input,
       textarea,
       select {
-        padding: 0.7rem 0.85rem;
+        padding: 0.75rem 1rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -188,12 +188,12 @@ const COLOR_SWATCHES = [
       }
       .color-section {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .color-swatches {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .swatch {
         width: 1.6rem;
@@ -227,7 +227,7 @@ const COLOR_SWATCHES = [
         padding-top: 0.5rem;
       }
       .dialog-actions button {
-        padding: 0.7rem 1.1rem;
+        padding: 0.75rem 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--accent-glow);

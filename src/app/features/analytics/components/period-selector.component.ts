@@ -25,7 +25,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
     }
     .chip {
       padding: 6px 16px;
-      border-radius: 20px;
+      border-radius: 999px;
       border: 1px solid var(--border);
       background: var(--bg-surface);
       color: var(--text-2);
@@ -40,7 +40,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
     }
     .chip.active {
       background: var(--accent);
-      color: var(--accent-text);
+      color: var(--accent-contrast);
       border-color: var(--accent);
       box-shadow: 0 0 8px var(--accent-glow);
     }

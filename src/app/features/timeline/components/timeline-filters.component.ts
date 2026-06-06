@@ -82,7 +82,7 @@ const RELEVANCES: { value: TimelineEventRelevance | null; label: string }[] = [
       .chip-group {
         display: flex;
         align-items: center;
-        gap: 0.35rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
       }
       .group-label {
@@ -91,7 +91,7 @@ const RELEVANCES: { value: TimelineEventRelevance | null; label: string }[] = [
         font-weight: 600;
       }
       .chip {
-        padding: 0.25rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -112,7 +112,7 @@ const RELEVANCES: { value: TimelineEventRelevance | null; label: string }[] = [
         margin-left: auto;
       }
       .search-box input {
-        padding: 0.4rem 0.75rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);

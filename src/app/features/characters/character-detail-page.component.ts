@@ -10,14 +10,15 @@ import { CharacterDetail, CharacterRelationship } from '../../core/models/charac
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/linked-visual-boards-section.component';
 import { CharacterKinshipDialogComponent } from './components/character-kinship-dialog.component';
+import { DetailSkeletonComponent } from '../../shared/components/skeleton-loader/detail-skeleton.component';
 
 @Component({
   selector: 'app-character-detail-page',
   standalone: true,
-  imports: [RouterLink, LinkedVisualBoardsSectionComponent],
+  imports: [RouterLink, LinkedVisualBoardsSectionComponent, DetailSkeletonComponent],
   template: `
     @if (loading()) {
-      <p class="state">Cargando personaje...</p>
+      <app-detail-skeleton />
     } @else {
       @if (character(); as currentCharacter) {
         <section class="detail-shell">
@@ -186,7 +187,7 @@ import { CharacterKinshipDialogComponent } from './components/character-kinship-
       }
       .card {
         padding: 1.25rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
@@ -200,7 +201,7 @@ import { CharacterKinshipDialogComponent } from './components/character-kinship-
         height: 120px;
         display: grid;
         place-items: center;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         background: linear-gradient(
           135deg,
           var(--accent-glow),
@@ -238,7 +239,7 @@ import { CharacterKinshipDialogComponent } from './components/character-kinship-
       .primary,
       .ghost,
       .kudo-btn {
-        padding: 0.55rem 0.9rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -290,7 +291,7 @@ import { CharacterKinshipDialogComponent } from './components/character-kinship-
         justify-content: space-between;
         gap: 1rem;
         align-items: start;
-        padding: 0.95rem 1rem;
+        padding: 1rem 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -370,7 +371,7 @@ import { CharacterKinshipDialogComponent } from './components/character-kinship-
       .load-more {
         margin-top: 0.5rem;
         justify-self: center;
-        padding: 0.65rem 1.5rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-card);

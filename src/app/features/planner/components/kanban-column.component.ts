@@ -60,7 +60,7 @@ const STATUS_LABELS: Record<string, string> = {
       .column {
         background: var(--bg-surface);
         border: 1px solid var(--border);
-        border-radius: 10px;
+        border-radius: 0.75rem;
         display: flex;
         flex-direction: column;
         min-width: 280px;
@@ -117,7 +117,7 @@ const STATUS_LABELS: Record<string, string> = {
         border-top: 1px solid var(--border);
         color: var(--text-3);
         font-size: 0.8rem;
-        padding: 0.625rem;
+        padding: 0.75rem;
         cursor: pointer;
         transition: color 0.15s;
       }
@@ -128,7 +128,7 @@ const STATUS_LABELS: Record<string, string> = {
       :host ::ng-deep .cdk-drag-placeholder {
         opacity: 0.4;
         border: 2px dashed var(--border-s);
-        border-radius: 8px;
+        border-radius: 0.5rem;
       }
       :host ::ng-deep .cdk-drag-animating {
         transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);

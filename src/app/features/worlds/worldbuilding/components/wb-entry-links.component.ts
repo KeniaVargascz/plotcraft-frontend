@@ -47,7 +47,7 @@ import { WbEntryLink } from '../../../../core/models/wb-entry.model';
     `
       .links-panel {
         display: grid;
-        gap: 0.65rem;
+        gap: 0.75rem;
       }
       .links-header {
         display: flex;
@@ -60,8 +60,8 @@ import { WbEntryLink } from '../../../../core/models/wb-entry.model';
         color: var(--text-1);
       }
       .add-link-btn {
-        padding: 0.35rem 0.7rem;
-        border-radius: 0.65rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px dashed var(--border);
         background: transparent;
         color: var(--accent-text);
@@ -73,13 +73,13 @@ import { WbEntryLink } from '../../../../core/models/wb-entry.model';
       }
       .links-list {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .link-item {
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.55rem 0.7rem;
+        padding: 0.75rem 0.75rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -87,7 +87,7 @@ import { WbEntryLink } from '../../../../core/models/wb-entry.model';
       .link-info {
         display: flex;
         align-items: center;
-        gap: 0.45rem;
+        gap: 0.5rem;
         flex: 1;
         min-width: 0;
       }
@@ -98,7 +98,7 @@ import { WbEntryLink } from '../../../../core/models/wb-entry.model';
       .link-text {
         display: flex;
         flex-direction: column;
-        gap: 0.1rem;
+        gap: 0.25rem;
         min-width: 0;
       }
       .link-relation {
@@ -114,7 +114,7 @@ import { WbEntryLink } from '../../../../core/models/wb-entry.model';
         white-space: nowrap;
       }
       .mutual-badge {
-        padding: 0.1rem 0.35rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);

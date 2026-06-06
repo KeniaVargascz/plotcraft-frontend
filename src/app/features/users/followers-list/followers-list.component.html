@@ -4,9 +4,9 @@
   </header>
 
   @if (loading()) {
-    <div class="state-card">{{ 'common.loading' | translate }}</div>
+    <app-list-skeleton />
   } @else if (users().length === 0) {
-    <div class="state-card">{{ 'profile.noFollowersYet' | translate }}</div>
+    <app-empty-state icon="👥" [title]="'profile.noFollowersYet' | translate" />
   } @else {
     @for (user of users(); track user.id) {
       <article class="follow-card">

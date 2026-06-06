@@ -7,7 +7,7 @@ import { ForumReply } from '../../core/models/forum-reply.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ForumService } from '../../core/services/forum.service';
 import { MarkdownService } from '../../core/services/markdown.service';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { DetailSkeletonComponent } from '../../shared/components/skeleton-loader/detail-skeleton.component';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { CategoryBadgeComponent } from './components/category-badge.component';
 import { ForumReactionBarComponent } from './components/forum-reaction-bar.component';
@@ -21,7 +21,7 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
   imports: [
     RouterLink,
     FormsModule,
-    LoadingSpinnerComponent,
+    DetailSkeletonComponent,
     ErrorMessageComponent,
     CategoryBadgeComponent,
     ForumReactionBarComponent,
@@ -31,7 +31,7 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
   ],
   template: `
     @if (loading()) {
-      <app-loading-spinner />
+      <app-detail-skeleton />
     } @else if (error()) {
       <app-error-message />
     } @else if (thread(); as t) {
@@ -187,7 +187,7 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
         margin: 0 auto;
         padding: 1.5rem;
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
       }
       .breadcrumb {
         font-size: 0.85rem;
@@ -207,7 +207,7 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: 1rem;
-        padding: 1.25rem;
+        padding: 1.5rem;
       }
       .header-top {
         display: flex;
@@ -218,8 +218,8 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
       .badge {
         font-size: 0.7rem;
         font-weight: 600;
-        padding: 0.15rem 0.5rem;
-        border-radius: 9999px;
+        padding: 0.25rem 0.5rem;
+        border-radius: 999px;
       }
       .badge.pin {
         background: var(--accent);
@@ -247,7 +247,7 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
       .author-info {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .avatar {
         width: 1.75rem;
@@ -278,14 +278,14 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
       .tags {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.5rem;
         margin-top: 0.65rem;
       }
       .tag {
         font-size: 0.8rem;
         color: var(--accent);
         background: var(--bg-surface);
-        padding: 0.2rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 0.5rem;
       }
       .author-actions {
@@ -294,8 +294,8 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
         margin-top: 0.75rem;
       }
       .act-btn {
-        padding: 0.3rem 0.75rem;
-        border-radius: 0.55rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-2);
@@ -313,7 +313,7 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: 1rem;
-        padding: 1.25rem;
+        padding: 1.5rem;
         color: var(--text-1);
         font-size: 0.95rem;
         line-height: 1.7;
@@ -333,7 +333,7 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
       .edit-textarea {
         width: 100%;
         border: 1px solid var(--border);
-        border-radius: 0.65rem;
+        border-radius: 0.5rem;
         background: var(--bg-surface);
         color: var(--text-1);
         padding: 0.75rem;
@@ -347,8 +347,8 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
         margin-top: 0.5rem;
       }
       .save-btn {
-        padding: 0.4rem 1rem;
-        border-radius: 0.65rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
         border: none;
         background: var(--accent);
         color: #fff;
@@ -356,8 +356,8 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
         cursor: pointer;
       }
       .cancel-btn {
-        padding: 0.4rem 1rem;
-        border-radius: 0.65rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-2);
@@ -374,7 +374,7 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
       }
       .reply-locked {
         margin: 0;
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         border: 1px dashed var(--border);
         border-radius: 0.75rem;
         background: var(--bg-surface);
@@ -393,7 +393,7 @@ import { ReplyComposerComponent } from './components/reply-composer.component';
       }
       .replies-list {
         display: grid;
-        gap: 0.65rem;
+        gap: 0.75rem;
       }
       .no-replies {
         text-align: center;

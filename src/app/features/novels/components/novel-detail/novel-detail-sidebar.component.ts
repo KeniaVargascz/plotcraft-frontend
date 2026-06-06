@@ -118,10 +118,10 @@ import { GenreLabelPipe } from '../../../../shared/pipes/genre-label.pipe';
       .card {
         display: grid;
         gap: 1rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
-        padding: 1.25rem;
+        padding: 1.5rem;
       }
       .stats span {
         padding: 0.5rem 0.75rem;
@@ -138,12 +138,12 @@ import { GenreLabelPipe } from '../../../../shared/pipes/genre-label.pipe';
         display: grid;
         grid-template-columns: 1fr auto;
         align-items: center;
-        gap: 1.25rem;
+        gap: 1.5rem;
       }
       .detail-card {
         display: grid;
         gap: 0.75rem;
-        padding: 1.25rem;
+        padding: 1.5rem;
       }
       .detail-row {
         display: grid;
@@ -162,12 +162,12 @@ import { GenreLabelPipe } from '../../../../shared/pipes/genre-label.pipe';
       .chips-block {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .chip {
         display: inline-flex;
         align-items: center;
-        padding: 0.35rem 0.7rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         font-size: 0.78rem;
         white-space: nowrap;
@@ -192,7 +192,7 @@ import { GenreLabelPipe } from '../../../../shared/pipes/genre-label.pipe';
         border: 1px solid var(--border);
       }
       .romance-genre-badge {
-        padding: 0.4rem 0.8rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -208,7 +208,7 @@ import { GenreLabelPipe } from '../../../../shared/pipes/genre-label.pipe';
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.4rem 0.8rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         background: rgba(224, 85, 85, 0.12);
         color: #e89a9a;
@@ -228,7 +228,7 @@ import { GenreLabelPipe } from '../../../../shared/pipes/genre-label.pipe';
       @media (max-width: 640px) {
         .detail-row {
           grid-template-columns: 1fr;
-          gap: 0.4rem;
+          gap: 0.5rem;
         }
         .detail-label {
           padding-top: 0;

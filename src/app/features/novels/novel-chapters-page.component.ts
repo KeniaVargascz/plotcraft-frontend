@@ -7,11 +7,12 @@ import { ChaptersService } from '../../core/services/chapters.service';
 import { NovelsService } from '../../core/services/novels.service';
 import { TimelineService } from '../../core/services/timeline.service';
 import { PlannerService } from '../../core/services/planner.service';
+import { ListSkeletonComponent } from '../../shared/components/skeleton-loader/list-skeleton.component';
 
 @Component({
   selector: 'app-novel-chapters-page',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, ListSkeletonComponent],
   template: `
     @if (novel(); as currentNovel) {
       <section class="page-shell">
@@ -37,7 +38,7 @@ import { PlannerService } from '../../core/services/planner.service';
 
         <div class="chapter-list">
           @if (loading()) {
-            <p class="status">Cargando capitulos...</p>
+            <app-list-skeleton />
           } @else if (!chapters().length) {
             <p class="status">No hay datos para mostrar.</p>
           }
@@ -125,7 +126,7 @@ import { PlannerService } from '../../core/services/planner.service';
 
       a,
       button {
-        padding: 0.65rem 0.9rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -135,7 +136,7 @@ import { PlannerService } from '../../core/services/planner.service';
 
       .status {
         margin: 0;
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         border-radius: 1rem;
         background: var(--accent-glow);
         color: var(--accent-text);

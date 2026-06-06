@@ -101,17 +101,17 @@ type KinshipOption = {
     `
       .content {
         display: grid;
-        gap: 0.9rem;
+        gap: 1rem;
         min-width: min(34rem, 80vw);
       }
       .field {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .field input,
       .field textarea,
       .field select {
-        padding: 0.65rem 0.8rem;
+        padding: 0.75rem 1rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -123,9 +123,9 @@ type KinshipOption = {
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         border: 1px solid var(--border);
-        border-radius: 0.9rem;
+        border-radius: 1rem;
         background: var(--bg-card);
       }
       .selected small,
@@ -135,9 +135,9 @@ type KinshipOption = {
       .suggestions {
         list-style: none;
         margin: 0;
-        padding: 0.35rem;
+        padding: 0.5rem;
         border: 1px solid var(--border);
-        border-radius: 0.9rem;
+        border-radius: 1rem;
         background: var(--bg-card);
         display: grid;
         gap: 0.25rem;
@@ -149,9 +149,9 @@ type KinshipOption = {
         display: flex;
         justify-content: space-between;
         gap: 1rem;
-        padding: 0.7rem 0.8rem;
+        padding: 0.75rem 1rem;
         border: 0;
-        border-radius: 0.7rem;
+        border-radius: 0.75rem;
         background: transparent;
         color: var(--text-1);
         text-align: left;
@@ -169,7 +169,7 @@ type KinshipOption = {
         margin: 0;
       }
       [mat-dialog-actions] button {
-        padding: 0.55rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-card);

@@ -37,15 +37,15 @@ const REACTION_MAP: { key: ReactionKey; emoji: string; label: string }[] = [
     `
       .reaction-bar {
         display: flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
       }
       .reaction-btn {
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
-        padding: 0.3rem 0.6rem;
-        border-radius: 9999px;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-2);

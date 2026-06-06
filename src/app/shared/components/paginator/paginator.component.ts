@@ -45,7 +45,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 0.35rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
         padding: 0.5rem 0;
       }

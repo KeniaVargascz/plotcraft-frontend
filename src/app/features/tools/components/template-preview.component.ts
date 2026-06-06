@@ -47,7 +47,7 @@ import { TemplateCardData } from './template-card.component';
       }
       .card {
         border: 1px solid var(--border);
-        border-radius: 1.4rem;
+        border-radius: 1.5rem;
         background: linear-gradient(
           180deg,
           color-mix(in srgb, var(--bg-card) 92%, #f4e7d3 8%),
@@ -56,7 +56,7 @@ import { TemplateCardData } from './template-card.component';
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
       }
       .preview-section {
-        padding: 1.3rem;
+        padding: 1.5rem;
       }
       .mini-label {
         color: var(--text-2);
@@ -78,7 +78,7 @@ import { TemplateCardData } from './template-card.component';
       .preview-actions {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.65rem;
+        gap: 0.75rem;
       }
       .ghost-btn,
       .copy-btn {
@@ -86,7 +86,7 @@ import { TemplateCardData } from './template-card.component';
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.65rem 1rem;
+        padding: 0.75rem 1rem;
         text-decoration: none;
         cursor: pointer;
         font-weight: 600;
@@ -100,7 +100,7 @@ import { TemplateCardData } from './template-card.component';
         display: inline-flex;
         align-items: center;
         min-height: 2rem;
-        padding: 0.28rem 0.7rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         background: color-mix(in srgb, var(--accent-glow) 28%, var(--bg-surface));
         border: 1px solid color-mix(in srgb, var(--border) 75%, #c88136 25%);
@@ -141,8 +141,8 @@ import { TemplateCardData } from './template-card.component';
       }
       .preview-pane pre {
         margin-top: 0.85rem;
-        padding: 0.9rem;
-        border-radius: 0.85rem;
+        padding: 1rem;
+        border-radius: 1rem;
         background: #1f2026;
         color: #f6f6f8;
         overflow-x: auto;
@@ -161,18 +161,18 @@ import { TemplateCardData } from './template-card.component';
       .rendered .md :global(th),
       .rendered .md :global(td) {
         border: 1px solid var(--border);
-        padding: 0.55rem 0.7rem;
+        padding: 0.75rem 0.75rem;
         text-align: left;
       }
       .rendered .md :global(blockquote) {
         margin: 0 0 1rem;
-        padding: 0.8rem 1rem;
+        padding: 1rem 1rem;
         border-left: 4px solid #c88136;
         background: color-mix(in srgb, var(--bg-surface) 78%, #f6ead7 22%);
       }
       .rendered .md :global(img) {
         max-width: 100%;
-        border-radius: 0.8rem;
+        border-radius: 1rem;
       }
       @media (max-width: 1040px) {
         .preview-grid {

@@ -1,5 +1,5 @@
 @if (loading()) {
-  <div class="state-card">{{ 'common.loading' | translate }}</div>
+  <app-profile-skeleton />
 } @else if (error() || !profile()) {
   <div class="state-card">{{ 'common.error' | translate }}</div>
 } @else {
@@ -85,7 +85,7 @@
 
     @if (activeTab() === 'novels') {
       @if (novels().length === 0) {
-        <div class="state-card">{{ 'profile.noNovelsYet' | translate }}</div>
+        <app-empty-state icon="📖" [title]="'profile.noNovelsYet' | translate" />
       } @else {
         <div class="post-stack">
           @for (novel of novels(); track novel.id) {
@@ -95,7 +95,7 @@
       }
     } @else if (activeTab() === 'worlds') {
       @if (worlds().length === 0) {
-        <div class="state-card">{{ 'profile.noWorldsYet' | translate }}</div>
+        <app-empty-state icon="🌍" [title]="'profile.noWorldsYet' | translate" />
       } @else {
         <div class="post-stack">
           @for (world of worlds(); track world.id) {
@@ -105,7 +105,7 @@
       }
     } @else if (activeTab() === 'characters') {
       @if (characters().length === 0) {
-        <div class="state-card">{{ 'profile.noCharactersYet' | translate }}</div>
+        <app-empty-state icon="👤" [title]="'profile.noCharactersYet' | translate" />
       } @else {
         <div class="post-stack">
           @for (character of characters(); track character.id) {

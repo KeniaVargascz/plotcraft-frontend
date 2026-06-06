@@ -44,7 +44,7 @@ export interface PromptDialogData {
     `
       .prompt-label {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
         width: 100%;
       }
       .prompt-label span {
@@ -53,8 +53,8 @@ export interface PromptDialogData {
       }
       .prompt-input {
         width: 100%;
-        padding: 0.65rem 0.8rem;
-        border-radius: 0.65rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
         border: 1px solid var(--border, #ddd);
         background: var(--bg-surface, #fff);
         color: var(--text-1, #222);

@@ -4,12 +4,13 @@ import { RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { LibrarySummary } from '../../core/models/library.model';
 import { LibraryService } from '../../core/services/library.service';
+import { DashboardSkeletonComponent } from '../../shared/components/skeleton-loader/dashboard-skeleton.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-library-page',
   standalone: true,
-  imports: [RouterLink, TranslatePipe],
+  imports: [RouterLink, DashboardSkeletonComponent, TranslatePipe],
   template: `
     <section class="library-shell">
       <header class="page-header">
@@ -20,7 +21,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       </header>
 
       @if (loading()) {
-        <p class="status">{{ 'common.loading' | translate }}</p>
+        <app-dashboard-skeleton />
       } @else if (summary(); as current) {
         <section class="grid">
           <a class="card nav-card" routerLink="/biblioteca/en-progreso">
@@ -112,9 +113,9 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         grid-template-columns: 1.2fr 0.8fr;
       }
       .card {
-        padding: 1.1rem;
+        padding: 1rem;
         border: 1px solid var(--border);
-        border-radius: 1.25rem;
+        border-radius: 1rem;
         background: var(--bg-card);
       }
       .nav-card,

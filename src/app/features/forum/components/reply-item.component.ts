@@ -137,8 +137,8 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
       .reply {
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
-        padding: 1rem 1.25rem;
+        border-radius: 1rem;
+        padding: 1rem 1.5rem;
       }
       .reply.is-child {
         background: var(--bg-surface);
@@ -182,7 +182,7 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
       .author {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
         font-size: 0.85rem;
       }
       .avatar {
@@ -209,10 +209,10 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
       }
       .actions {
         display: flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .action-btn {
-        padding: 0.25rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -249,10 +249,10 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
       .edit-textarea {
         width: 100%;
         border: 1px solid var(--border);
-        border-radius: 0.65rem;
+        border-radius: 0.5rem;
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.65rem;
+        padding: 0.75rem;
         font-family: inherit;
         font-size: 0.9rem;
         resize: vertical;
@@ -263,8 +263,8 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
         margin-top: 0.5rem;
       }
       .save-btn {
-        padding: 0.4rem 1rem;
-        border-radius: 0.65rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
         border: none;
         background: var(--accent);
         color: #fff;
@@ -272,8 +272,8 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
         cursor: pointer;
       }
       .cancel-btn {
-        padding: 0.4rem 1rem;
-        border-radius: 0.65rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-2);
@@ -287,7 +287,7 @@ import { ForumReactionBarComponent } from './forum-reaction-bar.component';
         padding-left: 1rem;
         border-left: 2px solid var(--border);
         display: grid;
-        gap: 0.65rem;
+        gap: 0.75rem;
       }
     `,
   ],

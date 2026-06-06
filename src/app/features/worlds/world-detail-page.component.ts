@@ -14,6 +14,7 @@ import { CharactersService } from '../../core/services/characters.service';
 import { CharacterSummary } from '../../core/models/character.model';
 import { WbEntryCardComponent } from './worldbuilding/components/wb-entry-card.component';
 import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/linked-visual-boards-section.component';
+import { DetailSkeletonComponent } from '../../shared/components/skeleton-loader/detail-skeleton.component';
 
 @Component({
   selector: 'app-world-detail-page',
@@ -23,10 +24,11 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
     CharacterCardComponent,
     WbEntryCardComponent,
     LinkedVisualBoardsSectionComponent,
+    DetailSkeletonComponent,
   ],
   template: `
     @if (loading()) {
-      <p class="state">Cargando mundo...</p>
+      <app-detail-skeleton />
     } @else {
       @if (world(); as currentWorld) {
         <section class="detail-shell">
@@ -154,7 +156,7 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
       }
       .card {
         padding: 1.25rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
@@ -183,7 +185,7 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
       }
       .genre-pill {
         display: inline-block;
-        padding: 0.35rem 0.85rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -207,14 +209,14 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
       .stats span {
         display: inline-flex;
         align-items: center;
-        padding: 0.55rem 0.8rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
         white-space: nowrap;
       }
       .kudo-btn {
-        padding: 0.4rem 0.7rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--text-2);
@@ -248,15 +250,15 @@ import { LinkedVisualBoardsSectionComponent } from '../visual-boards/components/
       }
       .simple-link {
         display: block;
-        padding: 0.6rem 0;
+        padding: 0.75rem 0;
         color: var(--text-1);
         text-decoration: none;
       }
       .section-cta {
         display: inline-flex;
         align-items: center;
-        gap: 0.55rem;
-        padding: 0.7rem 1rem;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid color-mix(in srgb, var(--accent-strong, var(--accent)) 35%, var(--border));
         background: linear-gradient(

@@ -58,7 +58,7 @@ import { WritingProjectSummary } from '../../../core/models/writing-project.mode
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-left: 4px solid var(--accent);
-        border-radius: 10px;
+        border-radius: 0.75rem;
         padding: 1rem;
         display: flex;
         flex-direction: column;

@@ -20,6 +20,7 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { PostCardComponent } from '../components/post-card/post-card.component';
 import { PostComposerComponent } from '../components/post-composer/post-composer.component';
 import { PostTypeFilterComponent } from '../components/post-type-filter/post-type-filter.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-explore-page',
@@ -31,6 +32,7 @@ import { PostTypeFilterComponent } from '../components/post-type-filter/post-typ
     PostTypeFilterComponent,
     PostCardComponent,
     TagChipsInputComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './explore-page.component.html',
   styleUrl: './explore-page.component.scss',

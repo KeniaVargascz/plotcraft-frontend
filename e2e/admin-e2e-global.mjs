@@ -1,0 +1,318 @@
+import { chromium } from '@playwright/test';
+
+const results = [];
+const log = (section, test, status, detail) => {
+  results.push({ section, test, status, detail });
+  console.log(status === 'PASS' ? '  OK' : '  FAIL', test, detail ? '— ' + detail : '');
+};
+
+const browser = await chromium.launch();
+const p = await browser.newPage();
+const consoleErrors = [];
+p.on('console', msg => { if (msg.type() === 'error') consoleErrors.push({ url: p.url(), msg: msg.text().substring(0, 150) }); });
+
+// ═══════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════
+await p.goto('http://localhost:4202/login', { waitUntil: 'networkidle' });
+await p.locator('input[name="email"]').fill('admin@plotcraft.com');
+await p.locator('input[name="password"]').fill('Admin1234!');
+await p.getByRole('button', { name: /iniciar/i }).click();
+await p.waitForTimeout(3000);
+
+// ═══════════════════════════════════════
+// E1: FUNDACION
+// ═══════════════════════════════════════
+console.log('\n=== E1. FUNDACION ===');
+
+// Auth
+log('e1', '1.1 Login redirige a dashboard', p.url().includes('/dashboard') ? 'PASS' : 'FAIL', p.url());
+
+const meRes = await p.evaluate(async () => {
+  const t = localStorage.getItem('admin_access_token');
+  const r = await fetch('http://localhost:3000/api/v1/admin/auth/me', { headers: { Authorization: 'Bearer ' + t } });
+  return { status: r.status };
+});
+log('e1', '1.2 GET /me retorna perfil', meRes.status === 200 ? 'PASS' : 'FAIL', '');
+
+// Login incorrecto
+const p2 = await browser.newPage();
+await p2.goto('http://localhost:4202/login', { waitUntil: 'networkidle' });
+await p2.locator('input[name="email"]').fill('wrong@x.com');
+await p2.locator('input[name="password"]').fill('Bad!');
+await p2.getByRole('button', { name: /iniciar/i }).click();
+await p2.waitForTimeout(3000);
+const errText = (await p2.locator('body').innerText()).toLowerCase();
+log('e1', '1.3 Login incorrecto muestra error', errText.includes('incorrecta') || errText.includes('error') ? 'PASS' : 'FAIL', '');
+await p2.close();
+
+// Guard
+const p3 = await browser.newPage();
+await p3.goto('http://localhost:4202/users', { waitUntil: 'networkidle' });
+log('e1', '1.4 Guard redirige sin auth', p3.url().includes('/login') ? 'PASS' : 'FAIL', p3.url());
+await p3.close();
+
+// Layout
+await p.goto('http://localhost:4202/dashboard', { waitUntil: 'networkidle' });
+const nav = await p.locator('aside, .sidenav').first().innerText();
+const navExpected = ['Dashboard', 'Feature', 'Audit', 'Usuarios', 'Comunidades', 'Novelas', 'Foro', 'Catalogos', 'Posts', 'Analytics', 'Configuracion'];
+const navMissing = navExpected.filter(n => !nav.includes(n));
+log('e1', '1.5 Sidebar tiene 11 items', navMissing.length === 0 ? 'PASS' : 'FAIL', navMissing.length > 0 ? 'faltan: ' + navMissing.join(', ') : '11/11');
+
+// ═══════════════════════════════════════
+// E2: DASHBOARD & USUARIOS
+// ═══════════════════════════════════════
+console.log('\n=== E2. DASHBOARD & USUARIOS ===');
+
+await p.goto('http://localhost:4202/dashboard', { waitUntil: 'networkidle' });
+await p.waitForTimeout(3000);
+const dt = await p.locator('body').innerText();
+log('e2', '2.1 Dashboard: metricas', dt.includes('USUARIOS') && dt.includes('NOVELAS') && dt.includes('MUNDOS') ? 'PASS' : 'FAIL', '');
+log('e2', '2.2 Dashboard: actividad', dt.includes('Actividad') || dt.includes('ultimos') ? 'PASS' : 'FAIL', '');
+log('e2', '2.3 Dashboard: crecimiento', dt.includes('Crecimiento') || dt.includes('crecimiento') ? 'PASS' : 'FAIL', '');
+
+// Users
+await p.goto('http://localhost:4202/users', { waitUntil: 'networkidle' });
+await p.waitForTimeout(3000);
+const ut = await p.locator('body').innerText();
+log('e2', '2.4 Usuarios: pagina carga', ut.includes('Usuarios') ? 'PASS' : 'FAIL', '');
+const uRows = await p.locator('tr').count();
+log('e2', '2.5 Usuarios: tabla con datos', uRows > 1 ? 'PASS' : 'FAIL', uRows + ' rows');
+
+const uDetail = await p.evaluate(async () => {
+  const t = localStorage.getItem('admin_access_token');
+  const list = await (await fetch('http://localhost:3000/api/v1/admin/users?limit=1', { headers: { Authorization: 'Bearer ' + t } })).json();
+  const id = list.data?.data?.[0]?.id;
+  if (!id) return { status: 0 };
+  const r = await fetch('http://localhost:3000/api/v1/admin/users/' + id, { headers: { Authorization: 'Bearer ' + t } });
+  return { status: r.status, hasCount: !!(await r.json()).data?._count };
+});
+log('e2', '2.6 Usuarios: API detalle', uDetail.status === 200 && uDetail.hasCount ? 'PASS' : 'FAIL', '');
+
+// Communities moderation
+await p.goto('http://localhost:4202/communities', { waitUntil: 'networkidle' });
+await p.waitForTimeout(3000);
+const ct = await p.locator('body').innerText();
+log('e2', '2.7 Comunidades: pagina carga', ct.includes('Comunidades') ? 'PASS' : 'FAIL', '');
+
+const pendingApi = await p.evaluate(async () => {
+  const t = localStorage.getItem('admin_access_token');
+  const r = await fetch('http://localhost:3000/api/v1/admin/communities/pending/count', { headers: { Authorization: 'Bearer ' + t } });
+  return { status: r.status };
+});
+log('e2', '2.8 Comunidades: API pending count', pendingApi.status === 200 ? 'PASS' : 'FAIL', '');
+
+// ═══════════════════════════════════════
+// E3: FEATURE FLAGS
+// ═══════════════════════════════════════
+console.log('\n=== E3. FEATURE FLAGS ===');
+
+await p.goto('http://localhost:4202/features', { waitUntil: 'networkidle' });
+await p.waitForTimeout(2000);
+const ft = await p.locator('body').innerText();
+log('e3', '3.1 Flags: pagina carga', ft.includes('flags') ? 'PASS' : 'FAIL', '');
+log('e3', '3.2 Flags: muestra grupos', ft.toLowerCase().includes('author') ? 'PASS' : 'FAIL', '');
+
+// Public endpoint
+const pubFlags = await p.evaluate(async () => {
+  const r = await fetch('http://localhost:3000/api/v1/features/active');
+  const body = await r.json();
+  return { status: r.status, count: body.data?.length };
+});
+log('e3', '3.3 /features/active publico', pubFlags.status === 200 ? 'PASS' : 'FAIL', pubFlags.count + ' flags');
+
+// Toggle + verify + backend 404
+const flagCheck = await p.evaluate(async () => {
+  const t = localStorage.getItem('admin_access_token');
+
+  // 1. Disable
+  await fetch('http://localhost:3000/api/v1/admin/features/author.planner', {
+    method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + t },
+    body: JSON.stringify({ enabled: false }),
+  });
+
+  // 2. Wait for server-side cache invalidation
+  await new Promise(r => setTimeout(r, 2000));
+
+  // 3. Check /features/active (cache-bust to avoid browser HTTP cache)
+  const active = await (await fetch('http://localhost:3000/api/v1/features/active?_t=' + Date.now(), { cache: 'no-store' })).json();
+
+  // 4. Check backend 404
+  const planner = await fetch('http://localhost:3000/api/v1/planner/projects', { headers: { Authorization: 'Bearer ' + t } });
+
+  // 5. Re-enable
+  await fetch('http://localhost:3000/api/v1/admin/features/author.planner', {
+    method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + t },
+    body: JSON.stringify({ enabled: true }),
+  });
+
+  return { inActive: active.data.includes('author.planner'), plannerStatus: planner.status };
+});
+log('e3', '3.4 Flag disabled: ausente en /active', !flagCheck.inActive ? 'PASS' : 'FAIL', '');
+log('e3', '3.5 Flag disabled: backend 404', flagCheck.plannerStatus === 404 ? 'PASS' : 'FAIL', 'status=' + flagCheck.plannerStatus);
+
+// ═══════════════════════════════════════
+// E4: GESTION DE CONTENIDO
+// ═══════════════════════════════════════
+console.log('\n=== E4. GESTION DE CONTENIDO ===');
+
+// Novels
+await p.goto('http://localhost:4202/novels', { waitUntil: 'networkidle' });
+await p.waitForTimeout(3000);
+log('e4', '4.1 Novelas: pagina carga', (await p.locator('body').innerText()).includes('Novelas') ? 'PASS' : 'FAIL', '');
+log('e4', '4.2 Novelas: tabla con datos', (await p.locator('tr').count()) > 1 ? 'PASS' : 'FAIL', '');
+
+const novelApi = await p.evaluate(async () => {
+  const t = localStorage.getItem('admin_access_token');
+  const list = await (await fetch('http://localhost:3000/api/v1/admin/novels?limit=1', { headers: { Authorization: 'Bearer ' + t } })).json();
+  const id = list.data?.data?.[0]?.id;
+  if (!id) return { detail: 0, mod: 0 };
+  const detail = await fetch('http://localhost:3000/api/v1/admin/novels/' + id, { headers: { Authorization: 'Bearer ' + t } });
+  const mod = await fetch('http://localhost:3000/api/v1/admin/novels/' + id, {
+    method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + t },
+    body: JSON.stringify({ isPublic: true }),
+  });
+  return { detail: detail.status, mod: mod.status };
+});
+log('e4', '4.3 Novelas: API detalle', novelApi.detail === 200 ? 'PASS' : 'FAIL', '');
+log('e4', '4.4 Novelas: API moderar', novelApi.mod === 200 ? 'PASS' : 'FAIL', '');
+
+// Forum
+await p.goto('http://localhost:4202/forum', { waitUntil: 'networkidle' });
+await p.waitForTimeout(3000);
+log('e4', '4.5 Foro: pagina carga', (await p.locator('body').innerText()).includes('Foro') ? 'PASS' : 'FAIL', '');
+log('e4', '4.6 Foro: tabla con datos', (await p.locator('tr').count()) > 1 ? 'PASS' : 'FAIL', '');
+
+const forumApi = await p.evaluate(async () => {
+  const t = localStorage.getItem('admin_access_token');
+  const list = await (await fetch('http://localhost:3000/api/v1/admin/forum/threads?limit=1', { headers: { Authorization: 'Bearer ' + t } })).json();
+  const id = list.data?.data?.[0]?.id;
+  if (!id) return { status: 0 };
+  const r = await fetch('http://localhost:3000/api/v1/admin/forum/threads/' + id + '/pin', { method: 'PATCH', headers: { Authorization: 'Bearer ' + t } });
+  return { status: r.status };
+});
+log('e4', '4.7 Foro: API pin/unpin', forumApi.status === 200 ? 'PASS' : 'FAIL', '');
+
+// Catalogs
+await p.goto('http://localhost:4202/catalogs', { waitUntil: 'networkidle' });
+await p.waitForTimeout(3000);
+const catText = await p.locator('body').innerText();
+log('e4', '4.8 Catalogos: pagina carga', catText.toLowerCase().includes('generos') || catText.toLowerCase().includes('géneros') ? 'PASS' : 'FAIL', '');
+
+const catApis = await p.evaluate(async () => {
+  const t = localStorage.getItem('admin_access_token');
+  const [g, l, w, r] = await Promise.all([
+    fetch('http://localhost:3000/api/v1/admin/catalogs/genres', { headers: { Authorization: 'Bearer ' + t } }),
+    fetch('http://localhost:3000/api/v1/admin/catalogs/languages', { headers: { Authorization: 'Bearer ' + t } }),
+    fetch('http://localhost:3000/api/v1/admin/catalogs/warnings', { headers: { Authorization: 'Bearer ' + t } }),
+    fetch('http://localhost:3000/api/v1/admin/catalogs/romance-genres', { headers: { Authorization: 'Bearer ' + t } }),
+  ]);
+  return { genres: g.status, langs: l.status, warns: w.status, romance: r.status };
+});
+log('e4', '4.9 Catalogos: 4 APIs OK', Object.values(catApis).every(s => s === 200) ? 'PASS' : 'FAIL',
+  `g:${catApis.genres} l:${catApis.langs} w:${catApis.warns} r:${catApis.romance}`);
+
+// Posts
+await p.goto('http://localhost:4202/posts', { waitUntil: 'networkidle' });
+await p.waitForTimeout(3000);
+log('e4', '4.10 Posts: pagina carga', (await p.locator('body').innerText()).includes('Posts') ? 'PASS' : 'FAIL', '');
+log('e4', '4.11 Posts: tabla con datos', (await p.locator('tr').count()) > 1 ? 'PASS' : 'FAIL', '');
+
+// ═══════════════════════════════════════
+// E5: ANALYTICS & MONITOREO
+// ═══════════════════════════════════════
+console.log('\n=== E5. ANALYTICS & MONITOREO ===');
+
+// Analytics
+await p.goto('http://localhost:4202/analytics', { waitUntil: 'networkidle' });
+await p.waitForTimeout(4000);
+const at = await p.locator('body').innerText();
+log('e5', '5.1 Analytics: pagina carga', at.includes('Analytics') ? 'PASS' : 'FAIL', '');
+log('e5', '5.2 Analytics: period selector', at.includes('7 dias') || at.includes('30 dias') ? 'PASS' : 'FAIL', '');
+log('e5', '5.3 Analytics: top novelas', at.includes('Top Novelas') || at.includes('Top') ? 'PASS' : 'FAIL', '');
+
+const analyticsApis = await p.evaluate(async () => {
+  const t = localStorage.getItem('admin_access_token');
+  const [ov, tn, ta, cb] = await Promise.all([
+    fetch('http://localhost:3000/api/v1/admin/analytics/overview?days=30', { headers: { Authorization: 'Bearer ' + t } }),
+    fetch('http://localhost:3000/api/v1/admin/analytics/top-novels?limit=5', { headers: { Authorization: 'Bearer ' + t } }),
+    fetch('http://localhost:3000/api/v1/admin/analytics/top-authors?limit=5', { headers: { Authorization: 'Bearer ' + t } }),
+    fetch('http://localhost:3000/api/v1/admin/analytics/content-breakdown', { headers: { Authorization: 'Bearer ' + t } }),
+  ]);
+  return { overview: ov.status, topNovels: tn.status, topAuthors: ta.status, breakdown: cb.status };
+});
+log('e5', '5.4 Analytics: 4 APIs OK', Object.values(analyticsApis).every(s => s === 200) ? 'PASS' : 'FAIL',
+  `ov:${analyticsApis.overview} tn:${analyticsApis.topNovels} ta:${analyticsApis.topAuthors} cb:${analyticsApis.breakdown}`);
+
+// Audit Logs
+await p.goto('http://localhost:4202/audit-logs', { waitUntil: 'networkidle' });
+await p.waitForTimeout(2000);
+const auditText = await p.locator('body').innerText();
+log('e5', '5.5 Audit: pagina carga', auditText.includes('Audit') ? 'PASS' : 'FAIL', '');
+log('e5', '5.6 Audit: registra logins', auditText.includes('LOGIN') ? 'PASS' : 'FAIL', '');
+log('e5', '5.7 Audit: registra feature toggles', auditText.includes('FEATURE_DISABLED') || auditText.includes('FEATURE_ENABLED') ? 'PASS' : 'FAIL', '');
+log('e5', '5.8 Audit: registra moderacion', auditText.includes('NOVEL_MODERATED') || auditText.includes('THREAD_PINNED') ? 'PASS' : 'FAIL', '');
+
+// Settings
+await p.goto('http://localhost:4202/settings', { waitUntil: 'networkidle' });
+await p.waitForTimeout(3000);
+const st = await p.locator('body').innerText();
+log('e5', '5.9 Settings: pagina carga', st.includes('Configuracion') ? 'PASS' : 'FAIL', '');
+log('e5', '5.10 Settings: seccion auth', st.includes('Autenticacion') ? 'PASS' : 'FAIL', '');
+log('e5', '5.11 Settings: seccion cache', st.includes('Cache') ? 'PASS' : 'FAIL', '');
+log('e5', '5.12 Settings: seccion paginacion', st.includes('Paginacion') ? 'PASS' : 'FAIL', '');
+log('e5', '5.13 Settings: seccion plataforma', st.includes('Plataforma') ? 'PASS' : 'FAIL', '');
+log('e5', '5.14 Settings: boton guardar', st.includes('Guardar') ? 'PASS' : 'FAIL', '');
+
+const settingsApi = await p.evaluate(async () => {
+  const t = localStorage.getItem('admin_access_token');
+  const get = await fetch('http://localhost:3000/api/v1/admin/settings', { headers: { Authorization: 'Bearer ' + t } });
+  const patch = await fetch('http://localhost:3000/api/v1/admin/settings', {
+    method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + t },
+    body: JSON.stringify({ _e2eTest: 'ok' }),
+  });
+  // Verify persist
+  const verify = await (await fetch('http://localhost:3000/api/v1/admin/settings', { headers: { Authorization: 'Bearer ' + t } })).json();
+  // Cleanup
+  await fetch('http://localhost:3000/api/v1/admin/settings', {
+    method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + t },
+    body: JSON.stringify({ _e2eTest: '' }),
+  });
+  return { get: get.status, patch: patch.status, persists: verify.data?._e2eTest === 'ok' };
+});
+log('e5', '5.15 Settings: API get/patch/persist', settingsApi.get === 200 && settingsApi.patch === 200 && settingsApi.persists ? 'PASS' : 'FAIL', '');
+
+// ═══════════════════════════════════════
+// CONSOLE ERRORS (all pages)
+// ═══════════════════════════════════════
+console.log('\n=== CONSOLE ERRORS ===');
+const pageErrors = consoleErrors.filter(e => !e.msg.includes('favicon') && !e.msg.includes('404'));
+log('global', 'Console errors across all pages', pageErrors.length === 0 ? 'PASS' : 'FAIL', pageErrors.length + ' errores');
+if (pageErrors.length > 0) {
+  const unique = [...new Set(pageErrors.map(e => `[${e.url.split('/').pop()}] ${e.msg}`))];
+  unique.slice(0, 5).forEach(e => console.log('    ', e));
+}
+
+// ═══════════════════════════════════════
+// SUMMARY
+// ═══════════════════════════════════════
+console.log('\n════════════════════════════════════════');
+const passed = results.filter(r => r.status === 'PASS').length;
+const failed = results.filter(r => r.status === 'FAIL').length;
+console.log(`TOTAL: ${passed} passed, ${failed} failed, ${results.length} total`);
+
+if (failed > 0) {
+  console.log('\nFAILED:');
+  results.filter(r => r.status === 'FAIL').forEach(r =>
+    console.log(`  [${r.section}] ${r.test}${r.detail ? ' — ' + r.detail : ''}`));
+}
+
+console.log('\n--- Por entregable ---');
+for (const e of ['e1', 'e2', 'e3', 'e4', 'e5', 'global']) {
+  const eTests = results.filter(r => r.section === e);
+  const ePassed = eTests.filter(r => r.status === 'PASS').length;
+  console.log(`  ${e}: ${ePassed}/${eTests.length}`);
+}
+
+await p.close();
+await browser.close();

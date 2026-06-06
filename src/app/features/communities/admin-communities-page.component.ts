@@ -77,7 +77,7 @@ import { CommunityService } from './services/community.service';
     `
       .page {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
       }
       .header {
         display: flex;
@@ -88,7 +88,7 @@ import { CommunityService } from './services/community.service';
         margin: 0;
       }
       .count {
-        padding: 0.3rem 0.7rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -108,7 +108,7 @@ import { CommunityService } from './services/community.service';
         border: 1px solid var(--border);
         background: var(--bg-card);
         display: grid;
-        gap: 0.6rem;
+        gap: 0.75rem;
       }
       .meta {
         display: flex;
@@ -117,7 +117,7 @@ import { CommunityService } from './services/community.service';
         flex-wrap: wrap;
       }
       .type {
-        padding: 0.2rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.7rem;
         background: var(--accent-glow);
@@ -163,7 +163,7 @@ import { CommunityService } from './services/community.service';
         gap: 0.5rem;
       }
       .actions button {
-        padding: 0.5rem 0.95rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -182,17 +182,17 @@ import { CommunityService } from './services/community.service';
         border-color: transparent !important;
       }
       .reject-form {
-        padding: 0.85rem;
+        padding: 1rem;
         border-radius: 0.75rem;
         background: var(--bg-surface);
         display: grid;
-        gap: 0.6rem;
+        gap: 0.75rem;
       }
       .reject-form h4 {
         margin: 0;
       }
       .reject-form textarea {
-        padding: 0.55rem;
+        padding: 0.75rem;
         border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);

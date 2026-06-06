@@ -33,13 +33,13 @@
 .content-grid {
   display: grid;
   grid-template-columns: 320px 1fr;
-  gap: 1.25rem;
+  gap: 1.5rem;
   align-items: start;
 }
 
 .settings-card,
 .sidebar-card {
-  padding: 1.25rem;
+  padding: 1.5rem;
 }
 
 .hero-actions,
@@ -76,7 +76,7 @@
 }
 
 .card-badge {
-  padding: 0.4rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--accent-glow);
@@ -101,7 +101,7 @@ form {
 
 .field {
   display: grid;
-  gap: 0.35rem;
+  gap: 0.5rem;
 }
 
 .field label {
@@ -112,8 +112,8 @@ form {
 
 .input {
   width: 100%;
-  padding: 0.75rem 0.95rem;
-  border-radius: 0.95rem;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
   border: 1px solid color-mix(in srgb, var(--border) 88%, transparent);
   background: linear-gradient(
     180deg,
@@ -180,7 +180,7 @@ form {
 .preview-avatar {
   width: 76px;
   height: 76px;
-  border-radius: 1.15rem;
+  border-radius: 1rem;
   border: 3px solid var(--bg-card);
   background:
     linear-gradient(135deg, color-mix(in srgb, var(--accent) 40%, var(--bg-card)), var(--bg-surface));
@@ -196,8 +196,8 @@ form {
 
 .preview-body {
   display: grid;
-  gap: 0.35rem;
-  padding: 0.8rem 1rem 1rem;
+  gap: 0.5rem;
+  padding: 1rem 1rem 1rem;
 }
 
 .preview-body strong {
@@ -219,7 +219,7 @@ form {
 
 .tip-pill {
   display: grid;
-  gap: 0.35rem;
+  gap: 0.5rem;
   padding: 1rem;
   border-radius: 1rem;
   border: 1px solid var(--border);
@@ -244,7 +244,7 @@ form {
 
 .toggle-info {
   display: grid;
-  gap: 0.2rem;
+  gap: 0.25rem;
 }
 
 .toggle-info strong {
@@ -315,7 +315,7 @@ form {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.65rem 1.15rem;
+  padding: 0.75rem 1rem;
   border-radius: 999px;
   font-weight: 600;
   font-size: 0.85rem;
@@ -328,7 +328,7 @@ form {
 
 .btn-primary {
   background: var(--accent);
-  color: var(--accent-text);
+  color: var(--accent-contrast);
   border-color: var(--accent);
 }
 

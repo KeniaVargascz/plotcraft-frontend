@@ -4,11 +4,13 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FollowModel } from '../../../core/models/follow.model';
 import { FollowsService } from '../../../core/services/follows.service';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { ListSkeletonComponent } from '../../../shared/components/skeleton-loader/list-skeleton.component';
 
 @Component({
   selector: 'app-followers-list',
   standalone: true,
-  imports: [RouterLink, TranslatePipe],
+  imports: [RouterLink, TranslatePipe, EmptyStateComponent, ListSkeletonComponent],
   templateUrl: './followers-list.component.html',
   styleUrl: './followers-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

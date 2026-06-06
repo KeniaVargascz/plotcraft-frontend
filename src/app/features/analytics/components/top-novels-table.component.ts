@@ -56,7 +56,7 @@ export interface TopNovelRow {
     .table-wrap {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 0.75rem;
       overflow-x: auto;
     }
     table {

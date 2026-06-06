@@ -50,8 +50,8 @@ const TYPE_ICONS: Record<NotificationType, string> = {
       display: grid;
       grid-template-columns: auto auto 1fr auto;
       align-items: start;
-      gap: 0.65rem;
-      padding: 0.85rem 1rem;
+      gap: 0.75rem;
+      padding: 1rem 1rem;
       border-radius: 0.75rem;
       cursor: pointer;
       transition: background 0.15s;
@@ -115,8 +115,8 @@ const TYPE_ICONS: Record<NotificationType, string> = {
       color: var(--text-3);
       font-size: 1.1rem;
       cursor: pointer;
-      padding: 0.25rem 0.4rem;
-      border-radius: 0.4rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
       line-height: 1;
     }
     .delete-btn:hover {

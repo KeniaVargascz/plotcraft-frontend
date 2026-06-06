@@ -642,7 +642,7 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
       }
       .templates-shell {
         display: grid;
-        gap: 1.4rem;
+        gap: 1.5rem;
       }
       .hero {
         display: grid;
@@ -652,7 +652,7 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
       }
       .card {
         border: 1px solid var(--border);
-        border-radius: 1.4rem;
+        border-radius: 1.5rem;
         background: linear-gradient(
           180deg,
           color-mix(in srgb, var(--bg-card) 92%, #f4e7d3 8%),
@@ -664,11 +664,11 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
       .hero-preview,
       .block,
       .preview-section {
-        padding: 1.3rem;
+        padding: 1.5rem;
       }
       .hero-copy {
         border: 1px solid var(--border);
-        border-radius: 1.6rem;
+        border-radius: 1.5rem;
         background:
           radial-gradient(circle at top left, rgba(200, 129, 54, 0.18), transparent 42%),
           radial-gradient(circle at bottom right, rgba(50, 101, 160, 0.18), transparent 38%),
@@ -722,7 +722,7 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
       .capsules {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.65rem;
+        gap: 0.75rem;
       }
       .ghost-btn,
       .copy-btn {
@@ -730,7 +730,7 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.65rem 1rem;
+        padding: 0.75rem 1rem;
         text-decoration: none;
         cursor: pointer;
         font-weight: 600;
@@ -742,7 +742,7 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
       }
       .hero-preview {
         display: grid;
-        gap: 0.85rem;
+        gap: 1rem;
         align-content: start;
       }
       .capsules span,
@@ -751,7 +751,7 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
         display: inline-flex;
         align-items: center;
         min-height: 2rem;
-        padding: 0.28rem 0.7rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         background: color-mix(in srgb, var(--accent-glow) 28%, var(--bg-surface));
         border: 1px solid color-mix(in srgb, var(--border) 75%, #c88136 25%);
@@ -782,12 +782,12 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
       .filters {
         display: grid;
         grid-template-columns: minmax(0, 1.3fr) minmax(220px, 0.7fr);
-        gap: 0.85rem;
+        gap: 1rem;
         margin-bottom: 1rem;
       }
       .filter-field {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .filter-field span {
         color: var(--text-2);
@@ -797,11 +797,11 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
       .filter-field input,
       .filter-field select {
         min-height: 2.9rem;
-        border-radius: 0.9rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         color: var(--text-1);
-        padding: 0.75rem 0.9rem;
+        padding: 0.75rem 1rem;
       }
       .areas {
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -851,8 +851,8 @@ Explica por que esta faccion importa, como se percibe y cual es su peso politico
       .template-source,
       .preview-pane pre {
         margin-top: 0.85rem;
-        padding: 0.9rem;
-        border-radius: 0.85rem;
+        padding: 1rem;
+        border-radius: 1rem;
         background: #1f2026;
         color: #f6f6f8;
         overflow-x: auto;

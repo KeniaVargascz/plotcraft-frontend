@@ -1,9 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit, OnDestroy, signal, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject, Input, OnInit, OnDestroy, signal, ViewChild } from '@angular/core';
 import { OtpInputComponent } from '../../../../shared/otp-input/otp-input.component';
 import { TranslatePipe } from '../../../../../shared/pipes/translate.pipe';
 import { AuthService } from '../../../../../core/services/auth.service';
+import { FeatureFlagService } from '../../../../../core/services/feature-flag.service';
 
 @Component({
   selector: 'app-register-step2',
@@ -17,16 +17,24 @@ export class RegisterStep2Component implements OnInit, OnDestroy {
   @Input({ required: true }) email = '';
   @ViewChild(OtpInputComponent) otpInput!: OtpInputComponent;
 
-  private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly ff = inject(FeatureFlagService);
 
   readonly isVerifying = signal(false);
   readonly errorMessage = signal('');
   readonly formDisabled = signal(false);
   readonly otpCode = signal('');
   readonly resendCooldown = signal(0);
+  readonly lockoutCountdown = signal(0);
+  readonly lockoutDisplay = computed(() => {
+    const total = this.lockoutCountdown();
+    const m = Math.floor(total / 60);
+    const s = total % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  });
 
   private resendInterval?: ReturnType<typeof setInterval>;
+  private lockoutInterval?: ReturnType<typeof setInterval>;
 
   get maskedEmail(): string {
     return this.maskEmail(this.email);
@@ -38,6 +46,7 @@ export class RegisterStep2Component implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.resendInterval) clearInterval(this.resendInterval);
+    if (this.lockoutInterval) clearInterval(this.lockoutInterval);
   }
 
   onOtpCompleted(code: string): void {
@@ -58,7 +67,7 @@ export class RegisterStep2Component implements OnInit, OnDestroy {
     this.authService.verifyRegistration({ email: this.email, code }).subscribe({
       next: () => {
         this.isVerifying.set(false);
-        void this.router.navigateByUrl('/feed');
+        window.location.href = this.ff.getHomeRoute();
       },
       error: (err: HttpErrorResponse) => {
         this.isVerifying.set(false);
@@ -90,6 +99,7 @@ export class RegisterStep2Component implements OnInit, OnDestroy {
       case 429:
         this.errorMessage.set('auth.verify.error.tooManyAttempts');
         this.formDisabled.set(true);
+        this.startLockoutCountdown();
         break;
       default:
         this.errorMessage.set('auth.errors.generic');
@@ -106,6 +116,25 @@ export class RegisterStep2Component implements OnInit, OnDestroy {
         clearInterval(this.resendInterval);
       } else {
         this.resendCooldown.set(current - 1);
+      }
+    }, 1000);
+  }
+
+  private startLockoutCountdown(): void {
+    const lockoutSeconds = 5 * 60;
+    this.lockoutCountdown.set(lockoutSeconds);
+    if (this.lockoutInterval) clearInterval(this.lockoutInterval);
+    this.lockoutInterval = setInterval(() => {
+      const current = this.lockoutCountdown();
+      if (current <= 1) {
+        this.lockoutCountdown.set(0);
+        clearInterval(this.lockoutInterval);
+        this.formDisabled.set(false);
+        this.errorMessage.set('');
+        this.otpInput?.clear();
+        this.startResendCooldown(0);
+      } else {
+        this.lockoutCountdown.set(current - 1);
       }
     }, 1000);
   }

@@ -105,12 +105,12 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         display: grid;
         grid-template-columns: auto 1fr auto;
         align-items: center;
-        gap: 0.8rem;
+        gap: 1rem;
         min-height: calc(3.25rem - 1px);
         border-radius: 999px;
         border: 1px solid var(--border);
         background: color-mix(in srgb, var(--bg-card) 82%, transparent);
-        padding: 0.4rem 0.8rem 0.4rem 1rem;
+        padding: 0.5rem 1rem 0.5rem 1rem;
       }
       .search-input input {
         border: none;
@@ -147,7 +147,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         left: 0;
         right: 0;
         z-index: var(--z-dropdown);
-        border-radius: 1.1rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         box-shadow: var(--shadow-overlay);
@@ -159,7 +159,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         justify-content: space-between;
         align-items: center;
         gap: 1rem;
-        padding: 0.9rem 1rem;
+        padding: 1rem 1rem;
         border-bottom: 1px solid var(--border);
       }
       .dropdown-head button {
@@ -175,9 +175,9 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
         display: grid;
         grid-template-columns: auto 1fr auto;
         align-items: center;
-        gap: 0.8rem;
+        gap: 1rem;
         text-align: left;
-        padding: 0.9rem 1rem;
+        padding: 1rem 1rem;
         border: none;
         border-bottom: 1px solid var(--border);
         background: transparent;
@@ -203,7 +203,7 @@ import { TranslatePipe } from '../../pipes/translate.pipe';
       }
       .item-copy {
         display: grid;
-        gap: 0.15rem;
+        gap: 0.25rem;
       }
       .item-copy span {
         color: var(--text-2);

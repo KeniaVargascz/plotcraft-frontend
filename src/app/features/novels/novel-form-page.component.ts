@@ -53,7 +53,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       <h1>{{ isEdit() ? 'Editar novela' : 'Nueva novela' }}</h1>
 
       @if (!catalogEnabled()) {
-        <div class="flag-notice" style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:8px;font-size:.9rem;margin-bottom:1rem">
+        <div class="flag-notice" style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:0.5rem;font-size:.9rem;margin-bottom:1rem">
           El catalogo de novelas esta desactivado. Tu novela no sera visible publicamente hasta que se habilite.
         </div>
       }
@@ -513,8 +513,8 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       }
 
       .form-shell {
-        padding: 1.25rem;
-        border-radius: 1.25rem;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
       }
@@ -539,11 +539,11 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       textarea,
       select,
       button {
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.75rem 0.9rem;
+        padding: 0.75rem 1rem;
       }
       input:focus,
       textarea:focus,
@@ -563,14 +563,14 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       }
       fieldset {
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
-        padding: 0.85rem;
+        border-radius: 1rem;
+        padding: 1rem;
       }
       legend {
         color: var(--text-2);
         font-size: 0.88rem;
         font-weight: 600;
-        padding: 0 0.35rem;
+        padding: 0 0.5rem;
       }
 
       .genres .genre-picker {
@@ -597,7 +597,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         margin: 0.25rem 0 0;
         padding: 0.25rem;
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         background: var(--bg-card);
         max-height: 220px;
         overflow-y: auto;
@@ -615,8 +615,8 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         text-align: left;
         background: transparent;
         border: 0;
-        border-radius: 0.6rem;
-        padding: 0.55rem 0.7rem;
+        border-radius: 0.5rem;
+        padding: 0.75rem 0.75rem;
         cursor: pointer;
         color: var(--text-1);
         display: flex;
@@ -640,13 +640,13 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         padding: 0;
         display: flex;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .picked-list li {
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
-        padding: 0.25rem 0.6rem;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         background: var(--accent-glow);
         border: 1px solid var(--border-s);
@@ -669,9 +669,9 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       .linked-pill {
         display: inline-flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.75rem;
         min-height: 3rem;
-        padding: 0.65rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -712,8 +712,8 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       .status {
         margin: 0;
         color: var(--accent-text);
-        padding: 0.75rem 0.9rem;
-        border-radius: 0.9rem;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
         background: var(--accent-glow);
       }
 
@@ -739,7 +739,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         margin-top: 0.5rem;
       }
       .romance-pills .pill {
-        padding: 0.4rem 0.9rem;
+        padding: 0.5rem 1rem;
         border: 1px solid var(--border);
         border-radius: 999px;
         background: var(--bg-surface);
@@ -771,13 +771,13 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       .warning-chips {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .warning-chip {
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
-        padding: 0.25rem 0.6rem;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         background: color-mix(in srgb, var(--danger) 12%, transparent);
         border: 1px solid color-mix(in srgb, var(--danger) 24%, transparent);
@@ -813,7 +813,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       }
       .create-coll-form {
         display: grid;
-        gap: 0.6rem;
+        gap: 0.75rem;
         margin-top: 0.5rem;
       }
       .create-coll-form input,
@@ -821,8 +821,8 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       .create-coll-form textarea {
         width: 100%;
         box-sizing: border-box;
-        padding: 0.6rem 0.8rem;
-        border-radius: 0.6rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         color: var(--text-1);
@@ -845,7 +845,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         justify-self: start;
         width: auto;
         padding: 0.5rem 1rem;
-        border-radius: 0.6rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         color: var(--text-1);
@@ -856,11 +856,11 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       .pairings-list li {
         display: inline-flex;
         align-items: center;
-        padding: 0.25rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         background: var(--accent-glow);
         color: var(--accent-text);
         border-radius: 999px;
-        gap: 0.35rem;
+        gap: 0.5rem;
         font-size: 0.8rem;
         width: auto;
         line-height: 1;
@@ -886,7 +886,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         margin: 0;
         display: flex;
         flex-wrap: wrap;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .pair-label {
         font-weight: 600;
@@ -904,12 +904,12 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       }
       .type-opt {
         display: flex;
-        gap: 0.6rem;
+        gap: 0.75rem;
         flex: 1;
         min-width: 220px;
         padding: 0.75rem;
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         background: var(--bg-surface);
         cursor: pointer;
       }
@@ -924,13 +924,13 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         margin: 0;
         padding: 0;
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .catalog-row {
         display: flex;
         align-items: center;
-        gap: 0.6rem;
-        padding: 0.4rem 0.6rem;
+        gap: 0.75rem;
+        padding: 0.5rem 0.75rem;
         border: 1px solid var(--border);
         border-radius: 0.75rem;
         background: var(--bg-surface);

@@ -255,10 +255,10 @@ export interface NovelFilters {
       .toggle {
         display: flex;
         align-items: center;
-        gap: 0.45rem;
+        gap: 0.5rem;
         width: 100%;
-        padding: 0.55rem 0.75rem;
-        border-radius: 0.65rem;
+        padding: 0.75rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -273,7 +273,7 @@ export interface NovelFilters {
       .badge {
         background: var(--accent-glow);
         color: var(--accent-text);
-        padding: 0.08rem 0.45rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         font-size: 0.65rem;
         font-weight: 700;
@@ -299,7 +299,7 @@ export interface NovelFilters {
       .grid {
         display: grid;
         grid-template-columns: 1fr;
-        gap: 0.65rem;
+        gap: 0.75rem;
         min-width: 0;
       }
       .span-full {
@@ -336,8 +336,8 @@ export interface NovelFilters {
       input,
       select,
       button {
-        padding: 0.5rem 0.65rem;
-        border-radius: 0.6rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         color: var(--text-1);
@@ -356,7 +356,7 @@ export interface NovelFilters {
       }
       .legend {
         margin: 0;
-        padding: 0.5rem 0.65rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 0.5rem;
         background: color-mix(in srgb, var(--accent-glow) 60%, transparent);
         border-left: 3px solid var(--accent-dim);
@@ -441,7 +441,7 @@ export interface NovelFilters {
         text-align: left;
         background: transparent;
         border: 0;
-        padding: 0.5rem 0.65rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 0.5rem;
         color: var(--text-1);
         cursor: pointer;
@@ -469,13 +469,13 @@ export interface NovelFilters {
         padding: 0;
         display: flex;
         flex-wrap: wrap;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .picked-pills li {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.35rem 0.7rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -495,13 +495,13 @@ export interface NovelFilters {
         padding: 0;
         display: flex;
         flex-wrap: wrap;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .pairing-pills li {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.35rem 0.7rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -521,7 +521,7 @@ export interface NovelFilters {
         gap: 0.5rem;
       }
       .romance-pills .pill {
-        padding: 0.35rem 0.85rem;
+        padding: 0.5rem 1rem;
         border: 1px solid var(--border);
         border-radius: 999px;
         background: var(--bg-surface);
@@ -544,12 +544,12 @@ export interface NovelFilters {
       .warning-chips {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.3rem;
+        gap: 0.5rem;
       }
       .warning-chip {
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
+        gap: 0.5rem;
         padding: 0.2rem 0.5rem;
         border-radius: 999px;
         background: color-mix(in srgb, var(--danger) 12%, transparent);

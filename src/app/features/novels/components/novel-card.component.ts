@@ -131,7 +131,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         display: grid;
         grid-template-rows: minmax(0, 1fr) auto auto;
         height: 100%;
-        border-radius: 1.35rem;
+        border-radius: 1.5rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
         overflow: hidden;
@@ -141,8 +141,8 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
       .card-top {
         display: grid;
         grid-template-columns: 88px 1fr;
-        gap: 0.95rem;
-        padding: 0.95rem;
+        gap: 1rem;
+        padding: 1rem;
         min-height: 0;
         height: 100%;
         align-items: start;
@@ -197,7 +197,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
 
       .body {
         display: grid;
-        gap: 0.38rem;
+        gap: 0.5rem;
         min-width: 0;
         height: 100%;
         align-content: start;
@@ -206,8 +206,8 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
       .status-row {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
-        padding: 0.75rem 0.95rem 0;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem 0;
       }
 
       .badge {
@@ -215,7 +215,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         align-items: center;
         justify-content: center;
         min-height: 1.55rem;
-        padding: 0.15rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.66rem;
         font-weight: 700;
@@ -328,7 +328,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
       .tags-row {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.5rem;
         align-content: start;
         min-height: 3.55rem;
         max-height: 3.55rem;
@@ -339,7 +339,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         display: inline-flex;
         align-items: center;
         max-width: 100%;
-        padding: 0.2rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: color-mix(in srgb, var(--bg) 76%, transparent);
@@ -357,7 +357,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         gap: 0.75rem;
         width: 100%;
         min-height: 3rem;
-        padding: 0.75rem 0.95rem;
+        padding: 0.75rem 1rem;
         background: transparent;
         border: 0;
         border-top: 1px solid var(--border);
@@ -372,7 +372,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
       .tags-toggle-label {
         display: inline-flex;
         align-items: center;
-        gap: 0.45rem;
+        gap: 0.5rem;
         font-size: 0.74rem;
         font-weight: 700;
       }
@@ -383,7 +383,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
         justify-content: center;
         min-width: 1.3rem;
         min-height: 1.3rem;
-        padding: 0 0.35rem;
+        padding: 0 0.5rem;
         border-radius: 999px;
         background: color-mix(in srgb, var(--bg) 82%, transparent);
         border: 1px solid var(--border);
@@ -404,8 +404,8 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
       .tags-panel {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.45rem;
-        padding: 0.85rem 0.95rem 1rem;
+        gap: 0.5rem;
+        padding: 1rem 1rem 1rem;
         border-top: 1px solid var(--border);
         background: color-mix(in srgb, var(--bg) 78%, transparent);
       }
@@ -427,7 +427,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
       .tag-pill {
         display: inline-flex;
         align-items: center;
-        padding: 0.22rem 0.62rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         border: 1px solid transparent;
         font-size: 0.72rem;
@@ -456,11 +456,11 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
       .footer-row {
         display: flex;
         align-items: center;
-        padding: 0.6rem 0.95rem;
+        padding: 0.75rem 1rem;
       }
 
       .footer-stats {
-        gap: 0.55rem;
+        gap: 0.75rem;
         flex-wrap: wrap;
       }
 
@@ -472,7 +472,7 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
       .stat-item {
         display: inline-flex;
         align-items: baseline;
-        gap: 0.22rem;
+        gap: 0.25rem;
         min-width: 0;
       }
 
@@ -503,8 +503,8 @@ import { GenreLabelPipe } from '../../../shared/pipes/genre-label.pipe';
       @media (max-width: 700px) {
         .card-top {
           grid-template-columns: 72px 1fr;
-          gap: 0.8rem;
-          padding: 0.8rem;
+          gap: 1rem;
+          padding: 1rem;
         }
 
         .cover {

@@ -68,7 +68,7 @@ import { WbEntrySummary } from '../../../../core/models/wb-entry.model';
         display: grid;
         grid-template-rows: auto 1fr auto;
         height: 100%;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         overflow: hidden;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -91,7 +91,7 @@ import { WbEntrySummary } from '../../../../core/models/wb-entry.model';
         position: absolute;
         top: 0.5rem;
         right: 0.5rem;
-        padding: 0.15rem 0.5rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         background: rgba(0, 0, 0, 0.5);
         color: rgba(255, 255, 255, 0.8);
@@ -99,15 +99,15 @@ import { WbEntrySummary } from '../../../../core/models/wb-entry.model';
         font-weight: 600;
       }
       .body {
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
         align-content: start;
       }
       .cat-row {
         display: flex;
         align-items: center;
-        gap: 0.3rem;
+        gap: 0.5rem;
         font-size: 0.7rem;
         color: var(--text-3);
       }
@@ -132,12 +132,12 @@ import { WbEntrySummary } from '../../../../core/models/wb-entry.model';
       }
       .tags-row {
         display: flex;
-        gap: 0.3rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
         margin-top: 0.15rem;
       }
       .tag-chip {
-        padding: 0.15rem 0.5rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -152,12 +152,12 @@ import { WbEntrySummary } from '../../../../core/models/wb-entry.model';
       .actions-row {
         display: flex;
         gap: 0.5rem;
-        padding: 0.6rem 1rem 0.8rem;
+        padding: 0.75rem 1rem 1rem;
         border-top: 1px solid var(--border);
       }
       .action-btn {
         flex: 1;
-        padding: 0.45rem 0.6rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);

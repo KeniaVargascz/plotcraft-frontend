@@ -67,7 +67,7 @@ import { CommunityService } from './services/community.service';
     `
       .page {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
       }
       .header {
         display: flex;
@@ -84,7 +84,7 @@ import { CommunityService } from './services/community.service';
         color: var(--text-2);
       }
       .primary {
-        padding: 0.7rem 1.2rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -98,7 +98,7 @@ import { CommunityService } from './services/community.service';
       }
       .filters input,
       .filters select {
-        padding: 0.6rem 0.85rem;
+        padding: 0.75rem 1rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-card);

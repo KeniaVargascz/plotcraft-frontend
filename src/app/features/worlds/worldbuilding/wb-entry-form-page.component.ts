@@ -254,7 +254,7 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
         border-bottom: 2px solid var(--accent-glow);
       }
       .cat-badge {
-        padding: 0.2rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.72rem;
         font-weight: 600;
@@ -268,7 +268,7 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
       .toggle-public {
         display: flex;
         align-items: center;
-        gap: 0.35rem;
+        gap: 0.5rem;
         font-size: 0.82rem;
         color: var(--text-2);
         cursor: pointer;
@@ -277,7 +277,7 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
         accent-color: var(--accent-text);
       }
       .save-btn {
-        padding: 0.6rem 1.2rem;
+        padding: 0.75rem 1rem;
         border-radius: 1rem;
         border: none;
         background: var(--accent-glow);
@@ -309,7 +309,7 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
       }
       .card {
         padding: 1rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         display: grid;
@@ -322,7 +322,7 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
       }
       label {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       label span {
         font-size: 0.82rem;
@@ -331,7 +331,7 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
       input,
       textarea,
       select {
-        padding: 0.7rem 0.85rem;
+        padding: 0.75rem 1rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -346,7 +346,7 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
       }
       .content-section {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .content-header-row {
         display: flex;
@@ -362,7 +362,7 @@ import { WbEntryLinksComponent } from './components/wb-entry-links.component';
         gap: 0;
       }
       .tab-btn {
-        padding: 0.35rem 0.7rem;
+        padding: 0.5rem 0.75rem;
         border: 1px solid var(--border);
         background: transparent;
         color: var(--text-3);

@@ -6,13 +6,15 @@ import { catchError, of, tap } from 'rxjs';
 import { User } from '../../../core/models/user.model';
 import { PostModel } from '../../../core/models/post.model';
 import { AuthService } from '../../../core/services/auth.service';
+import { FeatureFlagService } from '../../../core/services/feature-flag.service';
 import { FollowsService } from '../../../core/services/follows.service';
 import { NovelsService } from '../../../core/services/novels.service';
 import { PostsService } from '../../../core/services/posts.service';
 import { ErrorMessageComponent } from '../../../shared/components/error-message/error-message.component';
-import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
+import { ProfileSkeletonComponent } from '../../../shared/components/skeleton-loader/profile-skeleton.component';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { PostCardComponent } from '../../feed/components/post-card/post-card.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-my-profile',
@@ -21,9 +23,10 @@ import { PostCardComponent } from '../../feed/components/post-card/post-card.com
     DatePipe,
     RouterLink,
     ErrorMessageComponent,
-    LoadingSpinnerComponent,
+    ProfileSkeletonComponent,
     TranslatePipe,
     PostCardComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.scss',
@@ -31,11 +34,13 @@ import { PostCardComponent } from '../../feed/components/post-card/post-card.com
 })
 export class MyProfileComponent {
   private readonly authService = inject(AuthService);
+  private readonly ff = inject(FeatureFlagService);
   private readonly followsService = inject(FollowsService);
   private readonly novelsService = inject(NovelsService);
   private readonly postsService = inject(PostsService);
   private readonly destroyRef = inject(DestroyRef);
 
+  readonly feedEnabled = this.ff.enabled('social.feed');
   readonly loading = signal(true);
   readonly error = signal(false);
   readonly user = signal<User | null>(null);

@@ -63,21 +63,21 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
       }
       fieldset {
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
-        padding: 0.85rem;
+        border-radius: 1rem;
+        padding: 1rem;
       }
       legend {
         color: var(--text-2);
         font-size: 0.88rem;
         font-weight: 600;
-        padding: 0 0.35rem;
+        padding: 0 0.5rem;
       }
       select {
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.75rem 0.9rem;
+        padding: 0.75rem 1rem;
         width: 100%;
       }
       select:focus {
@@ -95,13 +95,13 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
         padding: 0;
         display: flex;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .picked-list li {
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
-        padding: 0.25rem 0.6rem;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         background: var(--accent-glow);
         border: 1px solid var(--border-s);

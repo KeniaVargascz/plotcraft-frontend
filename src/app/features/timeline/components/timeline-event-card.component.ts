@@ -96,7 +96,7 @@ const RELEVANCE_OPACITY: Record<TimelineEventRelevance, number> = {
         border-radius: 0.75rem;
         padding: 0.75rem;
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
         position: relative;
         transition: box-shadow 0.2s;
         cursor: default;
@@ -110,7 +110,7 @@ const RELEVANCE_OPACITY: Record<TimelineEventRelevance, number> = {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 0.4rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
       }
       .type-badge {
@@ -148,11 +148,11 @@ const RELEVANCE_OPACITY: Record<TimelineEventRelevance, number> = {
       .ref-chips {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.3rem;
+        gap: 0.5rem;
       }
       .ref-chip {
         font-size: 0.62rem;
-        padding: 0.1rem 0.4rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         background: var(--bg-surface);
         color: var(--text-2);
@@ -160,13 +160,13 @@ const RELEVANCE_OPACITY: Record<TimelineEventRelevance, number> = {
       }
       .card-actions {
         display: flex;
-        gap: 0.4rem;
-        padding-top: 0.3rem;
+        gap: 0.5rem;
+        padding-top: 0.5rem;
         border-top: 1px solid var(--border);
       }
       .act-btn {
         flex: 1;
-        padding: 0.3rem 0.5rem;
+        padding: 0.5rem 0.5rem;
         border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);

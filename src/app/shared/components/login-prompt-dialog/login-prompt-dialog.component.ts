@@ -27,7 +27,7 @@ import { MatButtonModule } from '@angular/material/button';
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.75rem;
         padding: 2rem 1.5rem 0.5rem;
         text-align: center;
       }

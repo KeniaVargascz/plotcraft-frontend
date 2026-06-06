@@ -94,7 +94,7 @@ import { VisualBoardSummary } from '../models/visual-board.model';
       }
       .body {
         display: grid;
-        gap: 0.65rem;
+        gap: 0.75rem;
         padding: 1rem;
       }
       .badges,
@@ -104,7 +104,7 @@ import { VisualBoardSummary } from '../models/visual-board.model';
         gap: 0.5rem;
       }
       .badge {
-        padding: 0.25rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.72rem;
         font-weight: 700;
@@ -141,7 +141,7 @@ import { VisualBoardSummary } from '../models/visual-board.model';
       }
       .actions a,
       .actions button {
-        padding: 0.45rem 0.8rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);

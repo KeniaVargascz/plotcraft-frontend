@@ -109,9 +109,9 @@ import { LibraryService } from '../../core/services/library.service';
         gap: 1rem;
       }
       .card {
-        padding: 1.25rem;
+        padding: 1.5rem;
         border: 1px solid var(--border);
-        border-radius: 1.25rem;
+        border-radius: 1rem;
         background: linear-gradient(
           180deg,
           color-mix(in srgb, var(--bg-card) 92%, white 8%),
@@ -135,7 +135,7 @@ import { LibraryService } from '../../core/services/library.service';
       }
       .hero-stat {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
         min-width: 180px;
         padding: 1rem;
         border-radius: 1rem;
@@ -169,9 +169,9 @@ import { LibraryService } from '../../core/services/library.service';
       }
       input,
       button {
-        border-radius: 0.95rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         font: inherit;
       }
       input {

@@ -7,14 +7,15 @@ import { WorldbuildingService } from '../../../core/services/worldbuilding.servi
 import { MarkdownService } from '../../../core/services/markdown.service';
 import { WbEntryLinksComponent } from './components/wb-entry-links.component';
 import { WbLinkGraphComponent } from './components/wb-link-graph.component';
+import { DetailSkeletonComponent } from '../../../shared/components/skeleton-loader/detail-skeleton.component';
 
 @Component({
   selector: 'app-wb-entry-detail-page',
   standalone: true,
-  imports: [RouterLink, WbEntryLinksComponent, WbLinkGraphComponent],
+  imports: [RouterLink, WbEntryLinksComponent, WbLinkGraphComponent, DetailSkeletonComponent],
   template: `
     @if (loading()) {
-      <p class="state">Cargando entrada...</p>
+      <app-detail-skeleton />
     } @else if (entry()) {
       <section class="detail-shell">
         <!-- Breadcrumb -->
@@ -144,7 +145,7 @@ import { WbLinkGraphComponent } from './components/wb-link-graph.component';
       .breadcrumb {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
         font-size: 0.82rem;
         color: var(--text-3);
       }
@@ -160,7 +161,7 @@ import { WbLinkGraphComponent } from './components/wb-link-graph.component';
       }
       .card {
         padding: 1.25rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
@@ -184,13 +185,13 @@ import { WbLinkGraphComponent } from './components/wb-link-graph.component';
         flex-wrap: wrap;
       }
       .cat-badge {
-        padding: 0.22rem 0.65rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.75rem;
         font-weight: 600;
       }
       .private-badge {
-        padding: 0.22rem 0.65rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         background: var(--bg-surface);
         color: var(--text-3);
@@ -209,11 +210,11 @@ import { WbLinkGraphComponent } from './components/wb-link-graph.component';
       }
       .tags-row {
         display: flex;
-        gap: 0.35rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
       }
       .tag-chip {
-        padding: 0.18rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         font-size: 0.72rem;
@@ -255,7 +256,7 @@ import { WbLinkGraphComponent } from './components/wb-link-graph.component';
         display: grid;
         grid-template-columns: 0.4fr 0.6fr;
         gap: 0.5rem;
-        padding: 0.55rem 0;
+        padding: 0.75rem 0;
         border-bottom: 1px solid var(--border);
       }
       .field-label {
@@ -284,7 +285,7 @@ import { WbLinkGraphComponent } from './components/wb-link-graph.component';
       .action-btn {
         display: block;
         text-align: center;
-        padding: 0.7rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);

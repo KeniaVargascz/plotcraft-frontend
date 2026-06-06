@@ -19,7 +19,7 @@ import { NovelSummary } from '../../core/models/novel.model';
 import { GenresService } from '../../core/services/genres.service';
 import { NovelsService } from '../../core/services/novels.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { CardGridSkeletonComponent } from '../../shared/components/skeleton-loader/card-grid-skeleton.component';
 import { NovelCardComponent } from './components/novel-card.component';
 import {
   AdvancedNovelFiltersComponent,
@@ -35,7 +35,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
   imports: [
     FormsModule,
     ErrorMessageComponent,
-    LoadingSpinnerComponent,
+    CardGridSkeletonComponent,
     NovelCardComponent,
     AdvancedNovelFiltersComponent,
     PaginatorComponent,
@@ -164,7 +164,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
 
       <div class="results">
         @if (loading()) {
-          <app-loading-spinner />
+          <app-card-grid-skeleton />
         } @else if (error()) {
           <app-error-message />
         } @else {
@@ -198,8 +198,8 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
         color: var(--text-1);
       }
       .results {
-        padding: 1.25rem;
-        border-radius: 1.25rem;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
       }
@@ -208,7 +208,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
         align-content: start;
         gap: 0;
         padding: 0;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
         overflow: hidden;
@@ -226,7 +226,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
         line-height: 1.4;
       }
       .filters-header {
-        padding: 1.1rem 1rem 0.85rem;
+        padding: 1rem 1rem 1rem;
         border-bottom: 1px solid var(--border);
         background: color-mix(in srgb, var(--bg-surface) 50%, var(--bg-card));
       }
@@ -237,7 +237,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
       .filter-section {
         display: grid;
         gap: 0.5rem;
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         border-bottom: 1px solid var(--border);
       }
       .filter-section:last-child {
@@ -245,7 +245,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
       }
       label {
         display: grid;
-        gap: 0.3rem;
+        gap: 0.5rem;
         color: var(--text-2);
         font-size: 0.78rem;
         font-weight: 600;
@@ -254,11 +254,11 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
       }
       input,
       select {
-        border-radius: 0.65rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.55rem 0.7rem;
+        padding: 0.75rem 0.75rem;
         font-size: 0.88rem;
         font-weight: 400;
         transition: border-color 0.15s;
@@ -273,11 +273,11 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
         border-color: var(--accent);
       }
       .filters button {
-        border-radius: 0.65rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.55rem 0.7rem;
+        padding: 0.75rem 0.75rem;
         font-size: 0.88rem;
         cursor: pointer;
       }
@@ -292,7 +292,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
       }
       .genre-field {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .field-label {
         font-size: 0.78rem;
@@ -307,13 +307,13 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
         padding: 0;
         display: flex;
         flex-wrap: wrap;
-        gap: 0.3rem;
+        gap: 0.5rem;
       }
       .picked-pills li {
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
-        padding: 0.25rem 0.55rem;
+        gap: 0.5rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         background: var(--accent-glow);
         border: 1px solid var(--border-s);
@@ -378,7 +378,7 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
         text-align: left;
         background: transparent;
         border: 0;
-        padding: 0.5rem 0.65rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 0.5rem;
         color: var(--text-1);
         cursor: pointer;
@@ -398,13 +398,13 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
       .apply-row {
         display: flex;
         gap: 0.5rem;
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         background: color-mix(in srgb, var(--bg-surface) 50%, var(--bg-card));
       }
       .apply-row button {
         flex: 1;
         font-size: 0.8rem;
-        padding: 0.55rem 0.7rem;
+        padding: 0.75rem 0.75rem;
         cursor: pointer;
         font-weight: 600;
         transition:
@@ -440,13 +440,13 @@ import { GenreLocalizationService } from '../../core/services/genre-localization
         }
         .filters-header > div {
           display: grid;
-          gap: 0.15rem;
+          gap: 0.25rem;
         }
         .filters-toggle {
           display: inline-flex;
           align-items: center;
-          gap: 0.4rem;
-          padding: 0.5rem 0.85rem;
+          gap: 0.5rem;
+          padding: 0.5rem 1rem;
           border-radius: 999px;
           border: 1px solid var(--border-s);
           background: var(--accent-glow);

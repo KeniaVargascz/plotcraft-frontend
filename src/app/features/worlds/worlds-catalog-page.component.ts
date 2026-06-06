@@ -3,13 +3,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { WorldSummary } from '../../core/models/world.model';
 import { WorldsService } from '../../core/services/worlds.service';
+import { CardGridSkeletonComponent } from '../../shared/components/skeleton-loader/card-grid-skeleton.component';
 import { WorldCardComponent } from './components/world-card.component';
 import { PaginatorComponent } from '../../shared/components/paginator/paginator.component';
 
 @Component({
   selector: 'app-worlds-catalog-page',
   standalone: true,
-  imports: [FormsModule, WorldCardComponent, PaginatorComponent],
+  imports: [FormsModule, WorldCardComponent, PaginatorComponent, CardGridSkeletonComponent],
   template: `
     <section class="catalog-shell">
       <header class="hero card">
@@ -31,7 +32,7 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
       </header>
 
       @if (loading()) {
-        <p class="state">Cargando mundos...</p>
+        <app-card-grid-skeleton />
       } @else if (!worlds().length) {
         <p class="state">Aun no hay mundos publicados para mostrar.</p>
       } @else {
@@ -59,8 +60,8 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
         gap: 1rem;
       }
       .card {
-        padding: 1.35rem;
-        border-radius: 1.25rem;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
@@ -79,7 +80,7 @@ import { PaginatorComponent } from '../../shared/components/paginator/paginator.
         gap: 0.5rem;
       }
       input {
-        padding: 0.9rem 1rem;
+        padding: 1rem 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);

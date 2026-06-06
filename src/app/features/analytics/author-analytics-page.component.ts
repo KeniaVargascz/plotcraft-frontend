@@ -10,6 +10,7 @@ import { TimeSeriesChartComponent } from './components/time-series-chart.compone
 import { TopNovelsTableComponent, TopNovelRow } from './components/top-novels-table.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { GenreLabelPipe } from '../../shared/pipes/genre-label.pipe';
+import { DashboardSkeletonComponent } from '../../shared/components/skeleton-loader/dashboard-skeleton.component';
 
 type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
 
@@ -24,6 +25,7 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
     TopNovelsTableComponent,
     TranslatePipe,
     GenreLabelPipe,
+    DashboardSkeletonComponent,
   ],
   template: `
     <section class="analytics-page">
@@ -33,7 +35,7 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
       </header>
 
       @if (loading()) {
-        <div class="loading">Cargando...</div>
+        <app-dashboard-skeleton />
       } @else if (!data()) {
         <div class="loading">No hay datos para mostrar.</div>
       } @else if (data()) {
@@ -230,7 +232,7 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
     }
     .toggle-btn {
       padding: 4px 12px;
-      border-radius: 16px;
+      border-radius: 1rem;
       border: 1px solid var(--border);
       background: var(--bg-surface);
       color: var(--text-2);
@@ -243,7 +245,7 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
     }
     .toggle-btn.active {
       background: var(--accent);
-      color: var(--accent-text);
+      color: var(--accent-contrast);
       border-color: var(--accent);
     }
     .expand-btn {
@@ -279,7 +281,7 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
     .audience-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 0.75rem;
       padding: 16px;
       display: flex;
       flex-direction: column;
@@ -314,7 +316,7 @@ type TimelineMetric = 'newFollowers' | 'profileViews' | 'postReactions';
     }
     .genre-chip {
       padding: 4px 12px;
-      border-radius: 16px;
+      border-radius: 1rem;
       background: var(--bg-surface);
       border: 1px solid var(--border);
       font-size: 0.8rem;

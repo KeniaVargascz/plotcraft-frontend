@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { ForumCategory, ThreadStatus, ThreadSummary } from '../../core/models/forum-thread.model';
 import { AuthService } from '../../core/services/auth.service';
 import { ForumService } from '../../core/services/forum.service';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { ListSkeletonComponent } from '../../shared/components/skeleton-loader/list-skeleton.component';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
 import { ThreadCardComponent } from './components/thread-card.component';
 import { ForumFiltersComponent } from './components/forum-filters.component';
@@ -14,7 +14,7 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
   standalone: true,
   imports: [
     RouterLink,
-    LoadingSpinnerComponent,
+    ListSkeletonComponent,
     ErrorMessageComponent,
     ThreadCardComponent,
     ForumFiltersComponent,
@@ -43,7 +43,7 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
         <app-forum-filters (filterChange)="onFilterChange($event)" />
 
         @if (loading()) {
-          <app-loading-spinner />
+          <app-list-skeleton />
         } @else if (error()) {
           <app-error-message />
         } @else {
@@ -190,7 +190,7 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
       .new-btn {
         display: inline-flex;
         align-items: center;
-        padding: 0.55rem 1.1rem;
+        padding: 0.75rem 1rem;
         border-radius: 0.75rem;
         background: var(--accent);
         color: #fff;
@@ -214,7 +214,7 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
       .load-more {
         display: block;
         margin: 1rem auto 0;
-        padding: 0.55rem 1.5rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -234,7 +234,7 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: 1rem;
-        padding: 1rem 1.15rem;
+        padding: 1rem 1rem;
       }
       .sidebar-card h3 {
         margin: 0 0 0.5rem;
@@ -246,12 +246,12 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
         margin: 0;
         padding: 0;
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .stats-list li {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
         color: var(--text-2);
         font-size: 0.9rem;
       }
@@ -270,14 +270,14 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
         margin: 0;
         padding: 0;
         display: grid;
-        gap: 0.15rem;
+        gap: 0.25rem;
       }
       .tag-btn {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
         width: 100%;
-        padding: 0.35rem 0.5rem;
+        padding: 0.5rem 0.5rem;
         border: none;
         border-radius: 0.5rem;
         background: none;
@@ -307,7 +307,7 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
       .archived-link {
         display: block;
         margin-top: 1rem;
-        padding: 0.7rem 1rem;
+        padding: 0.75rem 1rem;
         border: 1px solid var(--border);
         border-radius: 0.75rem;
         text-align: center;
@@ -327,7 +327,7 @@ import { ForumFiltersComponent } from './components/forum-filters.component';
         margin-bottom: 0.75rem;
       }
       .scope-tabs button {
-        padding: 0.55rem 1.1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-card);

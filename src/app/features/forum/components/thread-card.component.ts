@@ -261,7 +261,7 @@ import { CategoryBadgeComponent } from './category-badge.component';
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: 1rem;
-        padding: 1rem 1.25rem;
+        padding: 1rem 1.5rem;
         transition: border-color 0.2s;
       }
       .card:hover {
@@ -282,8 +282,8 @@ import { CategoryBadgeComponent } from './category-badge.component';
         gap: 0.25rem;
         font-size: 0.7rem;
         font-weight: 600;
-        padding: 0.15rem 0.5rem;
-        border-radius: 9999px;
+        padding: 0.25rem 0.5rem;
+        border-radius: 999px;
       }
       .pin-badge {
         background: var(--accent);
@@ -312,14 +312,14 @@ import { CategoryBadgeComponent } from './category-badge.component';
       .tags {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.5rem;
         margin-bottom: 0.65rem;
       }
       .tag {
         font-size: 0.75rem;
         color: var(--accent);
         background: var(--bg-surface);
-        padding: 0.15rem 0.5rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 0.5rem;
       }
       .tag.more {
@@ -335,7 +335,7 @@ import { CategoryBadgeComponent } from './category-badge.component';
       .author {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .avatar {
         width: 1.5rem;
@@ -373,14 +373,14 @@ import { CategoryBadgeComponent } from './category-badge.component';
         font-weight: 600;
         font-size: 0.72rem;
         background: rgba(22, 163, 74, 0.1);
-        padding: 0.1rem 0.45rem;
-        border-radius: 0.4rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
       }
       .unsolved-badge {
         color: var(--text-3);
         font-size: 0.72rem;
-        padding: 0.1rem 0.45rem;
-        border-radius: 0.4rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
         background: var(--bg-surface);
       }
       .poll-badge {
@@ -388,8 +388,8 @@ import { CategoryBadgeComponent } from './category-badge.component';
         font-weight: 600;
         font-size: 0.72rem;
         background: rgba(59, 130, 246, 0.1);
-        padding: 0.1rem 0.45rem;
-        border-radius: 0.4rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
       }
       .card-actions {
         margin-top: 0.5rem;
@@ -400,7 +400,7 @@ import { CategoryBadgeComponent } from './category-badge.component';
         background: none;
         border: 1px solid var(--border);
         border-radius: 0.5rem;
-        padding: 0.3rem 0.75rem;
+        padding: 0.5rem 0.75rem;
         font-size: 0.75rem;
         cursor: pointer;
         transition: all 0.15s;
@@ -424,8 +424,8 @@ import { CategoryBadgeComponent } from './category-badge.component';
         font-weight: 600;
         font-size: 0.72rem;
         background: var(--bg-surface);
-        padding: 0.1rem 0.45rem;
-        border-radius: 0.4rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
       }
     `,
   ],

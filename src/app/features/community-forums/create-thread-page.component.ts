@@ -166,7 +166,7 @@ import { Community } from '../communities/models/community.model';
         font-size: 0.85rem;
         color: var(--text-3);
         display: flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .breadcrumb a {
         color: var(--accent);
@@ -178,12 +178,12 @@ import { Community } from '../communities/models/community.model';
       }
       .field {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .field input,
       .field textarea {
-        padding: 0.7rem 0.85rem;
-        border-radius: 0.65rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -202,15 +202,15 @@ import { Community } from '../communities/models/community.model';
       }
       .poll-block {
         display: grid;
-        gap: 0.65rem;
+        gap: 0.75rem;
         padding: 1rem;
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         background: var(--bg-surface);
       }
       .opt-row {
         display: flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .opt-row input {
         flex: 1;
@@ -221,7 +221,7 @@ import { Community } from '../communities/models/community.model';
         justify-content: flex-end;
       }
       .btn {
-        padding: 0.6rem 1.1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -235,7 +235,7 @@ import { Community } from '../communities/models/community.model';
         border-color: transparent;
       }
       .btn.small {
-        padding: 0.35rem 0.75rem;
+        padding: 0.5rem 0.75rem;
         font-size: 0.85rem;
       }
       .btn[disabled] {
@@ -255,9 +255,9 @@ import { Community } from '../communities/models/community.model';
       }
       .chip {
         display: inline-flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
         align-items: center;
-        padding: 0.4rem 0.75rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -283,7 +283,7 @@ import { Community } from '../communities/models/community.model';
         max-height: 220px;
         overflow-y: auto;
         border: 1px solid var(--border);
-        border-radius: 0.65rem;
+        border-radius: 0.5rem;
         background: var(--bg-card);
         display: grid;
       }
@@ -291,7 +291,7 @@ import { Community } from '../communities/models/community.model';
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.6rem 0.85rem;
+        padding: 0.75rem 1rem;
         background: transparent;
         border: 0;
         border-bottom: 1px solid var(--border);

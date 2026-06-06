@@ -108,7 +108,7 @@ import { CommunityCharacterCardComponent } from '../community-character-card/com
         flex: 1;
       }
       .action-btn {
-        padding: 0.45rem 0.85rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--accent-glow);
@@ -136,7 +136,7 @@ import { CommunityCharacterCardComponent } from '../community-character-card/com
       .suggestions-block .badge {
         background: var(--accent-glow);
         color: var(--accent-text);
-        padding: 0.1rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.75rem;
       }
@@ -150,10 +150,10 @@ import { CommunityCharacterCardComponent } from '../community-character-card/com
       .suggestion-row {
         display: grid;
         grid-template-columns: 48px 1fr auto;
-        gap: 0.6rem;
-        padding: 0.6rem;
+        gap: 0.75rem;
+        padding: 0.75rem;
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         background: var(--bg-surface);
         align-items: center;
       }
@@ -183,10 +183,10 @@ import { CommunityCharacterCardComponent } from '../community-character-card/com
       .sg-actions {
         display: flex;
         flex-direction: column;
-        gap: 0.3rem;
+        gap: 0.5rem;
       }
       .sg-actions button {
-        padding: 0.35rem 0.7rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);

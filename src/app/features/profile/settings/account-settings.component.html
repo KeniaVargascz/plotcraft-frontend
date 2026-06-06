@@ -281,6 +281,7 @@
       </div>
 
       <!-- Privacy Settings -->
+      @if (featureFlags.enabled(FeatureFlag.SOCIAL_PUBLIC_PROFILE)()) {
       <div class="settings-card">
         <div class="card-head">
           <div>
@@ -332,8 +333,10 @@
           </div>
         }
       </div>
+      }
 
       <!-- Notification Preferences -->
+      @if (featureFlags.enabled(FeatureFlag.SOCIAL_NOTIFICATIONS)()) {
       <div class="settings-card">
         <div class="card-head">
           <div>
@@ -350,74 +353,87 @@
           </div>
         } @else {
           <div class="toggle-list">
-            <label class="toggle-row">
-              <div class="toggle-info">
-                <strong>{{ 'notifications.newFollower' | translate }}</strong>
-                <span>{{ 'notifications.newFollowerDesc' | translate }}</span>
-              </div>
-              <span class="toggle-control">
-                <input class="toggle-input" type="checkbox" [checked]="notifPrefs().newFollower" (change)="updateNotifField('newFollower', $any($event.target).checked)" />
-                <span class="toggle-switch" aria-hidden="true"><span class="toggle-thumb"></span></span>
-              </span>
-            </label>
+            @if (featureFlags.enabled(FeatureFlag.SOCIAL_FOLLOWS)()) {
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <strong>{{ 'notifications.newFollower' | translate }}</strong>
+                  <span>{{ 'notifications.newFollowerDesc' | translate }}</span>
+                </div>
+                <span class="toggle-control">
+                  <input class="toggle-input" type="checkbox" [checked]="notifPrefs().newFollower" (change)="updateNotifField('newFollower', $any($event.target).checked)" />
+                  <span class="toggle-switch" aria-hidden="true"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+            }
 
-            <label class="toggle-row">
-              <div class="toggle-info">
-                <strong>{{ 'notifications.newComment' | translate }}</strong>
-                <span>{{ 'notifications.newCommentDesc' | translate }}</span>
-              </div>
-              <span class="toggle-control">
-                <input class="toggle-input" type="checkbox" [checked]="notifPrefs().newCommentOnPost" (change)="updateNotifField('newCommentOnPost', $any($event.target).checked)" />
-                <span class="toggle-switch" aria-hidden="true"><span class="toggle-thumb"></span></span>
-              </span>
-            </label>
+            @if (featureFlags.enabled(FeatureFlag.SOCIAL_FEED_COMMENTS)()) {
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <strong>{{ 'notifications.newComment' | translate }}</strong>
+                  <span>{{ 'notifications.newCommentDesc' | translate }}</span>
+                </div>
+                <span class="toggle-control">
+                  <input class="toggle-input" type="checkbox" [checked]="notifPrefs().newCommentOnPost" (change)="updateNotifField('newCommentOnPost', $any($event.target).checked)" />
+                  <span class="toggle-switch" aria-hidden="true"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+            }
 
-            <label class="toggle-row">
-              <div class="toggle-info">
-                <strong>{{ 'notifications.newReaction' | translate }}</strong>
-                <span>{{ 'notifications.newReactionDesc' | translate }}</span>
-              </div>
-              <span class="toggle-control">
-                <input class="toggle-input" type="checkbox" [checked]="notifPrefs().newReactionOnPost" (change)="updateNotifField('newReactionOnPost', $any($event.target).checked)" />
-                <span class="toggle-switch" aria-hidden="true"><span class="toggle-thumb"></span></span>
-              </span>
-            </label>
+            @if (featureFlags.enabled(FeatureFlag.SOCIAL_FEED_REACTIONS)()) {
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <strong>{{ 'notifications.newReaction' | translate }}</strong>
+                  <span>{{ 'notifications.newReactionDesc' | translate }}</span>
+                </div>
+                <span class="toggle-control">
+                  <input class="toggle-input" type="checkbox" [checked]="notifPrefs().newReactionOnPost" (change)="updateNotifField('newReactionOnPost', $any($event.target).checked)" />
+                  <span class="toggle-switch" aria-hidden="true"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+            }
 
-            <label class="toggle-row">
-              <div class="toggle-info">
-                <strong>{{ 'notifications.newReply' | translate }}</strong>
-                <span>{{ 'notifications.newReplyDesc' | translate }}</span>
-              </div>
-              <span class="toggle-control">
-                <input class="toggle-input" type="checkbox" [checked]="notifPrefs().newReplyInThread" (change)="updateNotifField('newReplyInThread', $any($event.target).checked)" />
-                <span class="toggle-switch" aria-hidden="true"><span class="toggle-thumb"></span></span>
-              </span>
-            </label>
+            @if (featureFlags.enabled(FeatureFlag.COMMUNITY_FORUM)()) {
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <strong>{{ 'notifications.newReply' | translate }}</strong>
+                  <span>{{ 'notifications.newReplyDesc' | translate }}</span>
+                </div>
+                <span class="toggle-control">
+                  <input class="toggle-input" type="checkbox" [checked]="notifPrefs().newReplyInThread" (change)="updateNotifField('newReplyInThread', $any($event.target).checked)" />
+                  <span class="toggle-switch" aria-hidden="true"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+            }
 
-            <label class="toggle-row">
-              <div class="toggle-info">
-                <strong>{{ 'notifications.newChapter' | translate }}</strong>
-                <span>{{ 'notifications.newChapterDesc' | translate }}</span>
-              </div>
-              <span class="toggle-control">
-                <input class="toggle-input" type="checkbox" [checked]="notifPrefs().newChapterFromFollowed" (change)="updateNotifField('newChapterFromFollowed', $any($event.target).checked)" />
-                <span class="toggle-switch" aria-hidden="true"><span class="toggle-thumb"></span></span>
-              </span>
-            </label>
+            @if (featureFlags.enabled(FeatureFlag.AUTHOR_NOVELS)()) {
+              <label class="toggle-row">
+                <div class="toggle-info">
+                  <strong>{{ 'notifications.newChapter' | translate }}</strong>
+                  <span>{{ 'notifications.newChapterDesc' | translate }}</span>
+                </div>
+                <span class="toggle-control">
+                  <input class="toggle-input" type="checkbox" [checked]="notifPrefs().newChapterFromFollowed" (change)="updateNotifField('newChapterFromFollowed', $any($event.target).checked)" />
+                  <span class="toggle-switch" aria-hidden="true"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+            }
 
-            <label class="toggle-row disabled-row">
-              <div class="toggle-info">
-                <strong>{{ 'notifications.novelMilestone' | translate }} <span class="coming-soon">{{ 'notifications.comingSoon' | translate }}</span></strong>
-                <span>{{ 'notifications.novelMilestoneDesc' | translate }}</span>
-              </div>
-              <span class="toggle-control">
-                <input class="toggle-input" type="checkbox" [checked]="notifPrefs().novelMilestone" disabled />
-                <span class="toggle-switch" aria-hidden="true"><span class="toggle-thumb"></span></span>
-              </span>
-            </label>
+            @if (featureFlags.enabled(FeatureFlag.AUTHOR_ANALYTICS)()) {
+              <label class="toggle-row disabled-row">
+                <div class="toggle-info">
+                  <strong>{{ 'notifications.novelMilestone' | translate }} <span class="coming-soon">{{ 'notifications.comingSoon' | translate }}</span></strong>
+                  <span>{{ 'notifications.novelMilestoneDesc' | translate }}</span>
+                </div>
+                <span class="toggle-control">
+                  <input class="toggle-input" type="checkbox" [checked]="notifPrefs().novelMilestone" disabled />
+                  <span class="toggle-switch" aria-hidden="true"><span class="toggle-thumb"></span></span>
+                </span>
+              </label>
+            }
           </div>
         }
       </div>
+      }
 
       <!-- Export Data -->
       <div class="settings-card">

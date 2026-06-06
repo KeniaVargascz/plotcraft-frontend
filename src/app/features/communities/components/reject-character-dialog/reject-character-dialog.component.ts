@@ -38,7 +38,7 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
       }
       label {
         display: grid;
-        gap: 0.3rem;
+        gap: 0.5rem;
         font-size: 0.85rem;
         color: var(--text-2);
       }
@@ -46,8 +46,8 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
         background: var(--bg-surface);
         border: 1px solid var(--border);
         color: var(--text-1);
-        border-radius: 0.6rem;
-        padding: 0.55rem 0.7rem;
+        border-radius: 0.5rem;
+        padding: 0.75rem 0.75rem;
       }
       .error {
         color: #ff8b8b;
@@ -58,8 +58,8 @@ import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
         background: var(--bg-surface);
         border: 1px solid var(--border);
         color: var(--text-1);
-        border-radius: 0.6rem;
-        padding: 0.5rem 0.85rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem 1rem;
         cursor: pointer;
       }
       [mat-dialog-actions] .danger {

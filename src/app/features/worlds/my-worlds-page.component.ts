@@ -4,12 +4,13 @@ import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { WorldSummary } from '../../core/models/world.model';
 import { WorldsService } from '../../core/services/worlds.service';
+import { CardGridSkeletonComponent } from '../../shared/components/skeleton-loader/card-grid-skeleton.component';
 import { WorldCardComponent } from './components/world-card.component';
 
 @Component({
   selector: 'app-my-worlds-page',
   standalone: true,
-  imports: [RouterLink, WorldCardComponent],
+  imports: [RouterLink, WorldCardComponent, CardGridSkeletonComponent],
   template: `
     <section class="my-shell">
       <header class="hero card">
@@ -22,7 +23,7 @@ import { WorldCardComponent } from './components/world-card.component';
       </header>
 
       @if (loading()) {
-        <p class="state">Cargando mundos...</p>
+        <app-card-grid-skeleton />
       } @else if (!worlds().length) {
         <section class="card empty">
           <h2>Aun no has creado mundos</h2>

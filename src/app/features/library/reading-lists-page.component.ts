@@ -233,9 +233,9 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
         gap: 1rem;
       }
       .card {
-        padding: 1.25rem;
+        padding: 1.5rem;
         border: 1px solid var(--border);
-        border-radius: 1.25rem;
+        border-radius: 1rem;
         background: linear-gradient(
           180deg,
           color-mix(in srgb, var(--bg-card) 92%, white 8%),
@@ -304,9 +304,9 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
       textarea,
       button,
       .card-actions a {
-        border-radius: 0.95rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         font: inherit;
       }
       input,
@@ -332,7 +332,7 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
       .processing-banner {
         grid-template-columns: auto 1fr;
         align-items: center;
-        padding: 0.95rem 1rem;
+        padding: 1rem 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -357,7 +357,7 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
         color: #b42318;
       }
       .badge {
-        padding: 0.4rem 0.75rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         font-size: 0.85rem;
         border: 1px solid var(--border);

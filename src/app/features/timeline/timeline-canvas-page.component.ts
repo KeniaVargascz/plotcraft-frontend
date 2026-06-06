@@ -15,6 +15,7 @@ import {
 } from './components/timeline-event-form-dialog.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
+import { TimelineSkeletonComponent } from '../../shared/components/skeleton-loader/timeline-skeleton.component';
 
 @Component({
   selector: 'app-timeline-canvas-page',
@@ -27,10 +28,11 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
     TimelineEventCardComponent,
     TimelineFiltersComponent,
     TranslatePipe,
+    TimelineSkeletonComponent,
   ],
   template: `
     @if (loading()) {
-      <div class="loading-shell"><p>Cargando timeline...</p></div>
+      <app-timeline-skeleton />
     } @else if (!timeline()) {
       <div class="loading-shell"><p>No hay datos para mostrar.</p></div>
     } @else if (timeline()) {

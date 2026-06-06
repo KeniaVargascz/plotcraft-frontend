@@ -104,7 +104,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
     `
       .page {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
         max-width: 720px;
       }
       h1 {
@@ -120,12 +120,12 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       }
       label {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       input,
       textarea {
-        padding: 0.65rem 0.85rem;
-        border-radius: 0.6rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         color: var(--text-1);
@@ -133,12 +133,12 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       }
       .error {
         padding: 0.75rem;
-        border-radius: 0.6rem;
+        border-radius: 0.5rem;
         background: rgba(214, 90, 90, 0.15);
         color: #e49d9d;
       }
       .primary {
-        padding: 0.75rem 1.25rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -152,7 +152,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       }
       .related {
         display: grid;
-        gap: 0.6rem;
+        gap: 0.75rem;
         padding: 1rem;
         border: 1px solid var(--border);
         border-radius: 1rem;
@@ -176,7 +176,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         margin: 0;
         padding: 0;
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .related .list li {
         display: flex;
@@ -185,7 +185,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         gap: 0.5rem;
         padding: 0.5rem 0.75rem;
         border: 1px solid var(--border);
-        border-radius: 0.6rem;
+        border-radius: 0.5rem;
         background: var(--bg-surface);
       }
       .related .list a {
@@ -195,10 +195,10 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       .related .list button {
         background: transparent;
         border: 1px solid var(--border);
-        border-radius: 0.4rem;
+        border-radius: 0.5rem;
         color: var(--text-3);
         cursor: pointer;
-        padding: 0.25rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         font-size: 0.78rem;
       }
       .add-row {
@@ -207,8 +207,8 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       }
       .add-row select {
         flex: 1;
-        padding: 0.55rem 0.75rem;
-        border-radius: 0.6rem;
+        padding: 0.75rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);

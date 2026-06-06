@@ -37,7 +37,7 @@ import { CommunityCharacter } from '../../models/community-character.model';
         display: grid;
         grid-template-columns: 64px 1fr;
         gap: 0.75rem;
-        padding: 0.85rem;
+        padding: 1rem;
         border: 1px solid var(--border);
         border-radius: 1rem;
         background: var(--bg-card);
@@ -60,7 +60,7 @@ import { CommunityCharacter } from '../../models/community-character.model';
       }
       .body {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       h4 {
         margin: 0;
@@ -77,14 +77,14 @@ import { CommunityCharacter } from '../../models/community-character.model';
       }
       .actions {
         display: flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .actions button {
         background: var(--bg-surface);
         border: 1px solid var(--border);
         color: var(--text-1);
-        border-radius: 0.6rem;
-        padding: 0.35rem 0.7rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem;
         font-size: 0.8rem;
         cursor: pointer;
       }

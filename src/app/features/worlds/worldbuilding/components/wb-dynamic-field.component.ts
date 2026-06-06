@@ -110,7 +110,7 @@ import { inject } from '@angular/core';
     `
       .field-wrapper {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .field-label {
         font-size: 0.82rem;
@@ -123,7 +123,7 @@ import { inject } from '@angular/core';
       input,
       textarea,
       select {
-        padding: 0.7rem 0.85rem;
+        padding: 0.75rem 1rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -165,7 +165,7 @@ import { inject } from '@angular/core';
         border-bottom: 1px solid var(--border);
       }
       .md-tab {
-        padding: 0.45rem 0.85rem;
+        padding: 0.5rem 1rem;
         border: none;
         background: transparent;
         color: var(--text-3);

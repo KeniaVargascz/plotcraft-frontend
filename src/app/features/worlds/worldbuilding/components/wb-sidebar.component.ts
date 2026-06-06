@@ -55,7 +55,7 @@ import { WbSearchBarComponent } from './wb-search-bar.component';
         gap: 0.75rem;
         align-content: start;
         padding: 1rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         min-width: 200px;
@@ -74,14 +74,14 @@ import { WbSearchBarComponent } from './wb-search-bar.component';
       }
       .cat-list {
         display: grid;
-        gap: 0.15rem;
+        gap: 0.25rem;
       }
       .cat-item {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         width: 100%;
-        padding: 0.55rem 0.65rem;
+        padding: 0.75rem 0.75rem;
         border: none;
         border-radius: 0.75rem;
         background: transparent;
@@ -111,7 +111,7 @@ import { WbSearchBarComponent } from './wb-search-bar.component';
       }
       .cat-count {
         font-size: 0.7rem;
-        padding: 0.1rem 0.4rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         background: var(--bg-surface);
         color: var(--text-3);
@@ -123,7 +123,7 @@ import { WbSearchBarComponent } from './wb-search-bar.component';
         color: var(--accent-text);
       }
       .add-cat-btn {
-        padding: 0.65rem 0.75rem;
+        padding: 0.75rem 0.75rem;
         border-radius: 1rem;
         border: 1px dashed var(--border);
         background: transparent;

@@ -6,8 +6,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../core/services/auth.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { LightboxComponent } from '../../shared/components/lightbox/lightbox.component';
 import { PromptDialogComponent } from '../../shared/components/prompt-dialog/prompt-dialog.component';
+import { DetailSkeletonComponent } from '../../shared/components/skeleton-loader/detail-skeleton.component';
 import {
   AddImageToSectionDialogComponent,
   AddImageToSectionResult,
@@ -23,7 +25,7 @@ import { VisualBoardsService } from './services/visual-boards.service';
 @Component({
   selector: 'app-visual-board-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, DragDropModule, LightboxComponent],
+  imports: [FormsModule, RouterLink, DragDropModule, EmptyStateComponent, LightboxComponent, DetailSkeletonComponent],
   templateUrl: './visual-board-page.template.html',
   styleUrl: './visual-board-page.styles.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

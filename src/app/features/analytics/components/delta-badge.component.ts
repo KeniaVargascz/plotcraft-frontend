@@ -18,7 +18,7 @@ import { ChangeDetectionStrategy, Component, input, computed } from '@angular/co
       font-size: 0.8rem;
       font-weight: 600;
       padding: 2px 8px;
-      border-radius: 12px;
+      border-radius: 0.75rem;
     }
     .positive {
       color: #22c55e;

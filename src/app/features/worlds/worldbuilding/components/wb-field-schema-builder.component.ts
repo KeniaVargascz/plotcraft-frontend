@@ -136,7 +136,7 @@ type FieldPropValue = FieldDefinition[keyof FieldDefinition];
         font-size: 0.95rem;
       }
       .add-btn {
-        padding: 0.45rem 0.85rem;
+        padding: 0.5rem 1rem;
         border-radius: 0.75rem;
         border: 1px dashed var(--border);
         background: transparent;
@@ -164,7 +164,7 @@ type FieldPropValue = FieldDefinition[keyof FieldDefinition];
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.6rem 0.85rem;
+        padding: 0.75rem 1rem;
         cursor: pointer;
         background: var(--bg-surface);
       }
@@ -178,7 +178,7 @@ type FieldPropValue = FieldDefinition[keyof FieldDefinition];
         font-weight: 500;
       }
       .field-type-badge {
-        padding: 0.12rem 0.4rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -186,7 +186,7 @@ type FieldPropValue = FieldDefinition[keyof FieldDefinition];
         font-weight: 600;
       }
       .required-badge {
-        padding: 0.12rem 0.4rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         background: #b4231822;
         color: #b42318;
@@ -198,13 +198,13 @@ type FieldPropValue = FieldDefinition[keyof FieldDefinition];
       }
       .field-detail {
         display: grid;
-        gap: 0.65rem;
-        padding: 0.85rem;
+        gap: 0.75rem;
+        padding: 1rem;
         background: var(--bg-card);
       }
       .field-detail label {
         display: grid;
-        gap: 0.3rem;
+        gap: 0.5rem;
       }
       .field-detail label span {
         font-size: 0.78rem;
@@ -212,8 +212,8 @@ type FieldPropValue = FieldDefinition[keyof FieldDefinition];
       }
       .field-detail input,
       .field-detail select {
-        padding: 0.55rem 0.75rem;
-        border-radius: 0.65rem;
+        padding: 0.75rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -238,7 +238,7 @@ type FieldPropValue = FieldDefinition[keyof FieldDefinition];
       }
       .move-btn,
       .remove-btn {
-        padding: 0.35rem 0.65rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: transparent;

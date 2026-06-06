@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, OnDestroy, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, inject, Output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
@@ -15,13 +15,14 @@ import { FeatureFlagService } from '../../../core/services/feature-flag.service'
   styleUrl: './login-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginFormComponent implements OnDestroy {
+export class LoginFormComponent {
   @Output() loginSuccess = new EventEmitter<void>();
 
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly ff = inject(FeatureFlagService);
+  private readonly destroyRef = inject(DestroyRef);
   readonly canRegister = this.ff.enabled('platform.registration');
 
   readonly isSubmitting = signal(false);
@@ -41,14 +42,17 @@ export class LoginFormComponent implements OnDestroy {
   readonly identifierErrors: Record<string, string> = {
     required: 'auth.login.error.identifier.required',
     minlength: 'auth.login.error.identifier.minlength',
+    maxlength: 'auth.login.error.identifier.maxlength',
   };
 
   readonly passwordErrors: Record<string, string> = {
     required: 'auth.login.error.password.required',
   };
 
-  ngOnDestroy(): void {
-    if (this.rateLimitTimer) clearInterval(this.rateLimitTimer);
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      if (this.rateLimitTimer) clearInterval(this.rateLimitTimer);
+    });
   }
 
   submit(): void {

@@ -236,7 +236,7 @@ const CATEGORIES: CategoryOption[] = [
       }
       .field {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .label {
         font-size: 0.85rem;
@@ -245,8 +245,8 @@ const CATEGORIES: CategoryOption[] = [
       }
       .input,
       .textarea {
-        padding: 0.65rem 0.85rem;
-        border-radius: 0.65rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -288,14 +288,14 @@ const CATEGORIES: CategoryOption[] = [
         font-size: 0.9rem;
         line-height: 1.6;
         border: 1px solid var(--border);
-        border-radius: 0.65rem;
+        border-radius: 0.5rem;
         background: var(--bg-surface);
       }
       .toggle-poll {
         background: none;
         border: 1px dashed var(--border);
-        border-radius: 0.65rem;
-        padding: 0.55rem;
+        border-radius: 0.5rem;
+        padding: 0.75rem;
         color: var(--accent);
         cursor: pointer;
         font-weight: 500;
@@ -307,23 +307,23 @@ const CATEGORIES: CategoryOption[] = [
         margin-top: 0.65rem;
         padding: 1rem;
         border: 1px solid var(--border);
-        border-radius: 0.65rem;
+        border-radius: 0.5rem;
         background: var(--bg-surface);
       }
       .poll-options {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .option-row {
         display: flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
         align-items: center;
       }
       .option-row .input {
         flex: 1;
       }
       .remove-opt {
-        padding: 0.35rem 0.55rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -332,8 +332,8 @@ const CATEGORIES: CategoryOption[] = [
         font-size: 0.8rem;
       }
       .add-opt {
-        padding: 0.4rem 0.75rem;
-        border-radius: 0.55rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px dashed var(--border);
         background: transparent;
         color: var(--accent);
@@ -342,7 +342,7 @@ const CATEGORIES: CategoryOption[] = [
         margin-top: 0.25rem;
       }
       .submit-btn {
-        padding: 0.65rem;
+        padding: 0.75rem;
         border-radius: 0.75rem;
         border: none;
         background: var(--accent);
@@ -366,13 +366,13 @@ const CATEGORIES: CategoryOption[] = [
       .link-list {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .link-chip {
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
-        padding: 0.35rem 0.75rem;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -399,7 +399,7 @@ const CATEGORIES: CategoryOption[] = [
         max-height: 220px;
         overflow-y: auto;
         border: 1px solid var(--border);
-        border-radius: 0.65rem;
+        border-radius: 0.5rem;
         background: var(--bg-card);
         display: grid;
       }
@@ -407,7 +407,7 @@ const CATEGORIES: CategoryOption[] = [
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.6rem 0.85rem;
+        padding: 0.75rem 1rem;
         background: transparent;
         border: 0;
         border-bottom: 1px solid var(--border);

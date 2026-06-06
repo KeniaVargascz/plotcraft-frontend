@@ -60,13 +60,13 @@ const CATEGORIES: CategoryOption[] = [
       }
       .controls {
         display: flex;
-        gap: 0.65rem;
+        gap: 0.75rem;
         flex-wrap: wrap;
       }
       .sort-select,
       .search-input {
-        padding: 0.55rem 0.75rem;
-        border-radius: 0.65rem;
+        padding: 0.75rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);

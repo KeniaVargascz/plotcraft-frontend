@@ -5,12 +5,13 @@ import { finalize } from 'rxjs';
 import { CharacterSummary } from '../../core/models/character.model';
 import { AuthService } from '../../core/services/auth.service';
 import { CharactersService } from '../../core/services/characters.service';
+import { CardGridSkeletonComponent } from '../../shared/components/skeleton-loader/card-grid-skeleton.component';
 import { CharacterCardComponent } from './components/character-card.component';
 
 @Component({
   selector: 'app-my-characters-page',
   standalone: true,
-  imports: [RouterLink, CharacterCardComponent],
+  imports: [RouterLink, CharacterCardComponent, CardGridSkeletonComponent],
   template: `
     <section class="page-shell">
       <header class="hero card">
@@ -25,7 +26,7 @@ import { CharacterCardComponent } from './components/character-card.component';
       </header>
 
       @if (loading()) {
-        <p class="state">Cargando personajes...</p>
+        <app-card-grid-skeleton />
       } @else if (!characters().length) {
         <section class="card">
           <h2>Aun no has creado personajes</h2>

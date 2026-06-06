@@ -117,7 +117,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         border-bottom: 1px solid var(--border);
         font-size: 0.9rem;
       }
@@ -180,8 +180,8 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       }
       .p-comment-item {
         display: grid;
-        gap: 0.3rem;
-        padding: 0.6rem 0;
+        gap: 0.5rem;
+        padding: 0.75rem 0;
         border-bottom: 1px solid var(--border);
       }
       .p-comment-item:last-child {
@@ -190,25 +190,25 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       .p-comment-quote,
       .p-new-quote {
         margin: 0;
-        padding: 0.4rem 0.65rem;
+        padding: 0.5rem 0.75rem;
         border-left: 3px solid var(--accent);
         background: var(--accent-glow);
         font-size: 0.78rem;
         font-style: italic;
         color: var(--text-2);
-        border-radius: 0 0.4rem 0.4rem 0;
+        border-radius: 0 0.5rem 0.5rem 0;
         line-height: 1.5;
         word-break: break-word;
         overflow-wrap: break-word;
       }
       .p-comment-body {
         display: grid;
-        gap: 0.2rem;
+        gap: 0.25rem;
       }
       .p-comment-top-row {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .p-comment-author {
         font-weight: 600;
@@ -233,7 +233,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         color: var(--text-3);
         cursor: pointer;
         font-size: 0.8rem;
-        padding: 0.1rem 0.25rem;
+        padding: 0.25rem 0.25rem;
         min-height: unset;
         line-height: 1;
         border-radius: 4px;
@@ -252,12 +252,12 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       }
       .p-comment-form {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .p-comment-form textarea {
         width: 100%;
-        padding: 0.55rem 0.65rem;
-        border-radius: 0.6rem;
+        padding: 0.75rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg);
         color: var(--text-1);
@@ -271,7 +271,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       }
       .p-btn-send {
         justify-self: end;
-        padding: 0.4rem 1rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         border: none;
         background: var(--accent);

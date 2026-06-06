@@ -17,7 +17,7 @@ import {
 } from '../../core/models/writing-project.model';
 import { WritingTask } from '../../core/models/writing-task.model';
 import { PlannerService } from '../../core/services/planner.service';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { KanbanSkeletonComponent } from '../../shared/components/skeleton-loader/kanban-skeleton.component';
 import { WordProgressBarComponent } from './components/word-progress-bar.component';
 import { KanbanColumnComponent } from './components/kanban-column.component';
 import {
@@ -45,13 +45,13 @@ const ALL_TYPES: TaskType[] = [
     RouterLink,
     FormsModule,
     DragDropModule,
-    LoadingSpinnerComponent,
+    KanbanSkeletonComponent,
     WordProgressBarComponent,
     KanbanColumnComponent,
   ],
   template: `
     @if (loading()) {
-      <div class="loading-wrapper"><app-loading-spinner /></div>
+      <app-kanban-skeleton />
     } @else {
       <div class="board-shell">
         <!-- Topbar -->
@@ -137,12 +137,6 @@ const ALL_TYPES: TaskType[] = [
   `,
   styles: [
     `
-      .loading-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 80vh;
-      }
       .board-shell {
         display: flex;
         flex-direction: column;
@@ -172,7 +166,7 @@ const ALL_TYPES: TaskType[] = [
         text-decoration: none;
         color: var(--text-2);
         padding: 0.25rem 0.5rem;
-        border-radius: 6px;
+        border-radius: 0.5rem;
       }
       .back-btn:hover {
         background: var(--bg-surface);
@@ -187,7 +181,7 @@ const ALL_TYPES: TaskType[] = [
       .project-name-input {
         background: transparent;
         border: 1px solid transparent;
-        border-radius: 6px;
+        border-radius: 0.5rem;
         padding: 0.25rem 0.5rem;
         font-size: 1.1rem;
         font-weight: 700;
@@ -231,7 +225,7 @@ const ALL_TYPES: TaskType[] = [
       .btn-new-task {
         background: var(--accent);
         border: none;
-        border-radius: 8px;
+        border-radius: 0.5rem;
         padding: 0.5rem 1rem;
         font-size: 0.8rem;
         color: #fff;
@@ -249,7 +243,7 @@ const ALL_TYPES: TaskType[] = [
       .btn-stats {
         background: var(--bg-surface);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 0.5rem;
         padding: 0.5rem 1rem;
         font-size: 0.8rem;
         color: var(--text-2);
@@ -304,8 +298,8 @@ const ALL_TYPES: TaskType[] = [
       .search-input {
         background: var(--bg-base);
         border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 0.35rem 0.625rem;
+        border-radius: 0.5rem;
+        padding: 0.5rem 0.75rem;
         font-size: 0.8rem;
         color: var(--text-1);
         font-family: inherit;
@@ -337,7 +331,7 @@ const ALL_TYPES: TaskType[] = [
       /* CDK drag preview */
       :host ::ng-deep .cdk-drag-preview {
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
-        border-radius: 8px;
+        border-radius: 0.5rem;
         opacity: 0.9;
       }
     `,

@@ -1,5 +1,5 @@
 @if (loading()) {
-  <p class="state">Cargando tablero...</p>
+  <app-detail-skeleton />
 } @else if (!board()) {
   <p class="state">No se pudo cargar el tablero.</p>
 } @else if (board(); as currentBoard) {
@@ -133,7 +133,7 @@
               }
             </div>
           } @else {
-            <p class="empty">Esta seccion no tiene imagenes todavia.</p>
+            <app-empty-state icon="🖼️" title="Esta seccion no tiene imagenes todavia" />
           }
 
           @if (isOwner()) {

@@ -152,7 +152,7 @@ export interface NovelComment {
       }
       .comment-item {
         display: flex;
-        gap: 0.6rem;
+        gap: 0.75rem;
       }
       .comment-avatar {
         width: 2rem;

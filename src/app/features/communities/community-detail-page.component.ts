@@ -8,7 +8,7 @@ import { NovelsService } from '../../core/services/novels.service';
 import { NovelSummary } from '../../core/models/novel.model';
 import { MarkdownService } from '../../core/services/markdown.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { DetailSkeletonComponent } from '../../shared/components/skeleton-loader/detail-skeleton.component';
 import { COMMUNITY_TYPE_LABELS, Community } from './models/community.model';
 import { CommunityService } from './services/community.service';
 import { CommunityForumsService } from '../community-forums/services/community-forums.service';
@@ -32,7 +32,7 @@ import { CommunityCharactersSectionComponent } from './components/community-char
   imports: [
     RouterLink,
     FormsModule,
-    LoadingSpinnerComponent,
+    DetailSkeletonComponent,
     ForumCardComponent,
     TranslatePipe,
     CommunityHeaderComponent,
@@ -40,7 +40,7 @@ import { CommunityCharactersSectionComponent } from './components/community-char
   ],
   template: `
     @if (loading()) {
-      <app-loading-spinner />
+      <app-detail-skeleton />
     } @else if (notFound()) {
       <p class="empty">Comunidad no encontrada.</p>
     } @else if (community(); as c) {
@@ -225,7 +225,7 @@ import { CommunityCharactersSectionComponent } from './components/community-char
     `
       .shell {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
       }
       .banner {
         position: relative;
@@ -264,7 +264,7 @@ import { CommunityCharactersSectionComponent } from './components/community-char
         margin: 0;
       }
       .type-badge {
-        padding: 0.25rem 0.7rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.72rem;
         font-weight: 700;
@@ -283,7 +283,7 @@ import { CommunityCharactersSectionComponent } from './components/community-char
         color: #fff;
       }
       .alert {
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         border-radius: 0.75rem;
         font-size: 0.9rem;
       }
@@ -326,7 +326,7 @@ import { CommunityCharactersSectionComponent } from './components/community-char
         margin-bottom: 0.5rem;
       }
       .new-forum-btn {
-        padding: 0.45rem 0.85rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--accent-glow);
@@ -348,7 +348,7 @@ import { CommunityCharactersSectionComponent } from './components/community-char
       .discussed-item {
         padding: 0.75rem 1rem;
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         background: var(--bg-card);
       }
       .dt-title {
@@ -362,7 +362,7 @@ import { CommunityCharactersSectionComponent } from './components/community-char
         color: var(--text-3);
         display: flex;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .side {
         display: grid;
@@ -388,7 +388,7 @@ import { CommunityCharactersSectionComponent } from './components/community-char
       .related-item {
         display: flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.75rem;
         padding: 0.5rem 0.75rem;
         border: 1px solid var(--border);
         border-radius: 0.75rem;
@@ -397,7 +397,7 @@ import { CommunityCharactersSectionComponent } from './components/community-char
       .rl-link {
         display: flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.75rem;
         flex: 1;
         text-decoration: none;
         color: var(--text-1);
@@ -405,7 +405,7 @@ import { CommunityCharactersSectionComponent } from './components/community-char
       .rl-cover {
         width: 36px;
         height: 50px;
-        border-radius: 0.4rem;
+        border-radius: 0.5rem;
         background: var(--bg-card);
         overflow: hidden;
         display: grid;
@@ -419,10 +419,10 @@ import { CommunityCharactersSectionComponent } from './components/community-char
       .rl-remove {
         background: transparent;
         border: 1px solid var(--border);
-        border-radius: 0.4rem;
+        border-radius: 0.5rem;
         color: var(--text-3);
         cursor: pointer;
-        padding: 0.2rem 0.5rem;
+        padding: 0.25rem 0.5rem;
       }
       .rl-add {
         display: flex;
@@ -431,8 +431,8 @@ import { CommunityCharactersSectionComponent } from './components/community-char
       }
       .rl-add select {
         flex: 1;
-        padding: 0.55rem 0.7rem;
-        border-radius: 0.6rem;
+        padding: 0.75rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);

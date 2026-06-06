@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, EventEmitter, Output, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -10,7 +10,7 @@ import { nicknameFormatValidator } from '../../../../validators/nickname-format.
 import { passwordStrengthValidator } from '../../../../validators/password-strength.validator';
 import { usernameFormatValidator } from '../../../../validators/username-format.validator';
 import { getFirstError } from '../../../../utils/form-errors.util';
-import { environment } from '../../../../../../environments/environment';
+import { HttpApiService } from '../../../../../core/services/http-api.service';
 import { RegisterStep1Payload } from '../../register-form.component';
 
 @Component({
@@ -25,7 +25,7 @@ export class RegisterStep1Component {
   @Output() submitted = new EventEmitter<RegisterStep1Payload>();
 
   private readonly fb = inject(FormBuilder);
-  private readonly http = inject(HttpClient);
+  private readonly api = inject(HttpApiService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly cdr = inject(ChangeDetectorRef);
 
@@ -114,7 +114,7 @@ export class RegisterStep1Component {
       acceptTerms,
     };
 
-    this.http.post(`${environment.apiUrl}/auth/register/initiate`, payload).subscribe({
+    this.api.post('/auth/register/initiate', payload).subscribe({
       next: () => {
         this.isSubmitting.set(false);
         this.submitted.emit(payload);

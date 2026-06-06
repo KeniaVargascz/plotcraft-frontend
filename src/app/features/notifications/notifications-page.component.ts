@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { AppNotification } from '../../core/models/notification.model';
 import { NotificationsService } from '../../core/services/notifications.service';
+import { ListSkeletonComponent } from '../../shared/components/skeleton-loader/list-skeleton.component';
 import { NotificationItemComponent } from './components/notification-item.component';
 
 type FilterChip = 'all' | 'unread' | 'read';
@@ -10,7 +11,7 @@ type FilterChip = 'all' | 'unread' | 'read';
 @Component({
   selector: 'app-notifications-page',
   standalone: true,
-  imports: [NotificationItemComponent],
+  imports: [NotificationItemComponent, ListSkeletonComponent],
   template: `
     <section class="notifications-page">
       <header class="page-header">
@@ -40,7 +41,7 @@ type FilterChip = 'all' | 'unread' | 'read';
 
       <div class="notif-list">
         @if (loading()) {
-          <p class="empty">Cargando notificaciones...</p>
+          <app-list-skeleton />
         } @else if (notifications().length === 0) {
           <p class="empty">No hay notificaciones para mostrar.</p>
         } @else {
@@ -68,7 +69,7 @@ type FilterChip = 'all' | 'unread' | 'read';
       max-width: 720px;
       margin: 0 auto;
       display: grid;
-      gap: 1.25rem;
+      gap: 1.5rem;
     }
     .page-header {
       display: flex;
@@ -82,11 +83,11 @@ type FilterChip = 'all' | 'unread' | 'read';
     }
     .header-actions {
       display: flex;
-      gap: 0.65rem;
+      gap: 0.75rem;
     }
     .action-btn {
       padding: 0.5rem 1rem;
-      border-radius: 0.65rem;
+      border-radius: 0.5rem;
       border: 1px solid var(--border);
       background: var(--bg-card);
       color: var(--text-1);
@@ -112,7 +113,7 @@ type FilterChip = 'all' | 'unread' | 'read';
       gap: 0.5rem;
     }
     .chip {
-      padding: 0.45rem 0.95rem;
+      padding: 0.5rem 1rem;
       border-radius: 999px;
       border: 1px solid var(--border);
       background: var(--bg-card);

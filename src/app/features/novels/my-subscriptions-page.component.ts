@@ -3,12 +3,12 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { RouterLink } from '@angular/router';
 import { SubscribedNovel, SubscriptionsService } from '../../core/services/subscriptions.service';
 import { ErrorMessageComponent } from '../../shared/components/error-message/error-message.component';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { CardGridSkeletonComponent } from '../../shared/components/skeleton-loader/card-grid-skeleton.component';
 
 @Component({
   selector: 'app-my-subscriptions-page',
   standalone: true,
-  imports: [RouterLink, DatePipe, ErrorMessageComponent, LoadingSpinnerComponent],
+  imports: [RouterLink, DatePipe, ErrorMessageComponent, CardGridSkeletonComponent],
   template: `
     <section class="page">
       <header>
@@ -17,7 +17,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
       </header>
 
       @if (loading()) {
-        <app-loading-spinner />
+        <app-card-grid-skeleton />
       } @else if (error()) {
         <app-error-message />
       } @else if (!items().length) {
@@ -63,7 +63,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
     `
       .page {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
       }
       header h1 {
         margin: 0 0 0.25rem;
@@ -84,7 +84,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
         grid-template-columns: 72px 1fr auto;
         gap: 1rem;
         align-items: center;
-        padding: 0.9rem;
+        padding: 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -106,7 +106,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
       }
       .info {
         display: grid;
-        gap: 0.3rem;
+        gap: 0.5rem;
       }
       .title {
         color: var(--text-1);
@@ -120,7 +120,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
         text-decoration: none;
       }
       button {
-        padding: 0.55rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);

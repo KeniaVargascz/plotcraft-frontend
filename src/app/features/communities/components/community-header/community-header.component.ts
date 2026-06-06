@@ -117,7 +117,7 @@ export interface CommunityViewerContext {
       .actions button,
       .actions .manage,
       .actions .primary {
-        padding: 0.65rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -134,7 +134,7 @@ export interface CommunityViewerContext {
       }
       .login-btn {
         display: block;
-        padding: 0.65rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);

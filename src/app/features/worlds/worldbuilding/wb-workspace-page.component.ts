@@ -18,6 +18,7 @@ import {
   AlertDialogComponent,
   AlertDialogData,
 } from '../../../shared/components/alert-dialog/alert-dialog.component';
+import { DetailSkeletonComponent } from '../../../shared/components/skeleton-loader/detail-skeleton.component';
 import { WbSidebarComponent } from './components/wb-sidebar.component';
 import { WbEntryGridComponent } from './components/wb-entry-grid.component';
 import { WbEntryLinksComponent } from './components/wb-entry-links.component';
@@ -32,6 +33,7 @@ import { WbTemplatePickerDialogComponent } from './wb-template-picker-dialog.com
     WbSidebarComponent,
     WbEntryGridComponent,
     WbEntryLinksComponent,
+    DetailSkeletonComponent,
     WbCategoryFormDialogComponent,
     WbTemplatePickerDialogComponent,
   ],
@@ -80,7 +82,7 @@ import { WbTemplatePickerDialogComponent } from './wb-template-picker-dialog.com
         </div>
 
         @if (loadingEntries()) {
-          <p class="state">Cargando entradas...</p>
+          <app-detail-skeleton />
         } @else if (entries().length) {
           <app-wb-entry-grid
             [entries]="entries()"
@@ -251,8 +253,8 @@ import { WbTemplatePickerDialogComponent } from './wb-template-picker-dialog.com
         flex-wrap: wrap;
       }
       .action-btn {
-        padding: 0.6rem 0.9rem;
-        border-radius: 0.85rem;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -285,7 +287,7 @@ import { WbTemplatePickerDialogComponent } from './wb-template-picker-dialog.com
       }
       .card {
         padding: 1.25rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
@@ -310,7 +312,7 @@ import { WbTemplatePickerDialogComponent } from './wb-template-picker-dialog.com
       .load-more-btn {
         display: block;
         margin: 0 auto;
-        padding: 0.7rem 1.5rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -323,7 +325,7 @@ import { WbTemplatePickerDialogComponent } from './wb-template-picker-dialog.com
 
       /* Detail panel */
       .detail-panel {
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
         overflow-y: auto;
@@ -371,13 +373,13 @@ import { WbTemplatePickerDialogComponent } from './wb-template-picker-dialog.com
         flex-wrap: wrap;
       }
       .cat-badge {
-        padding: 0.2rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.72rem;
         font-weight: 600;
       }
       .private-badge {
-        padding: 0.2rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         background: var(--bg-surface);
         color: var(--text-3);
@@ -396,11 +398,11 @@ import { WbTemplatePickerDialogComponent } from './wb-template-picker-dialog.com
       }
       .detail-tags {
         display: flex;
-        gap: 0.3rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
       }
       .tag-chip {
-        padding: 0.15rem 0.5rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         font-size: 0.68rem;

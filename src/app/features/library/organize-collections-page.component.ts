@@ -19,11 +19,12 @@ import { AlertDialogComponent } from '../../shared/components/alert-dialog/alert
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { SeriesService } from '../series/services/series.service';
 import { SeriesDetail, SeriesType } from '../series/models/series.model';
+import { ListSkeletonComponent } from '../../shared/components/skeleton-loader/list-skeleton.component';
 
 @Component({
   selector: 'app-organize-collections-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, CdkDropList, CdkDrag, CdkDragHandle],
+  imports: [CommonModule, FormsModule, CdkDropList, CdkDrag, CdkDragHandle, ListSkeletonComponent],
   template: `
     <section class="organize-shell">
       <header class="page-header">
@@ -32,7 +33,7 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
       </header>
 
       @if (loading()) {
-        <p>Cargando colecciones...</p>
+        <app-list-skeleton />
       } @else if (!collections().length && !showCreate()) {
         <p>No hay datos para mostrar.</p>
       }
@@ -267,7 +268,7 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
       .organize-shell {
         display: grid;
         gap: 1rem;
-        padding: 1.25rem;
+        padding: 1.5rem;
       }
       .page-header {
         display: flex;
@@ -302,7 +303,7 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.6rem 0.8rem;
+        padding: 0.75rem 1rem;
       }
       button:disabled {
         opacity: 0.5;
@@ -316,15 +317,15 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
         padding: 0;
         margin: 0;
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       li {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 0.4rem 0.6rem;
+        padding: 0.5rem 0.75rem;
         background: var(--bg-surface);
-        border-radius: 0.6rem;
+        border-radius: 0.5rem;
       }
       .picker {
         border: 1px solid var(--border);
@@ -333,7 +334,7 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
         background: var(--bg-surface);
       }
       .picker legend {
-        padding: 0 0.4rem;
+        padding: 0 0.5rem;
         font-weight: 600;
         color: var(--text-2);
       }
@@ -359,7 +360,7 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
         list-style: none;
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         max-height: 220px;
         overflow-y: auto;
         z-index: 5;
@@ -374,8 +375,8 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
         text-align: left;
         background: transparent;
         border: 0;
-        padding: 0.55rem 0.7rem;
-        border-radius: 0.6rem;
+        padding: 0.75rem 0.75rem;
+        border-radius: 0.5rem;
         color: var(--text-1);
         cursor: pointer;
       }
@@ -394,7 +395,7 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.4rem 0.75rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -417,14 +418,14 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
       }
       .items-list {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .drag-item {
         display: grid;
         grid-template-columns: auto auto 1fr auto;
         align-items: center;
-        gap: 0.6rem;
-        padding: 0.55rem 0.75rem;
+        gap: 0.75rem;
+        padding: 0.75rem 0.75rem;
         background: var(--bg-surface);
         border: 1px solid var(--border);
         border-radius: 0.75rem;
@@ -453,7 +454,7 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
         border: 0;
         color: var(--text-2);
         cursor: pointer;
-        padding: 0.2rem 0.4rem;
+        padding: 0.25rem 0.5rem;
       }
       .drag-item .icon:hover {
         color: #ff8b8b;
@@ -466,10 +467,10 @@ import { SeriesDetail, SeriesType } from '../series/models/series.model';
         left: 0;
         right: 0;
         margin: 0.25rem 0 0;
-        padding: 0.5rem 0.7rem;
+        padding: 0.5rem 0.75rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         z-index: 5;
       }
       .cdk-drag-preview {

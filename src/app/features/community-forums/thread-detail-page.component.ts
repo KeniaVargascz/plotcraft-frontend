@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { MarkdownService } from '../../core/services/markdown.service';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { DetailSkeletonComponent } from '../../shared/components/skeleton-loader/detail-skeleton.component';
 import { CommunityForumsService } from './services/community-forums.service';
 import { CommunityForum, ForumReply, ForumThread } from './models/community-forum.model';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
@@ -12,10 +12,10 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 @Component({
   selector: 'app-community-thread-detail-page',
   standalone: true,
-  imports: [RouterLink, FormsModule, LoadingSpinnerComponent, TranslatePipe],
+  imports: [RouterLink, FormsModule, DetailSkeletonComponent, TranslatePipe],
   template: `
     @if (loading()) {
-      <app-loading-spinner />
+      <app-detail-skeleton />
     } @else if (notFound()) {
       <p class="empty">Hilo no encontrado.</p>
     } @else if (thread(); as t) {
@@ -152,7 +152,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         font-size: 0.85rem;
         color: var(--text-3);
         display: flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
       }
       .breadcrumb a {
@@ -165,18 +165,18 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: 1rem;
-        padding: 1.25rem;
+        padding: 1.5rem;
       }
       .thread-header h1 {
         margin: 0.5rem 0;
       }
       .badges {
         display: flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .badge {
         font-size: 0.72rem;
-        padding: 0.15rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-weight: 600;
       }
@@ -190,7 +190,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       }
       .author {
         display: flex;
-        gap: 0.65rem;
+        gap: 0.75rem;
         align-items: center;
         margin-bottom: 0.75rem;
       }
@@ -221,7 +221,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       }
       .tags {
         display: flex;
-        gap: 0.35rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
         margin-top: 0.65rem;
       }
@@ -229,14 +229,14 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         font-size: 0.78rem;
         color: var(--accent);
         background: var(--bg-surface);
-        padding: 0.15rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 0.5rem;
       }
       .actions {
         margin-top: 0.75rem;
       }
       .btn {
-        padding: 0.55rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -245,7 +245,7 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         font-weight: 600;
       }
       .btn.small {
-        padding: 0.35rem 0.75rem;
+        padding: 0.5rem 0.75rem;
         font-size: 0.85rem;
       }
       .btn.primary {
@@ -266,8 +266,8 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         gap: 0.5rem;
       }
       .reply-form textarea {
-        padding: 0.7rem 0.85rem;
-        border-radius: 0.65rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);

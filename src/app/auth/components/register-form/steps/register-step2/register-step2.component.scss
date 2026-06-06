@@ -1,3 +1,5 @@
+@use '../../../../../../styles/responsive' as responsive;
+
 .auth-card {
   padding: 2rem;
   background: var(--bg-card);
@@ -6,6 +8,10 @@
   display: grid;
   gap: 1.5rem;
   text-align: center;
+
+  @include responsive.respond-xs {
+    padding: 1.25rem;
+  }
 }
 
 .subtitle {
@@ -38,8 +44,8 @@
   padding: 0.75rem;
   border: none;
   border-radius: 0.5rem;
-  background: var(--primary);
-  color: var(--accent-text);
+  background: var(--accent);
+  color: var(--accent-contrast);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -54,7 +60,7 @@
 .btn-link {
   background: none;
   border: none;
-  color: var(--primary);
+  color: var(--accent);
   cursor: pointer;
   font-size: 0.9rem;
   text-decoration: underline;

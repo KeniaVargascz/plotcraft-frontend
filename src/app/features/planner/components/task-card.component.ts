@@ -114,7 +114,7 @@ const PRIORITY_LABELS: Record<string, string> = {
         position: relative;
         background: var(--bg-card);
         border: 1px solid var(--border);
-        border-radius: 8px;
+        border-radius: 0.5rem;
         overflow: hidden;
         cursor: grab;
         transition:
@@ -133,10 +133,10 @@ const PRIORITY_LABELS: Record<string, string> = {
         width: 100%;
       }
       .task-body {
-        padding: 0.625rem;
+        padding: 0.75rem;
         display: flex;
         flex-direction: column;
-        gap: 0.375rem;
+        gap: 0.5rem;
       }
       .task-title {
         font-size: 0.825rem;

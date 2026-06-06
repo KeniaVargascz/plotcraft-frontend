@@ -17,6 +17,7 @@ import { SearchResultCardComponent } from '../../shared/components/search-result
 import { Genre } from '../../core/models/genre.model';
 import { GenresService } from '../../core/services/genres.service';
 import { SearchService } from '../../core/services/search.service';
+import { DashboardSkeletonComponent } from '../../shared/components/skeleton-loader/dashboard-skeleton.component';
 import { PaginatorComponent } from '../../shared/components/paginator/paginator.component';
 import { SearchBarComponent } from '../../shared/components/search-bar/search-bar.component';
 import { HighlightPipe } from '../../shared/pipes/highlight.pipe';
@@ -39,6 +40,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
     CharacterCardComponent,
     SearchResultCardComponent,
     PaginatorComponent,
+    DashboardSkeletonComponent,
   ],
   template: `
     <section class="search-page">
@@ -128,7 +130,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
       }
 
       @if (loading()) {
-        <div class="empty-state">{{ 'search.loading' | translate }}</div>
+        <app-dashboard-skeleton />
       } @else if (!query()) {
         <div class="empty-state">{{ 'search.trySearching' | translate }}</div>
       } @else if (!hasAnyResults()) {
@@ -314,7 +316,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
       .results-shell,
       .result-section {
         display: grid;
-        gap: 1.2rem;
+        gap: 1.5rem;
       }
       .hero,
       .filters,
@@ -327,8 +329,8 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
       .hero,
       .filters,
       .empty-state {
-        padding: 1.25rem;
-        border-radius: 1.25rem;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
       }
       .hero,
       .section-head {
@@ -352,7 +354,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
       .tab-row button {
         border-radius: 999px;
         border: 1px solid var(--border);
-        padding: 0.8rem 1rem;
+        padding: 1rem 1rem;
         background: var(--bg-card);
         color: var(--text-2);
       }
@@ -367,16 +369,16 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
       }
       .filters label {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
         color: var(--text-2);
       }
       .filters select {
         min-width: 180px;
-        border-radius: 0.9rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.75rem 0.9rem;
+        padding: 0.75rem 1rem;
       }
       .section-head a,
       .user-card,
@@ -402,7 +404,7 @@ import { WorldCardComponent } from '../worlds/components/world-card.component';
       .user-card {
         display: flex;
         align-items: center;
-        gap: 0.9rem;
+        gap: 1rem;
       }
       .avatar {
         width: 3rem;

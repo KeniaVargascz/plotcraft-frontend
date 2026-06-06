@@ -189,19 +189,19 @@ export interface CreateBoardDialogData {
   styles: [
     `
       .dialog-title {
-        padding: 1.25rem 1.5rem 0.25rem;
+        padding: 1.5rem 1.5rem 0.25rem;
         margin: 0;
       }
       .dialog-content {
         padding: 0 1.5rem 1rem !important;
       }
       .dialog-actions {
-        padding: 0.75rem 1.5rem 1.35rem !important;
+        padding: 0.75rem 1.5rem 1.5rem !important;
         gap: 0.75rem;
       }
       .intro {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
         margin-bottom: 1rem;
       }
       .eyebrow,
@@ -227,7 +227,7 @@ export interface CreateBoardDialogData {
       }
       .panel {
         display: grid;
-        gap: 0.95rem;
+        gap: 1rem;
         padding: 1rem;
         border-radius: 1rem;
         border: 1px solid color-mix(in srgb, var(--border) 88%, rgba(255, 255, 255, 0.08));
@@ -240,7 +240,7 @@ export interface CreateBoardDialogData {
       }
       .panel-head {
         display: grid;
-        gap: 0.2rem;
+        gap: 0.25rem;
       }
       .panel-head h3,
       .panel-head p {
@@ -252,7 +252,7 @@ export interface CreateBoardDialogData {
       }
       label {
         display: grid;
-        gap: 0.45rem;
+        gap: 0.5rem;
       }
       span,
       .hint,
@@ -269,8 +269,8 @@ export interface CreateBoardDialogData {
         width: 100%;
         box-sizing: border-box;
         min-height: 3rem;
-        padding: 0.82rem 0.9rem;
-        border-radius: 0.9rem;
+        padding: 1rem 1rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -293,9 +293,9 @@ export interface CreateBoardDialogData {
       .checkbox-card {
         grid-template-columns: auto 1fr;
         align-items: start;
-        gap: 0.85rem;
-        padding: 0.95rem 1rem;
-        border-radius: 0.95rem;
+        gap: 1rem;
+        padding: 1rem 1rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: color-mix(in srgb, var(--bg-surface) 90%, white 10%);
       }
@@ -314,16 +314,16 @@ export interface CreateBoardDialogData {
         line-height: 1.4;
       }
       .upload-card {
-        gap: 0.55rem;
+        gap: 0.75rem;
       }
       .upload-card input[type='file'] {
         max-width: 100%;
-        padding: 0.65rem 0.75rem;
+        padding: 0.75rem 0.75rem;
         background: color-mix(in srgb, var(--bg-surface) 90%, white 10%);
       }
       .linked-grid {
         display: grid;
-        gap: 0.9rem;
+        gap: 1rem;
       }
       .search-select {
         position: relative;
@@ -331,8 +331,8 @@ export interface CreateBoardDialogData {
       .search-select-input {
         width: 100%;
         min-height: 3rem;
-        padding: 0.82rem 2.5rem 0.82rem 0.9rem;
-        border-radius: 0.9rem;
+        padding: 1rem 2.5rem 1rem 1rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -361,10 +361,10 @@ export interface CreateBoardDialogData {
         right: 0;
         z-index: 20;
         margin: 0;
-        padding: 0.4rem;
+        padding: 0.5rem;
         display: grid;
-        gap: 0.4rem;
-        border-radius: 0.95rem;
+        gap: 0.5rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: color-mix(in srgb, var(--bg-card) 96%, black 4%);
         box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
@@ -387,7 +387,7 @@ export interface CreateBoardDialogData {
         border-radius: 0.75rem;
         background: transparent;
         color: var(--text-1);
-        padding: 0.7rem 0.8rem;
+        padding: 0.75rem 1rem;
         text-align: left;
         display: grid;
         gap: 0.12rem;
@@ -402,7 +402,7 @@ export interface CreateBoardDialogData {
       }
       .dropdown-empty {
         margin: 0;
-        padding: 0.4rem 0.2rem;
+        padding: 0.5rem 0.25rem;
         color: var(--text-2);
       }
       .preview {
@@ -449,7 +449,7 @@ export interface CreateBoardDialogData {
       }
       .submit-btn {
         border-radius: 999px;
-        padding-inline: 1.1rem;
+        padding-inline: 1rem;
       }
       @media (max-width: 720px) {
         .dialog-title {
@@ -465,7 +465,7 @@ export interface CreateBoardDialogData {
           width: 100%;
         }
         .panel {
-          padding: 0.9rem;
+          padding: 1rem;
         }
       }
     `,

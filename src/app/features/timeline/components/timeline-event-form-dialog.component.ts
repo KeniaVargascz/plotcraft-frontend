@@ -203,7 +203,7 @@ const COLOR_SWATCHES = [
         font-size: 0.85rem;
         color: var(--text-2);
         border-bottom: 1px solid var(--border);
-        padding-bottom: 0.3rem;
+        padding-bottom: 0.5rem;
       }
       .field {
         display: grid;
@@ -224,8 +224,8 @@ const COLOR_SWATCHES = [
       input,
       textarea,
       select {
-        padding: 0.5rem 0.65rem;
-        border-radius: 0.6rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -246,7 +246,7 @@ const COLOR_SWATCHES = [
       }
       .swatches {
         display: flex;
-        gap: 0.3rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
       }
       .swatch {
@@ -269,7 +269,7 @@ const COLOR_SWATCHES = [
         font-weight: 600;
         cursor: pointer;
         text-align: left;
-        padding: 0.4rem 0;
+        padding: 0.5rem 0;
       }
       .section-toggle:hover {
         color: var(--accent);
@@ -281,7 +281,7 @@ const COLOR_SWATCHES = [
       }
       .btn-cancel,
       .btn-save {
-        padding: 0.55rem 1.1rem;
+        padding: 0.75rem 1rem;
         border-radius: 0.75rem;
         border: 1px solid var(--border);
         font-size: 0.82rem;

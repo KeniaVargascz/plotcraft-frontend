@@ -36,7 +36,7 @@ import { Subject, Subscription, debounceTime, distinctUntilChanged } from 'rxjs'
       }
       input {
         width: 100%;
-        padding: 0.7rem 2.2rem 0.7rem 2.2rem;
+        padding: 0.75rem 2.25rem 0.75rem 2.25rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);

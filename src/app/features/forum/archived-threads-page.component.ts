@@ -5,15 +5,18 @@ import { ThreadSummary } from '../../core/models/forum-thread.model';
 import { ForumService } from '../../core/services/forum.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { ThreadCardComponent } from './components/thread-card.component';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-archived-threads-page',
   standalone: true,
-  imports: [RouterLink, LoadingSpinnerComponent, ThreadCardComponent],
+  imports: [RouterLink, LoadingSpinnerComponent, ThreadCardComponent, TranslatePipe],
   template: `
     <section class="page-shell">
       <header class="page-header">
-        <a class="back-link" routerLink="/foro">&larr; Volver al foro</a>
+        <a class="back-arrow" routerLink="/foro" [title]="'actions.back' | translate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        </a>
         <h1>Mis hilos archivados</h1>
         <p class="subtitle">Hilos que archivaste. Solo tu puedes verlos aqui.</p>
       </header>
@@ -50,14 +53,21 @@ import { ThreadCardComponent } from './components/thread-card.component';
       .page-header {
         margin-bottom: 1.5rem;
       }
-      .back-link {
-        font-size: 0.85rem;
-        color: var(--text-3);
+      .back-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
         text-decoration: none;
+        flex-shrink: 0;
       }
-      .back-link:hover {
-        color: var(--accent-text);
-      }
+      .back-arrow svg { width: 1.2rem; height: 1.2rem; }
+      .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
       h1 {
         font-size: 1.5rem;
         color: var(--text-1);
@@ -82,7 +92,7 @@ import { ThreadCardComponent } from './components/thread-card.component';
       }
       .back-btn {
         display: inline-block;
-        padding: 0.5rem 1.25rem;
+        padding: 0.5rem 1.5rem;
         border-radius: 0.75rem;
         background: var(--accent-glow);
         color: var(--accent-text);

@@ -10,6 +10,7 @@ import { MetricCardComponent } from './components/metric-card.component';
 import { PeriodSelectorComponent } from './components/period-selector.component';
 import { TimeSeriesChartComponent } from './components/time-series-chart.component';
 import { ChapterFunnelComponent } from './components/chapter-funnel.component';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chaptersRead';
 
@@ -22,13 +23,16 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
     PeriodSelectorComponent,
     TimeSeriesChartComponent,
     ChapterFunnelComponent,
+    TranslatePipe,
   ],
   template: `
     <section class="analytics-page">
       @if (data()) {
         <header class="page-header">
           <div class="title-wrap">
-            <a class="back-link" href="/analytics">&larr; Analytics</a>
+            <a class="back-arrow" routerLink="/analytics" [title]="'actions.back' | translate">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            </a>
             <h1>{{ data()!.novel.title }}</h1>
           </div>
           <app-period-selector [selected]="period()" (periodChange)="onPeriodChange($event)" />
@@ -181,14 +185,21 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
       flex-direction: column;
       gap: 4px;
     }
-    .back-link {
-      font-size: 0.82rem;
-      color: var(--accent);
+    .back-arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-surface);
+      color: var(--text-1);
       text-decoration: none;
+      flex-shrink: 0;
     }
-    .back-link:hover {
-      text-decoration: underline;
-    }
+    .back-arrow svg { width: 1.2rem; height: 1.2rem; }
+    .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
     .page-header h1 {
       font-size: 1.5rem;
       font-weight: 700;
@@ -232,7 +243,7 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
     }
     .toggle-btn {
       padding: 4px 12px;
-      border-radius: 16px;
+      border-radius: 1rem;
       border: 1px solid var(--border);
       background: var(--bg-surface);
       color: var(--text-2);
@@ -245,14 +256,14 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
     }
     .toggle-btn.active {
       background: var(--accent);
-      color: var(--accent-text);
+      color: var(--accent-contrast);
       border-color: var(--accent);
     }
     .chapters-table-wrap {
       margin-top: 20px;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 0.75rem;
       overflow-x: auto;
     }
     .chapters-table {
@@ -298,7 +309,7 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
     }
     .export-btn {
       padding: 10px 20px;
-      border-radius: 10px;
+      border-radius: 0.75rem;
       border: 1px solid var(--border);
       background: var(--bg-card);
       color: var(--text-1);

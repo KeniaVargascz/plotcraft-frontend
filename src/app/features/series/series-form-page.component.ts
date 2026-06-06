@@ -16,16 +16,19 @@ import {
   SeriesType,
 } from './models/series.model';
 import { SeriesService } from './services/series.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-series-form-page',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, RouterLink, DragDropModule, LoadingSpinnerComponent],
+  imports: [ReactiveFormsModule, FormsModule, RouterLink, DragDropModule, LoadingSpinnerComponent, TranslatePipe],
   template: `
     <section class="page">
       <header>
+        <a class="back-arrow" routerLink="/mis-sagas" [title]="'actions.back' | translate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        </a>
         <h1>{{ isEdit() ? 'Editar saga' : 'Nueva saga' }}</h1>
-        <a routerLink="/mis-sagas">Volver</a>
       </header>
 
       @if (loading()) {
@@ -127,28 +130,43 @@ import { SeriesService } from './services/series.service';
       }
       header {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
+        gap: 0.75rem;
       }
+      .back-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        text-decoration: none;
+        flex-shrink: 0;
+      }
+      .back-arrow svg { width: 1.2rem; height: 1.2rem; }
+      .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
       .form {
         display: grid;
         gap: 1rem;
-        padding: 1.25rem;
-        border-radius: 1.25rem;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
       }
       label {
         display: grid;
-        gap: 0.4rem;
+        gap: 0.5rem;
         color: var(--text-2);
       }
       input,
       textarea,
       select,
       button {
-        padding: 0.7rem 0.9rem;
-        border-radius: 0.85rem;
+        padding: 0.75rem 1rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -162,8 +180,8 @@ import { SeriesService } from './services/series.service';
       }
       .novels-block,
       .status-block {
-        padding: 1.25rem;
-        border-radius: 1.25rem;
+        padding: 1.5rem;
+        border-radius: 1.5rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
         display: grid;
@@ -182,7 +200,7 @@ import { SeriesService } from './services/series.service';
         gap: 0.75rem;
         align-items: center;
         padding: 0.75rem;
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
       }

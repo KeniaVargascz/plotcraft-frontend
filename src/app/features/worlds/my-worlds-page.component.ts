@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { WorldSummary } from '../../core/models/world.model';
 import { WorldsService } from '../../core/services/worlds.service';
@@ -31,26 +31,21 @@ import { WorldCardComponent } from './components/world-card.component';
       } @else {
         <section class="grid">
           @for (world of worlds(); track world.id) {
-            <article class="stack">
-              <app-world-card [world]="world" [showVisibility]="true" />
+            <div class="stack">
+              <app-world-card
+                [world]="world"
+                [showVisibility]="true"
+                [showActions]="true"
+                [removing]="removing() === world.slug"
+                (edit)="onEdit(world.slug)"
+                (delete)="remove(world.slug)"
+              />
               @if (world.wbSummary && world.wbSummary.entriesCount) {
                 <div class="wb-badge-row">
-                  <span class="wb-badge"
-                    >&#128218; {{ world.wbSummary!.entriesCount }} entradas</span
-                  >
+                  <span class="wb-badge">&#128218; {{ world.wbSummary!.entriesCount }} entradas</span>
                 </div>
               }
-              <div class="actions">
-                <a [routerLink]="['/mis-mundos', world.slug, 'editar']">Editar</a>
-                <button
-                  type="button"
-                  [disabled]="removing() === world.slug"
-                  (click)="remove(world.slug)"
-                >
-                  {{ removing() === world.slug ? 'Eliminando...' : 'Eliminar' }}
-                </button>
-              </div>
-            </article>
+            </div>
           }
         </section>
       }
@@ -65,12 +60,11 @@ import { WorldCardComponent } from './components/world-card.component';
       }
       .card {
         padding: 1.25rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
-      .hero,
-      .actions {
+      .hero {
         display: flex;
         justify-content: space-between;
         gap: 1rem;
@@ -82,10 +76,8 @@ import { WorldCardComponent } from './components/world-card.component';
         gap: 1rem;
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .cta,
-      .actions a,
-      .actions button {
-        padding: 0.8rem 1rem;
+      .cta {
+        padding: 1rem 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         text-decoration: none;
@@ -105,8 +97,8 @@ import { WorldCardComponent } from './components/world-card.component';
       .wb-badge {
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
-        padding: 0.3rem 0.7rem;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -124,6 +116,7 @@ import { WorldCardComponent } from './components/world-card.component';
 })
 export class MyWorldsPageComponent {
   private readonly worldsService = inject(WorldsService);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly worlds = signal<WorldSummary[]>([]);
@@ -132,6 +125,10 @@ export class MyWorldsPageComponent {
 
   constructor() {
     this.load();
+  }
+
+  onEdit(slug: string) {
+    this.router.navigate(['/mis-mundos', slug, 'editar']);
   }
 
   remove(slug: string) {

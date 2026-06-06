@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../core/services/auth.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -33,13 +33,12 @@ import { SeriesService } from './services/series.service';
       } @else {
         <div class="grid">
           @for (s of items(); track s.id) {
-            <div class="item">
-              <app-series-card [series]="s" />
-              <div class="actions">
-                <a [routerLink]="['/mis-sagas', s.slug, 'editar']">Editar</a>
-                <button type="button" (click)="remove(s)">Eliminar</button>
-              </div>
-            </div>
+            <app-series-card
+              [series]="s"
+              [showActions]="true"
+              (edit)="onEdit(s.slug)"
+              (delete)="remove(s)"
+            />
           }
         </div>
       }
@@ -49,7 +48,7 @@ import { SeriesService } from './services/series.service';
     `
       .page {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
       }
       .header {
         display: flex;
@@ -59,7 +58,7 @@ import { SeriesService } from './services/series.service';
         gap: 1rem;
       }
       .primary {
-        padding: 0.75rem 1.25rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -70,26 +69,6 @@ import { SeriesService } from './services/series.service';
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1rem;
-      }
-      .item {
-        display: grid;
-        gap: 0.5rem;
-      }
-      .actions {
-        display: flex;
-        gap: 0.5rem;
-        justify-content: flex-end;
-      }
-      .actions a,
-      .actions button {
-        padding: 0.45rem 0.9rem;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-        background: var(--bg-surface);
-        color: var(--text-1);
-        text-decoration: none;
-        cursor: pointer;
-        font-size: 0.82rem;
       }
       .empty {
         color: var(--text-2);
@@ -108,6 +87,7 @@ export class MySeriesPageComponent implements OnInit {
   private readonly seriesService = inject(SeriesService);
   private readonly authService = inject(AuthService);
   private readonly dialog = inject(MatDialog);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
@@ -134,6 +114,10 @@ export class MySeriesPageComponent implements OnInit {
         this.loading.set(false);
       },
     });
+  }
+
+  onEdit(slug: string): void {
+    this.router.navigate(['/mis-sagas', slug, 'editar']);
   }
 
   remove(series: SeriesSummary): void {

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { CharacterSummary } from '../../core/models/character.model';
 import { AuthService } from '../../core/services/auth.service';
@@ -34,19 +34,13 @@ import { CharacterCardComponent } from './components/character-card.component';
       } @else {
         <section class="grid">
           @for (character of characters(); track character.id) {
-            <article class="stack">
-              <app-character-card [character]="character" />
-              <div class="actions">
-                <a [routerLink]="['/mis-personajes', character.slug, 'editar']">Editar</a>
-                <button
-                  type="button"
-                  [disabled]="removing() === character.slug"
-                  (click)="remove(character.slug)"
-                >
-                  {{ removing() === character.slug ? 'Eliminando...' : 'Eliminar' }}
-                </button>
-              </div>
-            </article>
+            <app-character-card
+              [character]="character"
+              [showActions]="true"
+              [removing]="removing() === character.slug"
+              (edit)="onEdit(character.slug)"
+              (delete)="remove(character.slug)"
+            />
           }
         </section>
       }
@@ -54,19 +48,17 @@ import { CharacterCardComponent } from './components/character-card.component';
   `,
   styles: [
     `
-      .page-shell,
-      .stack {
+      .page-shell {
         display: grid;
         gap: 1rem;
       }
       .card {
         padding: 1.25rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
-      .hero,
-      .actions {
+      .hero {
         display: flex;
         justify-content: space-between;
         gap: 1rem;
@@ -78,10 +70,8 @@ import { CharacterCardComponent } from './components/character-card.component';
         gap: 1rem;
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .cta,
-      .actions a,
-      .actions button {
-        padding: 0.8rem 1rem;
+      .cta {
+        padding: 1rem 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         text-decoration: none;
@@ -105,6 +95,7 @@ import { CharacterCardComponent } from './components/character-card.component';
 export class MyCharactersPageComponent {
   private readonly charactersService = inject(CharactersService);
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly characters = signal<CharacterSummary[]>([]);
@@ -113,6 +104,10 @@ export class MyCharactersPageComponent {
 
   constructor() {
     this.load();
+  }
+
+  onEdit(slug: string) {
+    this.router.navigate(['/mis-personajes', slug, 'editar']);
   }
 
   remove(slug: string) {

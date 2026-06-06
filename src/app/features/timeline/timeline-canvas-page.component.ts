@@ -14,6 +14,7 @@ import {
   TimelineEventFormData,
 } from './components/timeline-event-form-dialog.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-timeline-canvas-page',
@@ -25,6 +26,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
     DragDropModule,
     TimelineEventCardComponent,
     TimelineFiltersComponent,
+    TranslatePipe,
   ],
   template: `
     @if (loading()) {
@@ -36,7 +38,9 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
         <!-- Topbar -->
         <header class="topbar">
           <div class="topbar-left">
-            <a routerLink="/mis-timelines" class="back-btn">← Volver</a>
+            <a routerLink="/mis-timelines" class="back-arrow" [title]="'actions.back' | translate">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            </a>
             <input
               type="text"
               class="title-input"
@@ -223,20 +227,23 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
         gap: 0.5rem;
         flex-wrap: wrap;
       }
-      .back-btn {
-        padding: 0.4rem 0.75rem;
-        border-radius: 0.6rem;
+      .back-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 50%;
         border: 1px solid var(--border);
         background: var(--bg-surface);
-        color: var(--text-2);
-        text-decoration: none;
-        font-size: 0.8rem;
-      }
-      .back-btn:hover {
         color: var(--text-1);
+        text-decoration: none;
+        flex-shrink: 0;
       }
+      .back-arrow svg { width: 1.1rem; height: 1.1rem; }
+      .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
       .title-input {
-        padding: 0.35rem 0.6rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 0.5rem;
         border: 1px solid transparent;
         background: transparent;
@@ -252,7 +259,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
         outline: none;
       }
       .novel-badge {
-        padding: 0.2rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -260,8 +267,8 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
         font-weight: 600;
       }
       .tb-btn {
-        padding: 0.4rem 0.85rem;
-        border-radius: 0.65rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -279,11 +286,11 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
       .view-toggle {
         display: flex;
         border: 1px solid var(--border);
-        border-radius: 0.6rem;
+        border-radius: 0.5rem;
         overflow: hidden;
       }
       .toggle-opt {
-        padding: 0.35rem 0.7rem;
+        padding: 0.5rem 0.75rem;
         border: none;
         background: var(--bg-surface);
         color: var(--text-2);
@@ -362,8 +369,8 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
       .axis-label {
         font-size: 0.68rem;
         color: var(--text-3);
-        padding: 0.15rem 0.4rem;
-        border-radius: 0.3rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
         white-space: nowrap;
@@ -429,7 +436,7 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
       }
       .type-chip {
         font-size: 0.68rem;
-        padding: 0.12rem 0.45rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         font-weight: 600;
         white-space: nowrap;
@@ -448,11 +455,11 @@ import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/c
       }
       .col-acts {
         display: flex;
-        gap: 0.3rem;
+        gap: 0.5rem;
       }
       .row-btn {
-        padding: 0.2rem 0.45rem;
-        border-radius: 0.4rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-2);

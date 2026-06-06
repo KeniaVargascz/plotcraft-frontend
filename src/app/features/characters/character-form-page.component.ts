@@ -13,24 +13,27 @@ import { WorldsService } from '../../core/services/worlds.service';
 import { WorldSummary } from '../../core/models/world.model';
 import { FeatureFlagService } from '../../core/services/feature-flag.service';
 import { FeatureFlag } from '../../core/constants/feature-flags.constants';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-character-form-page',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, TranslatePipe],
   template: `
     <section class="form-shell">
       <header class="hero card">
+        <a class="back-arrow" routerLink="/mis-personajes" [title]="'actions.back' | translate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        </a>
         <div>
           <p class="eyebrow">Autor</p>
           <h1>{{ isEdit() ? 'Editar personaje' : 'Nuevo personaje' }}</h1>
           <p class="lede">Trabaja personalidad, historia y tensiones internas con Markdown.</p>
         </div>
-        <a class="back-link" routerLink="/mis-personajes">Volver</a>
       </header>
 
       @if (!catalogEnabled()) {
-        <div class="flag-notice" style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:8px;font-size:.9rem;margin-bottom:1rem">
+        <div class="flag-notice" style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:0.5rem;font-size:.9rem;margin-bottom:1rem">
           El catalogo de personajes esta desactivado. Tu personaje no sera visible publicamente hasta que se habilite.
         </div>
       }
@@ -104,50 +107,27 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
           <section class="editor-field">
             <div class="editor-heading">
               <div>
-                <span>Perfil del personaje</span>
+                <span>Perfil del personaje</span><br />
                 <small
                   >Un solo documento con Markdown para ficha, historia, relaciones y arco.</small
                 >
               </div>
+              <!-- TODO: toolbar de Markdown deshabilitada temporalmente
               <div class="toolbar">
                 <button type="button" (click)="applyBlock('h2')" [disabled]="saving()">H2</button>
                 <button type="button" (click)="applyBlock('h3')" [disabled]="saving()">H3</button>
-                <button
-                  type="button"
-                  (click)="applyWrap('**', '**', 'texto en negrita')"
-                  [disabled]="saving()"
-                >
-                  B
-                </button>
-                <button
-                  type="button"
-                  (click)="applyWrap('*', '*', 'texto en cursiva')"
-                  [disabled]="saving()"
-                >
-                  I
-                </button>
-                <button
-                  type="button"
-                  (click)="applyWrap('[', '](https://ejemplo.com)', 'enlace')"
-                  [disabled]="saving()"
-                >
-                  Link
-                </button>
-                <button type="button" (click)="applyBlock('quote')" [disabled]="saving()">
-                  Cita
-                </button>
-                <button type="button" (click)="applyBlock('list')" [disabled]="saving()">
-                  Lista
-                </button>
-                <button type="button" (click)="applyBlock('table')" [disabled]="saving()">
-                  Tabla
-                </button>
-                <button type="button" (click)="applyBlock('separator')" [disabled]="saving()">
-                  ---
-                </button>
+                <button type="button" (click)="applyWrap('**', '**', 'texto en negrita')" [disabled]="saving()">B</button>
+                <button type="button" (click)="applyWrap('*', '*', 'texto en cursiva')" [disabled]="saving()">I</button>
+                <button type="button" (click)="applyWrap('[', '](https://ejemplo.com)', 'enlace')" [disabled]="saving()">Link</button>
+                <button type="button" (click)="applyBlock('quote')" [disabled]="saving()">Cita</button>
+                <button type="button" (click)="applyBlock('list')" [disabled]="saving()">Lista</button>
+                <button type="button" (click)="applyBlock('table')" [disabled]="saving()">Tabla</button>
+                <button type="button" (click)="applyBlock('separator')" [disabled]="saving()">---</button>
               </div>
+              -->
             </div>
 
+            <!-- TODO: plantillas deshabilitadas temporalmente
             <div class="template-row">
               @for (template of editorTemplates; track template.label) {
                 <button
@@ -160,6 +140,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
                 </button>
               }
             </div>
+            -->
 
             <textarea
               #profileEditor
@@ -245,16 +226,14 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       }
       .card {
         padding: 1.25rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
       }
       .hero {
         display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-        align-items: center;
-        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 0.75rem;
       }
       .editor-grid {
         grid-template-columns: 1.1fr 0.9fr;
@@ -266,7 +245,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       }
       label {
         display: grid;
-        gap: 0.45rem;
+        gap: 0.5rem;
       }
       .split {
         display: grid;
@@ -293,13 +272,13 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       .toolbar,
       .template-row {
         display: flex;
-        gap: 0.55rem;
+        gap: 0.75rem;
         flex-wrap: wrap;
       }
       .toolbar button,
       .template-chip {
         min-height: 2.25rem;
-        padding: 0.45rem 0.75rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: color-mix(in srgb, var(--bg-surface) 90%, white 10%);
@@ -316,21 +295,41 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       input,
       select,
       textarea,
-      .actions button,
-      .back-link {
-        padding: 0.85rem 1rem;
+      .actions button {
+        padding: 1rem 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
         text-decoration: none;
       }
+      .back-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        text-decoration: none;
+        flex-shrink: 0;
+      }
+      .back-arrow svg {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+      .back-arrow:hover {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
       .novel-pill {
         display: inline-flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.75rem;
         min-height: 3rem;
-        padding: 0.65rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow) !important;
         color: var(--accent-text) !important;
@@ -351,8 +350,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         gap: 0.75rem;
         flex-wrap: wrap;
       }
-      .actions button,
-      .back-link {
+      .actions button {
         background: var(--accent-glow);
         color: var(--accent-text);
       }

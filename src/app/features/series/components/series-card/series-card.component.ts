@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../models/series.model';
+import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-series-card',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   template: `
     <article class="series-card">
       <a class="cover-wrap" [routerLink]="['/sagas', series().slug]">
@@ -39,6 +40,18 @@ import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../m
         <div class="footer-row">
           <span class="status-badge" [class]="statusClass()">{{ statusLabel() }}</span>
           <span class="count">{{ series().novelsCount }} novelas</span>
+          @if (showActions()) {
+            <div class="card-actions">
+              <button class="action-btn" type="button" (click)="edit.emit()" [title]="'actions.edit' | translate">
+                <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                <span class="action-label">{{ 'actions.edit' | translate }}</span>
+              </button>
+              <button class="action-btn action-btn--danger" type="button" (click)="delete.emit()" [title]="'actions.delete' | translate">
+                <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                <span class="action-label">{{ 'actions.delete' | translate }}</span>
+              </button>
+            </div>
+          }
         </div>
       </div>
     </article>
@@ -53,7 +66,7 @@ import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../m
         grid-template-columns: 120px 1fr;
         gap: 1rem;
         padding: 1rem;
-        border-radius: 1.25rem;
+        border-radius: 1.5rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
       }
@@ -61,7 +74,7 @@ import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../m
         position: relative;
         display: block;
         height: 170px;
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         overflow: hidden;
         text-decoration: none;
       }
@@ -102,7 +115,7 @@ import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../m
         position: absolute;
         top: 0.5rem;
         left: 0.5rem;
-        padding: 0.2rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         background: rgba(0, 0, 0, 0.6);
         color: #fff;
@@ -126,7 +139,7 @@ import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../m
       .author {
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
         color: var(--text-2);
         text-decoration: none;
         font-size: 0.8rem;
@@ -152,7 +165,7 @@ import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../m
         margin-top: auto;
       }
       .status-badge {
-        padding: 0.2rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.68rem;
         font-weight: 700;
@@ -178,12 +191,45 @@ import { SERIES_STATUS_LABELS, SERIES_TYPE_LABELS, SeriesSummary } from '../../m
         color: var(--text-3);
         font-size: 0.78rem;
       }
+      .card-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-left: auto;
+      }
+      .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 0.85rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+      .action-icon { width: 0.9rem; height: 0.9rem; flex-shrink: 0; }
+      .action-btn:hover { opacity: 0.85; }
+      .action-btn--danger {
+        background: rgba(214, 123, 123, 0.12);
+        border-color: rgba(214, 123, 123, 0.28);
+        color: #de9292;
+      }
+      @media (max-width: 720px) {
+        .action-label { display: none; }
+        .action-btn { padding: 0.5rem; }
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SeriesCardComponent {
   readonly series = input.required<SeriesSummary>();
+  readonly showActions = input(false);
+  readonly edit = output();
+  readonly delete = output();
 
   readonly typeLabel = computed(() => SERIES_TYPE_LABELS[this.series().type]);
   readonly statusLabel = computed(() => SERIES_STATUS_LABELS[this.series().status]);

@@ -482,8 +482,8 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       :host ::ng-deep .bookmark-marker {
         display: inline-flex;
         align-items: center;
-        gap: 0.3rem;
-        padding: 0.15rem 0.5rem;
+        gap: 0.5rem;
+        padding: 0.25rem 0.5rem;
         margin-left: 0.5rem;
         float: right;
         border-radius: 999px;
@@ -564,7 +564,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         color: #fff !important;
       }
       .hint-banner {
-        padding: 0.45rem 0.75rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -572,8 +572,8 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       .icon-btn {
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
-        padding: 0.4rem 0.75rem;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: var(--bg-surface);
@@ -593,7 +593,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.5rem 0.8rem;
+        padding: 0.5rem 1rem;
       }
       /* Select, input range/checkbox, label and toggle styles moved to child components */
       a {
@@ -612,7 +612,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         font-weight: 600;
         display: inline-flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.5rem;
       }
       .vote-action .vote-icon {
         flex-shrink: 0;
@@ -624,7 +624,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
         border-color: var(--accent-text) !important;
       }
       .vote-login {
-        padding: 0.5rem 0.9rem;
+        padding: 0.5rem 1rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -679,7 +679,7 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
           max-height: 85vh;
           overflow-y: auto;
           border: 1px solid var(--border);
-          border-radius: 1.25rem;
+          border-radius: 1.5rem;
           background: var(--bg-card);
           box-shadow: 0 16px 48px -12px var(--shadow);
         }
@@ -1218,7 +1218,11 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   private loadPreferences() {
     const localPreferences = localStorage.getItem('plotcraft_reader_preferences');
     if (localPreferences) {
-      this.preferences.set(JSON.parse(localPreferences) as ReaderPreferences);
+      try {
+        this.preferences.set(JSON.parse(localPreferences) as ReaderPreferences);
+      } catch {
+        localStorage.removeItem('plotcraft_reader_preferences');
+      }
       this.applyReaderStyles();
     }
 

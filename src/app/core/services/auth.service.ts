@@ -1,9 +1,6 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, catchError, map, of, shareReplay, take, tap } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../models/api-response.model';
 import { AuthResponse } from '../models/auth-response.model';
 import { User } from '../models/user.model';
 import { TokenService } from './token.service';
@@ -14,7 +11,6 @@ type RegisterPayload = { email: string; username: string; password: string };
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly http = inject(HttpClient);
   private readonly api = inject(HttpApiService);
   private readonly router = inject(Router);
   private readonly tokenService = inject(TokenService);
@@ -50,15 +46,15 @@ export class AuthService {
   }
 
   register(payload: RegisterPayload): Observable<User> {
-    return this.http
-      .post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/register`, payload)
-      .pipe(map((response) => this.handleAuthResponse(response.data)));
+    return this.api
+      .post<AuthResponse>('/auth/register', payload)
+      .pipe(map((data) => this.handleAuthResponse(data)));
   }
 
   verifyRegistration(payload: { email: string; code: string }): Observable<User> {
-    return this.http
-      .post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/register/verify`, payload)
-      .pipe(map((response) => this.handleAuthResponse(response.data)));
+    return this.api
+      .post<AuthResponse>('/auth/register/verify', payload)
+      .pipe(map((data) => this.handleAuthResponse(data)));
   }
 
   resendOtp(email: string): Observable<unknown> {
@@ -78,9 +74,9 @@ export class AuthService {
   }
 
   login(payload: LoginPayload): Observable<User> {
-    return this.http
-      .post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/login`, payload)
-      .pipe(map((response) => this.handleAuthResponse(response.data)));
+    return this.api
+      .post<AuthResponse>('/auth/login', payload)
+      .pipe(map((data) => this.handleAuthResponse(data)));
   }
 
   me(): Observable<User> {
@@ -103,13 +99,11 @@ export class AuthService {
       return of(null);
     }
 
-    this.refreshInFlight$ = this.http
-      .post<ApiResponse<AuthResponse>>(`${environment.apiUrl}/auth/refresh`, {
-        refreshToken,
-      })
+    this.refreshInFlight$ = this.api
+      .post<AuthResponse>('/auth/refresh', { refreshToken })
       .pipe(
-        map((response) =>
-          this.handleAuthResponse(response.data).id ? response.data.accessToken : null,
+        map((data) =>
+          this.handleAuthResponse(data).id ? data.accessToken : null,
         ),
         tap({
           error: () => this.clearSession(),
@@ -129,9 +123,10 @@ export class AuthService {
     const accessToken = this.tokenService.getAccessToken();
 
     if (refreshToken && accessToken) {
-      this.http
+      const { http, baseUrl } = this.api.raw();
+      http
         .post(
-          `${environment.apiUrl}/auth/logout`,
+          `${baseUrl}/auth/logout`,
           { refreshToken },
           {
             headers: {
@@ -167,6 +162,7 @@ export class AuthService {
 
   private clearSession(): void {
     this.tokenService.clear();
+    localStorage.removeItem('plotcraft_reader_preferences');
     this.currentUserSubject.next(null);
   }
 }

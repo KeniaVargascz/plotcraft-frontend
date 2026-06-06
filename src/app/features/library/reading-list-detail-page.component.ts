@@ -5,17 +5,20 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 import { ReadingList } from '../../core/models/reading-list.model';
 import { ReadingListsService } from '../../core/services/reading-lists.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-reading-list-detail-page',
   standalone: true,
-  imports: [RouterLink, DatePipe, TitleCasePipe, NgClass],
+  imports: [RouterLink, DatePipe, TitleCasePipe, NgClass, TranslatePipe],
   template: `
     @if (list(); as current) {
       <section class="detail-shell">
         <header class="hero card">
           <div class="hero-copy">
-            <a class="back-link" routerLink="/biblioteca/listas">Volver a listas</a>
+            <a class="back-arrow" routerLink="/biblioteca/listas" [title]="'actions.back' | translate">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            </a>
             <div class="hero-head">
               <h1>{{ current.name }}</h1>
               <span class="badge" [ngClass]="current.visibility.toLowerCase()">
@@ -107,9 +110,9 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
         gap: 1rem;
       }
       .card {
-        padding: 1.25rem;
+        padding: 1.5rem;
         border: 1px solid var(--border);
-        border-radius: 1.25rem;
+        border-radius: 1rem;
         background: linear-gradient(
           180deg,
           color-mix(in srgb, var(--bg-card) 92%, white 8%),
@@ -121,12 +124,12 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
         grid-template-columns: 1.25fr 0.75fr;
         align-items: start;
       }
-      .back-link,
+      .back-arrow,
       .title-link,
       .card-actions a {
         text-decoration: none;
       }
-      .back-link,
+      .back-arrow,
       .lede,
       .item-head span,
       .meta-row,
@@ -134,6 +137,20 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
       .meta-card span {
         color: var(--text-2);
       }
+      .back-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
+        flex-shrink: 0;
+      }
+      .back-arrow svg { width: 1.2rem; height: 1.2rem; }
+      .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
       .hero-head,
       .card-actions,
       .meta-row {
@@ -145,11 +162,11 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
       }
       .hero-meta {
         display: grid;
-        gap: 0.85rem;
+        gap: 1rem;
       }
       .meta-card {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
         padding: 1rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
@@ -159,7 +176,7 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
         font-size: 1.2rem;
       }
       .badge {
-        padding: 0.4rem 0.75rem;
+        padding: 0.5rem 0.75rem;
         border-radius: 999px;
         font-size: 0.85rem;
         border: 1px solid var(--border);
@@ -201,16 +218,16 @@ import { ReadingListsService } from '../../core/services/reading-lists.service';
       }
       .note {
         margin: 0;
-        padding: 0.95rem 1rem;
+        padding: 1rem 1rem;
         border-radius: 1rem;
         background: var(--bg-surface);
         border: 1px solid var(--border);
       }
       button,
       .card-actions a {
-        border-radius: 0.95rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         font: inherit;
       }
       .card-actions a {

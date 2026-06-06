@@ -76,7 +76,8 @@
       "error": {
         "identifier": {
           "required": "Ingresa tu usuario o correo electronico.",
-          "minlength": "Minimo 3 caracteres."
+          "minlength": "Minimo 3 caracteres.",
+          "maxlength": "Maximo 254 caracteres."
         },
         "password": {
           "required": "Ingresa tu contrasena."
@@ -160,7 +161,8 @@
           "invalid": "Codigo incorrecto. Intenta de nuevo.",
           "expired": "El codigo ha expirado. Solicita uno nuevo."
         },
-        "tooManyAttempts": "Demasiados intentos. Solicita un nuevo codigo."
+        "tooManyAttempts": "Demasiados intentos.",
+        "retryIn": "Podras reintentar en {{time}}"
       }
     },
     "forgotPassword": {
@@ -293,7 +295,10 @@
   "actions": {
     "save": "Guardar",
     "edit": "Editar",
-    "delete": "Eliminar"
+    "delete": "Eliminar",
+    "removing": "Eliminando...",
+    "view": "Ver",
+    "back": "Volver"
   },
   "novel": {
     "status": {

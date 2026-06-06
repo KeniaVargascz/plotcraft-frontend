@@ -7,15 +7,18 @@ import { ContentChange, QuillEditorComponent, QuillModules } from 'ngx-quill';
 import { ChapterDetail } from '../../core/models/chapter.model';
 import { ChaptersService } from '../../core/services/chapters.service';
 import { MarkdownService } from '../../core/services/markdown.service';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-chapter-editor-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, QuillEditorComponent],
+  imports: [FormsModule, RouterLink, QuillEditorComponent, TranslatePipe],
   template: `
     <section class="editor-shell">
       <header class="editor-topbar">
-        <a [routerLink]="['/mis-novelas', slug, 'capitulos']">Volver a capitulos</a>
+        <a class="back-arrow" [routerLink]="['/mis-novelas', slug, 'capitulos']" [title]="'actions.back' | translate">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        </a>
 
         <div class="meta">
           <span data-testid="word-count">{{ wordCount() }} palabras</span>
@@ -114,13 +117,21 @@ import { MarkdownService } from '../../core/services/markdown.service';
         flex-wrap: wrap;
       }
 
-      .editor-topbar a {
-        color: var(--accent-text);
+      .back-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text-1);
         text-decoration: none;
+        flex-shrink: 0;
       }
-      .editor-topbar a:hover {
-        color: var(--accent);
-      }
+      .back-arrow svg { width: 1.1rem; height: 1.1rem; }
+      .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
 
       .editor-pane {
         padding: 1rem;
@@ -131,11 +142,11 @@ import { MarkdownService } from '../../core/services/markdown.service';
 
       input,
       button {
-        border-radius: 0.9rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
       }
 
       input {
@@ -145,7 +156,7 @@ import { MarkdownService } from '../../core/services/markdown.service';
       .status,
       .error {
         margin: 0;
-        padding: 0.85rem 1rem;
+        padding: 1rem 1rem;
         border-radius: 1rem;
       }
 
@@ -181,7 +192,7 @@ import { MarkdownService } from '../../core/services/markdown.service';
         color: var(--text-1);
       }
       :host ::ng-deep .chapter-quill .ql-toolbar.ql-snow {
-        border-radius: 0.9rem 0.9rem 0 0;
+        border-radius: 1rem 1rem 0 0;
         /* La toolbar puede tener muchos botones: que envuelvan, no que desborden. */
         display: flex;
         flex-wrap: wrap;
@@ -197,7 +208,7 @@ import { MarkdownService } from '../../core/services/markdown.service';
         backdrop-filter: blur(6px);
       }
       :host ::ng-deep .chapter-quill .ql-container.ql-snow {
-        border-radius: 0 0 0.9rem 0.9rem;
+        border-radius: 0 0 1rem 1rem;
         font-size: 1rem;
         line-height: 1.6;
         flex: 1 1 auto; /* ocupa el espacio restante del host */
@@ -245,9 +256,9 @@ import { MarkdownService } from '../../core/services/markdown.service';
         display: inline-flex;
         align-items: center;
         height: 32px;
-        padding: 0 1.75rem 0 0.75rem;
+        padding: 0 2rem 0 0.75rem;
         border: 1px solid var(--border);
-        border-radius: 0.6rem;
+        border-radius: 0.5rem;
         background: var(--bg-surface);
         color: var(--text-1);
         font-size: 0.85rem;
@@ -373,16 +384,16 @@ import { MarkdownService } from '../../core/services/markdown.service';
       :host ::ng-deep .chapter-quill .ql-snow .ql-picker.ql-size .ql-picker-options {
         margin-top: 0.35rem;
         min-width: 160px;
-        padding: 0.4rem;
+        padding: 0.5rem;
         border: 1px solid var(--border);
-        border-radius: 0.7rem;
+        border-radius: 0.75rem;
         background: var(--bg-card);
         box-shadow: 0 12px 28px -16px var(--shadow);
       }
       :host ::ng-deep .chapter-quill .ql-snow .ql-picker.ql-size .ql-picker-item {
         display: block;
-        padding: 0.4rem 0.6rem;
-        border-radius: 0.45rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
         color: var(--text-1);
         cursor: pointer;
         transition: background 100ms ease;

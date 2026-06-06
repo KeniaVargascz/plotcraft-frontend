@@ -18,7 +18,7 @@
           midnight:{bg:'#060410',accent:'#8b5cf6'},
           forest:{bg:'#040b06',accent:'#3db05a'}
         };
-        var t=themes[localStorage.getItem('plotcraft-theme')]||themes.ink;
+        var t=themes[localStorage.getItem('plotcraft_theme')]||themes.ink;
         document.documentElement.style.setProperty('--splash-bg',t.bg);
         document.documentElement.style.setProperty('--splash-accent',t.accent);
       })();

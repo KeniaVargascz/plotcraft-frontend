@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, Input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CharacterRole, CharacterSummary } from '../../../core/models/character.model';
 import { AuthGateService } from '../../../core/services/auth-gate.service';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-character-card',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   template: `
     <article class="character-card">
       <div class="avatar-strip">
@@ -21,6 +22,19 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
             @{{ character.author.username }}
           </a>
         </div>
+
+        @if (showActions()) {
+          <div class="card-actions">
+            <button class="action-btn" type="button" (click)="edit.emit()" [title]="'actions.edit' | translate">
+              <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+              <span class="action-label">{{ 'actions.edit' | translate }}</span>
+            </button>
+            <button class="action-btn action-btn--danger" type="button" [disabled]="removing()" (click)="delete.emit()" [title]="'actions.delete' | translate">
+              <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              <span class="action-label">{{ removing() ? ('actions.removing' | translate) : ('actions.delete' | translate) }}</span>
+            </button>
+          </div>
+        }
       </div>
 
       <div class="card-body">
@@ -63,7 +77,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
         display: flex;
         flex-direction: column;
         height: 100%;
-        border-radius: 1.2rem;
+        border-radius: 1rem;
         border: 1px solid color-mix(in srgb, var(--border) 86%, rgba(255, 255, 255, 0.08));
         background: color-mix(in srgb, var(--bg-card) 92%, #0b0f14 8%);
         box-shadow: 0 16px 32px rgba(7, 10, 16, 0.18);
@@ -77,12 +91,64 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
         padding: 1rem 1rem 0;
       }
 
+      .card-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-left: auto;
+        flex-shrink: 0;
+      }
+
+      .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 0.85rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .action-icon {
+        width: 0.9rem;
+        height: 0.9rem;
+        flex-shrink: 0;
+      }
+
+      .action-btn:hover {
+        opacity: 0.85;
+      }
+
+      .action-btn--danger {
+        background: rgba(214, 123, 123, 0.12);
+        border-color: rgba(214, 123, 123, 0.28);
+        color: #de9292;
+      }
+
+      .action-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 720px) {
+        .action-label {
+          display: none;
+        }
+        .action-btn {
+          padding: 0.5rem;
+        }
+      }
+
       .avatar {
         position: relative;
         width: 3.25rem;
         height: 3.25rem;
         flex-shrink: 0;
-        border-radius: 0.9rem;
+        border-radius: 1rem;
         display: grid;
         place-items: center;
         overflow: hidden;
@@ -139,9 +205,9 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
       .avatar-meta {
         display: flex;
         flex-direction: column;
-        gap: 0.35rem;
+        gap: 0.5rem;
         min-width: 0;
-        padding-top: 0.1rem;
+        padding-top: 0.25rem;
       }
 
       .role-badge {
@@ -149,7 +215,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
         align-items: center;
         justify-content: center;
         width: fit-content;
-        padding: 0.18rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         border: 1px solid transparent;
         font-size: 0.58rem;
@@ -211,8 +277,8 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
         display: flex;
         flex: 1;
         flex-direction: column;
-        gap: 0.45rem;
-        padding: 0.85rem 1rem 0;
+        gap: 0.5rem;
+        padding: 1rem 1rem 0;
         min-width: 0;
       }
 
@@ -241,7 +307,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
       .world-link {
         display: inline-flex;
         align-items: center;
-        gap: 0.35rem;
+        gap: 0.5rem;
         min-width: 0;
         color: var(--accent-text);
         font-size: 0.76rem;
@@ -265,14 +331,14 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
         align-items: center;
         gap: 0.75rem;
         margin-top: 0.9rem;
-        padding: 0.8rem 1rem 0.9rem;
+        padding: 1rem 1rem 1rem;
         border-top: 1px solid color-mix(in srgb, var(--border) 86%, rgba(255, 255, 255, 0.08));
       }
 
       .stat {
         display: inline-flex;
         align-items: baseline;
-        gap: 0.28rem;
+        gap: 0.25rem;
       }
 
       .stat-value {
@@ -304,6 +370,10 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
 export class CharacterCardComponent {
   private readonly authGate = inject(AuthGateService);
   @Input({ required: true }) character!: CharacterSummary;
+  readonly showActions = input(false);
+  readonly removing = input(false);
+  readonly edit = output();
+  readonly delete = output();
 
   onDetailClick(): void {
     this.authGate.navigate(this.characterLink());

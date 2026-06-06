@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { WorldSummary, WORLD_GENRE_LABELS } from '../../../core/models/world.model';
 import { AuthGateService } from '../../../core/services/auth-gate.service';
+import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
 @Component({
   selector: 'app-world-card',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, TranslatePipe],
   template: `
     <article class="world-card">
       <a class="cover" [class]="world().coverUrl ? '' : coverClass()" (click)="onDetailClick()">
@@ -25,11 +26,25 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
           <a class="author-link" [routerLink]="['/perfil', world().author.username]">
             @{{ world().author.username }}
           </a>
-          @if (showVisibility()) {
-            <span class="visibility-badge">
-              {{ world().visibility === 'PUBLIC' ? 'Publico' : 'Privado' }}
-            </span>
-          }
+          <div class="eyebrow-right">
+            @if (showVisibility()) {
+              <span class="visibility-badge">
+                {{ world().visibility === 'PUBLIC' ? 'Publico' : 'Privado' }}
+              </span>
+            }
+            @if (showActions()) {
+              <div class="card-actions">
+                <button class="action-btn" type="button" (click)="edit.emit()" [title]="'actions.edit' | translate">
+                  <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                  <span class="action-label">{{ 'actions.edit' | translate }}</span>
+                </button>
+                <button class="action-btn action-btn--danger" type="button" [disabled]="removing()" (click)="delete.emit()" [title]="'actions.delete' | translate">
+                  <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  <span class="action-label">{{ removing() ? ('actions.removing' | translate) : ('actions.delete' | translate) }}</span>
+                </button>
+              </div>
+            }
+          </div>
         </div>
 
         @if (genreLabel()) {
@@ -81,7 +96,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
         display: grid;
         grid-template-rows: auto 1fr auto;
         height: 100%;
-        border-radius: 1.3rem;
+        border-radius: 1.5rem;
         overflow: hidden;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -163,8 +178,8 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
         top: 0.7rem;
         right: 0.7rem;
         z-index: 2;
-        padding: 0.22rem 0.55rem;
-        border-radius: 0.4rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-base);
         color: var(--text-2);
@@ -176,15 +191,62 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
 
       .body {
         display: grid;
-        gap: 0.45rem;
-        padding: 0.9rem 1rem 0;
+        gap: 0.5rem;
+        padding: 1rem 1rem 0;
       }
 
       .eyebrow-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 0.7rem;
+        gap: 0.75rem;
+      }
+
+      .eyebrow-right {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 0.85rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.75rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .action-icon {
+        width: 0.9rem;
+        height: 0.9rem;
+        flex-shrink: 0;
+      }
+
+      .action-btn:hover { opacity: 0.85; }
+
+      .action-btn--danger {
+        background: rgba(214, 123, 123, 0.12);
+        border-color: rgba(214, 123, 123, 0.28);
+        color: #de9292;
+      }
+
+      .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+      @media (max-width: 720px) {
+        .action-label { display: none; }
+        .action-btn { padding: 0.5rem; }
       }
 
       .author-link,
@@ -198,7 +260,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
       }
 
       .visibility-badge {
-        padding: 0.18rem 0.52rem;
+        padding: 0.25rem 0.5rem;
         border-radius: 999px;
         background: color-mix(in srgb, var(--accent-glow) 64%, transparent);
         color: var(--accent-text);
@@ -208,7 +270,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
 
       .genre-badge {
         display: inline-block;
-        padding: 0.18rem 0.55rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         background: color-mix(in srgb, var(--accent-glow) 48%, transparent);
         color: var(--accent-text);
@@ -240,13 +302,13 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
 
       .tags-row {
         display: flex;
-        gap: 0.4rem;
+        gap: 0.5rem;
         flex-wrap: wrap;
         margin-top: 0.2rem;
       }
 
       .tag-pill {
-        padding: 0.22rem 0.58rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         border: 1px solid var(--border);
         background: color-mix(in srgb, var(--bg-surface) 78%, transparent);
@@ -258,8 +320,8 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
       .footer {
         display: flex;
         align-items: center;
-        gap: 0.8rem;
-        padding: 0.9rem 1rem 1rem;
+        gap: 1rem;
+        padding: 1rem 1rem 1rem;
         margin-top: 0.9rem;
         border-top: 1px solid var(--border);
         flex-wrap: wrap;
@@ -268,7 +330,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
       .stat {
         display: inline-flex;
         align-items: center;
-        gap: 0.32rem;
+        gap: 0.25rem;
         font-size: 0.72rem;
         color: var(--text-2);
       }
@@ -291,7 +353,7 @@ import { AuthGateService } from '../../../core/services/auth-gate.service';
       .stat-icon {
         width: 0.82rem;
         height: 0.82rem;
-        border-radius: 0.24rem;
+        border-radius: 0.25rem;
         opacity: 0.5;
       }
 
@@ -324,6 +386,10 @@ export class WorldCardComponent {
   private readonly authGate = inject(AuthGateService);
   readonly world = input.required<WorldSummary>();
   readonly showVisibility = input(false);
+  readonly showActions = input(false);
+  readonly removing = input(false);
+  readonly edit = output();
+  readonly delete = output();
 
   readonly genreLabel = computed(() => {
     const genre = this.world().genre;

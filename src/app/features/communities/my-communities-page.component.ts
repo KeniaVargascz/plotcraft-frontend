@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 import { NovelsService } from '../../core/services/novels.service';
 import { NovelSummary } from '../../core/models/novel.model';
 import { COMMUNITY_STATUS_LABELS, Community, CommunityType } from './models/community.model';
@@ -13,7 +14,7 @@ import { CommunityService } from './services/community.service';
 @Component({
   selector: 'app-my-communities-page',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, LoadingSpinnerComponent],
+  imports: [RouterLink, ReactiveFormsModule, LoadingSpinnerComponent, TranslatePipe],
   template: `
     <section class="page">
       <header class="header">
@@ -142,23 +143,32 @@ import { CommunityService } from './services/community.service';
                   <span class="badge" [class]="'status-' + c.status.toLowerCase()">
                     {{ statusLabel(c) }}
                   </span>
+                  <div class="card-actions">
+                    @if (c.status === 'ACTIVE') {
+                      <button class="action-btn" type="button" (click)="onView(c.slug)" [title]="'actions.view' | translate">
+                        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        <span class="action-label">{{ 'actions.view' | translate }}</span>
+                      </button>
+                    }
+                    @if (c.type === 'PRIVATE' || c.status !== 'ACTIVE') {
+                      @if (c.status === 'ACTIVE') {
+                        <button class="action-btn" type="button" (click)="onEdit(c.slug)" [title]="'actions.edit' | translate">
+                          <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                          <span class="action-label">{{ 'actions.edit' | translate }}</span>
+                        </button>
+                      }
+                      <button class="action-btn action-btn--danger" type="button" (click)="remove(c)" [title]="'actions.delete' | translate">
+                        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                        <span class="action-label">{{ 'actions.delete' | translate }}</span>
+                      </button>
+                    }
+                  </div>
                 </div>
                 @if (c.description) {
                   <p class="desc">{{ c.description }}</p>
                 }
                 @if (c.status === 'REJECTED' && c.rejectionReason) {
                   <div class="reject-box"><strong>Motivo:</strong> {{ c.rejectionReason }}</div>
-                }
-              </div>
-              <div class="actions">
-                @if (c.status === 'ACTIVE') {
-                  <a [routerLink]="['/comunidades', c.slug]">Ver</a>
-                }
-                @if (c.type === 'PRIVATE' || c.status !== 'ACTIVE') {
-                  @if (c.status === 'ACTIVE') {
-                    <a [routerLink]="['/mis-comunidades', c.slug, 'editar']">Editar</a>
-                  }
-                  <button type="button" (click)="remove(c)">Eliminar</button>
                 }
               </div>
             </li>
@@ -171,7 +181,7 @@ import { CommunityService } from './services/community.service';
     `
       .page {
         display: grid;
-        gap: 1.25rem;
+        gap: 1.5rem;
       }
       .header {
         display: flex;
@@ -188,7 +198,7 @@ import { CommunityService } from './services/community.service';
         color: var(--text-2);
       }
       .primary {
-        padding: 0.7rem 1.2rem;
+        padding: 0.75rem 1.5rem;
         border-radius: 999px;
         background: var(--accent-glow);
         color: var(--accent-text);
@@ -202,7 +212,7 @@ import { CommunityService } from './services/community.service';
         cursor: not-allowed;
       }
       .ghost {
-        padding: 0.55rem 1rem;
+        padding: 0.75rem 1rem;
         border-radius: 999px;
         background: var(--bg-surface);
         color: var(--text-2);
@@ -212,7 +222,7 @@ import { CommunityService } from './services/community.service';
       .create-card {
         display: grid;
         gap: 1rem;
-        padding: 1.25rem;
+        padding: 1.5rem;
         border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-card);
@@ -232,11 +242,11 @@ import { CommunityService } from './services/community.service';
       .type-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 0.85rem;
+        gap: 1rem;
       }
       .type-card {
         padding: 1rem;
-        border-radius: 0.85rem;
+        border-radius: 1rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -260,18 +270,18 @@ import { CommunityService } from './services/community.service';
       }
       form {
         display: grid;
-        gap: 0.85rem;
+        gap: 1rem;
       }
       label {
         display: grid;
-        gap: 0.35rem;
+        gap: 0.5rem;
         color: var(--text-2);
       }
       input,
       textarea,
       select {
-        padding: 0.6rem 0.8rem;
-        border-radius: 0.6rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
         border: 1px solid var(--border);
         background: var(--bg-surface);
         color: var(--text-1);
@@ -288,15 +298,15 @@ import { CommunityService } from './services/community.service';
         font-size: 0.8rem;
       }
       .info {
-        padding: 0.8rem;
-        border-radius: 0.6rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
         background: rgba(80, 140, 220, 0.12);
         color: #88b7e0;
         font-size: 0.85rem;
       }
       .error {
         padding: 0.75rem;
-        border-radius: 0.6rem;
+        border-radius: 0.5rem;
         background: rgba(214, 90, 90, 0.15);
         color: #e49d9d;
       }
@@ -326,7 +336,7 @@ import { CommunityService } from './services/community.service';
       }
       .name-row {
         display: flex;
-        gap: 0.6rem;
+        gap: 0.75rem;
         align-items: center;
         margin-bottom: 0.4rem;
       }
@@ -336,7 +346,7 @@ import { CommunityService } from './services/community.service';
         font-size: 0.9rem;
       }
       .badge {
-        padding: 0.2rem 0.6rem;
+        padding: 0.25rem 0.75rem;
         border-radius: 999px;
         font-size: 0.7rem;
         font-weight: 700;
@@ -360,28 +370,41 @@ import { CommunityService } from './services/community.service';
       }
       .reject-box {
         margin-top: 0.5rem;
-        padding: 0.6rem;
+        padding: 0.75rem;
         border-radius: 0.5rem;
         background: rgba(214, 90, 90, 0.1);
         color: #e49d9d;
         font-size: 0.85rem;
       }
-      .actions {
+      .card-actions {
         display: flex;
         gap: 0.5rem;
-        align-items: flex-start;
-        flex-wrap: wrap;
+        margin-left: auto;
       }
-      .actions a,
-      .actions button {
-        padding: 0.45rem 0.9rem;
-        border-radius: 999px;
+      .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.5rem 0.85rem;
+        border-radius: 0.75rem;
         border: 1px solid var(--border);
-        background: var(--bg-surface);
-        color: var(--text-1);
-        text-decoration: none;
+        background: var(--accent-glow);
+        color: var(--accent-text);
+        font-size: 0.75rem;
+        font-weight: 600;
         cursor: pointer;
-        font-size: 0.82rem;
+        white-space: nowrap;
+      }
+      .action-icon { width: 0.9rem; height: 0.9rem; flex-shrink: 0; }
+      .action-btn:hover { opacity: 0.85; }
+      .action-btn--danger {
+        background: rgba(214, 123, 123, 0.12);
+        border-color: rgba(214, 123, 123, 0.28);
+        color: #de9292;
+      }
+      @media (max-width: 720px) {
+        .action-label { display: none; }
+        .action-btn { padding: 0.5rem; }
       }
       .empty {
         text-align: center;
@@ -397,6 +420,7 @@ export class MyCommunitiesPageComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly items = signal<Community[]>([]);
@@ -434,6 +458,14 @@ export class MyCommunitiesPageComponent implements OnInit {
       },
       error: () => this.loading.set(false),
     });
+  }
+
+  onView(slug: string): void {
+    this.router.navigate(['/comunidades', slug]);
+  }
+
+  onEdit(slug: string): void {
+    this.router.navigate(['/mis-comunidades', slug, 'editar']);
   }
 
   statusLabel(c: Community): string {

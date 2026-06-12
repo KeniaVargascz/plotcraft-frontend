@@ -16,8 +16,22 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       <section class="detail-shell">
         <header class="hero card">
           <div class="hero-copy">
-            <a class="back-arrow" routerLink="/biblioteca/listas" [title]="'actions.back' | translate">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+            <a
+              class="back-arrow"
+              routerLink="/biblioteca/listas"
+              [title]="'actions.back' | translate"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M19 12H5" />
+                <path d="M12 19l-7-7 7-7" />
+              </svg>
             </a>
             <div class="hero-head">
               <h1>{{ current.name }}</h1>
@@ -149,8 +163,14 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         color: var(--text-1);
         flex-shrink: 0;
       }
-      .back-arrow svg { width: 1.2rem; height: 1.2rem; }
-      .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
+      .back-arrow svg {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+      .back-arrow:hover {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
       .hero-head,
       .card-actions,
       .meta-row {
@@ -300,6 +320,9 @@ export class ReadingListDetailPageComponent {
   }
 
   private load(id: string) {
-    this.readingListsService.getById(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((list) => this.list.set(list));
+    this.readingListsService
+      .getById(id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((list) => this.list.set(list));
   }
 }

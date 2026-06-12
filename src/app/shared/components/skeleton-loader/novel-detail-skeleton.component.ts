@@ -74,8 +74,13 @@ import { SkeletonLoaderComponent } from './skeleton-loader.component';
     }
 
     @media (max-width: 767px) {
-      .novel-sk__header { flex-direction: column; align-items: center; }
-      .novel-sk__body { grid-template-columns: 1fr; }
+      .novel-sk__header {
+        flex-direction: column;
+        align-items: center;
+      }
+      .novel-sk__body {
+        grid-template-columns: 1fr;
+      }
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

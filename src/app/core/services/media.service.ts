@@ -13,21 +13,19 @@ export class MediaService {
     formData.append('file', file);
     formData.append('purpose', purpose);
 
-    return this.api
-      .post<UploadResponse>('/media/upload', formData)
-      .pipe(
-        map((payload) => {
-          if (typeof payload === 'string') {
-            return payload;
-          }
+    return this.api.post<UploadResponse>('/media/upload', formData).pipe(
+      map((payload) => {
+        if (typeof payload === 'string') {
+          return payload;
+        }
 
-          const url = payload.url ?? payload.fileUrl ?? payload.location ?? payload.path;
-          if (!url) {
-            throw new Error('La subida no devolvio una URL valida.');
-          }
+        const url = payload.url ?? payload.fileUrl ?? payload.location ?? payload.path;
+        if (!url) {
+          throw new Error('La subida no devolvio una URL valida.');
+        }
 
-          return url;
-        }),
-      );
+        return url;
+      }),
+    );
   }
 }

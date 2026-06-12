@@ -127,7 +127,10 @@ export class MyCharactersPageComponent {
     this.loading.set(true);
     this.charactersService
       .listMine({ limit: 40, sort: 'updated' })
-      .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false)))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false)),
+      )
       .subscribe({
         next: (response) => this.characters.set(response.data),
         error: () => this.characters.set([]),

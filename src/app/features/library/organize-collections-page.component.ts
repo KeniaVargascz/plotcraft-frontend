@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -698,34 +706,42 @@ export class OrganizeCollectionsPageComponent implements OnInit {
     const username = this.authService.getCurrentUserSnapshot()?.username;
     if (!username) return;
     this.loading.set(true);
-    this.seriesService.listByAuthor(username, { limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (response) => {
-        const summaries = response.data;
-        if (!summaries.length) {
+    this.seriesService
+      .listByAuthor(username, { limit: 50 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          const summaries = response.data;
+          if (!summaries.length) {
+            this.collections.set([]);
+            this.loading.set(false);
+            return;
+          }
+          forkJoin(summaries.map((s) => this.seriesService.getBySlug(s.slug)))
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: (details) => {
+                this.collections.set(details);
+                this.loading.set(false);
+              },
+              error: () => this.loading.set(false),
+            });
+        },
+        error: () => {
           this.collections.set([]);
           this.loading.set(false);
-          return;
-        }
-        forkJoin(summaries.map((s) => this.seriesService.getBySlug(s.slug))).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-          next: (details) => {
-            this.collections.set(details);
-            this.loading.set(false);
-          },
-          error: () => this.loading.set(false),
-        });
-      },
-      error: () => {
-        this.collections.set([]);
-        this.loading.set(false);
-      },
-    });
+        },
+      });
   }
 
   loadMyNovels(): void {
-    this.novelsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (response) => this.myNovels.set(response.data),
-      error: () => this.myNovels.set([]),
-    });
+    this.novelsService
+      .listMine({ limit: 50 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => this.myNovels.set(response.data),
+        error: () => this.myNovels.set([]),
+      });
   }
 
   openCreate(): void {

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -368,27 +375,36 @@ export class TimelineEventFormDialogComponent implements OnInit {
   loadChapters() {
     if (this.chaptersLoaded || !this.data.novelSlug) return;
     this.chaptersLoaded = true;
-    this.chaptersService.listDrafts(this.data.novelSlug, { limit: 100 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) =>
-        this.chapters.set(res.data.map((c) => ({ id: c.id, title: c.title, order: c.order }))),
-    });
+    this.chaptersService
+      .listDrafts(this.data.novelSlug, { limit: 100 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) =>
+          this.chapters.set(res.data.map((c) => ({ id: c.id, title: c.title, order: c.order }))),
+      });
   }
 
   loadCharacters() {
     if (this.charactersLoaded) return;
     this.charactersLoaded = true;
-    this.charactersService.listMine({ limit: 100 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => this.characters.set(res.data.map((c) => ({ id: c.id, name: c.name }))),
-    });
+    this.charactersService
+      .listMine({ limit: 100 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => this.characters.set(res.data.map((c) => ({ id: c.id, name: c.name }))),
+      });
   }
 
   loadWorlds() {
     if (this.worldsLoaded) return;
     this.worldsLoaded = true;
-    this.worldsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) =>
-        this.worlds.set(res.data.map((w) => ({ id: w.id, slug: w.slug, name: w.name }))),
-    });
+    this.worldsService
+      .listMine({ limit: 50 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) =>
+          this.worlds.set(res.data.map((w) => ({ id: w.id, slug: w.slug, name: w.name }))),
+      });
   }
 
   onWorldChange() {
@@ -401,9 +417,12 @@ export class TimelineEventFormDialogComponent implements OnInit {
     const selected = this.worlds().find((w) => w.id === this.worldId);
     if (!selected || this.wbSlug === selected.slug) return;
     this.wbSlug = selected.slug;
-    this.wbService.listEntries(selected.slug, { limit: 100 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => this.wbEntries.set(res.data.map((e) => ({ id: e.id, name: e.name }))),
-    });
+    this.wbService
+      .listEntries(selected.slug, { limit: 100 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => this.wbEntries.set(res.data.map((e) => ({ id: e.id, name: e.name }))),
+      });
   }
 
   save() {

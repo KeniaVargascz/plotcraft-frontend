@@ -162,7 +162,10 @@ export class LibraryPageComponent {
   constructor() {
     this.libraryService
       .getSummary()
-      .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false)))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false)),
+      )
       .subscribe((summary) => this.summary.set(summary));
   }
 }

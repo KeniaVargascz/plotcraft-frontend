@@ -551,6 +551,9 @@ export class ReadingListsPageComponent {
   }
 
   private load() {
-    this.readingListsService.listMine().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((lists) => this.lists.set(lists));
+    this.readingListsService
+      .listMine()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((lists) => this.lists.set(lists));
   }
 }

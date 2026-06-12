@@ -143,6 +143,9 @@ export class InProgressPageComponent {
   readonly items = signal<LibraryNovelCard[]>([]);
 
   constructor() {
-    this.libraryService.listInProgress().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((response) => this.items.set(response.data));
+    this.libraryService
+      .listInProgress()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((response) => this.items.set(response.data));
   }
 }

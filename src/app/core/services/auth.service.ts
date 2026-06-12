@@ -1,6 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, catchError, map, of, retry, shareReplay, take, tap, timeout } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  catchError,
+  map,
+  of,
+  retry,
+  shareReplay,
+  take,
+  tap,
+  timeout,
+} from 'rxjs';
 import { AuthResponse } from '../models/auth-response.model';
 import { User } from '../models/user.model';
 import { TokenService } from './token.service';
@@ -27,10 +38,7 @@ export class AuthService {
 
     await new Promise<void>((resolve) => {
       this.me()
-        .pipe(
-          timeout(15000),
-          retry({ count: 1, delay: 2000 }),
-        )
+        .pipe(timeout(15000), retry({ count: 1, delay: 2000 }))
         .subscribe({
           next: () => resolve(),
           error: (err) => {
@@ -79,9 +87,7 @@ export class AuthService {
   }
 
   me(): Observable<User> {
-    return this.api.get<User>('/auth/me').pipe(
-      tap((user) => this.currentUserSubject.next(user)),
-    );
+    return this.api.get<User>('/auth/me').pipe(tap((user) => this.currentUserSubject.next(user)));
   }
 
   isAdmin(): boolean {
@@ -98,21 +104,17 @@ export class AuthService {
       return of(null);
     }
 
-    this.refreshInFlight$ = this.api
-      .post<AuthResponse>('/auth/refresh', { refreshToken })
-      .pipe(
-        map((data) =>
-          this.handleAuthResponse(data).id ? data.accessToken : null,
-        ),
-        tap({
-          error: () => this.clearSession(),
-        }),
-        catchError(() => of(null)),
-        tap(() => {
-          this.refreshInFlight$ = null;
-        }),
-        shareReplay(1),
-      );
+    this.refreshInFlight$ = this.api.post<AuthResponse>('/auth/refresh', { refreshToken }).pipe(
+      map((data) => (this.handleAuthResponse(data).id ? data.accessToken : null)),
+      tap({
+        error: () => this.clearSession(),
+      }),
+      catchError(() => of(null)),
+      tap(() => {
+        this.refreshInFlight$ = null;
+      }),
+      shareReplay(1),
+    );
 
     return this.refreshInFlight$;
   }
@@ -133,7 +135,10 @@ export class AuthService {
             },
           },
         )
-        .pipe(take(1), catchError(() => of(null)))
+        .pipe(
+          take(1),
+          catchError(() => of(null)),
+        )
         .subscribe();
     }
 

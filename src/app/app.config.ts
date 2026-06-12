@@ -6,11 +6,7 @@ import {
 } from '@angular/core';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import {
-  provideRouter,
-  withPreloading,
-  withInMemoryScrolling,
-} from '@angular/router';
+import { provideRouter, withPreloading, withInMemoryScrolling } from '@angular/router';
 import { provideQuillConfig } from 'ngx-quill';
 import { routes } from './app.routes';
 import { FeaturePreloadingStrategy } from './core/services/feature-preloading.strategy';
@@ -58,11 +54,7 @@ export const appConfig: ApplicationConfig = {
       }
 
       // Backend is up — safe to call auth and flags in parallel with translations.
-      await Promise.allSettled([
-        translationsPromise,
-        auth.initializeSession(),
-        flags.load(),
-      ]);
+      await Promise.allSettled([translationsPromise, auth.initializeSession(), flags.load()]);
     }),
     provideQuillConfig({
       theme: 'snow',

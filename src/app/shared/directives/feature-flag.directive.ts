@@ -1,11 +1,4 @@
-import {
-  Directive,
-  TemplateRef,
-  ViewContainerRef,
-  inject,
-  effect,
-  input,
-} from '@angular/core';
+import { Directive, TemplateRef, ViewContainerRef, inject, effect, input } from '@angular/core';
 import { FeatureFlagService } from '../../core/services/feature-flag.service';
 import type { FeatureFlagKey } from '../../core/constants/feature-flags.constants';
 

@@ -1,5 +1,13 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { DiscoverySnapshot } from '../../core/models/discovery.model';
@@ -847,45 +855,57 @@ export class DiscoveryPageComponent implements OnInit {
   readonly visibleGenres = computed(() => this.genres().slice(0, 4));
 
   ngOnInit() {
-    this.genresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (genres) => this.genres.set(genres),
-      error: () => this.genres.set([]),
-    });
-    this.communitiesService.getCommunities({ limit: 6 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => this.popularCommunities.set(res.data),
-      error: () => this.popularCommunities.set([]),
-    });
-    this.postsService.list({ limit: 5 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => this.recentPosts.set(res.data),
-      error: () => this.recentPosts.set([]),
-    });
+    this.genresService
+      .list()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (genres) => this.genres.set(genres),
+        error: () => this.genres.set([]),
+      });
+    this.communitiesService
+      .getCommunities({ limit: 6 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => this.popularCommunities.set(res.data),
+        error: () => this.popularCommunities.set([]),
+      });
+    this.postsService
+      .list({ limit: 5 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => this.recentPosts.set(res.data),
+        error: () => this.recentPosts.set([]),
+      });
     this.load();
   }
 
   load(refresh = false) {
     this.loading.set(true);
-    this.discoveryService.getSnapshot(refresh).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (snapshot) => {
-        this.snapshot.set(snapshot);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.snapshot.set({
-          trending: { novels: [], worlds: [], characters: [], authors: [] },
-          newReleases: [],
-          genresSpotlight: [],
-          communityPosts: [],
-          stats: {
-            totalNovels: 0,
-            totalAuthors: 0,
-            totalWorlds: 0,
-            totalCharacters: 0,
-            totalChaptersPublished: 0,
-          },
-        });
-        this.loading.set(false);
-      },
-    });
+    this.discoveryService
+      .getSnapshot(refresh)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (snapshot) => {
+          this.snapshot.set(snapshot);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.snapshot.set({
+            trending: { novels: [], worlds: [], characters: [], authors: [] },
+            newReleases: [],
+            genresSpotlight: [],
+            communityPosts: [],
+            stats: {
+              totalNovels: 0,
+              totalAuthors: 0,
+              totalWorlds: 0,
+              totalCharacters: 0,
+              totalChaptersPublished: 0,
+            },
+          });
+          this.loading.set(false);
+        },
+      });
   }
 
   onNovelClick(slug: string): void {

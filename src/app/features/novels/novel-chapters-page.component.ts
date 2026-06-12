@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ChapterSummary } from '../../core/models/chapter.model';
@@ -167,7 +174,10 @@ export class NovelChaptersPageComponent implements OnInit {
         return;
       }
 
-      this.novelsService.getBySlug(slug).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((novel) => this.novel.set(novel));
+      this.novelsService
+        .getBySlug(slug)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((novel) => this.novel.set(novel));
       this.loadChapters(slug);
     });
   }
@@ -254,15 +264,18 @@ export class NovelChaptersPageComponent implements OnInit {
     this.loading.set(true);
     this.actionMessage.set('');
 
-    this.chaptersService.listDrafts(slug, { limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (response) => {
-        this.chapters.set(response.data);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.actionMessage.set('No se pudieron cargar los capitulos.');
-      },
-    });
+    this.chaptersService
+      .listDrafts(slug, { limit: 50 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.chapters.set(response.data);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.loading.set(false);
+          this.actionMessage.set('No se pudieron cargar los capitulos.');
+        },
+      });
   }
 }

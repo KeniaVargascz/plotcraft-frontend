@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { WritingTask } from '../../core/models/writing-task.model';
@@ -461,16 +469,19 @@ export class PlannerCalendarPageComponent implements OnInit {
     const from = new Date(year, month, 1).toISOString().substring(0, 10);
     const to = new Date(year, month + 1, 0).toISOString().substring(0, 10);
 
-    this.plannerService.getCalendar(from, to).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (response: WritingTask[]) => {
-        this.tasks.set(response);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.tasks.set([]);
-        this.loading.set(false);
-      },
-    });
+    this.plannerService
+      .getCalendar(from, to)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response: WritingTask[]) => {
+          this.tasks.set(response);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.tasks.set([]);
+          this.loading.set(false);
+        },
+      });
   }
 
   prevMonth(): void {

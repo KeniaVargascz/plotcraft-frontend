@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ChaptersService, ChapterCommentModel } from '../../core/services/chapters.service';
@@ -310,7 +319,9 @@ export class ParagraphCommentsComponent implements OnChanges {
 
   private chaptersService = inject(ChaptersService);
   private readonly featureFlagService = inject(FeatureFlagService);
-  readonly highlightsEnabled = this.featureFlagService.enabled(FeatureFlag.READER_LIBRARY_HIGHLIGHTS);
+  readonly highlightsEnabled = this.featureFlagService.enabled(
+    FeatureFlag.READER_LIBRARY_HIGHLIGHTS,
+  );
 
   readonly comments = signal<ChapterCommentModel[]>([]);
   readonly sending = signal(false);

@@ -77,11 +77,7 @@ export interface CommunityViewerContext {
           <a class="novel-link" [routerLink]="['/novelas', c.linkedNovel.slug]">
             <div class="novel-cover">
               @if (c.linkedNovel.coverUrl) {
-                <img
-                  [src]="c.linkedNovel.coverUrl"
-                  [alt]="c.linkedNovel.title"
-                  loading="lazy"
-                />
+                <img [src]="c.linkedNovel.coverUrl" [alt]="c.linkedNovel.title" loading="lazy" />
               } @else {
                 <span>{{ c.linkedNovel.title.charAt(0) }}</span>
               }

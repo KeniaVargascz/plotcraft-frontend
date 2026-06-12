@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -309,17 +317,20 @@ export class ForumPageComponent implements OnInit {
   load() {
     this.loading.set(true);
     this.notFound.set(false);
-    this.forumsService.getForum(this.communitySlug(), this.forumSlug()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (f) => {
-        this.forum.set(f);
-        this.loading.set(false);
-        this.loadThreads(true);
-      },
-      error: (err) => {
-        if (err?.status === 404) this.notFound.set(true);
-        this.loading.set(false);
-      },
-    });
+    this.forumsService
+      .getForum(this.communitySlug(), this.forumSlug())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (f) => {
+          this.forum.set(f);
+          this.loading.set(false);
+          this.loadThreads(true);
+        },
+        error: (err) => {
+          if (err?.status === 404) this.notFound.set(true);
+          this.loading.set(false);
+        },
+      });
   }
 
   loadThreads(reset: boolean) {

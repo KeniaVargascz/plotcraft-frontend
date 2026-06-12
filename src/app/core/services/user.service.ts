@@ -23,9 +23,9 @@ export class UserService {
   }
 
   updateAccount(payload: Record<string, string>): Observable<User> {
-    return this.api.patch<User>('/users/me', payload).pipe(
-      tap((user) => this.authService.updateCurrentUser(user)),
-    );
+    return this.api
+      .patch<User>('/users/me', payload)
+      .pipe(tap((user) => this.authService.updateCurrentUser(user)));
   }
 
   deleteAccount(password: string): Observable<{ message: string }> {

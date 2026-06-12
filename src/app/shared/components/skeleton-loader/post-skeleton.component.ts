@@ -29,7 +29,10 @@ import { SkeletonLoaderComponent } from './skeleton-loader.component';
     }
   `,
   styles: `
-    :host { display: grid; gap: 1rem; }
+    :host {
+      display: grid;
+      gap: 1rem;
+    }
 
     .post-sk {
       display: grid;

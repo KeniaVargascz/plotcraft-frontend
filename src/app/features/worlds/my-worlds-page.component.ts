@@ -43,7 +43,9 @@ import { WorldCardComponent } from './components/world-card.component';
               />
               @if (world.wbSummary && world.wbSummary.entriesCount) {
                 <div class="wb-badge-row">
-                  <span class="wb-badge">&#128218; {{ world.wbSummary!.entriesCount }} entradas</span>
+                  <span class="wb-badge"
+                    >&#128218; {{ world.wbSummary!.entriesCount }} entradas</span
+                  >
                 </div>
               }
             </div>
@@ -147,7 +149,10 @@ export class MyWorldsPageComponent {
     this.loading.set(true);
     this.worldsService
       .listMine({ limit: 40, sort: 'updated' })
-      .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false)))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false)),
+      )
       .subscribe({
         next: (response) => this.worlds.set(response.data),
         error: () => this.worlds.set([]),

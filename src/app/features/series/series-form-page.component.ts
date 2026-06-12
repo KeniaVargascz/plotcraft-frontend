@@ -1,5 +1,13 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -21,12 +29,29 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 @Component({
   selector: 'app-series-form-page',
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, RouterLink, DragDropModule, LoadingSpinnerComponent, TranslatePipe],
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    RouterLink,
+    DragDropModule,
+    LoadingSpinnerComponent,
+    TranslatePipe,
+  ],
   template: `
     <section class="page">
       <header>
         <a class="back-arrow" routerLink="/mis-sagas" [title]="'actions.back' | translate">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
         </a>
         <h1>{{ isEdit() ? 'Editar saga' : 'Nueva saga' }}</h1>
       </header>
@@ -146,8 +171,14 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         text-decoration: none;
         flex-shrink: 0;
       }
-      .back-arrow svg { width: 1.2rem; height: 1.2rem; }
-      .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
+      .back-arrow svg {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+      .back-arrow:hover {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
       .form {
         display: grid;
         gap: 1rem;
@@ -279,9 +310,12 @@ export class SeriesFormPageComponent implements OnInit {
       this.slug = params.get('slug');
       this.isEdit.set(!!this.slug);
 
-      this.novelsService.listMine({ limit: 100 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (r) => this.userNovels.set(r.data),
-      });
+      this.novelsService
+        .listMine({ limit: 100 })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (r) => this.userNovels.set(r.data),
+        });
 
       if (this.slug) {
         this.loadSeries(this.slug);
@@ -291,16 +325,19 @@ export class SeriesFormPageComponent implements OnInit {
 
   private loadSeries(slug: string): void {
     this.loading.set(true);
-    this.seriesService.getBySlug(slug).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (s) => {
-        this.applySeries(s);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('No se pudo cargar la serie.');
-        this.loading.set(false);
-      },
-    });
+    this.seriesService
+      .getBySlug(slug)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (s) => {
+          this.applySeries(s);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.errorMessage.set('No se pudo cargar la serie.');
+          this.loading.set(false);
+        },
+      });
   }
 
   private applySeries(s: SeriesDetail): void {

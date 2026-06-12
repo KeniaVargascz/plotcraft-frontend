@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, input, output, signal, computed, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  output,
+  signal,
+  computed,
+  OnInit,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ForumPoll } from '../../../core/models/forum-poll.model';
 import { ForumService } from '../../../core/services/forum.service';
@@ -11,53 +20,55 @@ import { FeatureFlag } from '../../../core/constants/feature-flags.constants';
   imports: [FormsModule],
   template: `
     @if (pollsEnabled()) {
-    <div class="poll-card">
-      <h4 class="question">{{ poll().question }}</h4>
+      <div class="poll-card">
+        <h4 class="question">{{ poll().question }}</h4>
 
-      @if (mode() === 'vote') {
-        <div class="options">
-          @for (opt of poll().options; track opt.id) {
-            <label class="option-label">
-              <input
-                type="radio"
-                [name]="'poll-' + poll().id"
-                [value]="opt.id"
-                [(ngModel)]="selectedOption"
-              />
-              {{ opt.text }}
-            </label>
-          }
-        </div>
-        <button type="button" class="vote-btn" [disabled]="!selectedOption" (click)="vote()">
-          Votar
-        </button>
-      }
-
-      @if (mode() === 'results' || mode() === 'no-session') {
-        <div class="results">
-          @for (opt of poll().options; track opt.id) {
-            <div class="result-row">
-              <div class="result-label">
-                <span>{{ opt.text }}</span>
-                <span class="pct">{{ opt.pct }}%</span>
-              </div>
-              <div class="bar-track">
-                <div
-                  class="bar-fill"
-                  [style.width.%]="opt.pct"
-                  [class.voted]="poll().viewerContext?.votedOptionId === opt.id"
-                ></div>
-              </div>
-            </div>
-          }
-          <p class="total">{{ poll().totalVotes }} voto{{ poll().totalVotes !== 1 ? 's' : '' }}</p>
-        </div>
-
-        @if (mode() === 'no-session') {
-          <div class="login-banner">Inicia sesion para votar en esta encuesta.</div>
+        @if (mode() === 'vote') {
+          <div class="options">
+            @for (opt of poll().options; track opt.id) {
+              <label class="option-label">
+                <input
+                  type="radio"
+                  [name]="'poll-' + poll().id"
+                  [value]="opt.id"
+                  [(ngModel)]="selectedOption"
+                />
+                {{ opt.text }}
+              </label>
+            }
+          </div>
+          <button type="button" class="vote-btn" [disabled]="!selectedOption" (click)="vote()">
+            Votar
+          </button>
         }
-      }
-    </div>
+
+        @if (mode() === 'results' || mode() === 'no-session') {
+          <div class="results">
+            @for (opt of poll().options; track opt.id) {
+              <div class="result-row">
+                <div class="result-label">
+                  <span>{{ opt.text }}</span>
+                  <span class="pct">{{ opt.pct }}%</span>
+                </div>
+                <div class="bar-track">
+                  <div
+                    class="bar-fill"
+                    [style.width.%]="opt.pct"
+                    [class.voted]="poll().viewerContext?.votedOptionId === opt.id"
+                  ></div>
+                </div>
+              </div>
+            }
+            <p class="total">
+              {{ poll().totalVotes }} voto{{ poll().totalVotes !== 1 ? 's' : '' }}
+            </p>
+          </div>
+
+          @if (mode() === 'no-session') {
+            <div class="login-banner">Inicia sesion para votar en esta encuesta.</div>
+          }
+        }
+      </div>
     }
   `,
   styles: [

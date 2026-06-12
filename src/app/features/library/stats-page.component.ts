@@ -34,9 +34,7 @@ import { LibraryService } from '../../core/services/library.service';
             <div class="bar-row">
               <span>{{ item.month }}/{{ item.year }}</span>
               <div class="bar">
-                <span
-                  [style.width.%]="maxWords() ? (item.wordsRead / maxWords()) * 100 : 0"
-                ></span>
+                <span [style.width.%]="maxWords() ? (item.wordsRead / maxWords()) * 100 : 0"></span>
               </div>
               <small>{{ item.wordsRead }}</small>
             </div>
@@ -57,9 +55,12 @@ export class StatsPageComponent {
   readonly maxWords = signal(0);
 
   constructor() {
-    this.libraryService.getStats().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((stats) => {
-      this.stats.set(stats);
-      this.maxWords.set(Math.max(...stats.monthlyBreakdown.map((item) => item.wordsRead), 0));
-    });
+    this.libraryService
+      .getStats()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((stats) => {
+        this.stats.set(stats);
+        this.maxWords.set(Math.max(...stats.monthlyBreakdown.map((item) => item.wordsRead), 0));
+      });
   }
 }

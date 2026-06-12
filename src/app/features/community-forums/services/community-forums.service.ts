@@ -33,16 +33,11 @@ export class CommunityForumsService {
   }
 
   getForum(communitySlug: string, forumSlug: string): Observable<CommunityForum> {
-    return this.api.get<CommunityForum>(
-      `/communities/${communitySlug}/forums/${forumSlug}`,
-    );
+    return this.api.get<CommunityForum>(`/communities/${communitySlug}/forums/${forumSlug}`);
   }
 
   createForum(communitySlug: string, payload: CreateForumPayload): Observable<CommunityForum> {
-    return this.api.post<CommunityForum>(
-      `/communities/${communitySlug}/forums`,
-      payload,
-    );
+    return this.api.post<CommunityForum>(`/communities/${communitySlug}/forums`, payload);
   }
 
   updateForum(
@@ -57,9 +52,7 @@ export class CommunityForumsService {
   }
 
   deleteForum(communitySlug: string, forumSlug: string): Observable<void> {
-    return this.api.delete<void>(
-      `/communities/${communitySlug}/forums/${forumSlug}`,
-    );
+    return this.api.delete<void>(`/communities/${communitySlug}/forums/${forumSlug}`);
   }
 
   joinForum(communitySlug: string, forumSlug: string): Observable<ForumMembershipResult> {
@@ -111,10 +104,9 @@ export class CommunityForumsService {
   }
 
   listDiscussedThreads(communitySlug: string, limit = 5): Observable<DiscussedThread[]> {
-    return this.api.get<DiscussedThread[]>(
-      `/communities/${communitySlug}/discussed-threads`,
-      { params: { limit } },
-    );
+    return this.api.get<DiscussedThread[]>(`/communities/${communitySlug}/discussed-threads`, {
+      params: { limit },
+    });
   }
 
   createThread(

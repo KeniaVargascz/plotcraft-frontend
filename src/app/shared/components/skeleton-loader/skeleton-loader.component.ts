@@ -17,7 +17,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
     ></div>
   `,
   styles: `
-    :host { display: block; }
+    :host {
+      display: block;
+    }
 
     .skeleton-bone {
       background: linear-gradient(
@@ -63,8 +65,12 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
     }
 
     @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -200% 0;
+      }
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

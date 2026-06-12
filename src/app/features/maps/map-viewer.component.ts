@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, signal, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  input,
+  signal,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WorldMap } from '../../core/models/world-map.model';
 import { MapsService } from '../../core/services/maps.service';
@@ -64,12 +72,15 @@ export class MapViewerComponent implements OnInit {
   readonly mapData = signal<WorldMap | null>(null);
 
   ngOnInit(): void {
-    this.mapsService.getMap(this.worldSlug()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (map) => {
-        this.mapData.set(map);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.mapsService
+      .getMap(this.worldSlug())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (map) => {
+          this.mapData.set(map);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
   }
 }

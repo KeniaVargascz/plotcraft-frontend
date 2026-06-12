@@ -44,9 +44,7 @@ import { FeatureFlag } from '../../../../core/constants/feature-flags.constants'
         }
         <p class="author">
           por
-          <a [routerLink]="['/perfil', novel().author.username]"
-            >@{{ novel().author.username }}</a
-          >
+          <a [routerLink]="['/perfil', novel().author.username]">@{{ novel().author.username }}</a>
         </p>
         <p class="synopsis">{{ novel().synopsis }}</p>
 
@@ -126,9 +124,7 @@ import { FeatureFlag } from '../../../../core/constants/feature-flags.constants'
               (click)="openRecommend.emit()"
             >
               {{
-                recommended()
-                  ? ('recommend.done' | translate)
-                  : ('recommend.button' | translate)
+                recommended() ? ('recommend.done' | translate) : ('recommend.button' | translate)
               }}
             </button>
           }
@@ -136,9 +132,7 @@ import { FeatureFlag } from '../../../../core/constants/feature-flags.constants'
           @if (novel().viewerContext?.isAuthor) {
             <a [routerLink]="['/analytics/novelas', novel().slug]">Analytics</a>
             <a [routerLink]="['/mis-novelas', novel().slug, 'editar']">Editar novela</a>
-            <a [routerLink]="['/mis-novelas', novel().slug, 'capitulos']"
-              >Gestionar capitulos</a
-            >
+            <a [routerLink]="['/mis-novelas', novel().slug, 'capitulos']">Gestionar capitulos</a>
             <a routerLink="/mis-mundos">Gestionar mundos</a>
             <a routerLink="/mis-personajes">Gestionar personajes</a>
           }
@@ -156,10 +150,7 @@ import { FeatureFlag } from '../../../../core/constants/feature-flags.constants'
               </span>
             } @else {
               @for (list of readingLists(); track list.id) {
-                <label
-                  class="list-option"
-                  [class.list-option-busy]="listActionId() === list.id"
-                >
+                <label class="list-option" [class.list-option-busy]="listActionId() === list.id">
                   <input
                     type="checkbox"
                     [checked]="listMembership().has(list.id)"

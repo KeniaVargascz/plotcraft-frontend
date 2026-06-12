@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { AppNotification } from '../../core/models/notification.model';
@@ -179,22 +186,31 @@ export class NotificationsPageComponent implements OnInit {
   }
 
   markAllRead(): void {
-    this.notificationsService.markAllAsRead().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.notifications.update((list) => list.map((n) => ({ ...n, isRead: true })));
-    });
+    this.notificationsService
+      .markAllAsRead()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.notifications.update((list) => list.map((n) => ({ ...n, isRead: true })));
+      });
   }
 
   deleteAll(): void {
-    this.notificationsService.removeAll().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.notifications.set([]);
-      this.hasMore.set(false);
-      this.cursor = null;
-    });
+    this.notificationsService
+      .removeAll()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.notifications.set([]);
+        this.hasMore.set(false);
+        this.cursor = null;
+      });
   }
 
   onNotificationClick(n: AppNotification): void {
     if (!n.isRead) {
-      this.notificationsService.markAsRead(n.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+      this.notificationsService
+        .markAsRead(n.id)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe();
       this.notifications.update((list) =>
         list.map((item) => (item.id === n.id ? { ...item, isRead: true } : item)),
       );
@@ -205,9 +221,12 @@ export class NotificationsPageComponent implements OnInit {
   }
 
   onDelete(n: AppNotification): void {
-    this.notificationsService.remove(n.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.notifications.update((list) => list.filter((item) => item.id !== n.id));
-    });
+    this.notificationsService
+      .remove(n.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.notifications.update((list) => list.filter((item) => item.id !== n.id));
+      });
   }
 
   private loadNotifications(reset: boolean): void {

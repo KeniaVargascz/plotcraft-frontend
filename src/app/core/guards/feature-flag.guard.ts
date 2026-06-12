@@ -13,6 +13,6 @@ export function featureFlagGuard(featureKey: FeatureFlagKey): CanActivateFn {
     if (featureFlags.isEnabled(featureKey)) return true;
     return router.createUrlTree([featureFlags.getHomeRoute()]);
   };
-  (guard as any)[FEATURE_FLAG_GUARD_KEY] = featureKey;
+  (guard as unknown as Record<string, FeatureFlagKey>)[FEATURE_FLAG_GUARD_KEY] = featureKey;
   return guard;
 }

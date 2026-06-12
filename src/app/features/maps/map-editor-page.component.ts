@@ -10,8 +10,22 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
   template: `
     <section class="editor-shell">
       <header class="editor-topbar">
-        <a [routerLink]="'/mis-mundos/' + slug + '/editar'" class="back-arrow" [title]="'actions.back' | translate">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        <a
+          [routerLink]="'/mis-mundos/' + slug + '/editar'"
+          class="back-arrow"
+          [title]="'actions.back' | translate"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
         </a>
         <h1>Edicion de mapas</h1>
       </header>
@@ -26,8 +40,22 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         </p>
         <div hidden data-testid="marker"></div>
         <div hidden data-testid="region"></div>
-        <a [routerLink]="'/mis-mundos/' + slug + '/editar'" class="back-arrow" [title]="'actions.back' | translate">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        <a
+          [routerLink]="'/mis-mundos/' + slug + '/editar'"
+          class="back-arrow"
+          [title]="'actions.back' | translate"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
         </a>
       </div>
     </section>
@@ -96,8 +124,14 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         text-decoration: none;
         flex-shrink: 0;
       }
-      .back-arrow svg { width: 1.2rem; height: 1.2rem; }
-      .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
+      .back-arrow svg {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+      .back-arrow:hover {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

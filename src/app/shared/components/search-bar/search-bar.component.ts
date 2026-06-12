@@ -300,7 +300,10 @@ export class SearchBarComponent {
     if (this.canShowHistory()) {
       this.searchService
         .getHistory()
-        .pipe(takeUntilDestroyed(this.destroyRef), catchError(() => of({ history: [] })))
+        .pipe(
+          takeUntilDestroyed(this.destroyRef),
+          catchError(() => of({ history: [] })),
+        )
         .subscribe((response) => this.history.set(response.history));
     }
   }

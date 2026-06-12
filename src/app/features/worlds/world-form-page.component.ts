@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -21,7 +28,17 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
     <section class="form-shell">
       <header class="hero card">
         <a class="back-arrow" routerLink="/mis-mundos" [title]="'actions.back' | translate">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
         </a>
         <div>
           <p class="eyebrow">Autor</p>
@@ -41,8 +58,12 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       </header>
 
       @if (!catalogEnabled()) {
-        <div class="flag-notice" style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:0.5rem;font-size:.9rem;margin-bottom:1rem">
-          El catalogo de mundos esta desactivado. Tu mundo no sera visible publicamente hasta que se habilite.
+        <div
+          class="flag-notice"
+          style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:0.5rem;font-size:.9rem;margin-bottom:1rem"
+        >
+          El catalogo de mundos esta desactivado. Tu mundo no sera visible publicamente hasta que se
+          habilite.
         </div>
       }
 
@@ -260,8 +281,14 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         text-decoration: none;
         flex-shrink: 0;
       }
-      .back-arrow svg { width: 1.2rem; height: 1.2rem; }
-      .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
+      .back-arrow svg {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+      .back-arrow:hover {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
       .editor-grid {
         grid-template-columns: 1.1fr 0.9fr;
       }
@@ -441,10 +468,13 @@ export class WorldFormPageComponent {
   pendingNovelSlug = '';
 
   constructor() {
-    this.novelsService.listMine({ limit: 50, sort: 'recent' }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (response) => this.novels.set(response.data),
-      error: () => this.novels.set([]),
-    });
+    this.novelsService
+      .listMine({ limit: 50, sort: 'recent' })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => this.novels.set(response.data),
+        error: () => this.novels.set([]),
+      });
 
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const slug = params.get('slug');

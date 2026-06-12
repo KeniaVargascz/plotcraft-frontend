@@ -50,10 +50,7 @@ export class CommunityCharactersService {
     charId: string,
     payload: UpdateCommunityCharacterPayload,
   ): Observable<CommunityCharacter> {
-    return this.api.patch<CommunityCharacter>(
-      `/communities/${slug}/characters/${charId}`,
-      payload,
-    );
+    return this.api.patch<CommunityCharacter>(`/communities/${slug}/characters/${charId}`, payload);
   }
 
   delete(slug: string, charId: string): Observable<void> {
@@ -72,9 +69,8 @@ export class CommunityCharactersService {
   }
 
   reject(slug: string, charId: string, note: string): Observable<CommunityCharacter> {
-    return this.api.post<CommunityCharacter>(
-      `/communities/${slug}/characters/${charId}/reject`,
-      { note },
-    );
+    return this.api.post<CommunityCharacter>(`/communities/${slug}/characters/${charId}/reject`, {
+      note,
+    });
   }
 }

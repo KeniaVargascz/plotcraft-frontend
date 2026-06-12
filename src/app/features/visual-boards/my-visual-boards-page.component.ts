@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -136,7 +143,6 @@ export class MyVisualBoardsPageComponent implements OnInit {
     this.loading.set(true);
     this.visualBoardsService
       .getMyBoards({
-
         linkedType: (this.linkedType || null) as
           | 'novel'
           | 'world'

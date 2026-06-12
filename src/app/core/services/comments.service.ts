@@ -20,10 +20,7 @@ export class CommentsService {
       params = params.set('cursor', cursor);
     }
 
-    return this.api.get<PaginatedResponse<CommentModel>>(
-      `/posts/${postId}/comments`,
-      { params },
-    );
+    return this.api.get<PaginatedResponse<CommentModel>>(`/posts/${postId}/comments`, { params });
   }
 
   create(postId: string, payload: { content: string }): Observable<CommentModel> {
@@ -35,10 +32,7 @@ export class CommentsService {
     commentId: string,
     payload: { content: string },
   ): Observable<CommentModel> {
-    return this.api.patch<CommentModel>(
-      `/posts/${postId}/comments/${commentId}`,
-      payload,
-    );
+    return this.api.patch<CommentModel>(`/posts/${postId}/comments/${commentId}`, payload);
   }
 
   delete(postId: string, commentId: string): Observable<CommentModel> {

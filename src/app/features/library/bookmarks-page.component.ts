@@ -167,22 +167,28 @@ export class BookmarksPageComponent {
   }
 
   private load() {
-    this.libraryService.listBookmarked().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((res) => {
-      this.bookmarkedNovels.set(res.data);
-    });
+    this.libraryService
+      .listBookmarked()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((res) => {
+        this.bookmarkedNovels.set(res.data);
+      });
     this.fetchBookmarks(true);
   }
 
   private fetchBookmarks(reset: boolean) {
     this.loadingBookmarks.set(true);
-    this.bookmarksService.listAll(reset ? null : this.bookmarksCursor, 20).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        this.bookmarks.update((list) => (reset ? res.data : [...list, ...res.data]));
-        this.bookmarksCursor = res.pagination.nextCursor;
-        this.hasMoreBookmarks.set(res.pagination.hasMore);
-        this.loadingBookmarks.set(false);
-      },
-      error: () => this.loadingBookmarks.set(false),
-    });
+    this.bookmarksService
+      .listAll(reset ? null : this.bookmarksCursor, 20)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.bookmarks.update((list) => (reset ? res.data : [...list, ...res.data]));
+          this.bookmarksCursor = res.pagination.nextCursor;
+          this.hasMoreBookmarks.set(res.pagination.hasMore);
+          this.loadingBookmarks.set(false);
+        },
+        error: () => this.loadingBookmarks.set(false),
+      });
   }
 }

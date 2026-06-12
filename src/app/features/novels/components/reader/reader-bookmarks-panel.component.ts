@@ -11,12 +11,7 @@ import { TranslatePipe } from '../../../../shared/pipes/translate.pipe';
     <aside class="panel bookmarks-panel">
       <div class="prefs-header">
         <h3>{{ 'reader.bookmarksPanel.title' | translate }}</h3>
-        <button
-          type="button"
-          class="prefs-close"
-          aria-label="Cerrar"
-          (click)="closed.emit()"
-        >
+        <button type="button" class="prefs-close" aria-label="Cerrar" (click)="closed.emit()">
           <svg
             width="18"
             height="18"

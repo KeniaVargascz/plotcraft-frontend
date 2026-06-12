@@ -534,11 +534,7 @@ export class CatalogPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    combineLatest([
-      this.genresService.list(),
-      this.route.paramMap,
-      this.route.queryParamMap,
-    ])
+    combineLatest([this.genresService.list(), this.route.paramMap, this.route.queryParamMap])
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(([genres, params, queryParams]) => {
         this.genres.set(genres);

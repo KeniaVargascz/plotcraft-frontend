@@ -111,7 +111,9 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
                     >
                       <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                     </svg>
-                    <span class="btn-label">{{ 'reader.actions.bookmarkPosition' | translate }}</span>
+                    <span class="btn-label">{{
+                      'reader.actions.bookmarkPosition' | translate
+                    }}</span>
                   </button>
                   <button
                     type="button"
@@ -718,7 +720,9 @@ export class ChapterReaderPageComponent implements OnInit, AfterViewInit {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly ngZone = inject(NgZone);
   private readonly featureFlagService = inject(FeatureFlagService);
-  readonly bookmarksFeatureEnabled = this.featureFlagService.enabled(FeatureFlag.READER_LIBRARY_BOOKMARKS);
+  readonly bookmarksFeatureEnabled = this.featureFlagService.enabled(
+    FeatureFlag.READER_LIBRARY_BOOKMARKS,
+  );
 
   @ViewChild('readerContainer') readerContainer?: ElementRef<HTMLElement>;
   @ViewChild('bookmarksPanel') bookmarksPanel?: ElementRef<HTMLElement>;

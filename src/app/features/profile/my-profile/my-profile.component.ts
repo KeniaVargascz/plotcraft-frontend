@@ -64,12 +64,18 @@ export class MyProfileComponent {
           this.user.set(user);
           this.loading.set(false);
           this.loadActivity(user.username);
-          this.followsService.getFollowers(user.username).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-            next: (res) => this.followersCount.set(res.data.length),
-          });
-          this.followsService.getFollowing(user.username).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-            next: (res) => this.followingCount.set(res.data.length),
-          });
+          this.followsService
+            .getFollowers(user.username)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: (res) => this.followersCount.set(res.data.length),
+            });
+          this.followsService
+            .getFollowing(user.username)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: (res) => this.followingCount.set(res.data.length),
+            });
         }),
         catchError(() => {
           this.error.set(true);
@@ -79,15 +85,20 @@ export class MyProfileComponent {
       )
       .subscribe();
 
-    this.novelsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (response) => {
-        this.novelsCount.set(response.data.filter((novel) => novel.isPublic).length);
-        this.publishedWords.set(response.data.reduce((total, novel) => total + novel.wordCount, 0));
-        this.publishedChapters.set(
-          response.data.reduce((total, novel) => total + novel.stats.publishedChaptersCount, 0),
-        );
-      },
-    });
+    this.novelsService
+      .listMine({ limit: 50 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => {
+          this.novelsCount.set(response.data.filter((novel) => novel.isPublic).length);
+          this.publishedWords.set(
+            response.data.reduce((total, novel) => total + novel.wordCount, 0),
+          );
+          this.publishedChapters.set(
+            response.data.reduce((total, novel) => total + novel.stats.publishedChaptersCount, 0),
+          );
+        },
+      });
   }
 
   loadMoreActivity() {

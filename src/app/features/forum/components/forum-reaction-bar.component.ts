@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ForumService } from '../../../core/services/forum.service';
 import { FeatureFlagService } from '../../../core/services/feature-flag.service';
@@ -15,22 +23,22 @@ const REACTION_MAP: { key: ReactionKey; emoji: string; label: string }[] = [
   standalone: true,
   template: `
     @if (reactionsEnabled()) {
-    <div class="reaction-bar">
-      @for (r of reactionTypes; track r.key) {
-        <button
-          type="button"
-          class="reaction-btn"
-          [class.active]="activeReaction() === r.key"
-          [title]="r.label"
-          (click)="toggle(r.key)"
-        >
-          <span class="emoji">{{ r.emoji }}</span>
-          @if (getCount(r.key) > 0) {
-            <span class="count">{{ getCount(r.key) }}</span>
-          }
-        </button>
-      }
-    </div>
+      <div class="reaction-bar">
+        @for (r of reactionTypes; track r.key) {
+          <button
+            type="button"
+            class="reaction-btn"
+            [class.active]="activeReaction() === r.key"
+            [title]="r.label"
+            (click)="toggle(r.key)"
+          >
+            <span class="emoji">{{ r.emoji }}</span>
+            @if (getCount(r.key) > 0) {
+              <span class="count">{{ getCount(r.key) }}</span>
+            }
+          </button>
+        }
+      </div>
     }
   `,
   styles: [
@@ -77,7 +85,9 @@ export class ForumReactionBarComponent {
   private readonly forumService = inject(ForumService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly featureFlagService = inject(FeatureFlagService);
-  readonly reactionsEnabled = this.featureFlagService.enabled(FeatureFlag.COMMUNITY_FORUM_REACTIONS);
+  readonly reactionsEnabled = this.featureFlagService.enabled(
+    FeatureFlag.COMMUNITY_FORUM_REACTIONS,
+  );
 
   readonly reactions = input.required<Record<string, number>>();
   readonly viewerReaction = input<string | null>(null);
@@ -126,7 +136,10 @@ export class ForumReactionBarComponent {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe();
     } else {
-      this.forumService.toggleThreadReaction(this.threadSlug(), { reactionType: key }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+      this.forumService
+        .toggleThreadReaction(this.threadSlug(), { reactionType: key })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe();
     }
   }
 }

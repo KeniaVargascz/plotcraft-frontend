@@ -16,10 +16,12 @@ export class App {
   readonly loading = signal(true);
 
   constructor() {
-    inject(Router).events.pipe(
-      filter((e) => e instanceof NavigationEnd),
-      take(1),
-      takeUntilDestroyed(inject(DestroyRef)),
-    ).subscribe(() => this.loading.set(false));
+    inject(Router)
+      .events.pipe(
+        filter((e) => e instanceof NavigationEnd),
+        take(1),
+        takeUntilDestroyed(inject(DestroyRef)),
+      )
+      .subscribe(() => this.loading.set(false));
   }
 }

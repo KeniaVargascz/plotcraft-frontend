@@ -25,13 +25,48 @@ import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 
         @if (showActions()) {
           <div class="card-actions">
-            <button class="action-btn" type="button" (click)="edit.emit()" [title]="'actions.edit' | translate">
-              <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+            <button
+              class="action-btn"
+              type="button"
+              (click)="edit.emit()"
+              [title]="'actions.edit' | translate"
+            >
+              <svg
+                class="action-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+              </svg>
               <span class="action-label">{{ 'actions.edit' | translate }}</span>
             </button>
-            <button class="action-btn action-btn--danger" type="button" [disabled]="removing()" (click)="delete.emit()" [title]="'actions.delete' | translate">
-              <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-              <span class="action-label">{{ removing() ? ('actions.removing' | translate) : ('actions.delete' | translate) }}</span>
+            <button
+              class="action-btn action-btn--danger"
+              type="button"
+              [disabled]="removing()"
+              (click)="delete.emit()"
+              [title]="'actions.delete' | translate"
+            >
+              <svg
+                class="action-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M3 6h18" />
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+              </svg>
+              <span class="action-label">{{
+                removing() ? ('actions.removing' | translate) : ('actions.delete' | translate)
+              }}</span>
             </button>
           </div>
         }

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -145,20 +152,68 @@ import { CommunityService } from './services/community.service';
                   </span>
                   <div class="card-actions">
                     @if (c.status === 'ACTIVE') {
-                      <button class="action-btn" type="button" (click)="onView(c.slug)" [title]="'actions.view' | translate">
-                        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      <button
+                        class="action-btn"
+                        type="button"
+                        (click)="onView(c.slug)"
+                        [title]="'actions.view' | translate"
+                      >
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
                         <span class="action-label">{{ 'actions.view' | translate }}</span>
                       </button>
                     }
                     @if (c.type === 'PRIVATE' || c.status !== 'ACTIVE') {
                       @if (c.status === 'ACTIVE') {
-                        <button class="action-btn" type="button" (click)="onEdit(c.slug)" [title]="'actions.edit' | translate">
-                          <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                        <button
+                          class="action-btn"
+                          type="button"
+                          (click)="onEdit(c.slug)"
+                          [title]="'actions.edit' | translate"
+                        >
+                          <svg
+                            class="action-icon"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                          </svg>
                           <span class="action-label">{{ 'actions.edit' | translate }}</span>
                         </button>
                       }
-                      <button class="action-btn action-btn--danger" type="button" (click)="remove(c)" [title]="'actions.delete' | translate">
-                        <svg class="action-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                      <button
+                        class="action-btn action-btn--danger"
+                        type="button"
+                        (click)="remove(c)"
+                        [title]="'actions.delete' | translate"
+                      >
+                        <svg
+                          class="action-icon"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M3 6h18" />
+                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                        </svg>
                         <span class="action-label">{{ 'actions.delete' | translate }}</span>
                       </button>
                     }
@@ -395,16 +450,26 @@ import { CommunityService } from './services/community.service';
         cursor: pointer;
         white-space: nowrap;
       }
-      .action-icon { width: 0.9rem; height: 0.9rem; flex-shrink: 0; }
-      .action-btn:hover { opacity: 0.85; }
+      .action-icon {
+        width: 0.9rem;
+        height: 0.9rem;
+        flex-shrink: 0;
+      }
+      .action-btn:hover {
+        opacity: 0.85;
+      }
       .action-btn--danger {
         background: rgba(214, 123, 123, 0.12);
         border-color: rgba(214, 123, 123, 0.28);
         color: #de9292;
       }
       @media (max-width: 720px) {
-        .action-label { display: none; }
-        .action-btn { padding: 0.5rem; }
+        .action-label {
+          display: none;
+        }
+        .action-btn {
+          padding: 0.5rem;
+        }
       }
       .empty {
         text-align: center;
@@ -451,13 +516,16 @@ export class MyCommunitiesPageComponent implements OnInit {
 
   private loadCommunities(): void {
     this.loading.set(true);
-    this.service.getMyOwnedCommunities().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (list) => {
-        this.items.set(list);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.service
+      .getMyOwnedCommunities()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (list) => {
+          this.items.set(list);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
   }
 
   onView(slug: string): void {

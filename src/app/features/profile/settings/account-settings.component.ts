@@ -1,5 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -116,33 +123,41 @@ export class AccountSettingsComponent implements OnInit {
   ngOnInit(): void {
     this.loadPrivacy();
     this.loadNotificationPrefs();
-    this.privacyDebounce$.pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef)).subscribe((patch) => {
-      this.settingsService.updatePrivacy(patch).subscribe({
-        next: (res) => this.privacy.set(res),
+    this.privacyDebounce$
+      .pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef))
+      .subscribe((patch) => {
+        this.settingsService.updatePrivacy(patch).subscribe({
+          next: (res) => this.privacy.set(res),
+        });
       });
-    });
   }
 
   loadPrivacy(): void {
     this.privacyLoading.set(true);
-    this.settingsService.getPrivacy().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        this.privacy.set(res);
-        this.privacyLoading.set(false);
-      },
-      error: () => this.privacyLoading.set(false),
-    });
+    this.settingsService
+      .getPrivacy()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.privacy.set(res);
+          this.privacyLoading.set(false);
+        },
+        error: () => this.privacyLoading.set(false),
+      });
   }
 
   loadNotificationPrefs(): void {
     this.notifLoading.set(true);
-    this.settingsService.getNotificationPrefs().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        this.notifPrefs.set(res);
-        this.notifLoading.set(false);
-      },
-      error: () => this.notifLoading.set(false),
-    });
+    this.settingsService
+      .getNotificationPrefs()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.notifPrefs.set(res);
+          this.notifLoading.set(false);
+        },
+        error: () => this.notifLoading.set(false),
+      });
   }
 
   updatePrivacyField(field: keyof PrivacySettings, value: boolean): void {

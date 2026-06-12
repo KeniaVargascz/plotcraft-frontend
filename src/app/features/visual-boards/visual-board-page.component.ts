@@ -1,5 +1,13 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -25,7 +33,14 @@ import { VisualBoardsService } from './services/visual-boards.service';
 @Component({
   selector: 'app-visual-board-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, DragDropModule, EmptyStateComponent, LightboxComponent, DetailSkeletonComponent],
+  imports: [
+    FormsModule,
+    RouterLink,
+    DragDropModule,
+    EmptyStateComponent,
+    LightboxComponent,
+    DetailSkeletonComponent,
+  ],
   templateUrl: './visual-board-page.template.html',
   styleUrl: './visual-board-page.styles.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

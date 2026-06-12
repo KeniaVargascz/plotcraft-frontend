@@ -43,9 +43,8 @@ export class ReadingListsService {
   }
 
   updateItemNote(id: string, novelId: string, personal_note?: string | null) {
-    return this.api.patch<ReadingListItem>(
-      `/reading-lists/${id}/items/${novelId}`,
-      { personal_note },
-    );
+    return this.api.patch<ReadingListItem>(`/reading-lists/${id}/items/${novelId}`, {
+      personal_note,
+    });
   }
 }

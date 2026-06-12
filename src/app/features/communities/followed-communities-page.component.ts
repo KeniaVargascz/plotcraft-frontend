@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
@@ -115,14 +122,16 @@ export class FollowedCommunitiesPageComponent implements OnInit {
       followed: this.service
         .getMyFollowedCommunities()
         .pipe(catchError(() => of([] as Community[]))),
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe(({ member, followed }) => {
-      const map = new Map<string, Community>();
-      for (const c of [...member, ...followed]) {
-        if (c.status !== 'ACTIVE') continue;
-        if (!map.has(c.id)) map.set(c.id, c);
-      }
-      this.items.set(Array.from(map.values()));
-      this.loading.set(false);
-    });
+    })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(({ member, followed }) => {
+        const map = new Map<string, Community>();
+        for (const c of [...member, ...followed]) {
+          if (c.status !== 'ACTIVE') continue;
+          if (!map.has(c.id)) map.set(c.id, c);
+        }
+        this.items.set(Array.from(map.values()));
+        this.loading.set(false);
+      });
   }
 }

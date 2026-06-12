@@ -122,6 +122,9 @@ export class HistoryPageComponent {
   readonly items = signal<ReadingHistoryItem[]>([]);
 
   constructor() {
-    this.libraryService.listHistory().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((response) => this.items.set(response.data));
+    this.libraryService
+      .listHistory()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((response) => this.items.set(response.data));
   }
 }

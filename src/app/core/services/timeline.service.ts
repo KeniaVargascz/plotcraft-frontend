@@ -74,10 +74,7 @@ export class TimelineService {
   }
 
   updateEvent(timelineId: string, eventId: string, payload: Partial<TimelineEvent>) {
-    return this.api.patch<TimelineEvent>(
-      `/timelines/${timelineId}/events/${eventId}`,
-      payload,
-    );
+    return this.api.patch<TimelineEvent>(`/timelines/${timelineId}/events/${eventId}`, payload);
   }
 
   deleteEvent(timelineId: string, eventId: string) {
@@ -85,10 +82,9 @@ export class TimelineService {
   }
 
   reorderEvents(timelineId: string, events: Array<{ id: string; sortOrder: number }>) {
-    return this.api.patch<{ message: string }>(
-      `/timelines/${timelineId}/events/reorder`,
-      { events },
-    );
+    return this.api.patch<{ message: string }>(`/timelines/${timelineId}/events/reorder`, {
+      events,
+    });
   }
 
   /* ─── Export ─── */

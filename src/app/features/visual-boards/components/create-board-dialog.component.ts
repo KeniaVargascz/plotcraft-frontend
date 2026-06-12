@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, ElementRef, HostListener, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  HostListener,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -643,80 +652,92 @@ export class CreateBoardDialogComponent {
 
     switch (type) {
       case 'novel':
-        this.novelsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-          next: (response) => {
-            this.entityOptions.set(
-              response.data.map((novel) => ({
-                id: novel.id,
-                label: novel.title,
-                slug: novel.slug,
-                subtitle: novel.status,
-              })),
-            );
-            this.loadingOptions.set(false);
-          },
-          error: () => {
-            this.entityOptions.set([]);
-            this.loadingOptions.set(false);
-          },
-        });
+        this.novelsService
+          .listMine({ limit: 50 })
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: (response) => {
+              this.entityOptions.set(
+                response.data.map((novel) => ({
+                  id: novel.id,
+                  label: novel.title,
+                  slug: novel.slug,
+                  subtitle: novel.status,
+                })),
+              );
+              this.loadingOptions.set(false);
+            },
+            error: () => {
+              this.entityOptions.set([]);
+              this.loadingOptions.set(false);
+            },
+          });
         break;
       case 'world':
-        this.worldsService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-          next: (response) => {
-            this.entityOptions.set(
-              response.data.map((world) => ({
-                id: world.id,
-                label: world.name,
-                slug: world.slug,
-                subtitle: world.genre,
-              })),
-            );
-            this.loadingOptions.set(false);
-          },
-          error: () => {
-            this.entityOptions.set([]);
-            this.loadingOptions.set(false);
-          },
-        });
+        this.worldsService
+          .listMine({ limit: 50 })
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: (response) => {
+              this.entityOptions.set(
+                response.data.map((world) => ({
+                  id: world.id,
+                  label: world.name,
+                  slug: world.slug,
+                  subtitle: world.genre,
+                })),
+              );
+              this.loadingOptions.set(false);
+            },
+            error: () => {
+              this.entityOptions.set([]);
+              this.loadingOptions.set(false);
+            },
+          });
         break;
       case 'character':
-        this.charactersService.listMine({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-          next: (response) => {
-            this.entityOptions.set(
-              response.data.map((character) => ({
-                id: character.id,
-                label: character.name,
-                slug: character.slug,
-                subtitle: character.world?.name ?? null,
-              })),
-            );
-            this.loadingOptions.set(false);
-          },
-          error: () => {
-            this.entityOptions.set([]);
-            this.loadingOptions.set(false);
-          },
-        });
+        this.charactersService
+          .listMine({ limit: 50 })
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: (response) => {
+              this.entityOptions.set(
+                response.data.map((character) => ({
+                  id: character.id,
+                  label: character.name,
+                  slug: character.slug,
+                  subtitle: character.world?.name ?? null,
+                })),
+              );
+              this.loadingOptions.set(false);
+            },
+            error: () => {
+              this.entityOptions.set([]);
+              this.loadingOptions.set(false);
+            },
+          });
         break;
       case 'series':
-        this.seriesService.listByAuthor(username, { limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-          next: (response) => {
-            this.entityOptions.set(
-              response.data.map((series) => ({
-                id: series.id,
-                label: series.title,
-                slug: series.slug,
-                subtitle: series.status,
-              })),
-            );
-            this.loadingOptions.set(false);
-          },
-          error: () => {
-            this.entityOptions.set([]);
-            this.loadingOptions.set(false);
-          },
-        });
+        this.seriesService
+          .listByAuthor(username, { limit: 50 })
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: (response) => {
+              this.entityOptions.set(
+                response.data.map((series) => ({
+                  id: series.id,
+                  label: series.title,
+                  slug: series.slug,
+                  subtitle: series.status,
+                })),
+              );
+              this.loadingOptions.set(false);
+            },
+            error: () => {
+              this.entityOptions.set([]);
+              this.loadingOptions.set(false);
+            },
+          });
         break;
     }
   }

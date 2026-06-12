@@ -69,12 +69,9 @@ export class NovelsService {
   }
 
   listByUser(username: string, query: NovelQuery = {}): Observable<PagedResponse<NovelSummary>> {
-    return this.api.get<PagedResponse<NovelSummary>>(
-      `/novels/user/${username}`,
-      {
-        params: this.buildParams(query),
-      },
-    );
+    return this.api.get<PagedResponse<NovelSummary>>(`/novels/user/${username}`, {
+      params: this.buildParams(query),
+    });
   }
 
   getBySlug(slug: string): Observable<NovelDetail> {

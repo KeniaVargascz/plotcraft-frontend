@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -23,7 +30,17 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
     <section class="form-shell">
       <header class="hero card">
         <a class="back-arrow" routerLink="/mis-personajes" [title]="'actions.back' | translate">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
         </a>
         <div>
           <p class="eyebrow">Autor</p>
@@ -33,8 +50,12 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
       </header>
 
       @if (!catalogEnabled()) {
-        <div class="flag-notice" style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:0.5rem;font-size:.9rem;margin-bottom:1rem">
-          El catalogo de personajes esta desactivado. Tu personaje no sera visible publicamente hasta que se habilite.
+        <div
+          class="flag-notice"
+          style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:0.5rem;font-size:.9rem;margin-bottom:1rem"
+        >
+          El catalogo de personajes esta desactivado. Tu personaje no sera visible publicamente
+          hasta que se habilite.
         </div>
       }
 

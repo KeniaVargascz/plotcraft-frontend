@@ -43,9 +43,7 @@ import { Community } from '../../../communities/models/community.model';
         }
         <p class="hint">
           ¿No se encuentra el fandom al que pertenece tu fanfiction?
-          <a routerLink="/mis-comunidades" [queryParams]="{ nueva: 1 }"
-            >Agrégalo en Comunidades</a
-          >.
+          <a routerLink="/mis-comunidades" [queryParams]="{ nueva: 1 }">Agrégalo en Comunidades</a>.
         </p>
         @if (validationError) {
           <p class="error">{{ validationError }}</p>

@@ -373,43 +373,49 @@ export class WorldDetailPageComponent {
       const slug = params.get('slug');
       if (!slug) return;
       this.loading.set(true);
-      this.worldsService.getBySlug(slug).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (world) => {
-          this.world.set(world);
-          this.charactersService.listByWorld(slug, { limit: 8 }).subscribe({
-            next: (response) => this.characters.set(response.data),
-            error: () => this.characters.set([]),
-          });
-          this.wbService.listCategories(slug).subscribe({
-            next: (cats) => {
-              this.loreCategories.set(cats);
-              const isOwner = world.viewerContext?.isOwner;
-              for (const cat of cats) {
-                this.wbService
-                  .listCategoryEntries(slug, cat.slug, {
-                    limit: 4,
-                    ...(!isOwner ? { isPublic: true } : {}),
-                  })
-                  .subscribe({
-                    next: (res) => {
-                      this.loreEntries.update((current) => ({ ...current, [cat.slug]: res.data }));
-                    },
-                    error: () => {
-                      this.loreEntries.update((current) => ({ ...current, [cat.slug]: [] }));
-                    },
-                  });
-              }
-            },
-            error: () => this.loreCategories.set([]),
-          });
-          this.loading.set(false);
-        },
-        error: () => {
-          this.world.set(null);
-          this.characters.set([]);
-          this.loading.set(false);
-        },
-      });
+      this.worldsService
+        .getBySlug(slug)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (world) => {
+            this.world.set(world);
+            this.charactersService.listByWorld(slug, { limit: 8 }).subscribe({
+              next: (response) => this.characters.set(response.data),
+              error: () => this.characters.set([]),
+            });
+            this.wbService.listCategories(slug).subscribe({
+              next: (cats) => {
+                this.loreCategories.set(cats);
+                const isOwner = world.viewerContext?.isOwner;
+                for (const cat of cats) {
+                  this.wbService
+                    .listCategoryEntries(slug, cat.slug, {
+                      limit: 4,
+                      ...(!isOwner ? { isPublic: true } : {}),
+                    })
+                    .subscribe({
+                      next: (res) => {
+                        this.loreEntries.update((current) => ({
+                          ...current,
+                          [cat.slug]: res.data,
+                        }));
+                      },
+                      error: () => {
+                        this.loreEntries.update((current) => ({ ...current, [cat.slug]: [] }));
+                      },
+                    });
+                }
+              },
+              error: () => this.loreCategories.set([]),
+            });
+            this.loading.set(false);
+          },
+          error: () => {
+            this.world.set(null);
+            this.characters.set([]);
+            this.loading.set(false);
+          },
+        });
     });
   }
 

@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnDestroy,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -16,8 +24,22 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
   template: `
     <section class="editor-shell">
       <header class="editor-topbar">
-        <a class="back-arrow" [routerLink]="['/mis-novelas', slug, 'capitulos']" [title]="'actions.back' | translate">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        <a
+          class="back-arrow"
+          [routerLink]="['/mis-novelas', slug, 'capitulos']"
+          [title]="'actions.back' | translate"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
         </a>
 
         <div class="meta">
@@ -130,8 +152,14 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         text-decoration: none;
         flex-shrink: 0;
       }
-      .back-arrow svg { width: 1.1rem; height: 1.1rem; }
-      .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
+      .back-arrow svg {
+        width: 1.1rem;
+        height: 1.1rem;
+      }
+      .back-arrow:hover {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
 
       .editor-pane {
         padding: 1rem;

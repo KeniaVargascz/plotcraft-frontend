@@ -39,10 +39,9 @@ export class PostsService {
   }
 
   getUserPosts(username: string, query: PostQuery = {}): Observable<PaginatedResponse<PostModel>> {
-    return this.api.get<PaginatedResponse<PostModel>>(
-      `/posts/user/${username}`,
-      { params: this.buildParams(query) },
-    );
+    return this.api.get<PaginatedResponse<PostModel>>(`/posts/user/${username}`, {
+      params: this.buildParams(query),
+    });
   }
 
   getSavedPosts(query: PostQuery = {}): Observable<PaginatedResponse<PostModel>> {

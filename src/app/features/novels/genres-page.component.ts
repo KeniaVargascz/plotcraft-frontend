@@ -108,15 +108,18 @@ export class GenresPageComponent {
   readonly genres = signal<Genre[]>([]);
 
   constructor() {
-    this.genresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (genres) => {
-        this.genres.set(genres);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.genres.set([]);
-        this.loading.set(false);
-      },
-    });
+    this.genresService
+      .list()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (genres) => {
+          this.genres.set(genres);
+          this.loading.set(false);
+        },
+        error: () => {
+          this.genres.set([]);
+          this.loading.set(false);
+        },
+      });
   }
 }

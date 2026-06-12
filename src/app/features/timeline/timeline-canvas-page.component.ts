@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -41,7 +49,17 @@ import { TimelineSkeletonComponent } from '../../shared/components/skeleton-load
         <header class="topbar">
           <div class="topbar-left">
             <a routerLink="/mis-timelines" class="back-arrow" [title]="'actions.back' | translate">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M19 12H5" />
+                <path d="M12 19l-7-7 7-7" />
+              </svg>
             </a>
             <input
               type="text"
@@ -242,8 +260,14 @@ import { TimelineSkeletonComponent } from '../../shared/components/skeleton-load
         text-decoration: none;
         flex-shrink: 0;
       }
-      .back-arrow svg { width: 1.1rem; height: 1.1rem; }
-      .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
+      .back-arrow svg {
+        width: 1.1rem;
+        height: 1.1rem;
+      }
+      .back-arrow:hover {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
       .title-input {
         padding: 0.5rem 0.75rem;
         border-radius: 0.5rem;
@@ -552,7 +576,10 @@ export class TimelineCanvasPageComponent implements OnInit {
     }
     this.titleTimeout = setTimeout(() => {
       if (!name.trim()) return;
-      this.timelineService.update(this.timelineId(), { name: name.trim() }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+      this.timelineService
+        .update(this.timelineId(), { name: name.trim() })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe();
     }, 800);
   }
 
@@ -574,25 +601,36 @@ export class TimelineCanvasPageComponent implements OnInit {
       data,
     });
 
-    ref.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((result) => {
-      if (!result) return;
-      if (event) {
-        // Update
-        this.timelineService.updateEvent(this.timelineId(), event.id, result).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-          next: (updated) => {
-            this.allEvents.update((evts) => evts.map((e) => (e.id === updated.id ? updated : e)));
-          },
-        });
-      } else {
-        // Create
-        const payload = { ...result, sortOrder: this.allEvents().length + 1 };
-        this.timelineService.createEvent(this.timelineId(), payload).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-          next: (created) => {
-            this.allEvents.update((evts) => [...evts, created]);
-          },
-        });
-      }
-    });
+    ref
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result) => {
+        if (!result) return;
+        if (event) {
+          // Update
+          this.timelineService
+            .updateEvent(this.timelineId(), event.id, result)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: (updated) => {
+                this.allEvents.update((evts) =>
+                  evts.map((e) => (e.id === updated.id ? updated : e)),
+                );
+              },
+            });
+        } else {
+          // Create
+          const payload = { ...result, sortOrder: this.allEvents().length + 1 };
+          this.timelineService
+            .createEvent(this.timelineId(), payload)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: (created) => {
+                this.allEvents.update((evts) => [...evts, created]);
+              },
+            });
+        }
+      });
   }
 
   confirmDeleteEvent(event: TimelineEvent) {
@@ -605,14 +643,20 @@ export class TimelineCanvasPageComponent implements OnInit {
       },
     });
 
-    ref.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((confirmed) => {
-      if (confirmed !== true) return;
-      this.timelineService.deleteEvent(this.timelineId(), event.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: () => {
-          this.allEvents.update((evts) => evts.filter((e) => e.id !== event.id));
-        },
+    ref
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((confirmed) => {
+        if (confirmed !== true) return;
+        this.timelineService
+          .deleteEvent(this.timelineId(), event.id)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            next: () => {
+              this.allEvents.update((evts) => evts.filter((e) => e.id !== event.id));
+            },
+          });
       });
-    });
   }
 
   /* ─── Drag & Drop ─── */
@@ -634,14 +678,17 @@ export class TimelineCanvasPageComponent implements OnInit {
   /* ─── Export ─── */
 
   exportJson() {
-    this.timelineService.exportTimeline(this.timelineId()).pipe(takeUntilDestroyed(this.destroyRef)).subscribe((blob) => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `timeline-${this.timeline()?.name || 'export'}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-    });
+    this.timelineService
+      .exportTimeline(this.timelineId())
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `timeline-${this.timeline()?.name || 'export'}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
   }
 
   /* ─── Helpers ─── */
@@ -687,7 +734,10 @@ export class TimelineCanvasPageComponent implements OnInit {
     this.loading.set(true);
     this.timelineService
       .getById(id)
-      .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false)))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false)),
+      )
       .subscribe({
         next: (detail) => {
           this.timeline.set(detail);

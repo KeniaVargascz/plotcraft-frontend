@@ -195,14 +195,17 @@ export class HighlightsPageComponent {
 
   private fetch(reset: boolean) {
     this.loading.set(true);
-    this.highlightsService.listAll({ cursor: reset ? null : this.cursor, limit: 20 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        this.items.update((list) => (reset ? res.data : [...list, ...res.data]));
-        this.cursor = res.pagination.nextCursor;
-        this.hasMore.set(res.pagination.hasMore);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.highlightsService
+      .listAll({ cursor: reset ? null : this.cursor, limit: 20 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.items.update((list) => (reset ? res.data : [...list, ...res.data]));
+          this.cursor = res.pagination.nextCursor;
+          this.hasMore.set(res.pagination.hasMore);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
   }
 }

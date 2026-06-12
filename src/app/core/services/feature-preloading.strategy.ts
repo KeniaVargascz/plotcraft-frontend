@@ -22,7 +22,7 @@ export class FeaturePreloadingStrategy implements PreloadingStrategy {
   private extractFeatureKey(route: Route): FeatureFlagKey | null {
     const guards = route.canActivate ?? [];
     for (const guard of guards) {
-      const key = (guard as any)?.[FEATURE_FLAG_GUARD_KEY];
+      const key = (guard as unknown as Record<string, unknown>)?.[FEATURE_FLAG_GUARD_KEY];
       if (key) return key as FeatureFlagKey;
     }
     return null;

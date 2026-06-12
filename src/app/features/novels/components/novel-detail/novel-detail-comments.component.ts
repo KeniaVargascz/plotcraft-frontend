@@ -80,11 +80,7 @@ export interface NovelComment {
           </div>
 
           @if (hasMore()) {
-            <button
-              class="btn-load-more"
-              [disabled]="loading()"
-              (click)="loadMore.emit()"
-            >
+            <button class="btn-load-more" [disabled]="loading()" (click)="loadMore.emit()">
               {{ loading() ? 'Cargando...' : 'Ver mas comentarios' }}
             </button>
           }

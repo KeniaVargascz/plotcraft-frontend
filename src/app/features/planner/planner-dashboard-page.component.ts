@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -439,10 +447,13 @@ export class PlannerDashboardPageComponent implements OnInit {
     this.error.set(false);
 
     // Load projects
-    this.plannerService.listProjects().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (projects) => this.allProjects.set(projects),
-      error: () => this.error.set(true),
-    });
+    this.plannerService
+      .listProjects()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (projects) => this.allProjects.set(projects),
+        error: () => this.error.set(true),
+      });
 
     // Load calendar tasks (next 7 days)
     const today = new Date();
@@ -451,21 +462,27 @@ export class PlannerDashboardPageComponent implements OnInit {
     const from = today.toISOString().substring(0, 10);
     const to = nextWeek.toISOString().substring(0, 10);
 
-    this.plannerService.getCalendar(from, to).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (tasks) => this.urgentTasks.set(tasks.slice(0, 5)),
-    });
+    this.plannerService
+      .getCalendar(from, to)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (tasks) => this.urgentTasks.set(tasks.slice(0, 5)),
+      });
 
     // Load stats for recent completions + in progress
-    this.plannerService.getStats().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (stats) => {
-        this.recentCompletions.set(stats.recentCompletions.slice(0, 5));
-        this.loading.set(false);
-      },
-      error: () => {
-        this.error.set(true);
-        this.loading.set(false);
-      },
-    });
+    this.plannerService
+      .getStats()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (stats) => {
+          this.recentCompletions.set(stats.recentCompletions.slice(0, 5));
+          this.loading.set(false);
+        },
+        error: () => {
+          this.error.set(true);
+          this.loading.set(false);
+        },
+      });
   }
 
   openCreateDialog(): void {

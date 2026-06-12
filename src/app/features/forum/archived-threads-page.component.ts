@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ThreadSummary } from '../../core/models/forum-thread.model';
@@ -15,7 +22,17 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
     <section class="page-shell">
       <header class="page-header">
         <a class="back-arrow" routerLink="/foro" [title]="'actions.back' | translate">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
         </a>
         <h1>Mis hilos archivados</h1>
         <p class="subtitle">Hilos que archivaste. Solo tu puedes verlos aqui.</p>
@@ -66,8 +83,14 @@ import { TranslatePipe } from '../../shared/pipes/translate.pipe';
         text-decoration: none;
         flex-shrink: 0;
       }
-      .back-arrow svg { width: 1.2rem; height: 1.2rem; }
-      .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
+      .back-arrow svg {
+        width: 1.2rem;
+        height: 1.2rem;
+      }
+      .back-arrow:hover {
+        background: var(--accent-glow);
+        color: var(--accent-text);
+      }
       h1 {
         font-size: 1.5rem;
         color: var(--text-1);
@@ -115,13 +138,16 @@ export class ArchivedThreadsPageComponent implements OnInit {
   readonly archivedThreads = signal<ThreadSummary[]>([]);
 
   ngOnInit() {
-    this.forumService.listMyThreads({ limit: 50 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        this.archivedThreads.set(res.data.filter((t) => t.status === 'ARCHIVED'));
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.forumService
+      .listMyThreads({ limit: 50 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.archivedThreads.set(res.data.filter((t) => t.status === 'ARCHIVED'));
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
   }
 
   onRestore(thread: ThreadSummary) {

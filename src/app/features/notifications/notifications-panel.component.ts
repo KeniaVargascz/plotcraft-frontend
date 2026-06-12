@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, input, output, signal, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  input,
+  output,
+  signal,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { AppNotification } from '../../core/models/notification.model';
@@ -151,16 +160,19 @@ export class NotificationsPanelComponent implements OnInit {
 
   private loadNotifications(): void {
     this.loading.set(true);
-    this.notificationsService.list({ limit: 10 }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (res) => {
-        this.notifications.set(res.data);
-        this.loading.set(false);
-        this.notificationsService.markAllAsRead().subscribe(() => {
-          this.badgeReset.emit();
-        });
-      },
-      error: () => this.loading.set(false),
-    });
+    this.notificationsService
+      .list({ limit: 10 })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res) => {
+          this.notifications.set(res.data);
+          this.loading.set(false);
+          this.notificationsService.markAllAsRead().subscribe(() => {
+            this.badgeReset.emit();
+          });
+        },
+        error: () => this.loading.set(false),
+      });
   }
 
   markAllRead(): void {

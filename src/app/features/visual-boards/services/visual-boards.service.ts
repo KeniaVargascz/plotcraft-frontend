@@ -36,10 +36,7 @@ export class VisualBoardsService {
   }
 
   createBoard(payload: VisualBoardSavePayload) {
-    return this.api.post<VisualBoardSummary>(
-      '/visual-boards',
-      this.normalizeBoardPayload(payload),
-    );
+    return this.api.post<VisualBoardSummary>('/visual-boards', this.normalizeBoardPayload(payload));
   }
 
   updateBoard(id: string, payload: Partial<VisualBoardSavePayload>) {
@@ -59,10 +56,9 @@ export class VisualBoardsService {
   }
 
   updateSection(boardId: string, sectionId: string, title: string) {
-    return this.api.patch<VisualBoardSection>(
-      `/visual-boards/${boardId}/sections/${sectionId}`,
-      { title },
-    );
+    return this.api.patch<VisualBoardSection>(`/visual-boards/${boardId}/sections/${sectionId}`, {
+      title,
+    });
   }
 
   deleteSection(boardId: string, sectionId: string) {
@@ -71,10 +67,7 @@ export class VisualBoardsService {
   }
 
   reorderSections(boardId: string, sections: VisualBoardReorderSectionPayload[]) {
-    return this.api.patch<VisualBoard>(
-      `/visual-boards/${boardId}/sections/reorder`,
-      { sections },
-    );
+    return this.api.patch<VisualBoard>(`/visual-boards/${boardId}/sections/reorder`, { sections });
   }
 
   addItem(
@@ -82,10 +75,7 @@ export class VisualBoardsService {
     sectionId: string,
     payload: { imageUrl: string; caption?: string | null },
   ) {
-    return this.api.post<unknown>(
-      `/visual-boards/${boardId}/sections/${sectionId}/items`,
-      payload,
-    );
+    return this.api.post<unknown>(`/visual-boards/${boardId}/sections/${sectionId}/items`, payload);
   }
 
   updateItem(boardId: string, sectionId: string, itemId: string, caption: string | null) {
@@ -97,9 +87,7 @@ export class VisualBoardsService {
 
   deleteItem(boardId: string, sectionId: string, itemId: string) {
     const { http, baseUrl } = this.api.raw();
-    return http.delete(
-      `${baseUrl}/visual-boards/${boardId}/sections/${sectionId}/items/${itemId}`,
-    );
+    return http.delete(`${baseUrl}/visual-boards/${boardId}/sections/${sectionId}/items/${itemId}`);
   }
 
   reorderItems(boardId: string, sectionId: string, items: VisualBoardReorderItemPayload[]) {

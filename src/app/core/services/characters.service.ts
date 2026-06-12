@@ -60,21 +60,15 @@ export class CharactersService {
   }
 
   listByUser(username: string, query: CharacterQuery = {}) {
-    return this.api.get<PagedResponse<CharacterSummary>>(
-      `/characters/user/${username}`,
-      {
-        params: this.buildParams(query),
-      },
-    );
+    return this.api.get<PagedResponse<CharacterSummary>>(`/characters/user/${username}`, {
+      params: this.buildParams(query),
+    });
   }
 
   listByWorld(worldSlug: string, query: CharacterQuery = {}) {
-    return this.api.get<PagedResponse<CharacterSummary>>(
-      `/characters/world/${worldSlug}`,
-      {
-        params: this.buildParams(query),
-      },
-    );
+    return this.api.get<PagedResponse<CharacterSummary>>(`/characters/world/${worldSlug}`, {
+      params: this.buildParams(query),
+    });
   }
 
   getBySlug(username: string, slug: string) {
@@ -91,12 +85,9 @@ export class CharactersService {
   }
 
   listNovels(username: string, slug: string, query: CharacterQuery = {}) {
-    return this.api.get<PaginatedResponse<unknown>>(
-      `/characters/${username}/${slug}/novels`,
-      {
-        params: this.buildParams(query),
-      },
-    );
+    return this.api.get<PaginatedResponse<unknown>>(`/characters/${username}/${slug}/novels`, {
+      params: this.buildParams(query),
+    });
   }
 
   create(payload: CharacterPayload) {

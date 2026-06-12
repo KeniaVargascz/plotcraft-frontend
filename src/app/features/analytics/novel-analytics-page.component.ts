@@ -1,5 +1,13 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, computed, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  computed,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { AnalyticsService } from '../../core/services/analytics.service';
@@ -31,7 +39,17 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
         <header class="page-header">
           <div class="title-wrap">
             <a class="back-arrow" routerLink="/analytics" [title]="'actions.back' | translate">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M19 12H5" />
+                <path d="M12 19l-7-7 7-7" />
+              </svg>
             </a>
             <h1>{{ data()!.novel.title }}</h1>
           </div>
@@ -198,8 +216,14 @@ type TimelineMetric = 'views' | 'likes' | 'bookmarks' | 'newReaders' | 'chapters
       text-decoration: none;
       flex-shrink: 0;
     }
-    .back-arrow svg { width: 1.2rem; height: 1.2rem; }
-    .back-arrow:hover { background: var(--accent-glow); color: var(--accent-text); }
+    .back-arrow svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+    .back-arrow:hover {
+      background: var(--accent-glow);
+      color: var(--accent-text);
+    }
     .page-header h1 {
       font-size: 1.5rem;
       font-weight: 700;
@@ -429,16 +453,22 @@ export class NovelAnalyticsPageComponent implements OnInit {
     this.loading.set(true);
     const p = this.period();
 
-    this.analyticsService.getNovelAnalytics(this.slug, p).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (d) => {
-        this.data.set(d);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.analyticsService
+      .getNovelAnalytics(this.slug, p)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (d) => {
+          this.data.set(d);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
 
-    this.analyticsService.getNovelTimeline(this.slug, p).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (tl) => this.timeline.set(tl),
-    });
+    this.analyticsService
+      .getNovelTimeline(this.slug, p)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (tl) => this.timeline.set(tl),
+      });
   }
 }

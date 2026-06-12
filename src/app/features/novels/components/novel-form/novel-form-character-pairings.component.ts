@@ -422,9 +422,7 @@ export class NovelFormCharacterPairingsComponent {
   }
 
   removeCharacter(character: CharacterSummary): void {
-    this.characterIdsChange.emit(
-      this.selectedCharacterIds.filter((id) => id !== character.id),
-    );
+    this.characterIdsChange.emit(this.selectedCharacterIds.filter((id) => id !== character.id));
   }
 
   addMainPairing(): void {

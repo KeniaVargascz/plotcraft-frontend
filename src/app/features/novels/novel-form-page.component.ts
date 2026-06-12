@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, ViewChild, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  ViewChild,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -53,8 +62,12 @@ import { FeatureFlag } from '../../core/constants/feature-flags.constants';
       <h1>{{ isEdit() ? 'Editar novela' : 'Nueva novela' }}</h1>
 
       @if (!catalogEnabled()) {
-        <div class="flag-notice" style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:0.5rem;font-size:.9rem;margin-bottom:1rem">
-          El catalogo de novelas esta desactivado. Tu novela no sera visible publicamente hasta que se habilite.
+        <div
+          class="flag-notice"
+          style="background:var(--accent-glow);color:var(--accent-text);padding:.75rem 1rem;border-radius:0.5rem;font-size:.9rem;margin-bottom:1rem"
+        >
+          El catalogo de novelas esta desactivado. Tu novela no sera visible publicamente hasta que
+          se habilite.
         </div>
       }
 
@@ -976,7 +989,9 @@ export class NovelFormPageComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly featureFlagService = inject(FeatureFlagService);
   readonly catalogEnabled = this.featureFlagService.enabled(FeatureFlag.EXPLORE_NOVELS_CATALOG);
-  readonly contentWarningsEnabled = this.featureFlagService.enabled(FeatureFlag.PLATFORM_CONTENT_WARNINGS);
+  readonly contentWarningsEnabled = this.featureFlagService.enabled(
+    FeatureFlag.PLATFORM_CONTENT_WARNINGS,
+  );
 
   novelType: NovelType = 'ORIGINAL';
   linkedCommunityId = '';
@@ -1231,39 +1246,57 @@ export class NovelFormPageComponent implements OnInit {
       .list()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((genres) => this.genres.set(genres.filter((g) => g.slug !== 'fanfiction')));
-    this.languagesService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (languages) => {
-        this.languages.set(languages);
-        if (!this.languageId) {
-          this.languageId =
-            languages.find((language) => language.code === 'es')?.id ?? languages[0]?.id ?? '';
-        }
-      },
-      error: () => this.languages.set([]),
-    });
-    this.romanceGenresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (genres) => this.romanceGenreOptions.set(genres),
-      error: () => this.romanceGenreOptions.set([]),
-    });
-    this.warningsService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (items) => this.warningsCatalog.set(items),
-      error: () => this.warningsCatalog.set([]),
-    });
-    this.charactersService.listMine({ limit: 50, sort: 'updated' }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (response) => this.characters.set(response.data),
-      error: () => this.characters.set([]),
-    });
-    this.worldsService.listMine({ limit: 50, sort: 'updated' }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (response) => this.worlds.set(response.data),
-      error: () => this.worlds.set([]),
-    });
-    this.communityService.getMyCommunities().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (list) => {
-        const fandoms = list.filter((c) => c.type === 'FANDOM' && c.status === 'ACTIVE');
-        this.myFandoms.set(fandoms);
-      },
-      error: () => this.myFandoms.set([]),
-    });
+    this.languagesService
+      .list()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (languages) => {
+          this.languages.set(languages);
+          if (!this.languageId) {
+            this.languageId =
+              languages.find((language) => language.code === 'es')?.id ?? languages[0]?.id ?? '';
+          }
+        },
+        error: () => this.languages.set([]),
+      });
+    this.romanceGenresService
+      .list()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (genres) => this.romanceGenreOptions.set(genres),
+        error: () => this.romanceGenreOptions.set([]),
+      });
+    this.warningsService
+      .list()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (items) => this.warningsCatalog.set(items),
+        error: () => this.warningsCatalog.set([]),
+      });
+    this.charactersService
+      .listMine({ limit: 50, sort: 'updated' })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => this.characters.set(response.data),
+        error: () => this.characters.set([]),
+      });
+    this.worldsService
+      .listMine({ limit: 50, sort: 'updated' })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (response) => this.worlds.set(response.data),
+        error: () => this.worlds.set([]),
+      });
+    this.communityService
+      .getMyCommunities()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (list) => {
+          const fandoms = list.filter((c) => c.type === 'FANDOM' && c.status === 'ACTIVE');
+          this.myFandoms.set(fandoms);
+        },
+        error: () => this.myFandoms.set([]),
+      });
 
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.slug = params.get('slug');
@@ -1356,7 +1389,6 @@ export class NovelFormPageComponent implements OnInit {
       });
     });
   }
-
 
   selectWorld(worldId: string) {
     if (!worldId || this.selectedWorldIds().includes(worldId)) {

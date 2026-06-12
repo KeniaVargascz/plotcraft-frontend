@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -394,20 +402,26 @@ export class KanbanBoardPageComponent implements OnInit {
   private loadBoard(): void {
     this.loading.set(true);
 
-    this.plannerService.getProject(this.projectId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (p) => {
-        this.project.set(p);
-        this.projectName = p.name;
-      },
-    });
+    this.plannerService
+      .getProject(this.projectId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (p) => {
+          this.project.set(p);
+          this.projectName = p.name;
+        },
+      });
 
-    this.plannerService.getBoard(this.projectId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (data) => {
-        this.board.set(this.normalizeBoard(data));
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.plannerService
+      .getBoard(this.projectId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.board.set(this.normalizeBoard(data));
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
   }
 
   filteredColumn(status: TaskStatus): WritingTask[] {
@@ -479,9 +493,12 @@ export class KanbanBoardPageComponent implements OnInit {
   onNameBlur(): void {
     const trimmed = this.projectName.trim();
     if (trimmed && trimmed !== this.project()?.name) {
-      this.plannerService.updateProject(this.projectId, { name: trimmed }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-        next: (updated) => this.project.set(updated),
-      });
+      this.plannerService
+        .updateProject(this.projectId, { name: trimmed })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (updated) => this.project.set(updated),
+        });
     }
   }
 
@@ -535,54 +552,66 @@ export class KanbanBoardPageComponent implements OnInit {
       data,
     });
 
-    ref.afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((result) => {
-      if (!result) return;
+    ref
+      .afterClosed()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((result) => {
+        if (!result) return;
 
-      if (task) {
-        // Update existing task
-        this.plannerService.updateTask(this.projectId, task.id, result).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-          next: (updated) => {
-            this.board.update((b) => {
-              const newBoard = { ...b };
-              // Remove from old status column
-              for (const status of ALL_STATUSES) {
-                newBoard[status] = (newBoard[status] ?? []).filter((t) => t.id !== updated.id);
-              }
-              // Add to new status column
-              const targetCol = newBoard[updated.status] ?? [];
-              newBoard[updated.status] = [...targetCol, updated];
-              return newBoard;
+        if (task) {
+          // Update existing task
+          this.plannerService
+            .updateTask(this.projectId, task.id, result)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: (updated) => {
+                this.board.update((b) => {
+                  const newBoard = { ...b };
+                  // Remove from old status column
+                  for (const status of ALL_STATUSES) {
+                    newBoard[status] = (newBoard[status] ?? []).filter((t) => t.id !== updated.id);
+                  }
+                  // Add to new status column
+                  const targetCol = newBoard[updated.status] ?? [];
+                  newBoard[updated.status] = [...targetCol, updated];
+                  return newBoard;
+                });
+              },
             });
-          },
-        });
-      } else {
-        // Create new task
-        this.plannerService.createTask(this.projectId, result).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-          next: (created) => {
-            const status = created.status;
-            this.board.update((b) => ({
-              ...b,
-              [status]: [...(b[status] ?? []), created],
-            }));
-          },
-        });
-      }
-    });
+        } else {
+          // Create new task
+          this.plannerService
+            .createTask(this.projectId, result)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+              next: (created) => {
+                const status = created.status;
+                this.board.update((b) => ({
+                  ...b,
+                  [status]: [...(b[status] ?? []), created],
+                }));
+              },
+            });
+        }
+      });
   }
 
   onDeleteTask(task: WritingTask): void {
     if (!confirm(`Eliminar tarea "${task.title}"?`)) return;
-    this.plannerService.deleteTask(this.projectId, task.id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => {
-        this.board.update((b) => {
-          const newBoard = { ...b };
-          for (const status of ALL_STATUSES) {
-            newBoard[status] = (newBoard[status] ?? []).filter((t) => t.id !== task.id);
-          }
-          return newBoard;
-        });
-      },
-    });
+    this.plannerService
+      .deleteTask(this.projectId, task.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.board.update((b) => {
+            const newBoard = { ...b };
+            for (const status of ALL_STATUSES) {
+              newBoard[status] = (newBoard[status] ?? []).filter((t) => t.id !== task.id);
+            }
+            return newBoard;
+          });
+        },
+      });
   }
 
   private normalizeBoard(

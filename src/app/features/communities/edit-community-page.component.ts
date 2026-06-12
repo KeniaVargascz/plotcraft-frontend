@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -246,25 +253,28 @@ export class EditCommunityPageComponent implements OnInit {
   ngOnInit(): void {
     const slug = this.route.snapshot.paramMap.get('slug');
     if (!slug) return;
-    this.service.getCommunityBySlug(slug).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (c) => {
-        this.community.set(c);
-        this.form.patchValue({
-          name: c.name,
-          description: c.description ?? '',
-          rules: c.rules ?? '',
-          coverUrl: c.coverUrl ?? '',
-          bannerUrl: c.bannerUrl ?? '',
-        });
-        this.loading.set(false);
-        if (c.type === 'PRIVATE') {
-          this.novelsService.listMine({ limit: 100 }).subscribe({
-            next: (res) => this.myNovels.set(res.data),
+    this.service
+      .getCommunityBySlug(slug)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (c) => {
+          this.community.set(c);
+          this.form.patchValue({
+            name: c.name,
+            description: c.description ?? '',
+            rules: c.rules ?? '',
+            coverUrl: c.coverUrl ?? '',
+            bannerUrl: c.bannerUrl ?? '',
           });
-        }
-      },
-      error: () => this.loading.set(false),
-    });
+          this.loading.set(false);
+          if (c.type === 'PRIVATE') {
+            this.novelsService.listMine({ limit: 100 }).subscribe({
+              next: (res) => this.myNovels.set(res.data),
+            });
+          }
+        },
+        error: () => this.loading.set(false),
+      });
   }
 
   pickableNovels(): NovelSummary[] {

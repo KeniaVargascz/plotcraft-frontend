@@ -241,6 +241,9 @@ export class GoalsPageComponent {
   }
 
   private load() {
-    this.libraryService.listGoals().pipe(takeUntilDestroyed(this.destroyRef)).subscribe((goals) => this.goals.set(goals));
+    this.libraryService
+      .listGoals()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((goals) => this.goals.set(goals));
   }
 }

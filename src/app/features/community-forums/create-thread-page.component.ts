@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormArray,
@@ -365,10 +373,13 @@ export class CreateThreadPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.communitiesService.getMyCommunities().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (list) => this.joinedCommunities.set(list),
-      error: () => this.joinedCommunities.set([]),
-    });
+    this.communitiesService
+      .getMyCommunities()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (list) => this.joinedCommunities.set(list),
+        error: () => this.joinedCommunities.set([]),
+      });
     this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const cs = params.get('slug') ?? '';
       const fs = params.get('forumSlug') ?? '';

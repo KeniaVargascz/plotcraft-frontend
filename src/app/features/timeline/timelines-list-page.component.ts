@@ -573,7 +573,10 @@ export class TimelinesListPageComponent {
     this.loading.set(true);
     this.timelineService
       .listMine()
-      .pipe(takeUntilDestroyed(this.destroyRef), finalize(() => this.loading.set(false)))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false)),
+      )
       .subscribe({
         next: (list) => this.timelines.set(list),
         error: () => this.timelines.set([]),

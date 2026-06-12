@@ -17,11 +17,7 @@ import { TemplateCardData } from './template-card.component';
         </div>
         <div class="preview-actions">
           <span class="template-category">{{ template().category }}</span>
-          <button
-            type="button"
-            class="copy-btn strong"
-            (click)="useTemplate.emit(template())"
-          >
+          <button type="button" class="copy-btn strong" (click)="useTemplate.emit(template())">
             {{ copied() ? 'Copiado' : 'Copiar' }}
           </button>
         </div>

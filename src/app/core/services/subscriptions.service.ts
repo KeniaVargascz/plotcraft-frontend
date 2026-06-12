@@ -37,9 +37,6 @@ export class SubscriptionsService {
   ): Observable<PaginatedResponse<SubscribedNovel>> {
     let params = new HttpParams().set('limit', limit);
     if (cursor) params = params.set('cursor', cursor);
-    return this.api.get<PaginatedResponse<SubscribedNovel>>(
-      '/novels/me/subscriptions',
-      { params },
-    );
+    return this.api.get<PaginatedResponse<SubscribedNovel>>('/novels/me/subscriptions', { params });
   }
 }

@@ -1,5 +1,13 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, computed, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+  computed,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AnalyticsService } from '../../core/services/analytics.service';
 import { AuthorAnalytics, AudienceStats } from '../../core/models/author-analytics.model';
@@ -389,22 +397,31 @@ export class AuthorAnalyticsPageComponent implements OnInit {
     this.loading.set(true);
     const p = this.period();
 
-    this.analyticsService.getAuthorAnalytics(p).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (d) => {
-        this.data.set(d);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.analyticsService
+      .getAuthorAnalytics(p)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (d) => {
+          this.data.set(d);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
 
-    this.analyticsService.getAuthorTimeline(p).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (tl) => this.timeline.set(tl),
-    });
+    this.analyticsService
+      .getAuthorTimeline(p)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (tl) => this.timeline.set(tl),
+      });
   }
 
   private loadAudience(): void {
-    this.analyticsService.getAudience().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (a) => this.audience.set(a),
-    });
+    this.analyticsService
+      .getAudience()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (a) => this.audience.set(a),
+      });
   }
 }

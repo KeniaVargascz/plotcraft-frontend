@@ -30,15 +30,12 @@ export class LibraryService {
   }
 
   listHistory(cursor?: string | null, limit = 20) {
-    return this.api.get<PaginatedResponse<ReadingHistoryItem>>(
-      '/library/history',
-      {
-        params: {
-          ...(cursor ? { cursor } : {}),
-          limit,
-        },
+    return this.api.get<PaginatedResponse<ReadingHistoryItem>>('/library/history', {
+      params: {
+        ...(cursor ? { cursor } : {}),
+        limit,
       },
-    );
+    });
   }
 
   listGoals() {

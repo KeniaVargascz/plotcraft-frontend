@@ -28,14 +28,11 @@ export class ReaderService {
   }
 
   listHistory(cursor?: string | null, limit = 12) {
-    return this.api.get<PaginatedResponse<ReadingHistoryItem>>(
-      '/reader/history',
-      {
-        params: {
-          ...(cursor ? { cursor } : {}),
-          limit,
-        },
+    return this.api.get<PaginatedResponse<ReadingHistoryItem>>('/reader/history', {
+      params: {
+        ...(cursor ? { cursor } : {}),
+        limit,
       },
-    );
+    });
   }
 }

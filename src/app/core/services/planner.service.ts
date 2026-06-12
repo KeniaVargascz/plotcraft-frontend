@@ -80,16 +80,11 @@ export class PlannerService {
   }
 
   updateTask(projectId: string, taskId: string, payload: Partial<WritingTask>) {
-    return this.api.patch<WritingTask>(
-      `/planner/projects/${projectId}/tasks/${taskId}`,
-      payload,
-    );
+    return this.api.patch<WritingTask>(`/planner/projects/${projectId}/tasks/${taskId}`, payload);
   }
 
   deleteTask(projectId: string, taskId: string) {
-    return this.api.delete<{ message: string }>(
-      `/planner/projects/${projectId}/tasks/${taskId}`,
-    );
+    return this.api.delete<{ message: string }>(`/planner/projects/${projectId}/tasks/${taskId}`);
   }
 
   moveTask(projectId: string, taskId: string, payload: { status: string; sortOrder?: number }) {

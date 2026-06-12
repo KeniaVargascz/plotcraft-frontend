@@ -22,12 +22,9 @@ export class FollowsService {
     cursor?: string | null,
     limit = 20,
   ): Observable<PaginatedResponse<FollowModel>> {
-    return this.api.get<PaginatedResponse<FollowModel>>(
-      `/follows/${username}/followers`,
-      {
-        params: this.buildParams(cursor, limit),
-      },
-    );
+    return this.api.get<PaginatedResponse<FollowModel>>(`/follows/${username}/followers`, {
+      params: this.buildParams(cursor, limit),
+    });
   }
 
   getFollowing(
@@ -35,12 +32,9 @@ export class FollowsService {
     cursor?: string | null,
     limit = 20,
   ): Observable<PaginatedResponse<FollowModel>> {
-    return this.api.get<PaginatedResponse<FollowModel>>(
-      `/follows/${username}/following`,
-      {
-        params: this.buildParams(cursor, limit),
-      },
-    );
+    return this.api.get<PaginatedResponse<FollowModel>>(`/follows/${username}/following`, {
+      params: this.buildParams(cursor, limit),
+    });
   }
 
   getSuggestions(): Observable<FollowModel[]> {

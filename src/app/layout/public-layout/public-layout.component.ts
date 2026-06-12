@@ -32,7 +32,11 @@ export class PublicLayoutComponent {
   readonly navItems = [
     { route: '/novelas', label: 'nav.novels', featureKey: FeatureFlag.EXPLORE_NOVELS_CATALOG },
     { route: '/mundos', label: 'nav.worlds', featureKey: FeatureFlag.EXPLORE_WORLDS_CATALOG },
-    { route: '/personajes', label: 'nav.characters', featureKey: FeatureFlag.EXPLORE_CHARACTERS_CATALOG },
+    {
+      route: '/personajes',
+      label: 'nav.characters',
+      featureKey: FeatureFlag.EXPLORE_CHARACTERS_CATALOG,
+    },
     { route: '/descubrir', label: 'nav.discovery', featureKey: FeatureFlag.EXPLORE_DISCOVERY },
   ];
 

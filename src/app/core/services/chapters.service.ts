@@ -18,20 +18,18 @@ export class ChaptersService {
     novelSlug: string,
     query: ChapterQuery = {},
   ): Observable<PaginatedResponse<ChapterSummary>> {
-    return this.api.get<PaginatedResponse<ChapterSummary>>(
-      `/novels/${novelSlug}/chapters`,
-      { params: this.buildParams(query) },
-    );
+    return this.api.get<PaginatedResponse<ChapterSummary>>(`/novels/${novelSlug}/chapters`, {
+      params: this.buildParams(query),
+    });
   }
 
   listDrafts(
     novelSlug: string,
     query: ChapterQuery = {},
   ): Observable<PaginatedResponse<ChapterSummary>> {
-    return this.api.get<PaginatedResponse<ChapterSummary>>(
-      `/novels/${novelSlug}/chapters/drafts`,
-      { params: this.buildParams(query) },
-    );
+    return this.api.get<PaginatedResponse<ChapterSummary>>(`/novels/${novelSlug}/chapters/drafts`, {
+      params: this.buildParams(query),
+    });
   }
 
   getReaderChapter(novelSlug: string, chapterSlug: string): Observable<ChapterDetail> {
@@ -54,10 +52,7 @@ export class ChaptersService {
     chapterSlug: string,
     payload: { title?: string; content?: string },
   ): Observable<ChapterDetail> {
-    return this.api.patch<ChapterDetail>(
-      `/novels/${novelSlug}/chapters/${chapterSlug}`,
-      payload,
-    );
+    return this.api.patch<ChapterDetail>(`/novels/${novelSlug}/chapters/${chapterSlug}`, payload);
   }
 
   autosave(
@@ -72,16 +67,11 @@ export class ChaptersService {
   }
 
   delete(novelSlug: string, chapterSlug: string): Observable<{ message: string }> {
-    return this.api.delete<{ message: string }>(
-      `/novels/${novelSlug}/chapters/${chapterSlug}`,
-    );
+    return this.api.delete<{ message: string }>(`/novels/${novelSlug}/chapters/${chapterSlug}`);
   }
 
   publish(novelSlug: string, chapterSlug: string): Observable<ChapterDetail> {
-    return this.api.post<ChapterDetail>(
-      `/novels/${novelSlug}/chapters/${chapterSlug}/publish`,
-      {},
-    );
+    return this.api.post<ChapterDetail>(`/novels/${novelSlug}/chapters/${chapterSlug}/publish`, {});
   }
 
   unpublish(novelSlug: string, chapterSlug: string): Observable<ChapterDetail> {
@@ -92,10 +82,9 @@ export class ChaptersService {
   }
 
   schedule(novelSlug: string, chapterSlug: string, scheduledAt: string): Observable<ChapterDetail> {
-    return this.api.post<ChapterDetail>(
-      `/novels/${novelSlug}/chapters/${chapterSlug}/schedule`,
-      { scheduledAt },
-    );
+    return this.api.post<ChapterDetail>(`/novels/${novelSlug}/chapters/${chapterSlug}/schedule`, {
+      scheduledAt,
+    });
   }
 
   private buildParams(query: ChapterQuery) {
@@ -165,10 +154,7 @@ export class ChaptersService {
     return this.api.get<{
       data: ChapterCommentModel[];
       pagination: { nextCursor: string | null; hasMore: boolean; limit: number };
-    }>(
-      `/novels/${novelSlug}/chapters/${chapterSlug}/comments/paragraph/${anchorId}`,
-      { params },
-    );
+    }>(`/novels/${novelSlug}/chapters/${chapterSlug}/comments/paragraph/${anchorId}`, { params });
   }
 }
 

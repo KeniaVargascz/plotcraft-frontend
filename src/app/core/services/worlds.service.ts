@@ -45,12 +45,9 @@ export class WorldsService {
   }
 
   listByUser(username: string, query: WorldQuery = {}) {
-    return this.api.get<PagedResponse<WorldSummary>>(
-      `/worlds/user/${username}`,
-      {
-        params: this.buildParams(query),
-      },
-    );
+    return this.api.get<PagedResponse<WorldSummary>>(`/worlds/user/${username}`, {
+      params: this.buildParams(query),
+    });
   }
 
   getBySlug(slug: string) {

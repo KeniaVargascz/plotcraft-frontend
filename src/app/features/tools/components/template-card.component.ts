@@ -26,18 +26,10 @@ export type TemplateCardData = {
       </div>
 
       <div class="template-actions">
-        <button
-          type="button"
-          class="copy-btn strong"
-          (click)="copy.emit(template())"
-        >
+        <button type="button" class="copy-btn strong" (click)="copy.emit(template())">
           {{ copied() ? 'Copiado' : 'Copiar' }}
         </button>
-        <button
-          type="button"
-          class="ghost-btn"
-          (click)="preview.emit(template())"
-        >
+        <button type="button" class="ghost-btn" (click)="preview.emit(template())">
           {{ selected() ? 'Vista activa' : 'Ver preview' }}
         </button>
         @for (route of template().routes; track route.label + route.to) {

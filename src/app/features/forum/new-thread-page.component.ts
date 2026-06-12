@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TagChipsInputComponent } from '../../shared/components/tag-chips-input/tag-chips-input.component';
@@ -455,10 +463,13 @@ export class NewThreadPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.communitiesService.getMyCommunities().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (list) => this.myCommunities.set(list),
-      error: () => this.myCommunities.set([]),
-    });
+    this.communitiesService
+      .getMyCommunities()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (list) => this.myCommunities.set(list),
+        error: () => this.myCommunities.set([]),
+      });
   }
 
   isLinked(id: string): boolean {

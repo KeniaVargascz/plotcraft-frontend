@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, Input, OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  Input,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -131,9 +139,28 @@ export class LinkedVisualBoardsSectionComponent implements OnInit {
     };
 
     if (this.isOwner) {
-      this.visualBoardsService.getMyBoards(query).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      this.visualBoardsService
+        .getMyBoards(query)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: (response) => {
+            this.boards.set(response);
+            this.loading.set(false);
+          },
+          error: () => {
+            this.boards.set([]);
+            this.loading.set(false);
+          },
+        });
+      return;
+    }
+
+    this.visualBoardsService
+      .getPublicBoards(this.authorUsername, query)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
         next: (response) => {
-          this.boards.set(response);
+          this.boards.set(response.data);
           this.loading.set(false);
         },
         error: () => {
@@ -141,18 +168,5 @@ export class LinkedVisualBoardsSectionComponent implements OnInit {
           this.loading.set(false);
         },
       });
-      return;
-    }
-
-    this.visualBoardsService.getPublicBoards(this.authorUsername, query).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (response) => {
-        this.boards.set(response.data);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.boards.set([]);
-        this.loading.set(false);
-      },
-    });
   }
 }

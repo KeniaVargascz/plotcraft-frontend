@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, Input, Output, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  EventEmitter,
+  Input,
+  Output,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
@@ -756,18 +765,27 @@ export class AdvancedNovelFiltersComponent {
   }
 
   constructor() {
-    this.languagesService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (languages) => this.languages.set(languages),
-      error: () => this.languages.set([]),
-    });
-    this.romanceGenresService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (genres) => this.romanceGenres.set(genres),
-      error: () => this.romanceGenres.set([]),
-    });
-    this.warningsService.list().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (items) => this.warningsCatalog.set(items),
-      error: () => this.warningsCatalog.set([]),
-    });
+    this.languagesService
+      .list()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (languages) => this.languages.set(languages),
+        error: () => this.languages.set([]),
+      });
+    this.romanceGenresService
+      .list()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (genres) => this.romanceGenres.set(genres),
+        error: () => this.romanceGenres.set([]),
+      });
+    this.warningsService
+      .list()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (items) => this.warningsCatalog.set(items),
+        error: () => this.warningsCatalog.set([]),
+      });
 
     this.pairingASearch$
       .pipe(

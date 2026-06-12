@@ -23,10 +23,13 @@
       <p>Estos campos construyen la portada publica de tu cuenta dentro de PlotCraft.</p>
 
       <div class="preview-card">
+        <!-- TODO: banner de perfil deshabilitado temporalmente
         <div
           class="preview-banner"
           [style.background-image]="bannerPreview() ? 'url(' + bannerPreview() + ')' : null"
         ></div>
+        -->
+        <div class="preview-banner"></div>
         <div class="preview-avatar-wrap">
           <div
             class="preview-avatar"
@@ -49,7 +52,7 @@
 
       <div class="tips">
         <article class="tip-pill">
-          <strong>Avatar y banner</strong>
+          <strong>Avatar</strong>
           <span>Usa imagenes limpias y legibles para que el perfil mantenga presencia visual.</span>
         </article>
         <article class="tip-pill">
@@ -76,11 +79,13 @@
             <small class="field-hint">{{ 'profile.editForm.avatarHint' | translate }}</small>
           </div>
 
+          <!-- TODO: banner de perfil deshabilitado temporalmente
           <div class="field">
             <label for="bannerUrl">{{ 'profile.editForm.banner' | translate }}</label>
             <input id="bannerUrl" type="url" formControlName="bannerUrl" class="input" />
             <small class="field-hint">{{ 'profile.editForm.bannerHint' | translate }}</small>
           </div>
+          -->
 
           <div class="field">
             <label for="displayName">{{ 'profile.fields.displayName' | translate }}</label>

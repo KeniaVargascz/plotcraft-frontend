@@ -4,6 +4,7 @@
   <app-error-message />
 } @else if (user(); as profileUser) {
   <section class="profile-card">
+    <!-- TODO: banner de perfil deshabilitado temporalmente
     <div
       class="banner"
       [class.has-image]="!!profileUser.profile?.bannerUrl"
@@ -11,6 +12,8 @@
         profileUser.profile?.bannerUrl ? 'url(' + profileUser.profile?.bannerUrl + ')' : null
       "
     ></div>
+    -->
+    <div class="banner"></div>
 
     <div class="identity">
       <div class="avatar" [class.has-image]="!!profileUser.profile?.avatarUrl">
